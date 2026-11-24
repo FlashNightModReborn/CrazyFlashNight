@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-番茄炒蛋" itemID="67bffc79-000000cd" linkageExportForAS="true" linkageIdentifier="图标-番茄炒蛋" lastModified="1741755296" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-番茄炒蛋" itemID="67bffc79-000000cd" linkageExportForAS="true" linkageIdentifier="图标-番茄炒蛋" lastModified="1795539600" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="图标-番茄炒蛋">
+    <DOMTimeline name="图标-番茄炒蛋" currentFrame="0">
       <layers>
         <DOMLayer name="图层_3" color="#FF800A">
           <frames>
@@ -12,11 +12,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_1" color="#05F390" current="true" isSelected="true">
+        <DOMLayer name="Layer_1" color="#05F390">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/材料红框" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/材料红框" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -25,30 +25,30 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_2" color="#BCAAE0">
+        <DOMLayer name="Layer_2" color="#BCAAE0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/番茄炒蛋" symbolType="graphic" loop="loop">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/番茄炒蛋.png">
                   <matrix>
-                    <Matrix a="0.110626220703125" d="0.110626220703125" tx="-11.15" ty="-3.5"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="100.8" y="34.8"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/番茄炒蛋" symbolType="graphic" loop="loop">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/番茄炒蛋.png">
                   <matrix>
-                    <Matrix a="0.110626220703125" d="0.110626220703125" tx="-11.15" ty="-3.5"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="100.8" y="34.8"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
           </frames>
@@ -57,7 +57,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/材料黑底" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/材料黑底" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

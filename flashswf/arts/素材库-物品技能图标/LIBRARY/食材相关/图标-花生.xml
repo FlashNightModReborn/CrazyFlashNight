@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-花生" itemID="68140dd7-00000564" linkageExportForAS="true" linkageIdentifier="图标-花生" lastModified="1746182246" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-花生" itemID="68140dd7-00000564" linkageExportForAS="true" linkageIdentifier="图标-花生" lastModified="1795539600" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="图标-花生" currentFrame="1">
+    <DOMTimeline name="图标-花生" currentFrame="0">
       <layers>
         <DOMLayer name="图层_3" color="#FF800A">
           <frames>
@@ -29,26 +29,26 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/花生" centerPoint3DX="-0.15" centerPoint3DY="0.1">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/花生.png">
                   <matrix>
-                    <Matrix a="0.189178466796875" d="0.189178466796875" tx="-12.3" ty="-7.95"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="64.25" y="42.55"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/花生" centerPoint3DX="-0.65" centerPoint3DY="3.85">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/花生.png">
                   <matrix>
-                    <Matrix a="0.189178466796875" d="0.189178466796875" tx="-12.8" ty="-4.2"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="64.25" y="42.55"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
           </frames>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-芹菜" itemID="68142391-00000854" linkageExportForAS="true" linkageIdentifier="图标-芹菜" lastModified="1746182293" lastUniqueIdentifier="12">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-芹菜" itemID="68142391-00000854" linkageExportForAS="true" linkageIdentifier="图标-芹菜" lastModified="1795539600" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="图标-芹菜" currentFrame="1">
+    <DOMTimeline name="图标-芹菜" currentFrame="0">
       <layers>
         <DOMLayer name="图层_3" color="#FF800A">
           <frames>
@@ -29,34 +29,26 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/芹菜" centerPoint3DX="0.3" centerPoint3DY="-1.1">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/芹菜.png">
                   <matrix>
-                    <Matrix a="0.0718231201171875" d="0.0718231201171875" tx="-11.7" ty="-9.55"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="163.6" y="120.45"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="食材相关/芹菜" centerPoint3DX="2.3" centerPoint3DY="-0.45">
-                  <matrix>
-                    <Matrix a="0.071807861328125" b="-0.0024871826171875" c="0.0024871826171875" d="0.071807861328125" tx="-11.35" ty="-7.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="165" y="121.3"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/芹菜" centerPoint3DX="2.85">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/芹菜.png">
                   <matrix>
-                    <Matrix a="0.102005004882813" b="0.07135009765625" c="-0.07135009765625" d="0.102005004882813" tx="-7.35" ty="-23.65"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="164.5" y="121.7"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
           </frames>

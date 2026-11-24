@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-猪肉" itemID="67bffc53-000000c2" linkageExportForAS="true" linkageIdentifier="图标-猪肉" lastModified="1740636130" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食材相关/图标-猪肉" itemID="67bffc53-000000c2" linkageExportForAS="true" linkageIdentifier="图标-猪肉" lastModified="1795539600" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="图标-猪肉">
+    <DOMTimeline name="图标-猪肉" currentFrame="0">
       <layers>
         <DOMLayer name="图层_3" color="#FF800A">
           <frames>
@@ -16,7 +16,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/材料红框" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/材料红框" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -25,39 +25,39 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_2" color="#BCAAE0">
+        <DOMLayer name="Layer_2" color="#BCAAE0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/猪肉" symbolType="graphic" loop="loop">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/猪肉.png">
                   <matrix>
-                    <Matrix a="0.0938720703125" d="0.0938720703125" tx="-10.75" ty="-6.5"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="114.5" y="69.8"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/猪肉" symbolType="graphic" loop="loop">
+                <DOMBitmapInstance libraryItemName="食材相关/位图/猪肉.png">
                   <matrix>
-                    <Matrix a="0.0938720703125" d="0.0938720703125" tx="-10.75" ty="-6.5"/>
+                    <Matrix a="0.1953125" d="0.1953125" tx="-12.5" ty="-12.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="114.5" y="69.8"/>
+                    <Point x="64" y="64"/>
                   </transformationPoint>
-                </DOMSymbolInstance>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_3" color="#63D255" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Layer_3" color="#63D255">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食材相关/材料黑底" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="无AS链接/材料黑底" symbolType="graphic" loop="loop">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
