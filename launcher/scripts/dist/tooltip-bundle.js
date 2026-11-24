@@ -358,7 +358,7 @@ var TooltipEngine;
             var result = [];
             if (!life || Array.isArray(life) || TooltipEngine.as2NotEqual(typeof life, "object"))
                 return result;
-            var body = false, torch = false, laser = false;
+            var body = false, headlamp = false, torch = false, laser = false;
             var blades = [], baseBonus = 0, electricBonus = 0, activeBonus = 0;
             var electric = false, tagsRead = false;
             for (var key of TooltipEngine.as2Keys(life)) {
@@ -386,6 +386,8 @@ var TooltipEngine;
                 else if (TooltipEngine.as2Equal(routine, "装备光源初始化")) {
                     if (TooltipEngine.as2Equal(param.kind, "laser"))
                         laser = true;
+                    else if (TooltipEngine.as2Equal(param.kind, "headlamp"))
+                        headlamp = true;
                     else if (TooltipEngine.as2Equal(param.kind, "flashlight")) {
                         torch = true;
                         if (!standaloneMod && TooltipEngine.as2Equal(attr.__modName, undefined) && param.builtinDefense !== true)
@@ -410,6 +412,8 @@ var TooltipEngine;
             }
             if (body)
                 result.push("穿戴时持续照亮自身周围，多件发光防具共同提供近身照明。<BR>");
+            if (headlamp)
+                result.push("穿戴时持续提供近身补光与前方照明，不受持用武器限制。<BR>");
             for (var i = 0; TooltipEngine.as2Less(i, bladeOrder.length); i++) {
                 if (blades[i])
                     result.push(bladeText[i], "<BR>");

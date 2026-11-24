@@ -45,4 +45,30 @@
         <description>高性能预制标准件,提升一定防御力,但会增加重量。</description>
         <tag>外覆加固</tag>
     </mod>
+
+    <mod>
+        <name>便携头灯</name>
+        <use>头部装备</use>
+        <requireTags>头灯挂点</requireTags>
+        <uiRole>utility</uiRole>
+        <description>卡扣式宽泛光头灯模组，穿戴时持续照亮前方与近身轮廓，不受持用武器限制。</description>
+        <tag>头部照明</tag>
+        <lifecycle>
+            <attr_equipmentLight>
+                <skillInteraction>independent</skillInteraction>
+                <init>
+                    <initRoutines>装备光源初始化</initRoutines>
+                    <initParam>
+                        <kind>headlamp</kind>
+                        <length>480</length>
+                        <halfWidth>210</halfWidth>
+                        <energy>1</energy>
+                        <color>16773584</color>
+                        <nearRadius>130</nearRadius>
+                        <nearEnergy>0.85</nearEnergy>
+                    </initParam>
+                </init>
+            </attr_equipmentLight>
+        </lifecycle>
+    </mod>
 </root>

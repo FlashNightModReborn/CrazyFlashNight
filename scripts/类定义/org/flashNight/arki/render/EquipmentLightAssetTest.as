@@ -16,7 +16,7 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
     private static var oldWorld:Object, oldClock:Object, oldPause:Object, oldCleanup:Function;
     private static var world:MovieClip, actor:MovieClip, gun:MovieClip, watchdog:MovieClip;
     private static var loader:MovieClipLoader, listener:Object;
-    private static var definitions:Object, laserMod:Object, torchMod:Object, cases:Array, cycles:Array, oldMods:Array;
+    private static var definitions:Object, laserMod:Object, torchMod:Object, headlampMod:Object, cases:Array, cycles:Array, oldMods:Array;
 
     private static function check(ok:Boolean, label:String):Void {
         if (ok) passed++; else { failed++; trace("EquipmentLightAssetTest FAIL: " + label); }
@@ -56,20 +56,21 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
         loadXml(0);
     }
     private static function loadXml(index:Number):Void {
-        var paths:Array = ["../data/items/武器_长枪_霰弹枪.xml", "../data/items/武器_手枪_霰弹枪.xml", "../data/items/equipment_mods/高等材料_枪械专用.xml", "../data/items/武器_长枪_突击步枪.xml"];
+        var paths:Array = ["../data/items/武器_长枪_霰弹枪.xml", "../data/items/武器_手枪_霰弹枪.xml", "../data/items/equipment_mods/高等材料_枪械专用.xml", "../data/items/武器_长枪_突击步枪.xml", "../data/items/equipment_mods/低级材料_防具专用.xml", "../data/items/防具_0-19级.xml"];
         var document:XML = new XML(); document.ignoreWhite = true;
         document.onLoad = function(success:Boolean):Void {
             if (EquipmentLightAssetTest.finished) return;
             EquipmentLightAssetTest.check(success, "actual XML " + index);
             if (!success) { EquipmentLightAssetTest.finish(); return; }
             var parsed:Object = XMLParser.parseXMLNode(this.firstChild);
-            var items:Array = XMLParser.configureDataAsArray(index == 2 ? parsed.mod : parsed.item);
+            var items:Array = XMLParser.configureDataAsArray((index == 2 || index == 4) ? parsed.mod : parsed.item);
             for (var i:Number = 0; i < items.length; i++) {
                 if (items[i].name == "镭射瞄准具") EquipmentLightAssetTest.laserMod = items[i];
                 else if (items[i].name == "战术手电") EquipmentLightAssetTest.torchMod = items[i];
+                else if (items[i].name == "便携头灯") EquipmentLightAssetTest.headlampMod = items[i];
                 else EquipmentLightAssetTest.definitions[items[i].name] = items[i];
             }
-            if (index < 3) EquipmentLightAssetTest.loadXml(index + 1);
+            if (index < 5) EquipmentLightAssetTest.loadXml(index + 1);
             else {
                 EquipmentLightAssetTest.check(EquipmentLifecyclePolicy.isIndependentLifecycle(EquipmentLightAssetTest.laserMod.lifecycle), "XML parser retains valid independent mod lifecycle");
                 EquipmentLightAssetTest.check(EquipmentLightAssetTest.laserMod.requireTags == "侧导轨挂点" && EquipmentLightAssetTest.laserMod.stats.flat.accuracy == 45
@@ -78,7 +79,10 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
                 EquipmentLightAssetTest.check(torch.lifecycle.attr_equipmentLight.init.initParam.evasionBonus == 20
                     && torch.lifecycle.attr_equipmentLight.init.initParam.electricEvasionBonus == 5
                     && torch.uiRole == "stability", "actual flashlight XML declares defensive 20/25");
-                ModRegistry.loadModData([EquipmentLightAssetTest.laserMod, torch]);
+                var headlamp:Object = EquipmentLightAssetTest.headlampMod;
+                EquipmentLightAssetTest.check(EquipmentLifecyclePolicy.isIndependentLifecycle(headlamp.lifecycle), "headlamp XML retains independent lifecycle");
+                EquipmentLightAssetTest.check(headlamp.requireTags == "头灯挂点" && headlamp.uiRole == "utility", "actual headlamp XML declares mount requirement");
+                ModRegistry.loadModData([EquipmentLightAssetTest.laserMod, torch, headlamp]);
                 EquipmentLightAssetTest.loadAsset();
             }
         };
@@ -221,6 +225,29 @@ class org.flashNight.arki.render.EquipmentLightAssetTest {
         actor.攻击模式="长枪";tick();DressupInitializer.teardownLifeCycles(actor);
         check(!ref.lightGenerated._parent && actor.躲闪率==3,"production teardown removes both defense and beam");
         check(actor.生命周期函数列表.length==0 && actor.dispatcher["_subCount"]==0,"plugin unload leaves no callbacks");
+
+        var motoItem:Object=definitions["黑色摩托头盔"];
+        var nvgItem:Object=definitions["红外夜视仪"];
+        org.flashNight.arki.item.ItemUtil.itemDataDict["黑色摩托头盔"]=motoItem;
+        org.flashNight.arki.item.ItemUtil.itemDataDict["红外夜视仪"]=nvgItem;
+        var motoEquip = {name:"黑色摩托头盔",value:{level:1,mods:[]}};
+        var nvgEquip = {name:"红外夜视仪",value:{level:1,mods:[]}};
+        check(TagManager.checkModAvailability(motoEquip,motoItem,"便携头灯")==1,"mounted helmet accepts headlamp");
+        check(TagManager.checkModAvailability(nvgEquip,nvgItem,"便携头灯")==-16,"unmounted headwear rejects headlamp");
+        var motoData:Object=EquipmentCalculator.calculatePure(motoItem,{level:1,mods:["便携头灯"]},cfg,ModRegistry.getModDict());
+        check(motoData.data.evasion==motoItem.data.evasion,"headlamp adds no permanent evasion");
+        actor.攻击模式="空手";
+        actor.头部装备={name:"黑色摩托头盔",value:{level:1,mods:["便携头灯"]}};
+        actor.头部装备数据=motoData; actor.头部装备属性=motoData.data;
+        cycles=[]; actor.装载生命周期函数(motoData.lifecycle,"头部装备");
+        check(cycles.length==0,"headlamp binds centrally with zero periodic tasks");
+        configure(true);
+        var hRow:Array=EquipmentLightBridge.payload().split(";")[1].split(",");
+        check(count()==1 && hRow.length==17 && Number(hRow[7])==480 && Number(hRow[15])==130
+            && EquipmentLightDefense.getActiveBonus(actor)==0,"real helmet headlamp projects unarmed without evasion bonus");
+        DressupInitializer.teardownLifeCycles(actor);
+        check(count()==0 && actor.生命周期函数列表.length==0,"headlamp teardown clears native light and cleanup list");
+
         nextFixture();
 
         } finally {

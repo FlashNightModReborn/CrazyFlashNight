@@ -10,11 +10,13 @@ namespace CF7Launcher.Tests.Guardian {
         private static string Xml => Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..","..","data","environment","color_engine_preset.xml"));
         [Fact] public void AuthoredRolesKeepTargetsAndEnvironmentAsIndependentAssists() {
             var p=NightVisionProfile.Load(Xml);
-            Assert.Equal(7,p.Count);
+            Assert.Equal(8,p.Count);
             Assert.True(p["夜视仪"].Native[1]>0);Assert.Equal(0,p["夜视仪"].UnitStrength);
             Assert.Equal(0,p["浅红夜视仪"].Native[1]);Assert.True(p["浅红夜视仪"].UnitStrength>.4);
             Assert.True(p["浅绿夜视仪"].Native[1]>0);Assert.Equal(0,p["浅绿夜视仪"].UnitStrength);
             Assert.Equal(0,p["浅蓝夜视仪"].Native[1]);Assert.True(p["浅蓝夜视仪"].UnitStrength>.4);
+            Assert.Equal(0,p["中级夜视仪"].Native[1]);Assert.Equal(0,p["中级夜视仪"].UnitStrength);
+            Assert.True(p["中级夜视仪"].ShadowLift>0 && p["中级夜视仪"].ShadowLift<p["高级夜视仪"].ShadowLift);
             Assert.Equal(0,p["高级夜视仪"].Native[1]);Assert.Equal(0,p["高级夜视仪"].UnitStrength);
             Assert.True(p["高级夜视仪"].ShadowLift>0);Assert.Equal(0,p["剑圣视觉四阶"].ShadowLift);
             Assert.Equal(0,p["剑圣视觉四阶"].Native[1]);Assert.Equal(0,p["剑圣视觉四阶"].UnitStrength);
@@ -50,6 +52,7 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.True(lut[colored]>lut[colored+1]+20 && lut[colored+1]>lut[colored+2]+20,"original material hue stays distinct");
             Assert.Equal(0,lut[0]);Assert.Equal(0,lut[1]);Assert.Equal(0,lut[2]);
             var identity=WorldLutBaker.BakeMatrix(WorldColorMatrix.Identity(),1);
+            Assert.Equal(identity,WorldLutBaker.BakeFromXml(Xml,"中级夜视仪",7,1,out resolved));
             Assert.Equal(identity,WorldLutBaker.BakeFromXml(Xml,"高级夜视仪",7,1,out resolved));
             Assert.Equal(identity,WorldLutBaker.BakeFromXml(Xml,"剑圣视觉四阶",0,1,out resolved));
         }

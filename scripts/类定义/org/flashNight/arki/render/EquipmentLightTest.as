@@ -170,6 +170,42 @@ class org.flashNight.arki.render.EquipmentLightTest {
             check(count() == 0, "死亡时清理盾光");
             EquipmentLightBridge.release(cast);
             EquipmentLightBridge.installLightProfiles(null);
+
+            actor.hp = 100; actor._visible = true; actor.方向 = "右";
+            check(!EquipmentLightController.initialize(refFor(actor, true), {kind:"headlamp"}), "头灯拒绝非头部装备槽");
+            actor.头部装备 = {name:"helmet", value:{mods:["便携头灯"]}};
+            var headRef:Object = {自机:actor, 装备类型:"头部装备", 生命周期函数列表:[], 来源插件:"便携头灯"};
+            check(EquipmentLightController.initialize(headRef, {kind:"headlamp"}) && !headRef.lightBeam && !headRef.lightGenerated,
+                "头灯绑定头部装备且不生成Flash回退光束");
+            var headRow:Array = first();
+            check(count() == 1 && Number(headRow[2]) == 1 && Number(headRow[7]) == 480 && Number(headRow[8]) == 210
+                && Math.abs(Number(headRow[9]) - 1) < 0.000001 && Number(headRow[15]) == 130
+                && Math.abs(Number(headRow[16]) - 0.85) < 0.000001, "头灯默认前照与近身参数");
+            actor.攻击模式 = "空手";
+            check(count() == 1, "空手保持头灯照明");
+            actor.攻击模式 = "兵器";
+            check(count() == 1, "兵器模式保持头灯照明");
+            var headRight:Array = first(); actor.方向 = "左"; var headLeft:Array = first();
+            check(Number(headRight[5]) > 0.99 && Number(headLeft[5]) < -0.99
+                && Math.abs(Number(headLeft[5]) * Number(headLeft[5]) + Number(headLeft[6]) * Number(headLeft[6]) - 1) < 0.01,
+                "头灯随单位朝向翻转且保持单位向量");
+            actor.方向 = "右"; var prevState:String = actor.状态; actor.状态 = "倒地"; var headDown:Array = first();
+            check(Math.abs(Number(headRight[4]) - (actor._y - 120)) < 0.01
+                && Math.abs(Number(headDown[4]) - (actor._y - 56)) < 0.01, "倒地按身高中心比例下移头灯高度");
+            actor.状态 = prevState;
+            EquipmentLightBridge.resetScene();
+            check(count() == 1, "场景reset后合法头灯常驻保留");
+            actor.攻击模式 = "长枪";
+            var gunTorch:Object = refFor(actor, true);
+            EquipmentLightController.initialize(gunTorch, {kind:"flashlight"});
+            var both:Array = EquipmentLightBridge.payload().split(";");
+            var r1:Array = both[1] ? both[1].split(",") : [];
+            var r2:Array = both[2] ? both[2].split(",") : [];
+            check(both.length == 3 && ((Number(r1[7]) == 1000 && Number(r1[15]) == 140 && Number(r2[15]) == 0)
+                || (Number(r2[7]) == 1000 && Number(r2[15]) == 140 && Number(r1[15]) == 0)),
+                "强手电近身补光优先于早挂载的头灯");
+            EquipmentLightController.dispose(gunTorch); EquipmentLightController.dispose(headRef);
+            check(count() == 0, "头灯卸载清理原生投射");
         } catch (error:Error) { check(false, "意外异常 " + error); }
         EquipmentLightBridge.disconnect();
         world.removeMovieClip(); _root.gameworld = savedWorld; _root.帧计时器 = savedClock; _root.暂停 = savedPause;

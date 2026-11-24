@@ -3087,7 +3087,8 @@
     <price>50000</price>
     <description>在末日的废土中，每一寸土地都可能隐藏着威胁，而能够快速探知敌人位置的能力，往往能决定生死存亡。
     复镕望远热感仪成为了黑铁会刺客们所钟爱的制式面罩，它的望远功能使得&lt;font color="#000000"&gt;刺客们&lt;/font&gt;能够在较远的距离侦测敌人，而不暴露自己的位置。
-    进而在复杂环境中精准探测敌人的体温，帮助&lt;font color="#000000"&gt;刺客们&lt;/font&gt;无声无息地斩杀目标。</description>
+    进而在复杂环境中精准探测敌人的体温，帮助&lt;font color="#000000"&gt;刺客们&lt;/font&gt;无声无息地斩杀目标。
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有中级保色夜视效果，开启亮度等级为0~4。</description>
     <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
@@ -3100,6 +3101,27 @@
       <defence>80</defence>
       <accuracy>10</accuracy>
     </data>
+    <lifecycle>
+      <attr_0>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>中级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>中级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
     <balance>
       <formulaFamily>armor</formulaFamily>
       <schemaVersion>1</schemaVersion>
@@ -3119,7 +3141,7 @@
       <marketPrice>50000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:4046e598</inputDigest>
-      <sourceDigest>sha256:41c4b05403a775c53f68fa0dc67cfa1cedcdba452fe1f5771a66b3b157b74091</sourceDigest>
+      <sourceDigest>sha256:29bcb42331297831a8bbb79dde22f9059ad8cf79558da5a73e5926a0d890ba9b</sourceDigest>
       <auditRef>armor:复镕望远热感仪</auditRef>
     </balance>
   </item>
@@ -3132,7 +3154,7 @@
     <setId>black_iron_executioner</setId>
     <price>52000</price>
     <description>黑铁行刑者的标准配置，铁下巴和目镜。
-    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~2。</description>
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有进阶绿色结构夜视效果，开启亮度等级为0~2。</description>
     <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
@@ -3150,7 +3172,7 @@
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
-            <visual>夜视仪</visual>
+            <visual>浅绿夜视仪</visual>
             <min>0</min>
             <max>2</max>
           </initParam>
@@ -3158,9 +3180,9 @@
         <cycle>
           <cycleRoutines>红外夜视仪周期</cycleRoutines>
           <cycleParam>
-            <visual>夜视仪</visual>
+            <visual>浅绿夜视仪</visual>
             <min>0</min>
-            <max>4</max>
+            <max>2</max>
           </cycleParam>
         </cycle>
       </attr_0>
@@ -3184,7 +3206,7 @@
       <marketPrice>52000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:a677acc9</inputDigest>
-      <sourceDigest>sha256:f163554f6abc15a2769c4c1c57c33e6698d668829b9082b8b4f2419d3908ed3f</sourceDigest>
+      <sourceDigest>sha256:84862c584eceb0b48c4582c3005b0b111c05adb0bfa68312601c42f1153f9272</sourceDigest>
       <auditRef>armor:黑铁大叔目镜头装</auditRef>
     </balance>
   </item>
@@ -3195,7 +3217,8 @@
     <type>防具</type>
     <use>头部装备</use>
     <price>83200</price>
-    <description>黑铁会刺客装备，加装热感应仪器。</description>
+    <description>黑铁会刺客装备，加装热感应仪器。
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启热成像功能辅助作战，有白热目标高亮效果，开启亮度等级为0~4。</description>
     <hairAbove>true</hairAbove>
     <data>
       <level>20</level>
@@ -3208,6 +3231,27 @@
       <defence>65</defence>
       <evasion>5</evasion>
     </data>
+    <lifecycle>
+      <attr_0>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>浅蓝夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>浅蓝夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
     <balance>
       <formulaFamily>armor</formulaFamily>
       <schemaVersion>1</schemaVersion>
@@ -3227,7 +3271,7 @@
       <marketPrice>83200</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:befe8a94</inputDigest>
-      <sourceDigest>sha256:794f40406c4d5fd019f7038699ffb701e3a6ec499e5c88326eae1afebff37bb0</sourceDigest>
+      <sourceDigest>sha256:4f29bb6661d57a5925f31cf97efb4f2e9632a2ef8a1beaaffeb84d5084d76117</sourceDigest>
       <auditRef>armor:黑铁刺客目镜头装</auditRef>
     </balance>
   </item>
@@ -4647,6 +4691,7 @@
     <price>100000</price>
     <description>全封闭式非气密型防化服，可抵御高等级的呼吸危害与一定的皮肤危害，能够防止液态物质的渗透，有效减免多种属性伤害的侵害。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>25</level>
       <weight>2.5</weight>
@@ -4684,7 +4729,7 @@
       <marketPrice>100000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:4f8f0bf1</inputDigest>
-      <sourceDigest>sha256:aa64d2458c05d14e4c3ab674eda7afbfabc810015491fe13461ac854347a61b4</sourceDigest>
+      <sourceDigest>sha256:cd682d9666b09f15a931efbd9dae47bf1963ce8fb14a579880c0182b571d1818</sourceDigest>
       <auditRef>armor:B级防化服头套</auditRef>
     </balance>
   </item>
@@ -5710,7 +5755,8 @@
     头部的护甲增厚，还强化了对讲机的通讯能力。
     原本的夜视仪机能得到保留，增加了强闪光防护功能，安装了简易的空气过滤装置，在有必要时可以安装滤罐作为防毒面罩使用。
     在审判日发生之前，这款护甲被派发到政府的一些重要单位装备使用。
-    由于装备数不多且制造厂未被发现，因此少有显露于世人面前。</description>
+    由于装备数不多且制造厂未被发现，因此少有显露于世人面前。
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有中级保色夜视效果，开启亮度等级为0~4。</description>
     <helmet>true</helmet>
     <data>
       <level>28</level>
@@ -5726,6 +5772,27 @@
         <蚀>10</蚀>
       </magicdefence>
     </data>
+    <lifecycle>
+      <attr_0>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>中级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>中级夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
     <balance>
       <formulaFamily>armor</formulaFamily>
       <schemaVersion>1</schemaVersion>
@@ -5745,7 +5812,7 @@
       <marketPrice>50000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:44459460</inputDigest>
-      <sourceDigest>sha256:71a862c27129099347d1967cf03981bb71e1bd5d4ebcce0e3bbfd5f7c950e70f</sourceDigest>
+      <sourceDigest>sha256:69cefb464ecf16ef87c030f51a4a464d24fc4ac2c2a86b66966401a350e6a9d3</sourceDigest>
       <auditRef>armor:夜行侦查盔</auditRef>
     </balance>
   </item>
@@ -5946,6 +6013,7 @@
     <description>作为联合政府动力装甲项目中的唯二存在，XG92明显倾向于治安或者特种作战。
     轻薄的装甲提升了机动性，同时防御性也不容小觑，抵御9mm手枪弹直射和7.62mm步枪弹流弹轻而易举。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>28</level>
       <weight>4</weight>
@@ -5977,7 +6045,7 @@
       <marketPrice>80000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:53ac66aa</inputDigest>
-      <sourceDigest>sha256:1aa7f65ad4015c77c4ad9255118655d853289ef004aa65f792b53a3d9328f7b4</sourceDigest>
+      <sourceDigest>sha256:ff2af15cb959e7b06a441e7a97e6ecbe75ed77c5768ea9134617c4db6f9f468a</sourceDigest>
       <auditRef>armor:92式头部装甲</auditRef>
     </balance>
   </item>
@@ -6171,6 +6239,7 @@
     <price>100000</price>
     <description>这件装备是黑龙在战斗中被击碎的金属，混合了其他材料与工艺后重新制成的盔甲，虽然沉重，但却具备着相当强悍的防御性能。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>28</level>
       <weight>4</weight>
@@ -6203,7 +6272,7 @@
       <marketPrice>100000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:fadc4ddd</inputDigest>
-      <sourceDigest>sha256:926497640b96f0c80132c2de516dd8be19f4ce717890446188182cd618e626d3</sourceDigest>
+      <sourceDigest>sha256:3043749ed8f0bba30c5d6c481c78bcf567befb262fcee1f09f3baa00016b41cf</sourceDigest>
       <auditRef>armor:黑龙头盔</auditRef>
     </balance>
   </item>
@@ -7122,6 +7191,7 @@
     末世后的研究者估计，若整套装甲按计划列装，普通军队将足以应对十倍于己、且包含变异体的尸潮。
     最终封存在军事基地的只有数台样机，头盔里也从未响起过原定部队的集合口令。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>33</level>
       <weight>10</weight>
@@ -7153,7 +7223,7 @@
       <marketPrice>100000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:64564f73</inputDigest>
-      <sourceDigest>sha256:bbe83ba4b20566ffd00e1059975b8ad979fa8b5d9ba666a2368fa75537e8a072</sourceDigest>
+      <sourceDigest>sha256:c85c749f5168dfb8d23528568fdd90e402a5d72c334e184f1689baf0479e8f03</sourceDigest>
       <auditRef>armor:61式头部装甲</auditRef>
     </balance>
   </item>
@@ -7634,6 +7704,7 @@
     <price>10000</price>
     <description>最新合金打造，可以适应所有战斗</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>35</level>
       <weight>3</weight>
@@ -7665,7 +7736,7 @@
       <marketPrice>10000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:55f7e6eb</inputDigest>
-      <sourceDigest>sha256:3d790ca055960212819807ddabeff4f4abed9dbaec51667967514364e6331a60</sourceDigest>
+      <sourceDigest>sha256:05ad5849d28b9ad81ebfda38ec20c1ca226f6f04941fb7ca8b081212da0177a4</sourceDigest>
       <auditRef>armor:合金盔</auditRef>
     </balance>
   </item>
@@ -8009,6 +8080,7 @@
     巨型企业要求雇佣兵们作战迅速的同时兼顾防御，于是不得不在头部装备这里安装护目镜和其他便携功能设备。
     无论这套装备的具体设计者是谁，这人都毫无疑问参考了巨型企业的设计。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>35</level>
       <weight>5</weight>
@@ -8040,7 +8112,7 @@
       <marketPrice>50000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:a7a4139f</inputDigest>
-      <sourceDigest>sha256:b8602b3041adb63cbf8b98a8e1e3e66a592849ce04c4b04f6634164a88976a69</sourceDigest>
+      <sourceDigest>sha256:dc79e4096c5c9b7d7eac1db91105939a9ed5d19478da8a9878fd72bd0e19071d</sourceDigest>
       <auditRef>armor:重甲头部</auditRef>
     </balance>
   </item>
@@ -8851,6 +8923,7 @@
     <description>全封闭式气密型防化服，针对最高等级的呼吸和皮肤危害而设计，能抵御几乎所有危害化学品（包括气态、液态或固态），以及任何危险物质。
     可大幅减免多种属性伤害的侵害。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>35</level>
       <weight>3.5</weight>
@@ -8888,7 +8961,7 @@
       <marketPrice>230000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:518cea90</inputDigest>
-      <sourceDigest>sha256:dd1a8d02c8feb9e66ce553fadab1cc6ab7ac4c6a1d9ddf8b6e5f386d6078eada</sourceDigest>
+      <sourceDigest>sha256:09ef07c22ef7c1d2a3dc659b8a69851af44f76c9cbf527aa221463b102e00ae4</sourceDigest>
       <auditRef>armor:A级防化服头套</auditRef>
     </balance>
   </item>
@@ -9232,7 +9305,7 @@
     韧性与延展性优良，有效兼顾防护能力与灵活性。
     该护服不具有自我意识，也不会影响穿戴者的精神状态，请放心使用。
     但已知对高频空气振动的防护效果较差，且对火焰敏感，极高温时防护能力可能有所下降。
-    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时加强生物感官，获得夜视能力，有最高级的夜视效果，开启亮度等级为0~4。</description>
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时加强生物感官，获得夜视能力，有高级保色夜视效果，开启亮度等级为0~4。</description>
     <helmet>true</helmet>
     <data>
       <level>30</level>
@@ -9288,7 +9361,7 @@
       <marketPrice>50000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:553e623f</inputDigest>
-      <sourceDigest>sha256:ac28918a43d430842cca3bb05f4321880e205b9b54e6e89ed9f98b2f157116c5</sourceDigest>
+      <sourceDigest>sha256:ad94dc0d8cc7d32e0b2a7df2150f48136e0b52bc96dd26d6d9f1aac02041b388</sourceDigest>
       <auditRef>armor:毒液蜘蛛侠头套</auditRef>
     </balance>
   </item>
@@ -9301,6 +9374,7 @@
   <price>27300</price>
   <description>旧治安部队的重型头盔，目镜和通讯线路都换过。第一防线的频道曾挤满互不相识的呼号；警长会逐一问清名字，再安排接应和断后。他不喜欢只报一个伤亡数字。</description>
   <helmet>true</helmet>
+  <inherentTags>头灯挂点</inherentTags>
   <data>
     <level>21</level>
     <weight>3</weight>
@@ -9329,7 +9403,7 @@
     <marketPrice>27300</marketPrice>
     <status>unresolved</status>
     <inputDigest>fnv1a32:5486427d</inputDigest>
-    <sourceDigest>sha256:d3ad7bea2b939fd5288d21d86023d881a177089c29952ae5b3f4f24644f8b1e2</sourceDigest>
+    <sourceDigest>sha256:a8ba36992a4819afd3f9ed27e969b41561088ef9597fedc638c30fdb84412d89</sourceDigest>
     <auditRef>armor:重装特勤头盔</auditRef>
   </balance>
 </item>
@@ -9502,7 +9576,7 @@
     <setId>xf3_spec</setId>
     <price>166400</price>
     <description>闪客快打4。
-    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~4。</description>
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有进阶绿色结构夜视效果，开启亮度等级为0~4。</description>
     <helmet>true</helmet>
     <data>
       <level>25</level>
@@ -9524,7 +9598,7 @@
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
-            <visual>夜视仪</visual>
+            <visual>浅绿夜视仪</visual>
             <min>0</min>
             <max>4</max>
           </initParam>
@@ -9532,7 +9606,7 @@
         <cycle>
           <cycleRoutines>红外夜视仪周期</cycleRoutines>
           <cycleParam>
-            <visual>夜视仪</visual>
+            <visual>浅绿夜视仪</visual>
             <min>0</min>
             <max>4</max>
           </cycleParam>

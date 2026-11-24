@@ -9,13 +9,13 @@ import org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader;
  * 都输出显式 [TEST_FAIL] + Failed 终态，永不输出 Complete。
  */
 class org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoaderTest {
-    private static var EXPECTED_CATALOG_COUNT:Number = 226;
+    private static var EXPECTED_CATALOG_COUNT:Number = 237;
     private static var EXPECTED_LEGACY_COUNT:Number = 58;
-    private static var EXPECTED_NON_LEGACY_COUNT:Number = 168;
+    private static var EXPECTED_NON_LEGACY_COUNT:Number = 179;
     private static var EXPECTED_DIRECT_PURPOSE_COUNT:Number = 2;
-    private static var EXPECTED_EQUIPMENT_MOD_COUNT:Number = 107;
-    private static var EXPECTED_GENERAL_COUNT:Number = 74;
-    private static var EXPECTED_FOOD_COUNT:Number = 45;
+    private static var EXPECTED_EQUIPMENT_MOD_COUNT:Number = 109;
+    private static var EXPECTED_GENERAL_COUNT:Number = 78;
+    private static var EXPECTED_FOOD_COUNT:Number = 50;
     private static var EXPECTED_AUTHORED_PURPOSE_REFS:Number = 27;
     private static var EXPECTED_TUNING_PURPOSE_REFS:Number = 6;
     private static var EXPECTED_INFRASTRUCTURE_PURPOSE_REFS:Number = 21;
@@ -156,12 +156,12 @@ class org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoaderTest {
         var legacyMaterials:Array = _legacyData.Material;
         var directPurposes:Array = asArray(_catalogData.DirectPurpose);
         if (!expect(materials.length == EXPECTED_CATALOG_COUNT,
-                "catalog Material count expected 226, actual " + materials.length)) return;
+                "catalog Material count expected 237, actual " + materials.length)) return;
         if (!expect(legacyMaterials.length == EXPECTED_LEGACY_COUNT,
                 "legacy Material count expected 58, actual " + legacyMaterials.length)) return;
         if (!expect(materials.length - legacyMaterials.length
                     == EXPECTED_NON_LEGACY_COUNT,
-                "non-legacy omission count expected 168, actual "
+                "non-legacy omission count expected 179, actual "
                 + (materials.length - legacyMaterials.length))) return;
         if (!expect(directPurposes.length == EXPECTED_DIRECT_PURPOSE_COUNT,
                 "DirectPurpose registry count expected 2, actual "
@@ -193,7 +193,10 @@ class org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoaderTest {
         if (!expectAnchor(materials, 178, "等离子射线弹-强化", "equipment_mod", false)) return;
         if (!expectAnchor(materials, 180, "食用油", "food", false)) return;
         if (!expectAnchor(materials, 224, "蚝油", "food", false)) return;
-        if (!expectAnchor(materials, 225, "战术手电", "equipment_mod", false)) return;
+        if (!expectAnchor(materials, 225, "艾德海德", "food", false)) return;
+        if (!expectAnchor(materials, 230, "战术手电", "equipment_mod", false)) return;
+        if (!expectAnchor(materials, 235, "独头弹", "equipment_mod", false)) return;
+        if (!expectAnchor(materials, 236, "便携头灯", "equipment_mod", false)) return;
 
         var seenNames:Object = {};
         seenNames.__proto__ = null;
@@ -261,7 +264,7 @@ class org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoaderTest {
         if (!expect(equipmentModCount == EXPECTED_EQUIPMENT_MOD_COUNT
                 && generalCount == EXPECTED_GENERAL_COUNT
                 && foodCount == EXPECTED_FOOD_COUNT,
-                "type counts expected equipment_mod/general/food=107/74/45, actual "
+                "type counts expected equipment_mod/general/food=109/78/50, actual "
                 + equipmentModCount + "/" + generalCount + "/" + foodCount)) return;
         if (!expect(authoredPurposeRefs == EXPECTED_AUTHORED_PURPOSE_REFS,
                 "authored direct-purpose refs expected 27, actual "
@@ -299,9 +302,9 @@ class org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoaderTest {
 
         _terminal = true;
         removeTimeoutClock();
-        trace("MaterialCatalogLoaderTest PASS: catalog=226, legacy=58, "
-            + "nonLegacy=168, directPurposes=2, directPurposeOrder=0/1, "
-            + "authoredPurposeRefs=6/21, types=107/74/45, legacyPrefix=58/58");
+        trace("MaterialCatalogLoaderTest PASS: catalog=237, legacy=58, "
+            + "nonLegacy=179, directPurposes=2, directPurposeOrder=0/1, "
+            + "authoredPurposeRefs=6/21, types=109/78/50, legacyPrefix=58/58");
         trace("FocusedTestRunId material-catalog-loader Complete: " + _runId);
     }
 

@@ -53,7 +53,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         sourceCount = mergedCount = droppedCount = 0;
         for (var i:Number = 0; i < retained.length; i++) {
             var entry:Object = retained[i];
-            if (entry.kind == 0 && entry.role == "body" && valid(entry)) {
+            if (((entry.kind == 0 && entry.role == "body") || (entry.kind == 1 && entry.role == "headlamp")) && valid(entry)) {
                 entry.scene = -1; entry.sampled = true; ensureEntry(entry);
             }
         }
@@ -69,7 +69,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         if (!actor.__equipmentLightIdentity) actor.__equipmentLightIdentity = {};
         if (!world.__equipmentLightIdentity) world.__equipmentLightIdentity = {};
         var radial:Boolean = kind == 0;
-        var role:String = radial ? String(param.group) : "directional";
+        var role:String = radial ? String(param.group) : (kind == 1 && param.role == "headlamp" ? "headlamp" : "directional");
         var extent:Number = radial ? numberOr(param.radius, 90) : numberOr(param.length, kind == 1 ? 1000 : 750);
         var width:Number = radial ? 0 : numberOr(param.halfWidth, kind == 1 ? 260 : 28);
         var energy:Number = numberOr(param.energy, radial ? 0.45 : (kind == 1 ? 1.45 : 0.85));
@@ -82,7 +82,8 @@ class org.flashNight.arki.render.EquipmentLightBridge {
             || energy < 0 || energy > 2 || color < 0 || color > 16777215
             || lightColor < 0 || lightColor > 16777215 || nearRadius < 0 || nearRadius > 320
             || nearEnergy < 0 || nearEnergy > 2 || ((nearRadius == 0) != (nearEnergy == 0))
-            || (kind != 1 && nearRadius != 0) || (radial && role != "body" && role != "blade")) return false;
+            || (kind != 1 && nearRadius != 0) || (radial && role != "body" && role != "blade")
+            || (role == "headlamp" && ref.装备类型 != "头部装备")) return false;
         ref.equipmentLight = {owner:ref, actor:actor, equipment:actor[ref.装备类型],
             actorIdentity:actor.__equipmentLightIdentity, worldIdentity:world.__equipmentLightIdentity,
             version:actor.version, slot:ref.装备类型, mods:modSignature(actor[ref.装备类型]), modNames:copyMods(actor[ref.装备类型]),
@@ -99,6 +100,10 @@ class org.flashNight.arki.render.EquipmentLightBridge {
             light.r = 0.2 + light.r * 0.8; light.g = 0.2 + light.g * 0.8; light.b = 0.2 + light.b * 0.8;
         }
         if (radial && role == "body") {
+            ref.equipmentLight.strength = 1; ref.equipmentLight.sampled = true;
+            return ensureEntry(ref.equipmentLight);
+        }
+        if (kind == 1 && role == "headlamp") {
             ref.equipmentLight.strength = 1; ref.equipmentLight.sampled = true;
             return ensureEntry(ref.equipmentLight);
         }
@@ -212,6 +217,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
             if (context) { context.bladeChecked = serial; context.bladeVisible = shown; }
             return shown;
         }
+        if (entry.role == "headlamp") return entry.slot == "头部装备";
         var mode:String = context ? context.mode : actor.攻击模式;
         if (entry.slot == "长枪") return mode == "长枪";
         return (entry.slot == "手枪" || entry.slot == "手枪2")
@@ -357,7 +363,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         for (var i:Number = 0; i < peers.length; i++) {
             var other:Object = peers[i];
             if (other === entry || !other.sampled || !valid(other) || !drawn(other)
-                || (!(other.kind == 0 && other.role == "body") && !_root.暂停 && now - other.tick > 2)) continue;
+                || (!((other.kind == 0 && other.role == "body") || (other.kind == 1 && other.role == "headlamp")) && !_root.暂停 && now - other.tick > 2)) continue;
             if (other.priority > entry.priority || (other.priority == entry.priority && other.id < entry.id)) return false;
         }
         return true;
@@ -603,7 +609,7 @@ class org.flashNight.arki.render.EquipmentLightBridge {
                     context.build = currentSerial; context.coveringTorch = null; context.nearWinner = null;
                     contexts[contexts.length] = context;
                 }
-            } else {
+            } else if (!(entry.kind == 1 && entry.role == "headlamp")) {
                 if (!paused && now-entry.tick > 2) entry.sampled = false;
             }
         }
@@ -612,7 +618,30 @@ class org.flashNight.arki.render.EquipmentLightBridge {
         for (i = 0; i < sources.length; i++) {
             entry = sources[i];
             if (entry.kind == 0 && entry.role == "body") continue;
-            if ((entry.kind == 0 && (!radial || !(entry.energy*entry.strength > 0))) || !ownsLight(entry.owner)) continue;
+            if ((entry.kind == 0 && (!radial || !(entry.energy*entry.strength > 0)))
+                || (entry.role == "headlamp" && !(entry.energy*entry.strength > 0))
+                || !ownsLight(entry.owner)) continue;
+            if (entry.kind == 1 && entry.role == "headlamp") {
+                var headActor:MovieClip = entry.actor;
+                var headX:Number, headY:Number;
+                if (headActor._parent === world) {
+                    headX = headActor._x; headY = headActor._y;
+                } else {
+                    var headPt:Object = entry.origin; headPt.x = 0; headPt.y = 0;
+                    headActor.localToGlobal(headPt); world.globalToLocal(headPt);
+                    headX = headPt.x; headY = headPt.y;
+                }
+                var centerOffset:Number = UnitUtil.calculateCenterOffset(headActor);
+                var dirSign:Number = headActor.方向 == "左" ? -1 : (headActor.方向 == "右" ? 1 : (headActor._xscale < 0 ? -1 : 1));
+                entry.x = headX + dirSign * 10;
+                entry.y = headY - centerOffset * 1.6;
+                entry.dx = dirSign * 0.9968;
+                entry.dy = 0.0797;
+                entry.near.x = headX;
+                entry.near.y = headY - centerOffset;
+                if (!isFinite(entry.x + entry.y + entry.near.x + entry.near.y)
+                    || Math.abs(entry.x) > 1000000 || Math.abs(entry.y) > 1000000) continue;
+            }
             count++; context = entry.context;
             if (context.build != currentSerial) {
                 context.build = currentSerial; context.coveringTorch = null; context.nearWinner = null; contexts[contexts.length] = context;
@@ -656,7 +685,8 @@ class org.flashNight.arki.render.EquipmentLightBridge {
             if (!entry.selected) entry.holdUntil = (entry.isBullet ? projectileTick : frameTick) + 8;
             if (entry.kind == 1 && entry.nearRadius > 0) {
                 context = entry.context;
-                if (!context.nearWinner || entry.id < context.nearWinner.id) context.nearWinner = entry;
+                if (!context.nearWinner || entry.nearEnergy > context.nearWinner.nearEnergy
+                    || (entry.nearEnergy == context.nearWinner.nearEnergy && entry.id < context.nearWinner.id)) context.nearWinner = entry;
             }
         }
         for (i = 0; i < residents.length; i++) residents[i].selected = false;

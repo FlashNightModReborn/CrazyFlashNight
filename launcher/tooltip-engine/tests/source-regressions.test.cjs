@@ -51,6 +51,11 @@ test('EquipmentEmissiveAssetTest: flashlight, laser and all authored emissions',
     assert.ok(torch.includes('近身补光') && torch.includes('+20') && torch.includes('+25'));
     const laser = E.EquipmentLightingInfoBuilder.build(ctx, production.mods['镭射瞄准具'], null, true).join('');
     assert.ok(laser.includes('狭窄束带') && !laser.includes('闪避'));
+    const headlamp = E.EquipmentLightingInfoBuilder.build(ctx, production.mods['便携头灯'], null, true).join('');
+    assert.ok(headlamp.includes('【照明效果】') && headlamp.includes('不受持用武器限制'));
+    assert.ok(!headlamp.includes('持枪开灯') && !headlamp.includes('闪避'));
+    const headlampModText = E.ModStatBuilder.build(context(production, { registeredModName: '便携头灯' }), '便携头灯').join('');
+    assert.ok(headlampModText.includes('头灯挂点') && headlampModText.includes('头部照明') && headlampModText.includes('不受持用武器限制'));
     const authored = Object.values(production.items).filter(item =>
         item.lifecycle?.attr_环境光?.init?.initRoutines === '装备自发光初始化');
     assert.equal(authored.length, 30, 'existing AS2 source requires thirty authored independent emissions');

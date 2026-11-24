@@ -15,7 +15,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 PRODUCER_PATH = REPOSITORY_ROOT / "tools/derive-material-catalog.py"
 EXPECTED_LEGACY_SHA256 = "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
 EXPECTED_ARCHIVE_ORDER_SHA256 = "9446C993438ACA9AF632E3C88661066593DBA6A0E78F8153BB1FEA5CBF98064E"
-EXPECTED_TYPE_COUNTS = {"equipment_mod": 108, "food": 50, "general": 78}
+EXPECTED_TYPE_COUNTS = {"equipment_mod": 109, "food": 50, "general": 78}
 EXPECTED_CRAFTING_CATEGORIES = (
     "铁枪会",
     "属性武器",
@@ -86,7 +86,7 @@ def main():
         == "material-catalog-producer.v2",
         "material catalog sidecar/generator version drift",
     )
-    require(len(first.catalog.materials) == 236, "material baseline must include the 独头弹 attachment")
+    require(len(first.catalog.materials) == 237, "material baseline must include 独头弹 and 便携头灯")
     require(len(first.catalog.purposes) == 2, "direct-purpose registry must contain two entries")
     require(
         tuple(purpose.purpose_id for purpose in first.catalog.purposes)
@@ -124,8 +124,8 @@ def main():
         "infrastructure material exact-set baseline must be 21",
     )
     require(
-        first.facts.infrastructure_material_occurrence_count == 67,
-        "infrastructure material occurrence baseline must be 67",
+        first.facts.infrastructure_material_occurrence_count == 81,
+        "infrastructure material occurrence baseline must be 81",
     )
     require(
         first.sidecar["infrastructure"]
@@ -134,7 +134,7 @@ def main():
             "consumerEvidencePath": (
                 "flashswf/UI/平板电脑界面/LIBRARY/基建内容整体.xml"
             ),
-            "materialOccurrenceCount": 67,
+            "materialOccurrenceCount": 81,
             "materialCount": 21,
         },
         "infrastructure sidecar closure drift",
@@ -203,8 +203,8 @@ def main():
         "authored archive-order ratchet drifted from the reviewed 58+168 migration",
     )
     require(
-        tuple(material.name for material in first.catalog.materials[231:]) == ("重锤改装组件", "书中初阶配给凭证", "书中进阶配给凭证", "火凤装备碎片", "独头弹"),
-        "new material suffix must preserve released entries before the slug attachment",
+        tuple(material.name for material in first.catalog.materials[231:]) == ("重锤改装组件", "书中初阶配给凭证", "书中进阶配给凭证", "火凤装备碎片", "独头弹", "便携头灯"),
+        "new material suffix must preserve released entries before the slug and headlamp attachments",
     )
     authored_tuning_names = {
         material.name

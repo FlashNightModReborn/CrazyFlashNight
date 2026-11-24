@@ -141,16 +141,16 @@ if ([regex]::Matches($testSource,
     throw 'Test source must own one success terminal and one explicit failure terminal.'
 }
 foreach ($sentinel in @(
-        'EXPECTED_CATALOG_COUNT:Number = 226',
+        'EXPECTED_CATALOG_COUNT:Number = 237',
         'EXPECTED_LEGACY_COUNT:Number = 58',
-        'EXPECTED_NON_LEGACY_COUNT:Number = 168',
+        'EXPECTED_NON_LEGACY_COUNT:Number = 179',
         'EXPECTED_DIRECT_PURPOSE_COUNT:Number = 2',
         'EXPECTED_AUTHORED_PURPOSE_REFS:Number = 27',
         'EXPECTED_TUNING_PURPOSE_REFS:Number = 6',
         'EXPECTED_INFRASTRUCTURE_PURPOSE_REFS:Number = 21',
         'purpose.order === 0',
         'purpose.order === 1',
-        'nonLegacy=168',
+        'nonLegacy=179',
         'authoredPurposeRefs=6/21',
         'legacyPrefix=58/58')) {
     if ($testSource.IndexOf($sentinel, [StringComparison]::Ordinal) -lt 0) {
@@ -176,11 +176,11 @@ $catalogMaterials = @($catalogXml.DocumentElement.SelectNodes('Material'))
 $legacyMaterials = @($legacyXml.DocumentElement.SelectNodes('Material'))
 $directPurposes = @($catalogXml.DocumentElement.SelectNodes('DirectPurpose'))
 if ((Get-XmlChildText $catalogXml.DocumentElement 'schemaVersion') -cne '1' -or
-    $catalogMaterials.Count -ne 226 -or
+    $catalogMaterials.Count -ne 237 -or
     $legacyMaterials.Count -ne 58 -or
-    ($catalogMaterials.Count - $legacyMaterials.Count) -ne 168 -or
+    ($catalogMaterials.Count - $legacyMaterials.Count) -ne 179 -or
     $directPurposes.Count -ne 2) {
-    throw 'Tracked XML preflight expected schema/catalog/legacy/nonLegacy/purpose = 1/226/58/168/2.'
+    throw 'Tracked XML preflight expected schema/catalog/legacy/nonLegacy/purpose = 1/237/58/179/2.'
 }
 $purpose = $directPurposes[0]
 if ((Get-XmlChildText $purpose 'id') -cne 'system:equipment_tuning' -or
@@ -239,7 +239,10 @@ $anchorContract = @(
     @(178, '等离子射线弹-强化', 'equipment_mod', 'false'),
     @(180, '食用油', 'food', 'false'),
     @(224, '蚝油', 'food', 'false'),
-    @(225, '战术手电', 'equipment_mod', 'false')
+    @(225, '艾德海德', 'food', 'false'),
+    @(230, '战术手电', 'equipment_mod', 'false'),
+    @(235, '独头弹', 'equipment_mod', 'false'),
+    @(236, '便携头灯', 'equipment_mod', 'false')
 )
 foreach ($anchor in $anchorContract) {
     $row = $catalogMaterials[[int]$anchor[0]]
@@ -255,10 +258,10 @@ foreach ($row in $catalogMaterials) {
     $typeCounts[$typeId] = 1 + [int]$typeCounts[$typeId]
 }
 if ($typeCounts.Count -ne 3 -or
-    $typeCounts['equipment_mod'] -ne 107 -or
-    $typeCounts['general'] -ne 74 -or
-    $typeCounts['food'] -ne 45) {
-    throw 'Tracked material type counts expected equipment_mod/general/food = 107/74/45.'
+    $typeCounts['equipment_mod'] -ne 109 -or
+    $typeCounts['general'] -ne 78 -or
+    $typeCounts['food'] -ne 50) {
+    throw 'Tracked material type counts expected equipment_mod/general/food = 109/78/50.'
 }
 
 $normalizedRoot = [System.IO.Path]::GetFullPath($projectDir).
@@ -446,7 +449,7 @@ try {
             throw "MaterialCatalogLoaderTest emitted its explicit failure terminal: $failureBody"
         }
         $body = $successBlock.Groups['body'].Value
-        $summaryPattern = '(?m)^MaterialCatalogLoaderTest PASS: catalog=226, legacy=58, nonLegacy=168, directPurposes=2, directPurposeOrder=0/1, authoredPurposeRefs=6/21, types=107/74/45, legacyPrefix=58/58\r?$'
+        $summaryPattern = '(?m)^MaterialCatalogLoaderTest PASS: catalog=237, legacy=58, nonLegacy=179, directPurposes=2, directPurposeOrder=0/1, authoredPurposeRefs=6/21, types=109/78/50, legacyPrefix=58/58\r?$'
         if ([regex]::Matches($body, $summaryPattern).Count -ne 1) {
             throw 'Async success block lacks the exact material catalog summary.'
         }
@@ -458,7 +461,7 @@ try {
         if ($compileExit -ne 0) {
             throw "Material catalog TestLoader compile exited $compileExit despite an observed behavior terminal."
         }
-        Write-Host '[OK] material-catalog-loader: actual async XML reload 226/58/168, DirectPurpose order 0/1, authored refs 6/21, unique/order/type shape; compiler 0/0, 32K retry=0.'
+        Write-Host '[OK] material-catalog-loader: actual async XML reload 237/58/179, DirectPurpose order 0/1, authored refs 6/21, unique/order/type shape; compiler 0/0, 32K retry=0.'
     }
 } finally {
     try {

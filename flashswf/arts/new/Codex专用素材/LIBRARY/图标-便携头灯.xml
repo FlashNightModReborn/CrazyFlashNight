@@ -1,0 +1,14 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="图标-便携头灯" itemID="6bba6b00-12039a60" linkageExportForAS="true" linkageIdentifier="图标-便携头灯"><timeline><DOMTimeline name="图标-便携头灯"><layers><DOMLayer name="动作" color="#7799AA"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements /><Actionscript><script>stop();</script></Actionscript></DOMFrame></frames></DOMLayer><DOMLayer name="档位框" color="#7799AA"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Codex/低等边框" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements></DOMFrame></frames></DOMLayer><DOMLayer name="主体" color="#7799AA"><frames><DOMFrame index="0" duration="2" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Codex/便携头灯图稿" symbolType="graphic" loop="single frame"><matrix><Matrix a="0.1953125" d="0.1953125" /></matrix></DOMSymbolInstance></elements></DOMFrame></frames></DOMLayer><DOMLayer name="底板" color="#7799AA"><frames><DOMFrame index="0" duration="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="Codex/插件底板" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.11" tintColor="#00FF00" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements></DOMFrame></frames></DOMLayer></layers></DOMTimeline></timeline></DOMSymbolItem>

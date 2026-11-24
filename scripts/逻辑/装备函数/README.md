@@ -145,7 +145,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 
 ### 4.2 装备光源参数与所有权
 
-`装备光源初始化` / `装备光源周期` 使用独立 lifecycle。`initParam.kind` 为 `flashlight` 或 `laser`；可配置 `anchor`（点分路径）、`beamPath`（现有光束实例）、`fallbackVisual`（缺素材时是否生成 Flash 光束）、`channel`（逻辑发射器，默认 `primary`），以及 `length`、`halfWidth`、`energy`、`color`、`lightColor`。默认手电长度/半宽/能量为 1000/260/1.45，激光为 750/28/0.85；单位为世界坐标与能量倍数。`color` 只控制生成束体的 RGB 整数，`lightColor` 控制 native 材质照明，默认手电 16773584、激光 16737872（#FF6650）；激光束体仍保持细红线。
+`装备光源初始化` / `装备光源周期` 使用独立 lifecycle。`initParam.kind` 为 `flashlight`、`laser` 或 `headlamp`（仅限 `头部装备`，只配 `init` 无需逐帧任务，由 `EquipmentLightBridge.payload()` 直接按单位朝向 `方向` 与中心高度投射常驻宽幅前照 + 近身补光，默认 480/210/1 与近身 130/0.85，不受持用武器限制且不提供闪避加成）；枪械 `flashlight`/`laser` 可配置 `anchor`（点分路径）、`beamPath`（现有光束实例）、`fallbackVisual`（缺素材时是否生成 Flash 光束）、`channel`（逻辑发射器，默认 `primary`），以及 `length`、`halfWidth`、`energy`、`color`、`lightColor`。默认手电长度/半宽/能量为 1000/260/1.45，激光为 750/28/0.85；单位为世界坐标与能量倍数。`color` 只控制生成束体的 RGB 整数，`lightColor` 控制 native 材质照明，默认手电 16773584、激光 16737872（#FF6650）；激光束体仍保持细红线。
 
 手电还可配置 `nearRadius` / `nearEnergy`，默认 140/1.15，二者须同为正数或同为 0。近身光中心由 AS2 按 `UnitUtil.calculateCenterOffset` 和持灯者真实位置计算；每单位只发送一份近身光，双持仍各自保留前照。近身光从中心连续衰减，前照从这片亮区平滑展开并逐渐回到枪口轴线；没有近身光时仍从枪口出光。两者放在同一条记录、共用一个预算名额，以有界平滑并集融合，避免等亮圆盘、接缝和重叠过曝。激光不携带近身光，横向柔光由窄核心快速衰减。
 
@@ -165,7 +165,7 @@ _root.装备生命周期函数.XXX周期   = function(ref:Object, param:Object) 
 
 常驻径向光以 `data/combat_visuals/local_lights.v1.json` 中普通“枪火”的能量为同角色装备组合峰值。Host 建立会话时把该值传给 AS2，当前配置为 1.5。同色近身合并直接补充能量并封顶；异色分灯时用两点光衰减的保守上界限制重叠峰值，不相交时恢复各自基础强度。刀光包络也包含在该限额内。配置 RGB 保持原色，输出色向白色混合 20%，以改善暗处材质辨认并保留色向；手电、镭射与原枪火色值不走该混合。点光软衰减、16 灯预算和逐帧状态更新保持。
 
-`EquipmentLightingInfoBuilder` 从物品最终 `lifecycle` 生成【照明效果】，共用现有 Flash/native/Web 注释出口。它识别自发光、通用手电/镭射及旧 `枪械激光初始化`，按兵器适配器说明真实发光条件；相同功能去重。安装后的装备读取进阶/插件合成结果，插件自身显示适配说明；闪避只来自插件来源，内置手电不借用插件的 20/25 加成。旧 `lifecyle.description` 展示入口保留。此生成过程不进入战斗逐帧路径。
+`EquipmentLightingInfoBuilder` 从物品最终 `lifecycle` 生成【照明效果】，共用现有 Flash/native/Web 注释出口。它识别自发光、头灯（`kind=headlamp`）、通用手电/镭射及旧 `枪械激光初始化`，按兵器适配器说明真实发光条件；相同功能去重。安装后的装备读取进阶/插件合成结果，插件自身显示适配说明；闪避只来自插件来源，内置手电与头灯不借用枪载手电插件的 20/25 加成。旧 `lifecyle.description` 展示入口保留。此生成过程不进入战斗逐帧路径。
 
 `adapter` 为 `static`、`blood`、`vocalist`、`libra`、`inductor`、`lion`、`capricorn`。后六种通过 `EquipmentEmissionState` 读取原初始化函数注册的生命周期 ref；新光效不写回形态、过载、计时、战技或存档。血剑读持用状态，主唱读光剑形态和展开程度，天秤读三态/CD，电感读展开和过载，狮子/摩羯读已有激活窗口。原生命周期的 `bound/managed` 等关系保持原义，新增光效自身为 `independent`。
 

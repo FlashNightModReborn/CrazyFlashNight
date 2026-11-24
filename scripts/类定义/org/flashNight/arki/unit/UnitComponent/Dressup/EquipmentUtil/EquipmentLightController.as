@@ -8,6 +8,29 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLigh
     public static function initialize(ref:Object, param:Object):Boolean {
         dispose(ref);
         if (param == undefined) param = {};
+        if (param.kind == "headlamp") {
+            if (ref.装备类型 != "头部装备") return false;
+            var headParam:Object = {
+                role: "headlamp",
+                length: param.length != undefined ? param.length : 480,
+                halfWidth: param.halfWidth != undefined ? param.halfWidth : 210,
+                energy: param.energy != undefined ? param.energy : 1,
+                color: param.color != undefined ? param.color : 16773584,
+                lightColor: param.lightColor,
+                nearRadius: param.nearRadius != undefined ? param.nearRadius : 130,
+                nearEnergy: param.nearEnergy != undefined ? param.nearEnergy : 0.85,
+                channel: param.channel != undefined ? param.channel : "headlamp"
+            };
+            if (!EquipmentLightBridge.bind(ref, 1, headParam)) return false;
+            if (!ref.lightCleanup) ref.lightCleanup = {动作:dispose, 额外参数:ref};
+            if (!ref.生命周期函数列表) ref.生命周期函数列表 = [];
+            var headRegistered:Boolean = false;
+            for (var h:Number = 0; h < ref.生命周期函数列表.length; h++) {
+                if (ref.生命周期函数列表[h] === ref.lightCleanup) headRegistered = true;
+            }
+            if (!headRegistered) ref.生命周期函数列表.push(ref.lightCleanup);
+            return true;
+        }
         if (param.kind != "flashlight" && param.kind != "laser") return false;
         var kind:Number = String(param.kind) == "flashlight" ? 1 : 2;
         if (!EquipmentLightBridge.bind(ref, kind, param)) return false;

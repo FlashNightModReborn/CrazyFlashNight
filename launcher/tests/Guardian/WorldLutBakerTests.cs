@@ -91,6 +91,7 @@ namespace CF7Launcher.Tests.Guardian
             var tables = RealTables();
             Assert.Equal(new double[] { 1, 1, 1, 1, 0, 0, 0, 0 }, WorldLutBaker.Interpolate(tables["光照"], 7));
             Assert.Equal(new double[] { 1, 1, 1, 1, 0, 0, 0, 0 }, WorldLutBaker.Interpolate(tables["夜视仪"], 7));
+            Assert.Equal(new double[] { 1, 1, 1, 1, 0, 0, 0, 0 }, WorldLutBaker.Interpolate(tables["中级夜视仪"], 7));
         }
 
         [Fact]
@@ -182,7 +183,7 @@ namespace CF7Launcher.Tests.Guardian
             // LUT 模式下生产渲染不再使用 gamma，XML 回归烘焙仍按预设 gamma 取 1）。
             double gamma = WorldLightingPreset.Load(
                 Path.Combine(RepoRoot(), "launcher", "data", "world-lighting", "preset.json"), null).Gamma;
-            foreach (string mode in new[] { "光照", "夜视" })
+            foreach (string mode in new[] { "光照", "夜视", "中级夜视仪" })
                 for (int level = 0; level <= 10; level++)
                 {
                     string resolved;

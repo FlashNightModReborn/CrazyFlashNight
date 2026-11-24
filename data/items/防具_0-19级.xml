@@ -5616,6 +5616,7 @@
     <price>22500</price>
     <description>尽管设计目的是在交通事故中保护人的头部，但是这种装备防&lt;font color="#b22222"&gt;丧尸&lt;/font&gt;攻击的能力也很优秀。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>1</level>
       <weight>2.4</weight>
@@ -5644,7 +5645,7 @@
       <marketPrice>22500</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:d3e8e53e</inputDigest>
-      <sourceDigest>sha256:b36c8029391168d5af9f50fda7281fdabef38374024907d567cfa8a3c9ce3b50</sourceDigest>
+      <sourceDigest>sha256:9e016de92a616fa41cc06e2bd9f3102750df10023089b6d4b93b4bdd445439ef</sourceDigest>
       <auditRef>armor:黑色摩托头盔</auditRef>
     </balance>
   </item>
@@ -5786,6 +5787,7 @@
     他们具有完整的护具和镇压用武器，但最终还是难以挽回局势。
     防爆头盔抵抗爆炸类物品和钝器打击的效果都很不错，自然成为了末世生存中的优秀装备。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>1</level>
       <weight>3</weight>
@@ -5814,7 +5816,7 @@
       <marketPrice>24300</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:dbfecc20</inputDigest>
-      <sourceDigest>sha256:671d701fac918c827b9cfb03f4a3b9a36c27ef6da52763caf8e5a52fc1448d39</sourceDigest>
+      <sourceDigest>sha256:dbb57562fa72abffef7cb00b868211ffa7bb3648f10767360753d7a9630a77ee</sourceDigest>
       <auditRef>armor:警用防爆服头盔</auditRef>
     </balance>
   </item>
@@ -5994,6 +5996,7 @@
     <description>末日前的堕落城巨型企业开发的套装，科技感十足。
     头盔坚硬且令人生寒，穿戴者似乎看起来不像人类，倒像是外星人。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>1</level>
       <weight>6</weight>
@@ -6022,7 +6025,7 @@
       <marketPrice>50000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:76b1cfb9</inputDigest>
-      <sourceDigest>sha256:92342fe81daeba154e646f7e2f384e6965853346a8e5be308e77097a36708fc4</sourceDigest>
+      <sourceDigest>sha256:aac1f5257d5b39d1a9a2213947ed5ba3a6f94220f4a5500f973c1e35f0fa1882</sourceDigest>
       <auditRef>armor:科技潜入头盔</auditRef>
     </balance>
   </item>
@@ -6241,6 +6244,7 @@
     <description>随处可见的铁桶，正好适合戴在头上。
     有着意义不明的红色痕迹，或许比起你，更应该套在僵尸头上。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>5</level>
       <weight>1</weight>
@@ -6267,7 +6271,7 @@
       <marketPrice>250</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:c86ca40c</inputDigest>
-      <sourceDigest>sha256:6329b2e3d62b66095993e3e7e81f2fc9801681a4b1b02265010601536f2aa9bc</sourceDigest>
+      <sourceDigest>sha256:6a5a8b4f6aa09ac4743bbb5a92e593e1543c87d3d706f50cd47ab70f2869e034</sourceDigest>
       <auditRef>armor:铁桶</auditRef>
     </balance>
   </item>
@@ -6575,7 +6579,7 @@
           <cycleParam>
             <visual>夜视仪</visual>
             <min>0</min>
-            <max>4</max>
+            <max>2</max>
           </cycleParam>
         </cycle>
       </attr_0>
@@ -6599,7 +6603,7 @@
       <marketPrice>20800</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:0a77a8bd</inputDigest>
-      <sourceDigest>sha256:cf155c1913bb440775725d6d2317b9b0a0e210c042b008bdea77973241430b6b</sourceDigest>
+      <sourceDigest>sha256:c4fd00c28df74b2dafe3bc98b9b8b2446c06bab7374f8d104d64eca1f716c2c4</sourceDigest>
       <auditRef>armor:目镜式简易夜视仪</auditRef>
     </balance>
   </item>
@@ -7901,6 +7905,7 @@
     <description>抵抗末日带来的秩序崩溃的最后一道防线就是&lt;font color="#ffffe0"&gt;军队&lt;/font&gt;，然而他们在一切失控后也溃散了。
     军装头盔经过多次迭代升级，如今的舒适性和防护力都有所保证。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>10</level>
       <weight>1.3</weight>
@@ -7953,7 +7958,7 @@
       <marketPrice>26200</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:d1011152</inputDigest>
-      <sourceDigest>sha256:c4db79b12d869ea0e3e46d7e8e083a6a67538a93433e9924bdf2481a725dd5f3</sourceDigest>
+      <sourceDigest>sha256:847a2c67c10a6f19197fa83b1a6eb4ea9b68a61109d65362963c3075634ec097</sourceDigest>
       <auditRef>armor:沙漠军装头盔</auditRef>
     </balance>
   </item>
@@ -9350,6 +9355,7 @@
     <price>54000</price>
     <description>加强后的统合制式军装，防御力更高。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>13</level>
       <weight>3</weight>
@@ -9381,7 +9387,7 @@
       <marketPrice>54000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:91107e47</inputDigest>
-      <sourceDigest>sha256:b1cbe36dc5ddafc7c70cdd84e5959a9259425bc0036cdc9a19d7f66411f49678</sourceDigest>
+      <sourceDigest>sha256:654d07d58b9542bd428505ecb4c1fd768beeb029444554b094af72a5e49503f2</sourceDigest>
       <auditRef>armor:废城军装面具帽</auditRef>
     </balance>
   </item>
@@ -9799,6 +9805,7 @@
     随着战争的日益非正规化和游击战化，雇佣兵取代了前者，成为战术耳机的主要使用者。
     实战证明，即使是躲藏在群山之中的游击队，也难以避免释放出什么信号。
     这种信号通过战术中心分析，得到的信息再通过战术耳机传送给一线作战人员，于是，又一个据点被拔除了。</description>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>15</level>
       <weight>1</weight>
@@ -9827,7 +9834,7 @@
       <marketPrice>36000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:874ca505</inputDigest>
-      <sourceDigest>sha256:2f3d921f0b23fc6ab492feb3bc48e867cb1518f190f8cf85761429f364dfe732</sourceDigest>
+      <sourceDigest>sha256:504148fa6a76c01f47e467e4a4864e036d3edacca35ec35a1e70fdd7c58adb12</sourceDigest>
       <auditRef>armor:战术耳机加遮阳帽</auditRef>
     </balance>
   </item>
@@ -10103,7 +10110,7 @@
     <setId>black_iron_ranger</setId>
     <price>20000</price>
     <description>黑色的围巾加上改装目镜，成了堕落城内黑铁会最为标志性的武力象征。
-    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为绿色，开启亮度等级为0~4。</description>
+    &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有进阶绿色结构夜视效果，开启亮度等级为0~4。</description>
     <hairAbove>true</hairAbove>
     <data>
       <level>15</level>
@@ -10122,7 +10129,7 @@
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
-            <visual>夜视仪</visual>
+            <visual>浅绿夜视仪</visual>
             <min>0</min>
             <max>4</max>
           </initParam>
@@ -10130,7 +10137,7 @@
         <cycle>
           <cycleRoutines>红外夜视仪周期</cycleRoutines>
           <cycleParam>
-            <visual>夜视仪</visual>
+            <visual>浅绿夜视仪</visual>
             <min>0</min>
             <max>4</max>
           </cycleParam>
@@ -10155,7 +10162,7 @@
       <marketPrice>20000</marketPrice>
       <status>confirmed</status>
       <inputDigest>fnv1a32:9ec03a1c</inputDigest>
-      <sourceDigest>sha256:c82184dea31b71b3c1f77c06f35f964e5003f6e90fa3d9c863eb38b896d3f0c7</sourceDigest>
+      <sourceDigest>sha256:e6a18b5936eba17a6c142bd22683c54e572b6fa3b63e9425fd402dc85274869a</sourceDigest>
       <auditRef>armor:黑铁游侠围巾</auditRef>
     </balance>
   </item>
@@ -10502,6 +10509,7 @@
     <price>62200</price>
     <description>特战队员的装备，防护性能良好的同时十分有利于展开进攻，不过价格也较为昂贵。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>15</level>
       <weight>3</weight>
@@ -10530,7 +10538,7 @@
       <marketPrice>62200</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:bbf1eeb0</inputDigest>
-      <sourceDigest>sha256:ef11cef7df68644df8b0c2b2df46308c653af280773e58939b42b8b1cd66026f</sourceDigest>
+      <sourceDigest>sha256:198a91aa708d032728225d9dea9f5a8750f0a35125e97600436992f2e46dcf24</sourceDigest>
       <auditRef>armor:特战队员头部装备</auditRef>
     </balance>
   </item>
@@ -10846,6 +10854,7 @@
     <description>身披重甲，手持机枪，一切敌人就会葬身在火舌下。
     &lt;font color="#ffffe0"&gt;重装兵&lt;/font&gt;的头盔，头部防御优秀，经过测试，防弹能力很强。</description>
     <helmet>true</helmet>
+    <inherentTags>头灯挂点</inherentTags>
     <data>
       <level>18</level>
       <weight>4</weight>
@@ -10878,7 +10887,7 @@
       <marketPrice>37000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:d40f2738</inputDigest>
-      <sourceDigest>sha256:c0dd0298623469f549e5a595dfc420066423bea3e8c93e8e57aa275e992803ea</sourceDigest>
+      <sourceDigest>sha256:aafe4aca8577daad2c61d52aec42147726c1da43a6cea946e092b174748114ea</sourceDigest>
       <auditRef>armor:装甲头盔</auditRef>
     </balance>
   </item>
