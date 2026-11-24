@@ -41,6 +41,7 @@ if(_root.控制目标 == _parent._name){
 	}
 }
 var 追踪目标 = _parent.按距离索敌(索敌距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序);
+_root.技能函数.地面目标位移.captureTarget(this);
 if(!追踪目标){
 	是否追踪 = false;
 }
@@ -142,8 +143,7 @@ shootZ = _root.gameworld[_parent.追踪目标].Z轴坐标;]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(130);
-		_parent.Z轴追踪移动();
+		_root.技能函数.地面目标位移.followAxes(_parent, 130);
 	}
 }
 ]]></script>

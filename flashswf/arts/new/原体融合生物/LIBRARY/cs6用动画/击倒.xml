@@ -333,7 +333,7 @@ onClipEvent(enterFrame){
  (_root.gameworld[_parent._parent.攻击目标].方向);
 }
 onClipEvent(load){
-   org.flashNight.arki.spatial.move.GroundTargetMotion.counterBlink(_parent, 75);
+   _root.技能函数.地面目标位移.counterBlink(_parent, 75);
 }
 ]]></script>
                   </Actionscript>

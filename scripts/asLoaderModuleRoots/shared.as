@@ -87,6 +87,7 @@ org.flashNight.arki.render.RayStyleRegistry;
 org.flashNight.arki.render.renderer.TeslaRenderer;
 org.flashNight.arki.render.RayVfxManager;
 org.flashNight.arki.spatial.transform.SceneCoordinateManager;
+org.flashNight.arki.spatial.move.GroundTargetMotion;
 org.flashNight.arki.spatial.move.Mover;
 org.flashNight.sara.util.Vertex3D;
 org.flashNight.gesh.depth.DepthManager;

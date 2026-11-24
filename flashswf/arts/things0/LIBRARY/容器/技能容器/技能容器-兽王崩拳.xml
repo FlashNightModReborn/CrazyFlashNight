@@ -82,6 +82,8 @@ if(_root.控制目标 == _parent._name){
 	}
 }
 var 追踪目标 = _parent.按距离索敌(索敌距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序);
+_root.技能函数.地面目标位移.captureTarget(this);
+_root.技能函数.地面目标位移.captureCandidates(this);
 if(!追踪目标){
 	是否追踪 = false;
 }]]></script>
@@ -99,10 +101,11 @@ _parent.攻击呐喊();]]></script>
               <Actionscript>
                 <script><![CDATA[if(!_parent.攻击目标 || !_root.gameworld[_parent.攻击目标].hp >0){
 	for(var i = 敌人顺序 + 1; i < _parent.索敌目标列表.length; i++){
-		if(_parent.索敌目标列表[i].敌人.hp > 0){
+		if(_root.技能函数.地面目标位移.isCandidateCurrent(this, i)){
 			追踪目标 = _parent.索敌目标列表[i].敌人;
 			_parent.攻击目标 = 追踪目标._name;
 			敌人顺序 = i;
+			_root.技能函数.地面目标位移.captureTarget(this);
 			break;
 		}
 	}
@@ -121,10 +124,11 @@ _parent.攻击呐喊();]]></script>
               <Actionscript>
                 <script><![CDATA[if(!_parent.攻击目标 || !_root.gameworld[_parent.攻击目标].hp >0){
 	for(var i = 敌人顺序 + 1; i < _parent.索敌目标列表.length; i++){
-		if(_parent.索敌目标列表[i].敌人.hp > 0){
+		if(_root.技能函数.地面目标位移.isCandidateCurrent(this, i)){
 			追踪目标 = _parent.索敌目标列表[i].敌人;
 			_parent.攻击目标 = 追踪目标._name;
 			敌人顺序 = i;
+			_root.技能函数.地面目标位移.captureTarget(this);
 			break;
 		}
 	}
@@ -156,6 +160,8 @@ if(_root.控制目标 == _parent._name){
 	}
 }
 追踪目标 = _parent.按距离索敌(索敌距离, 是否强行重新索敌, 优先索敌属性, 优先索敌排序);
+_root.技能函数.地面目标位移.captureTarget(this);
+_root.技能函数.地面目标位移.captureCandidates(this);
 if(!追踪目标){
 	是否追踪 = false;
 }
@@ -189,10 +195,11 @@ _parent.攻击呐喊();]]></script>
               <Actionscript>
                 <script><![CDATA[if(!_parent.攻击目标 || !_root.gameworld[_parent.攻击目标].hp >0){
 	for(var i = 敌人顺序 + 1; i < _parent.索敌目标列表.length; i++){
-		if(_parent.索敌目标列表[i].敌人.hp > 0){
+		if(_root.技能函数.地面目标位移.isCandidateCurrent(this, i)){
 			追踪目标 = _parent.索敌目标列表[i].敌人;
 			_parent.攻击目标 = 追踪目标._name;
 			敌人顺序 = i;
+			_root.技能函数.地面目标位移.captureTarget(this);
 			break;
 		}
 	}
@@ -713,8 +720,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(60);
-		_parent.Z轴追踪移动();
+		_root.技能函数.地面目标位移.followAxes(_parent, 60);
 	}
 }
 ]]></script>
@@ -739,8 +745,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(35);
-		_parent.Z轴追踪移动();
+		_root.技能函数.地面目标位移.followAxes(_parent, 35);
 	}
 }
 ]]></script>
@@ -765,8 +770,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(60);
-		_parent.Z轴追踪移动();
+		_root.技能函数.地面目标位移.followAxes(_parent, 60);
 	}
 }
 ]]></script>
@@ -791,8 +795,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(20);
-		_parent.Z轴追踪移动();
+		_root.技能函数.地面目标位移.followAxes(_parent, 20);
 	}
 }
 ]]></script>
@@ -817,8 +820,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	if(!_parent.是否追踪){
 		_parent.攻击时按键四向移动(25,100);
 	}else{
-		_parent.X轴追踪移动(80);
-		_parent.Z轴追踪移动();
+		_root.技能函数.地面目标位移.followAxes(_parent, 80);
 	}
 }
 ]]></script>

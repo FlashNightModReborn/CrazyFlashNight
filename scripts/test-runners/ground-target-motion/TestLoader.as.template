@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId ground-target-motion Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.spatial.move.GroundTargetMotionTest.runAllTests();
+trace("FocusedTestRunId ground-target-motion Complete: __FOCUSED_RUN_ID__");

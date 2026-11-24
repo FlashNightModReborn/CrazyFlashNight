@@ -1,0 +1,332 @@
+# CrazyFlashNight｜Epic #173 特殊位移安全收尾：单 Astra MAX 正式施工工单
+
+审计基线：93e1b87b11294a06a3ca6dd66b3a40643d2daf12（2026-11-23 main）。
+施工基线：7afbd9713bda758c6b866e7f797182fc63224ee3（2026-11-24 开工时远端 main）。保留当前 CharacterBuildExit 注册、读档与启动优化和已发布 native 闭包。三模块使用本基线生成的真源、PlanOnly 结果及实际 SHA；旧版 784 类与先前缓存仅供历史对照。
+目标仓库：https://github.com/FlashNightModReborn/CrazyFlashNight
+Epic：https://github.com/FlashNightModReborn/CrazyFlashNight/issues/173
+关联：#174、#175、#177、#178；继承已关闭 #172、#170、#158、#176、#230。
+
+## 0. 权限、目标与停止条件
+
+维护者于 2026-11-24 交办方案 B，授权施工至隔离候选游戏实机验收。产生本工单的 Pro 会话只获只读审计授权；本文件自身不授予代码写入、commit/push、Issue 修改或正式发布权限。接单后按届时会话已明确授予的权限执行，不重复索要已给出的授权。正式交付和维护者业务签收尚未授权时，完成可执行的候选及证据，停在精确候选状态；#178/#173 保持开放。
+
+目标是修复本文件冻结的高风险位移入口、修正类归属、完成受影响业务验证，为 Epic 提供有限关闭出口。不是统一全仓所有位移。禁止扩为普通 Mover、全局物理、碰撞引擎或 #176 空中来源重构。
+
+开始时记录实际 HEAD，与上述审计基线比较下列文件的增量；只处理相关漂移。先读 AGENTS.md 及其 AS2、XFL、测试、加载和发布命中的专题。保留他人修改，不把过时报告当当前工作树事实。源码和测试保持 .as UTF-8 BOM；只能真实 CS6 编译，禁止手改 SWF。
+
+完成冻结范围即可停止。新扫描结果只记证据和归属；不得继续扩扫新单位、新资源。发现会破坏本次安全合同或冻结消费者的真实阻断，暂停受影响工作包，给出可复现输入和最小决策问题；其他历史风险不阻断本次交付。
+
+## 1. 冻结方案与修改边界
+
+选方案 B：扩展现有 GroundTargetMotion，提供少量目标/数值、路径和受控提交能力。不给普通 Mover.move2D/move25D 加完整检查，不改原共享 X轴追踪移动/Z轴追踪移动的全部绑定，不建设第二套物理 tick、通用回滚或全局安全点恢复。
+
+必须修改的手写源：
+
+1. scripts/类定义/org/flashNight/arki/spatial/move/GroundTargetMotion.as
+2. scripts/逻辑/单位函数/单位函数_lsy_主角技能.as（只新增一个类对象桥接）
+3. tools/asloader-modules.json（GroundTargetMotion 唯一归 shared）
+4. 第 3 节的四个敌人动作 XML。
+5. 第 4 节的六个 things0 消费者 XML。
+6. 仅为消除资源嵌入而改桥接的四个既有 XML：
+   - flashswf/arts/new/原体融合生物/LIBRARY/cs6用动画/攻击动作.xml
+   - flashswf/arts/new/原体融合生物/LIBRARY/cs6用动画/普通攻击动作.xml
+   - flashswf/arts/new/原体融合生物/LIBRARY/cs6用动画/击倒.xml
+   - flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-追踪五连.xml
+7. 与本闭包直接对应的 tracked TestLoader aggregate/fixture/runner、验收记录及原权威计划。生成物只经现役生成器更新。
+
+范围计数：敌人侧 4 个动作 XML、20 个锁定帧、15 个位移 clip；玩家模板侧 6 个消费者、10 处成对 X/Z 调用上下文。连同旧调用桥接，共 14 个生产动作 XML。独立资源 SWF 共 4 种：原体融合生物、诺艾尔、偷吃屑鱼坟头贡品、things0；另有现役 asLoader 增量发布计划判定需要更新的模块。
+
+## 2. 冻结的最小接口与行为合同
+
+以下为接口契约/AS2 实现骨架，不是已经编译的补丁。保留现有公开 API 的兼容调用；新方法留在 GroundTargetMotion，不新建一组控制器/策略/请求对象类。
+
+### 2.1 身份捕获
+
+建议公开接口：
+
+    captureTarget(action:MovieClip):MovieClip
+    captureCandidates(action:MovieClip):Void
+    isCandidateCurrent(action:MovieClip, index:Number):Boolean
+
+captureTarget 每次入口先使旧追踪编号、world/actor身份、目标名称失效并清旧敌方目标引用；全部校验成功后才写新身份。失败不能遗留上一段凭据。它只在原有锁定/索敌/换目标帧调用，不执行新的索敌，不改目标选择顺序。校验 action._parent 是当前 world 内的现役单位、动作属于该单位、单位/目标活着、目标非自身、脚点及显示坐标为有限数、地图边界有效、脚点合法。使用 Dictionary.getStaticUID 在锁定时保存 world、actor、动作实例及目标的数值 UID，沿用 action.追踪编号 作为目标 UID。持续位移元件在放置时捕获动作编号，消费时校验该编号。诺艾尔回旋元件横跨多个锁定帧，元件可先于后段锁定脚本放置，放置时须取得动作自己的编号。该操作不提前给目标签发凭据。不得只存 MovieClip 引用。
+
+执行时只比较已捕获的数值 UID、当前 world/actor/action 关系和当前目标；不要在消费阶段 getStaticUID 后给新同名目标补签。原生用例须在旧动作卸载、同路径新动作完成有效锁定后触发持旧编号的回调，核对新动作与单位的位置、方向和碰撞框均未改变；随后由新动作成功移动作阳性对照。失效只拒绝本次位移。不得把“捕获失败”写成 是否追踪=false，让原追踪分支意外落入自由冲刺分支；也不取消后续伤害、收招、MP/CD。
+
+兽王候补专用：captureCandidates 在原完整索敌完成后保存 action 私有的原列表引用及 Number UID 数组。列表是普通 Array，身份比较不受 MovieClip 同路径重绑问题影响。重用该 action 的数组；不改公共记录/全局缓存。候补选择时要求原列表身份、索引 UID 和当前对象存活有效，然后沿原有顺序选择。每次索敌 O(n)，不进入逐帧热路径。
+
+### 2.2 有最低速度的追击/退避
+
+保留 lockRush(action)，保留原速度上限/下限/追踪持续帧；复用 #172 已验收数学式：
+
+    dx = actorX - targetX
+    dz = actorZ - targetZ
+    s = max(speedMin, min(speedMax, abs(dx) / frames))
+    span = max(abs(dx), abs(dz), s)
+    vz = span > 0 ? s * (dz / span) : 0
+
+参数与派生值须有限，frames>0、0<=speedMin<=speedMax。失败先清本动作的四向速度及锁定身份，不能留下上一段速度。保持原 X 最低速度，不把 X 夹到目标上。
+
+扩展接口：
+
+    advanceRush(action:MovieClip, xSign:Number, zSign:Number,
+                stopAtLockedZ:Boolean):Boolean
+
+旧单参数调用默认 (+1,+1,true)。允许的冻结组合：
+
+- 普通追击：(+1,+1,true)。
+- EXUSIAI 后撤射击/后空翻：(-1,+1,true)，X 后退、Z 向锁定行靠近。
+- 不明士兵后空翻扔雷：(-1,-1,false)，X/Z 均逃离目标，绝不能应用向锁定 Z 的夹止。
+
+sign 必须为 +1/-1。先按模式生成实际四向请求，再交 checkedFourWay；预检与提交使用同一组符号。负左速度仍取原“左”朝向分支，不得交换左右字段让单位转身。
+
+这不是所有轨迹完全等价：横向主导且不触发保护的区间保留原斜率；近同列/陡斜率被明确修成有界速度。正常距离、攻击时序和非异常轨迹需对照验证。
+
+### 2.3 无最低速度的动作：只消除 0/0，不改成 rush
+
+可实现一个标量函数：
+
+    chaseScale(dx:Number, cap:Number, frames:Number):Number
+
+先检查有限性、cap>=0、frames>0；cap==0时明确返回0。其余有效输入下，abs(dx)>cap*frames时返回cap/abs(dx)，否则返回1/frames；检查派生比例有限。实现可用abs(dx)/frames与cap比较避免cap*frames溢出。必须覆盖dx=0、cap=0、dz非0时两轴速度为0。
+
+诺艾尔回旋：
+
+    rX = (7 + random(5)) / 10
+    rZ = (7 + random(5)) / 10
+    k  = chaseScale(dx, cap, frames)
+    vx = dx * k * rX
+    vz = dz * k * rX * rZ
+
+随后原样执行原 vZ 上限、加速度与速度分支。保持 rX 然后 rZ 两次随机调用，不增加抽样，不把曲线替换为直线追击。EXUSIAI 两个无 min 动作使用同式但 rX=rZ=1。dx!=0 时数学等价；dx=0 取连续极限，正常浮点重排误差单列容差。
+
+锁定仍捕获目标身份；执行使用 checkedFourWay，不追加锁定 Z 止步。诺艾尔每帧保留原 if(up){up-=a}else if(down){down-=a}，X 同型；不要改成四个速度同时减量。
+
+### 2.4 两类提交入口
+
+    checkedFourWay(action:MovieClip, up:Number, down:Number,
+                   left:Number, right:Number):Boolean
+    followAxes(action:MovieClip, keep:Number, minX:Number,
+               maxX:Number, maxZ:Number):Boolean
+
+checkedFourWay 仅接本次明确的敌人动作/原体冲刺。四个值必须有限，但允许合法负数。严格模拟原分支：
+
+    dz = up != 0 ? -up : (down != 0 ? down : 0)
+    dx = left != 0 ? -left : (right != 0 ? right : 0)
+
+路径为 Z→X 的 L 形。朝向按 left!=0 优先、再 right!=0，按原方向改变规则保留锁定方向语义。不要用 down-up/right-left 代替分支预测。
+
+followAxes 仅接第 4 节六个玩家模板技能，包括使用同模板的 NPC。unit.方向必须严格为“左”或“右”，否则false且不写位置、朝向、碰撞框，不默认非法方向为右。路径统一 X→Z，无需公共任意路径策略参数。完全保留旧参数：
+
+    facing = unit.方向 == "左" ? -1 : +1
+    d = facing * (targetX - actorX) - keep
+    若显式提供有限 minX，d=max(d,minX)
+    若有限 maxX>0，d=min(d,maxX)
+    dx=facing*d
+    dz=targetZ-actorZ
+    若有限 maxZ>0，按原符号截幅 dz
+
+缺省 minX 不是 0，必须保留负距离；缺省 maxX/maxZ 不增加任意业务距离帽。非法显式参数拒绝，不让 NaN 进入比较或步数循环。玩家模板 飞行浮空 时拒绝；不要仅按 控制目标 名称判断模板。
+
+### 2.5 几何与失败原子性
+
+在 GMT 内部用一个私有 tryCommitAxes 完成共同流程：
+
+1. 验证锁定身份、数值、有限高度 actorZ-actorY、当前地图边界、源脚点和目标脚点，以及碰撞层/碰撞器已初始化。
+2. 用局部标量计算最终 X/Z/Y 和适用的 起始Y，验证所有将要写入的数值。
+3. 按调用者的真实 L 形次序检查两段，不用起终点直线替代。保留 openSegment 的约 2px 采样、单轴最多384步作为初始有界策略；先算预算再循环，超限整次拒绝，绝不粗采样后放行。
+4. 每次请求直接读取当前实际 collisionLayer，不缓存跨帧路径，不在移动 helper 内调用 redraw。layer 身份和 CollisionLayerRenderer.revision 仅为辅助守卫；revision 不覆盖 drawObstacle(false) 等所有更新，不能作为唯一正确性依据。
+5. 所有可能返回 false 的检查均发生在首个位置写入前。进入成功块后不再调用 Mover/hitTest/resolveCollision、不再返回“保持原位”的失败结果。
+6. 在同一同步块提交_x、Z轴坐标、_y=oldY+dz；浮空且dz!=0、需要同步起始Y时，起始Y必须为有限Number，缺失/NaN/Infinity均在首个位置写入前拒绝，通过后同步+=dz。地面或纯X移动不要求该字段存在，也不创建它。
+7. 保留原朝向分支副作用；最终位置和朝向确定后 AABB 更新一次。纵移时沿现役 Mover 语义用 DepthManager.instance.updateDepth(unit,newY)，不要顺便统一为 Z 排序。
+
+成功块只适配这些已审查的模板：标准方向改变只改方向/scale，Depth/AABB 不发布战斗状态事件。不宣称兼容未知自定义 unit.移动，不建立通用事务回滚。
+
+不写 temp_y、垂直速度、__air、浮空旗标、技能浮空旗标、状态、生命/伤害、MP/CD；高度积分和来源交接仍归现有系统。保留旧 counterBlink 的终点型穿越语义、旧 followSlash 的既有动作策略；这两项原则上只改资源桥接。
+
+新入口准确提交合法 ±0.5px 纵移，不继承 Mover.move25D 的 dy|dz 亚像素死区；这是一项明确局部差异，必须测试合法浮空高度与起始Y。普通 Mover 不变。
+
+起点已非法时只拒绝并留诊断，不引入盲 clamp、无条件回滚、全图搜安全点或传送出生点。冻结入口负责拒绝并保留现场。已有污染的单位交既有场景安全退出／恢复流程，新增跨动作安全点与通用脱困归场景／移动器维护者独立跟踪。#175 的出口要求证明拒绝未产生部分写入并能定位受影响入口。
+
+2px 采样不是任意亚像素薄墙的连续几何证明。本闭包要测实际生产薄墙与采样相位；若真实薄墙漏过，该项不得标完成。只允许在本安全层按实测收紧步距，并按原合法最大单段距离重算有限步数上限、重测性能；不得静默缩短合法射程或改回终点放行。若该修正超出单层局部调整才能成立，报告具体薄墙反例与性能结果，再升级裁决；不自行建几何引擎。
+
+## 3. Phase 1：三个实锤 P0 与同库确定 P1
+
+所有 index 为 XFL DOMFrame 零基，CS6/SWF 人读帧为 index+1。源码行只是导航，修改以 layer、index、有效 Actionscript 和实际父子层级为准，不操作同名无效/归档帧。
+
+根 A：flashswf/arts/new/原体融合生物/
+A1：LIBRARY/不明士兵/不明士兵动画/普通攻击动作.xml
+A2：LIBRARY/不明士兵/不明士兵动画/攻击动作.xml
+根 B：flashswf/arts/new/诺艾尔/
+B1：LIBRARY/动画调整修改/攻击动作-改.xml
+根 C：flashswf/arts/new/偷吃屑鱼坟头贡品/
+C1：LIBRARY/ARMS指挥官/攻击动作.xml
+w=该次锁定时单位的实际行走X速度。
+
+| 等级/动作 | 文件 | 锁定 index（源码行） | 位移 index/duration | 参数与冻结修法 |
+|---|---|---|---|---|
+| P0 413/414空手攻击 | A1 | 15/32/49（580/623/666） | 18/35/53，6/6/8帧 | cap7w,min3w,T8；lockRush＋advanceRush(+1,+1,true) |
+| P0 294跳劈 | B1 | 54（270） | 62，7帧（2338） | cap7w,min2w,T5；同上 |
+| P0 361进阶火炮 | C1 | 277（5075）；296/322/348/373（5118/5164/5210/5256） | 282/301/327/353/379，11/12/12/12/12帧 | 首段7w/3w/8，后四段10w/5w/7；advanceRush(-1,+1,true) |
+| P1 413/414后空翻扔雷 | A2 | 136（619） | 137，17帧（1602） | 6w/4w/12；advanceRush(-1,-1,false) |
+| P1 413/414奔跑滑铲射击 | A2 | 172（662） | 173，23帧（1629） | 4w/w/15；advanceRush(+1,+1,true) |
+| P1 361进阶后空翻 | C1 | 422（5308） | 428，48帧（5752） | 5w/3w/60；advanceRush(-1,+1,true) |
+| P1 294回旋斩 | B1 | 95/117/126/135/144/153（2372起） | 105，58帧（2648） | 首段cap2w/T9，其余1.5w/T5；无min代数式＋原随机/加速度＋checkedFourWay |
+| P1 361空中弹雨 | C1 | 162（4914） | 163，20帧（5492） | cap4.5w/T25，无min；代数式＋checkedFourWay |
+| P1 361超级车祸现场 | C1 | 247（4999） | 253，20帧（5552） | cap10w/T10，无min；代数式＋checkedFourWay |
+
+P0 共9锁定/9clip，P1 共11锁定/6clip。不能只替换锁定公式而忘记位移 clip；只改共享类不能接管现有时间轴内嵌公式。
+
+保留：原子弹、伤害、攻击次数、技能结束帧、近距结束条件、固定小步和其他输入。EXUSIAI火炮代码层 index300/326/352/378 的距离<=80结束条件不改；进阶后空翻 index428/479 的 area._y±160、浮空高度160/0不改。诺艾尔跳跃是 man 内动画，不新建空中来源。414与413共用资产但阵营不同，补414友军选敌/朝向回归。
+
+修前输入：完整候选“铁血乱舞”第一图，actorZ450、targetZ420、地图Ymin330、dx=actorX-targetX=+0.5。显式记录/设置w；历史数据反推413 w5.6、294 w5.8、361 w8.3（不是历史等级记录）。首段原 up1008/696/1494，对应Z=-558/-246/-1044。
+
+修后无阻挡理论第一Z：433.2/438.4/425.1；原生允许按FP20实际数值量化制定并记录的小容差。断言数值有限、脚点在域内、abs(vz)<=min(s,abs(dz))、追击不越过锁定行、后撤/双向退避正确。扩展dx=0、±0.05、±0.5及140/300，dz=0/±8/±30和边界。无min分支必须单测dx0，不能只测±0.5。
+
+Phase1完成判据：确定入口全部接入；修前输入及修后实际结果绑定相同生产动作/构建身份；原攻击时序和方向不变；源码与原生动作证据分别记录。全游戏业务统一在Phase3汇总，不以局部测试提前结项。
+
+## 4. Phase 2：六个必要消费者
+
+均位于 flashswf/arts/things0/LIBRARY/容器/，输出things0.swf。
+
+| 消费者/相对文件 | 原目标捕获index | 位移index | followAxes参数 |
+|---|---|---|---|
+| 兵器攻击容器/兵器攻击容器-交叉斩.xml | 9，L25原索敌550 true后 | 10，L141 | keep130，其余缺省 |
+| 兵器攻击容器/兵器攻击容器-疾影十字.xml | 9，L25 | 10，L132 | keep130，其余缺省 |
+| 兵器攻击容器/兵器攻击容器-猎影十字.xml | 9，L25 | 10，L132 | keep130，其余缺省 |
+| 兵器攻击容器/兵器攻击容器-空坠强袭.xml | 18，L49 | 21，L149 | keep10，其余缺省 |
+| 技能容器/技能容器-兽王崩拳.xml | 4/8/15/21/28，按下文 | 5/9/16/23/29，L712/738/764/790/816 | keep60/35/60/20/80，其余缺省 |
+| 战技容器/战技容器-一文字落雷.xml | 25，L52原启动条件及索敌后 | 27，L222，持续6帧 | (100,0,75,30) |
+
+所有实际成对调用均X先Z。clip onLoad/enterFrame中传动作_parent，动作自己的帧脚本传this，切勿统一抄父级。
+
+兽王身份处理：
+- index4 L66：原按距离索敌(500+技能等级*5,true,...)后 captureTarget＋captureCandidates。
+- index8 L100、15 L122、28 L190：原当前目标失效时的候补遍历里，先核对isCandidateCurrent，再保持原顺序；仅真正设置追踪目标、攻击目标名称和敌人顺序之后captureTarget。未换目标不得刷新旧UID。
+- index21 L144：保留原按距离索敌(...false...)，完成后重新captureTarget＋captureCandidates。
+- 不改公共按距离索敌及其排序，不在移动时临时重新索敌。
+
+一文字身份处理：装备带燕归沉的刀，配齐剑圣装甲五个部位并使用二阶或更高的剑圣装甲鞋，经真实 WeaponSkill 事件验有目标分支，再以索敌距离内没有活敌的摆位验自由移动。index25才捕获，不能提前到index0；剑圣鞋WeaponSkill事件先设置启动追踪。原未启用追踪、奔跑取消追踪及无目标自由移动分支保持；无目标继续IchimonjiMovement。只因锁定目标后来非法而拒绝时，不降级为自由移动。
+
+必须反例：actorX110,targetX120,facing右,keep130,Xmin0，旧公式候选X=-10；两点均合法也不代表偏移终点合法。另覆盖目标死亡/卸载/同名重建、候补列表同名重建、X段可行Z段失败、负distance、浮空±0.5纵移。
+
+Phase2完成判据：六个真实入口全部绑定共享能力，10处调用及全部原换目标点计数闭合；伤害、攻击次数、MP/CD和动作时间不变；非法位移无部分写入。
+
+## 5. 类归属、构建和资源交付
+
+基线仍有归属错误：原体融合生物.swf和things0.swf各内嵌GroundTargetMotion，而模块注册表未登记该类。不要只增加第三份；必须形成唯一owner。
+
+冻结做法：
+1. 在tools/asloader-modules.json把GMT登记shared一次。
+2. 单位函数_lsy_主角技能.as既有_root.技能函数初始化后加入：
+
+    _root.技能函数.地面目标位移 = org.flashNight.arki.spatial.move.GroundTargetMotion;
+
+3. 所有本闭包资源调用统一 `_root.技能函数.地面目标位移.<method>(...)`。包括旧原体三XML和追踪五连。跨帧冲刺同时传放置时捕获的动作编号。资源不再静态FQN引用/类型注解GMT；无需给诺艾尔/偷吃库追加PackagePaths或新增资源exclude体系。
+4. 运行现役build-asloader-modules.py和assemble-collapsed-frame.js生成 roots/intrinsic/excludes；手工只改真源。shared提供实现，boot引用生成声明，不改Bootstrap状态机。
+5. 按正式工具PlanOnly判BUILD/SKIP，保持现役三模块整体归属/初始化顺序门。不要固定每次全编三件，也不要跳过完整集合检查。
+
+必须产物：
+
+| XFL | VerifySwf |
+|---|---|
+| flashswf/arts/new/原体融合生物/原体融合生物.xfl | flashswf/arts/new/原体融合生物.swf |
+| flashswf/arts/new/诺艾尔/诺艾尔.xfl | flashswf/arts/new/诺艾尔.swf |
+| flashswf/arts/new/偷吃屑鱼坟头贡品/偷吃屑鱼坟头贡品.xfl | flashswf/arts/new/偷吃屑鱼坟头贡品.swf |
+| flashswf/arts/things0/things0.xfl | flashswf/arts/things0.swf |
+
+imports/exports及装配入口不变时无需重编things-new或主XFL，但仍核实冷启动实际加载的四份新SWF。当前things-new确实挂载三个作者库/诺艾尔入口，不仅有导入记录。
+
+命令入口（以接单时仓库现行参数核对，不执行本工单未授权动作）：
+
+    chcp.com 65001
+    python -B tools/build-asloader-modules.py
+    node tools/assemble-collapsed-frame.js
+    python -B tools/build-asloader-modules.py --check-projects
+    node tools/assemble-collapsed-frame.js --check
+    powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -PlanOnly
+    powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 900
+    powershell -ExecutionPolicy Bypass -File scripts/compile_test.ps1 -Target '<上表xfl>' -PublishOnly -VerifySwf '<上表swf>' -TimeoutSeconds 900
+    node tools/audit-as2-class-embedding.js
+
+实际CS6按现有机器/仓库锁串行；编辑相关XML、编译和候选装配也由同一Agent顺序完成，不拆并发修改同一资源。每目标记录fresh Compiler0/0、SWF刷新与SHA、实际有效脚本进入产物的证明。单件--swf归属检查不是最终闭包检查。完整production audit必须0错误，不豁免基线两项错误；确认GMT只有shared一份，资源加载不能替换类对象。完整冷启动验证shared→boot→资源以及root桥可用。禁止让undefined桥静默失败被误当成“越界已修”。
+
+所有构建产物按仓库归档/提交边界交付，不假定资源自动获得push授权。asLoader生成后的源码/产物变更应在同一候选集合中核对。
+
+## 6. Phase 3：验证与验收
+
+### 6.1 自动化与原生矩阵
+
+测试生产函数/实际资源，不以复制算法的Node模型替代。已有runner可以复用；新增用例使用tracked aggregate/template，TestLoader scratch按现役恢复合同管理。
+
+| 工作包 | 必须证明 | 完成判据 |
+|---|---|---|
+| P0修前/修后 | 同一地图/摆位/动作首个实际提交；9处锁定及9clip全覆盖 | 原严重越界消失；无假死/无法收招；方向与攻击不变 |
+| 同库P1 | 六个动作、11锁定/6clip；dx0、双反向、后撤、随机曲线 | 有限结果；随机次数/顺序和原加速度不变；无非法传播 |
+| 目标身份 | 空/死/卸载/同名重建、动作失效、world重建、候补更替 | 原捕获身份失效即无位移，不补签、不跟新同名对象 |
+| 几何 | 四边四角、300px外框之外终点、内部墙、真实薄墙及采样相位、斜向L路径 | 不把hitTest=false等同在地图内；两段按实际顺序检查 |
+| 原子拒绝 | X合法/Z失败及反向顺序、超预算、非法数值、飞行禁移 | X/Z/Y/起始Y及碰撞框均保持原值；不先走半步再退 |
+| 高度 | h0、合法浮空、显示Y0/负值、±0.5纵移 | h不被压平，起始Y正确，现有来源/落地交接不被改动 |
+| 动态碰撞 | 默认即时增/改、显式redraw、延迟移除正式公布前后分别请求 | 按当次实际collisionLayer工作；不依赖跨帧缓存/revision独证 |
+| 资源/类归属 | 实际SWF帧、导出、GMT唯一owner、冷加载 | 0/0＋fresh字节＋有效脚本＋完整production audit＋真实加载 |
+| 完整游戏 | 三P0定向复现及恢复正常AI；六玩家入口及兽王选敌旅程 | 可继续移动/换武器/收招/战斗，相关关卡正常完成 |
+
+测试所有负向输入时，在原动作发弹/扣费之外只替换位移提交；不要以取消后续伤害或人为结束动作让用例通过。
+
+### 6.2 性能
+
+不得用384直接宣称满足30FPS。它只是现有单轴安全工作量上限。
+
+- 锁定时做UID首次分配、参数校验和必要列表UID采集；逐段做身份、存活、当前位置、目标点、当前碰撞层及路径检查。
+- 逐帧不建字典、不创建请求/结果/点数组；正常返回Boolean。GMT自己只用标量。AABB.getRect仍有现有原生对象成本，成功提交一次刷新可减少旧双轴重复刷新；不要称整条调用链绝对零分配。
+- 两段采样最坏2×384+O(1) hitTest。当前实际碰撞几何复杂度影响每次hitTest成本，应记录调用数、样本上限拒绝数、每帧耗时和整帧时间分布。
+- 同机同图同构建环境，比较1/4/8个同时动作，再用实际场景或压力场景能达到的峰值。8不是项目人数上限。
+- 测合法最长段、普通距离、密集碰撞、持续动作与超大异常请求；Warmup后用重复批次抵消getTimer精度，优先已有Host帧遥测。记录中位/P95/最慢帧和基线余量；按30FPS的33.33ms帧预算与真实余量裁决，不编造一个未测的固定“安全毫秒数”。
+- 超出计算步数上限当次拒绝，不降低采样精度、不忙重试。不得用基于墙钟随机跳过伤害/位移的办法掩盖性能失败。
+
+### 6.3 旧证据复用
+
+#172 b9aa289已完成原体/五连候选业务验收；#170无目标落雷、#158/#176空中交接、#230方向修复均保留完成事实。
+
+本次需补：原体两个cs6用动画XML的持续位移同时携带放置时的动作编号，其原追击会进入新受控提交，须通过实际原体旧入口验证正常/近同列、方向锁、Depth/AABB同步、合法高度/起始Y，以及Z段可行X段失败时全拒绝；五连/反制算法未改，做加载/身份代表回归，并保留一条代表性完整战斗；things0重编后的无目标落雷代表分支及旧震地脚本/导出保持。#176高度来源不改，不重跑其所有历史矩阵，不把#324/#332纳入永久关闭条件。#230没有受影响源码时不重新展开方向专项。
+
+## 7. 候选、正式发布与Issue事务
+
+逐项记录：compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified。每个状态有独立证据，不因箭头自动升级。记录源码SHA/tree、candidate路径、native identity/closure、四份资源SWF与相关loader的SHA、测试runner/runId、具体业务入口和结果。
+
+本次主要是AS2/XFL变更；SWF-only不自动触发未改native runtime重建/发布。若实际部署闭包需要native promotion且已有授权，遵守届时仓库immutable request/source tag、真实独立faultDomain builder、同identity/closure双signer、strict v2 receipt、唯一promotion writer和事后审计。一个Agent可编排既有两builder，不得伪造第二故障域或拷候选目录绕过协议。
+
+正式资源交付也须按届时明确授权与仓库发行路径进行；不能把“免native重编”解释成免正式交付。发布后标准入口实际核对本轮SWF身份并重跑受影响业务；启动/退出smoke不能代签。
+
+在已获Issue写权限时按以下条件处理；否则只准备回填文本：
+- #174：首批资料够用即可交给 #175。关闭前须对全部冻结项逐项完成现役／待核／例外分类，写明生产路径、动作策略、验证方法、反例、P2 维护去向及尚待裁决的语义。
+- #175：最小安全层、失败原子性、原生验证和唯一类归属通过；不要求普通Mover/恢复框架。
+- #177：全部冻结P0/P1接入、实际资源和候选业务验收通过。正式交付归#178，可先关闭施工卡。
+- #178：候选证据、实际授权正式交付、标准入口业务复验及性能/资源身份齐全才关。
+- #173：#174/#175/#177/#178满足各自出口，继承已完成#176，剩余低风险债务有明确归属后关闭。
+
+仅候选完成时必须明确剩余是发布/签收，不得写Epic已完成。
+
+## 8. 明确暂缓/排除
+
+P2：
+- 狂暴切割：技能现役，但动作this绑定X/Z而自身帧脚本调用_parent.X/Z；标准玩家unit未见对应绑定。先留独立接收者/功能核查，不趁安全治理改成this激活16组新位移。
+- 地狱穿心剑：有导出/注册/实际XML调用，未找到当前获取或生产单位入口。等待具体入口证据，不能称已证明下线。
+- 不明士兵“后撤射击”两段：动作标签与AI“撤退射击”不一致，真实顺播行为尚需原生定位；单独登记，不修命名，不宣称必不可达。index13/20锁定、15/20clip为有限后续线索。
+
+Exclude（就本次位移消费者而言）：
+- 逆暴雨：无export/linkage/真实路由，只有Include及内部脚本。
+- 次元斩/追地祀：技能本身现役，但此元件仅绑定X/Z而无调用；弹体shoot坐标不是单位位移。
+- 不明士兵index196及EXUSIAI仅计算向量、实际用固定步的未消费代码。
+- 纯特效/阴影/弹体局部坐标、归档资产、普通移动、全局碰撞/恢复债务。
+
+这些项目不是为了凑“全覆盖”而重启的施工包。若后续实机直接证明其中某条是严重现役入口，应以该新证据单独建卡或重新冻结局部范围；本工单不授权静默扩围。
+
+## 9. 单Agent执行与升级条件
+
+单个有现成Windows/CS6/FP20、候选游戏和现役发布设施的Astra MAX足以完成代码、资源接入和候选验证。源码参数与调用点已经冻结；无需再做一次全局架构设计。应按生产动作脚本提取片段读取，不把巨量矢量绘图XML全塞进上下文。允许以工作包记录跨上下文继续，不把“一Agent”误解为一次CS6进程或一次上下文必须无续接完成。
+
+Linux可做：源码/帧提取、XML/BOM/归属配置检查、数学差分、测试fixture准备和证据整理。Linux不能代签：真实CS6构建、AVM1同名引用重绑、生产动作执行、完整候选业务、正式入口验收。
+
+只在以下情况升级Pro：原生证明现有位移策略与设计冲突；冻结消费者需要本工单以外控制权/自定义移动语义；实际薄墙在可接受性能内无法用限定有界采样覆盖；类归属必须改加载状态机才可成立；出现明确影响冻结闭包的新严重回归。普通编译错误、已冻结参数接线、文案回填和可定位的局部测试失败由执行Agent自行完成。
+
+最终交付必须给：变更摘要、冻结清单逐项状态、fresh构建/原生/游戏/性能证据、残余P2归属、当前证据状态、正式交付是否完成及下一项具体授权/签收需求。完成本范围即停止。

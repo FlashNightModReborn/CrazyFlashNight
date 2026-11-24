@@ -1,5 +1,6 @@
 ﻿
 _root.技能函数 = new Object();
+_root.技能函数.地面目标位移 = org.flashNight.arki.spatial.move.GroundTargetMotion;
 
 // Resource timelines call this bridge; the implementation remains owned by asLoader.
 _root.技能函数.传递兵器战技属性 = SkillAttributeCore.transferWeaponAttributes;

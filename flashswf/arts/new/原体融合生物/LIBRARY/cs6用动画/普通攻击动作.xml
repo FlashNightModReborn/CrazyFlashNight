@@ -936,7 +936,7 @@ _parent.动画完毕();
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 8;
 
-org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -950,7 +950,7 @@ org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 8;
 
-org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -964,7 +964,7 @@ org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 8;
 
-org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -978,7 +978,7 @@ org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 2;
 
-org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -1007,8 +1007,11 @@ org.flashNight.arki.spatial.move.GroundTargetMotion.lockRush(this);
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
+   _root.技能函数.地面目标位移.advanceRush(_parent, 1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -1034,8 +1037,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
+   _root.技能函数.地面目标位移.advanceRush(_parent, 1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -1061,8 +1067,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
+   _root.技能函数.地面目标位移.advanceRush(_parent, 1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -1088,6 +1097,9 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[/*
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
 	_parent._parent.方向改变
  (_root.gameworld[_parent._parent.攻击目标].方向);
@@ -1108,7 +1120,7 @@ onClipEvent(load){
 */
 //以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
 onClipEvent(enterFrame){
-   org.flashNight.arki.spatial.move.GroundTargetMotion.advanceRush(_parent);
+   _root.技能函数.地面目标位移.advanceRush(_parent, 1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可

@@ -4918,15 +4918,7 @@ else
 追踪持续帧 = 25;
 
 //自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-速度Z = 速度X * 距离Z / 距离X;
+_root.技能函数.地面目标位移.lockChase(this, 1, 1);
 
 if (速度X >= 0)
 {
@@ -5003,15 +4995,7 @@ else
 追踪持续帧 = 10;
 
 //自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-速度Z = 速度X * 距离Z / 距离X;
+_root.技能函数.地面目标位移.lockChase(this, 1, 1);
 
 if (速度X >= 0)
 {
@@ -5079,36 +5063,7 @@ else
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 8;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -5122,36 +5077,7 @@ else
 速度下限 = _parent.行走X速度 * 5;
 追踪持续帧 = 7;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -5168,36 +5094,7 @@ else
 速度下限 = _parent.行走X速度 * 5;
 追踪持续帧 = 7;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -5214,36 +5111,7 @@ else
 速度下限 = _parent.行走X速度 * 5;
 追踪持续帧 = 7;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -5260,36 +5128,7 @@ else
 速度下限 = _parent.行走X速度 * 5;
 追踪持续帧 = 7;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -5312,36 +5151,7 @@ else
 速度下限 = _parent.行走X速度 * 3;
 追踪持续帧 = 60;
 
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
-}
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-// 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = 速度Z;
-}
-else
-{
-	下速度 = -速度Z;
-}
+_root.技能函数.地面目标位移.lockRush(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -5490,8 +5300,11 @@ else
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   _root.技能函数.地面目标位移.checkedFourWay(_parent, _parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -5550,8 +5363,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+   _root.技能函数.地面目标位移.checkedFourWay(_parent, _parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -5603,8 +5419,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, -_parent.左速度, -_parent.右速度);
+   _root.技能函数.地面目标位移.advanceRush(_parent, -1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -5636,8 +5455,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, -_parent.左速度, -_parent.右速度);
+   _root.技能函数.地面目标位移.advanceRush(_parent, -1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -5663,8 +5485,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, -_parent.左速度, -_parent.右速度);
+   _root.技能函数.地面目标位移.advanceRush(_parent, -1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -5690,8 +5515,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, -_parent.左速度, -_parent.右速度);
+   _root.技能函数.地面目标位移.advanceRush(_parent, -1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -5717,8 +5545,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, -_parent.左速度, -_parent.右速度);
+   _root.技能函数.地面目标位移.advanceRush(_parent, -1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
@@ -5750,8 +5581,11 @@ onClipEvent(enterFrame){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(load){
+    motionOwner = _parent.__dictUID;
+}
 onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, -_parent.左速度, -_parent.右速度);
+   _root.技能函数.地面目标位移.advanceRush(_parent, -1, 1, true, motionOwner);
 }
 
 /*如果无需追踪，则使用类似以下位移代码即可
