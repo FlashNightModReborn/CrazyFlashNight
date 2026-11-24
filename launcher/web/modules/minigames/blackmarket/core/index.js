@@ -32,13 +32,26 @@
     var HIDDEN_COLOR_MODE = "monochrome";
     var IDENTITY_BOUNDARY = "anonymous-synthetic-no-catalog.v2";
     var FIXTURE_DIGEST = "anonymous-shadow-fixture-v2";
-    var LEVELS = [0, 3, 5, 10];
-    var COVERAGE_BY_LEVEL = { 0: 0.97, 3: 0.84, 5: 0.54, 10: 0.18 };
+    var LEVELS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    var COVERAGE_BY_LEVEL = {
+        0: 0.97,
+        1: 0.92,
+        2: 0.88,
+        3: 0.84,
+        4: 0.69,
+        5: 0.54,
+        6: 0.46,
+        7: 0.39,
+        8: 0.32,
+        9: 0.25,
+        10: 0.18
+    };
     var PRICE_POINTS = [5000, 7500, 10000, 15000, 20000, 30000];
+    var RAW_BOX_REDEEM_TP = 5000;
+    var TP_PER_K = 50;
     var MAX_RECEIPTS = 64;
     // 匿名视觉池：visual/visual-pool-manifest.js（tools/bake-black-market-visual-pool.js
-    // 生成，--check 可复验）提供全目录渲染资格清单（仅 u/h 渲染字段，零身份字段）。
-    // 覆泥像素允许被认出（设计意图：能猜、猜不准价）；清单缺失时回退固定安全 SVG。
+    // 生成，--check 可复验）提供全目录渲染资格清单；清单缺失时回退固定安全 SVG。
     var SAFE_SURFACE_DATA_URL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent([
         '<svg xmlns="http://www.w3.org/2000/svg" width="128" height="192" viewBox="0 0 128 192">',
         '<path fill="#87908b" d="M25 35h78l13 25-9 98-43 22-43-22-9-98z"/>',
@@ -83,8 +96,6 @@
         return hash >>> 0;
     }
 
-    // 同组配对分配：同一货舱左右两件来自同一分组（g 键），同页六件互不重复；
-    // 分组不足三对时退化为全池不重复抽取（视觉多样性优先，约束让位）；空池返回 []。
     function shuffleInPlace(list, rng) {
         for (var cursor = list.length - 1; cursor > 0; cursor -= 1) {
             var target = rng.int(cursor + 1);
@@ -94,13 +105,55 @@
         }
     }
 
-    function planVisualAssignments(rng, entries) {
+    // 计算同舱合法标价区间（满足高值回售净赚 >= 50 TP、低值回售必亏，且标价为 50 整数倍）。
+    function computePriceBounds(lowSale, highSale) {
+        if (!Number.isFinite(lowSale) || !Number.isFinite(highSale) || highSale <= lowSale) return null;
+        var lower = Math.ceil((lowSale + 1) / TP_PER_K) * TP_PER_K;
+        var upper = Math.floor((highSale - TP_PER_K) / TP_PER_K) * TP_PER_K;
+        if (lower <= 0 || lower > upper) return null;
+        return { lower: lower, upper: upper };
+    }
+
+    // 标价略微偏向上半区（52%–72%），使盲猜期望 <= 0：
+    // 闭眼乱选没有白嫖正收益，看懂轮廓与升级解密才稳赚，整舱放过因此具备真实止损价值。
+    function pickCounterPriceFromBounds(bounds, rng) {
+        var slots = Math.floor((bounds.upper - bounds.lower) / TP_PER_K) + 1;
+        if (slots <= 1) return bounds.lower;
+        var biasMin = Math.floor((slots - 1) * 0.52);
+        var biasMax = Math.min(slots - 1, Math.max(biasMin, Math.ceil((slots - 1) * 0.74)));
+        var offset = biasMin + rng.int(biasMax - biasMin + 1);
+        return bounds.lower + offset * TP_PER_K;
+    }
+
+    // 同组配对分配（对齐世界观“纳米群品种近似”与真值估值闭环）：
+    // 1. 排除一图多物（同 u 共享不同价格）导致的不可辨识陷阱；
+    // 2. 同一货舱左右两件来自同一分组（g 键）、视觉资产（u）互异、同页六件零撞车；
+    // 3. 优先配对具有合法价差区间（high.s - low.s 可派生 50 倍数标价）的真实对子，
+    //    让看清物品轮廓真正决定赚赔。
+    function planVisualPairings(rng, entries) {
         if (!entries.length) return [];
-        var groups = {};
-        var groupOrder = [];
+        var uriCounts = {};
+        var lastIndexByUri = {};
         var index;
         for (index = 0; index < entries.length; index += 1) {
-            var key = String(entries[index].g || "?");
+            var uri = entries[index].u;
+            uriCounts[uri] = (uriCounts[uri] || 0) + 1;
+            lastIndexByUri[uri] = index;
+        }
+        var groups = {};
+        var groupOrder = [];
+        var fallbackGroups = {};
+        var seenUnique = {};
+        for (index = 0; index < entries.length; index += 1) {
+            var entry = entries[index];
+            var u = entry.u;
+            // bm24 按 u 唯一反查最后一条记录，配对只采样该规范索引，彻底杜绝同图多义冲突。
+            if (lastIndexByUri[u] !== index || seenUnique[u]) continue;
+            seenUnique[u] = true;
+            var key = String(entry.g || "?");
+            if (!fallbackGroups[key]) fallbackGroups[key] = [];
+            fallbackGroups[key].push(index);
+            if (uriCounts[u] !== 1 || entry.e === "banned") continue;
             if (!groups[key]) {
                 groups[key] = [];
                 groupOrder.push(key);
@@ -108,20 +161,63 @@
             groups[key].push(index);
         }
         shuffleInPlace(groupOrder, rng);
-        var picked = [];
-        for (var groupCursor = 0; groupCursor < groupOrder.length && picked.length < 6; groupCursor += 1) {
-            var members = groups[groupOrder[groupCursor]];
-            if (members.length < 2) continue;
-            shuffleInPlace(members, rng);
-            picked.push(members[0], members[1]);
+
+        var usedUris = {};
+        var pairs = [];
+
+        function tryPickPairFrom(members, requirePriced) {
+            if (!members || members.length < 2) return null;
+            var available = members.filter(function(idx) { return !usedUris[entries[idx].u]; });
+            if (available.length < 2) return null;
+            shuffleInPlace(available, rng);
+            var maxChecks = Math.min(available.length, 24);
+            for (var a = 0; a < maxChecks; a += 1) {
+                var idxA = available[a];
+                var itemA = entries[idxA];
+                for (var b = a + 1; b < maxChecks; b += 1) {
+                    var idxB = available[b];
+                    var itemB = entries[idxB];
+                    if (itemA.u === itemB.u) continue;
+                    if (!requirePriced) {
+                        usedUris[itemA.u] = true;
+                        usedUris[itemB.u] = true;
+                        return { first: idxA, second: idxB, bounds: null };
+                    }
+                    var lowSale = Math.min(Number(itemA.s) || 0, Number(itemB.s) || 0);
+                    var highSale = Math.max(Number(itemA.s) || 0, Number(itemB.s) || 0);
+                    // 避免单件天价超出常规影子余额区间
+                    if (lowSale <= 0 || highSale > 200000) continue;
+                    var bounds = computePriceBounds(lowSale, highSale);
+                    if (!bounds || bounds.lower > 160000) continue;
+                    usedUris[itemA.u] = true;
+                    usedUris[itemB.u] = true;
+                    return { first: idxA, second: idxB, bounds: bounds };
+                }
+            }
+            return null;
         }
-        if (picked.length < 6) {
-            var flat = [];
-            for (index = 0; index < entries.length; index += 1) flat.push(index);
-            shuffleInPlace(flat, rng);
-            picked = flat.slice(0, 6);
+
+        // 第一轮：优先不同分组、有真实合法价差的对子
+        for (var groupCursor = 0; groupCursor < groupOrder.length && pairs.length < 3; groupCursor += 1) {
+            var picked = tryPickPairFrom(groups[groupOrder[groupCursor]], true);
+            if (picked) pairs.push(picked);
         }
-        return picked;
+        // 第二轮：允许同分组重复抽第二对（如测试池被过滤成单一分组时）
+        for (var retry = 0; retry < groupOrder.length && pairs.length < 3; retry += 1) {
+            var secondPass = tryPickPairFrom(groups[groupOrder[retry]], true);
+            if (secondPass) pairs.push(secondPass);
+        }
+        // 第三轮：回退到允许无价差过滤但仍保同组、同页不撞车
+        var allGroupKeys = Object.keys(fallbackGroups);
+        shuffleInPlace(allGroupKeys, rng);
+        for (var f = 0; f < allGroupKeys.length && pairs.length < 3; f += 1) {
+            while (pairs.length < 3) {
+                var fallbackPick = tryPickPairFrom(fallbackGroups[allGroupKeys[f]], false);
+                if (!fallbackPick) break;
+                pairs.push(fallbackPick);
+            }
+        }
+        return pairs;
     }
 
     var visualPoolCache = null;
@@ -173,7 +269,7 @@
 
     function randomHex(nextBytes, byteLength) {
         var bytes = nextBytes(byteLength);
-        invariant(bytes && bytes.length === byteLength, "random byte source invalid");
+        invariant(bytes && bytes.length === byteLength, "随机熵源异常");
         var out = "";
         var index;
         for (index = 0; index < bytes.length; index += 1) {
@@ -185,7 +281,7 @@
     function createByteRng(nextBytes) {
         function nextUint32() {
             var bytes = nextBytes(4);
-            invariant(bytes && bytes.length === 4, "random byte source invalid");
+            invariant(bytes && bytes.length === 4, "随机熵源异常");
             return (((bytes[0] << 24) >>> 0) + (bytes[1] << 16)
                 + (bytes[2] << 8) + bytes[3]) >>> 0;
         }
@@ -195,7 +291,7 @@
             },
             int: function(max) {
                 invariant(Number.isInteger(max) && max > 0 && max <= 4294967296,
-                    "rng max must be a positive uint32 range");
+                    "随机数范围非法");
                 var limit = Math.floor(4294967296 / max) * max;
                 var value;
                 do { value = nextUint32(); } while (value >= limit);
@@ -206,25 +302,25 @@
 
     function validateOptions(options) {
         var input = options === undefined ? {} : options;
-        invariant(isObject(input), "anonymous product options invalid");
+        invariant(isObject(input), "匿名产品参数非法");
         var allowed = { tradePoints: true, kPoints: true, supplyCredits: true, decryptLevel: true, seed: true };
         invariant(Object.keys(input).every(function(key) { return allowed[key] === true; }),
             "anonymous product does not accept an exact directory or unknown fields");
         var opts = {};
         if (input.tradePoints !== undefined) {
-            invariant(isSafeNonNegativeInteger(input.tradePoints), "tradePoints invalid");
+            invariant(isSafeNonNegativeInteger(input.tradePoints), "交易点参数非法");
             opts.tradePoints = input.tradePoints;
         }
         if (input.kPoints !== undefined) {
-            invariant(isSafeNonNegativeInteger(input.kPoints), "kPoints invalid");
+            invariant(isSafeNonNegativeInteger(input.kPoints), "K 点参数非法");
             opts.kPoints = input.kPoints;
         }
         if (input.supplyCredits !== undefined) {
-            invariant(isSafeNonNegativeInteger(input.supplyCredits), "supplyCredits invalid");
+            invariant(isSafeNonNegativeInteger(input.supplyCredits), "补货信用参数非法");
             opts.supplyCredits = input.supplyCredits;
         }
         if (input.decryptLevel !== undefined) {
-            invariant(LEVELS.indexOf(input.decryptLevel) >= 0, "decryptLevel invalid");
+            invariant(LEVELS.indexOf(input.decryptLevel) >= 0, "解密等级非法");
             opts.decryptLevel = input.decryptLevel;
         }
         return opts;
@@ -237,17 +333,38 @@
             payment: null,
             paidAmount: 0,
             revealed: null,
+            siblingResidue: null,
             settlement: null
         };
+    }
+
+    function spreadBandFor(spreadTp) {
+        if (spreadTp >= 25000) return { tier: "large", label: "高波差" };
+        if (spreadTp >= 5000) return { tier: "medium", label: "中波差" };
+        return { tier: "small", label: "小波差" };
+    }
+
+    function decryptHintText(decryptLevel, pair) {
+        if (decryptLevel >= 10) return "脱壳净值锁定 · 协议全解";
+        if (decryptLevel >= 8) {
+            var band = spreadBandFor(pair.spreadTp);
+            return "能级" + band.label + " · 方向未明";
+        }
+        if (decryptLevel >= 6) return "强化石耦合读数 · 表层剥离";
+        if (decryptLevel >= 5) return "基础轮廓剥离 · 无色检视";
+        if (decryptLevel >= 3) return "破局泄口暴露 · 局部表面";
+        if (decryptLevel >= 1) return "纳米壳微退 · 轮廓隐现";
+        return "高危蛰伏封壳 · 零解密";
     }
 
     function createSessionInternal(options, nextBytes) {
         var opts = validateOptions(options);
         var pageNumber = 1;
         var revision = 1;
-        var tradePoints = opts.tradePoints === undefined ? 500000 : opts.tradePoints;
-        var kPoints = opts.kPoints === undefined ? 10000 : opts.kPoints;
+        var tradePoints = opts.tradePoints === undefined ? 200000 : opts.tradePoints;
+        var kPoints = opts.kPoints === undefined ? 2000 : opts.kPoints;
         var supplyCredits = opts.supplyCredits === undefined ? 2 : opts.supplyCredits;
+        var rawBoxes = 3;
         var decryptLevel = opts.decryptLevel === undefined ? 3 : opts.decryptLevel;
         var page;
         var progress = {};
@@ -261,36 +378,63 @@
             var rng = createByteRng(nextBytes);
             var pairs = [];
             var pairIndex;
-            // 同组配对约束（对齐 exact oracle 的 same-subclass-price-strata）：同一货舱左右
-            // 两件必为同组物品（subclass 粗分类），同页六件零撞车；视觉只是像素，分组键是
-            // 粗分类法，不构成身份/价格泄漏。纯内部字段，不进公开快照。
             var poolEntries = visualPoolEntries();
-            var visualPlan = planVisualAssignments(rng, poolEntries);
-            var poolAssignCursor = 0;
+            var visualPairs = planVisualPairings(rng, poolEntries);
+
             for (pairIndex = 1; pairIndex <= 3; pairIndex += 1) {
                 var pairId = "P" + pageNumber + "-" + pairIndex;
-                var counterPriceTp = PRICE_POINTS[rng.int(PRICE_POINTS.length)];
-                var lowSettlementTp = Math.max(50, counterPriceTp - (1 + rng.int(12)) * 50);
-                var highSettlementTp = counterPriceTp + (1 + rng.int(24)) * 50;
-                var highOnA = rng.next() < 0.5;
+                var visualPair = visualPairs[pairIndex - 1] || null;
+                var counterPriceTp;
+                var settlementA;
+                var settlementB;
+                var poolIdxA = -1;
+                var poolIdxB = -1;
+                var highOnA;
+
+                if (visualPair && visualPair.bounds) {
+                    var entryFirst = poolEntries[visualPair.first];
+                    var entrySecond = poolEntries[visualPair.second];
+                    var firstIsHigher = (Number(entryFirst.s) || 0) >= (Number(entrySecond.s) || 0);
+                    var highPoolIdx = firstIsHigher ? visualPair.first : visualPair.second;
+                    var lowPoolIdx = firstIsHigher ? visualPair.second : visualPair.first;
+                    var highEntry = poolEntries[highPoolIdx];
+                    var lowEntry = poolEntries[lowPoolIdx];
+                    counterPriceTp = pickCounterPriceFromBounds(visualPair.bounds, rng);
+                    highOnA = rng.next() < 0.5;
+                    poolIdxA = highOnA ? highPoolIdx : lowPoolIdx;
+                    poolIdxB = highOnA ? lowPoolIdx : highPoolIdx;
+                    settlementA = highOnA ? highEntry.s : lowEntry.s;
+                    settlementB = highOnA ? lowEntry.s : highEntry.s;
+                } else {
+                    counterPriceTp = PRICE_POINTS[rng.int(PRICE_POINTS.length)];
+                    // 回退合成价也保持盲选期望 <= 0（亏损 1–16 档 vs 盈利 1–12 档）
+                    var lowSettlementTp = Math.max(50, counterPriceTp - (1 + rng.int(16)) * TP_PER_K);
+                    var highSettlementTp = counterPriceTp + (1 + rng.int(12)) * TP_PER_K;
+                    highOnA = rng.next() < 0.5;
+                    settlementA = highOnA ? highSettlementTp : lowSettlementTp;
+                    settlementB = highOnA ? lowSettlementTp : highSettlementTp;
+                    if (visualPair) {
+                        poolIdxA = highOnA ? visualPair.first : visualPair.second;
+                        poolIdxB = highOnA ? visualPair.second : visualPair.first;
+                    }
+                }
+
                 var handleA = "opaque-visual-" + randomHex(nextBytes, 20);
                 var handleB = "opaque-visual-" + randomHex(nextBytes, 20);
                 var seedA = randomHex(nextBytes, 16);
                 var seedB = randomHex(nextBytes, 16);
+                var spreadTp = Math.abs(settlementA - settlementB);
 
-                function makeOffer(side, high, handle, surfaceSeed) {
-                    var settlementTp = high ? highSettlementTp : lowSettlementTp;
-                    var offer = {
+                function makeOffer(side, high, handle, surfaceSeed, settlementTp, poolIdx) {
+                    return {
                         offerId: pairId + "-" + side,
                         side: side,
                         visualHandle: handle,
                         settlementTp: settlementTp,
                         syntheticTier: high ? "high" : "low",
                         surfaceSeed: surfaceSeed,
-                        visualPool: visualPlan.length ? visualPlan[poolAssignCursor % visualPlan.length] : -1
+                        visualPool: poolIdx
                     };
-                    poolAssignCursor += 1;
-                    return offer;
                 }
 
                 pairs.push({
@@ -299,7 +443,8 @@
                     category: "anonymous",
                     subclass: "匿名影子货舱",
                     counterPriceTp: counterPriceTp,
-                    kCost: Math.ceil(counterPriceTp / 50),
+                    kCost: Math.ceil(counterPriceTp / TP_PER_K),
+                    spreadTp: spreadTp,
                     similarityMode: "anonymous-synthetic",
                     coverageParity: {
                         metric: "object-alpha-pixels",
@@ -308,8 +453,8 @@
                         maxCoverageDelta: 0.002
                     },
                     offers: [
-                        makeOffer("A", highOnA, handleA, seedA),
-                        makeOffer("B", !highOnA, handleB, seedB)
+                        makeOffer("A", highOnA, handleA, seedA, settlementA, poolIdxA),
+                        makeOffer("B", !highOnA, handleB, seedB, settlementB, poolIdxB)
                     ]
                 });
             }
@@ -334,18 +479,18 @@
 
         function currentPair(pairId) {
             var pair = page.pairs.filter(function(candidate) { return candidate.pairId === pairId; })[0];
-            invariant(!!pair, "pair is not on the current page");
+            invariant(!!pair, "目标货舱不在当前批次内");
             return pair;
         }
 
         function currentOffer(pair, offerId) {
             var offer = pair.offers.filter(function(candidate) { return candidate.offerId === offerId; })[0];
-            invariant(!!offer, "offer is not in the selected pair");
+            invariant(!!offer, "目标货包不在所选货舱内");
             return offer;
         }
 
         function currentOfferByHandle(visualHandle) {
-            invariant(isSafeString(visualHandle, 128), "visual handle invalid");
+            invariant(isSafeString(visualHandle, 128), "视觉句柄非法");
             var pairIndex;
             var offerIndex;
             for (pairIndex = 0; pairIndex < page.pairs.length; pairIndex += 1) {
@@ -355,12 +500,12 @@
                     }
                 }
             }
-            invariant(false, "visual handle is not on the current page");
+            invariant(false, "视觉句柄不在当前批次内");
             return null;
         }
 
         function callKey(operation, callId) {
-            invariant(isSafeString(callId, 128), "callId invalid");
+            invariant(isSafeString(callId, 128), "请求编号非法");
             return operation + ":" + callId;
         }
 
@@ -391,6 +536,49 @@
             });
         }
 
+        function resolvePoolEntryFor(offer) {
+            var poolEntries = visualPoolEntries();
+            if (typeof offer.visualPool !== "number" || offer.visualPool < 0 || !poolEntries.length) {
+                return null;
+            }
+            return poolEntries[offer.visualPool % poolEntries.length] || null;
+        }
+
+        function buildPageSummary() {
+            var pageRows = history.filter(function(row) {
+                return row.pageNumber === pageNumber
+                    && (row.terminal === "extracted" || row.terminal === "resold" || row.terminal === "skipped");
+            });
+            var wins = 0;
+            var purchases = 0;
+            var skips = 0;
+            var extracted = 0;
+            var pageDeltaV = 0;
+            for (var i = 0; i < pageRows.length; i += 1) {
+                var row = pageRows[i];
+                if (row.terminal === "skipped") {
+                    skips += 1;
+                } else {
+                    purchases += 1;
+                    if (row.wasWinner) wins += 1;
+                    if (row.terminal === "extracted") extracted += 1;
+                    pageDeltaV += row.deltaV;
+                }
+            }
+            var sessionDeltaV = 0;
+            for (var j = 0; j < history.length; j += 1) {
+                sessionDeltaV += history[j].deltaV;
+            }
+            return {
+                wins: wins,
+                purchases: purchases,
+                skips: skips,
+                extracted: extracted,
+                pageDeltaV: pageDeltaV,
+                sessionDeltaV: sessionDeltaV
+            };
+        }
+
         function projectOffer(pair, offer) {
             var state = progress[pair.pairId];
             var chosen = state.selectedOfferId === offer.offerId;
@@ -407,8 +595,10 @@
                 subclass: pair.subclass,
                 visualHandle: offer.visualHandle,
                 presentationKind: "sealed-abstract",
-                label: "未鉴定匿名货物 " + offer.side,
-                hint: decryptLevel >= 3 ? "匿名破局点 · 局部表面" : null,
+                label: "未脱壳封件 " + offer.side,
+                hint: decryptHintText(decryptLevel, pair),
+                spreadBand: decryptLevel >= 8 && decryptLevel < 10 && state.status === "open"
+                    ? spreadBandFor(pair.spreadTp) : null,
                 direction: decryptLevel >= 10 && state.status === "open"
                     ? (offer.settlementTp > pair.counterPriceTp ? "profit" : "loss") : null,
                 visualState: visualState,
@@ -424,6 +614,9 @@
         }
 
         function snapshot() {
+            var openPairs = page.pairs.filter(function(pair) {
+                return progress[pair.pairId].status === "open";
+            }).length;
             return {
                 schemaVersion: SNAPSHOT_SCHEMA,
                 revision: revision,
@@ -440,11 +633,23 @@
                     mechanicallyRejected: 0,
                     byCategory: { anonymous: 6 }
                 },
-                balances: { tradePoints: tradePoints, kPoints: kPoints, supplyCredits: supplyCredits },
+                balances: {
+                    tradePoints: tradePoints,
+                    kPoints: kPoints,
+                    supplyCredits: supplyCredits,
+                    rawBoxes: rawBoxes
+                },
                 decryptLevel: decryptLevel,
                 mudCoverage: COVERAGE_BY_LEVEL[decryptLevel],
-                page: { id: page.pageId, number: pageNumber, complete: isComplete() },
+                page: {
+                    id: page.pageId,
+                    number: pageNumber,
+                    complete: isComplete(),
+                    openPairs: openPairs
+                },
                 pairs: page.pairs.map(function(pair) {
+                    var state = progress[pair.pairId];
+                    var terminalSettled = state.status === "extracted" || state.status === "resold";
                     return {
                         pairId: pair.pairId,
                         index: pair.index,
@@ -452,8 +657,12 @@
                         subclass: pair.subclass,
                         counterPriceTp: pair.counterPriceTp,
                         kCost: pair.kCost,
-                        status: progress[pair.pairId].status,
+                        status: state.status,
                         similarityMode: pair.similarityMode,
+                        spreadBand: decryptLevel >= 8 && state.status === "open"
+                            ? spreadBandFor(pair.spreadTp) : null,
+                        siblingResidue: terminalSettled && state.siblingResidue
+                            ? clone(state.siblingResidue) : null,
                         coverageParity: {
                             metric: pair.coverageParity.metric,
                             anchorMode: pair.coverageParity.anchorMode,
@@ -466,7 +675,8 @@
                 }),
                 pending: pending ? clone(pending) : null,
                 collectionCount: collectionCount,
-                historyCount: history.length
+                historyCount: history.length,
+                summary: buildPageSummary()
             };
         }
 
@@ -476,15 +686,15 @@
         var productPort = {
             open: function() { return snapshot(); },
             purchasePreview: function(intent) {
-                invariant(isObject(intent), "purchase intent invalid");
-                invariant(pending === null, "先结清已揭晓的货物");
-                invariant(intent.payment === "tp" || intent.payment === "k", "payment invalid");
+                invariant(isObject(intent), "购买请求格式非法");
+                invariant(pending === null, "先结清已脱壳的货物");
+                invariant(intent.payment === "tp" || intent.payment === "k", "不支持的支付方式");
                 var pair = currentPair(intent.pairId);
-                invariant(progress[pair.pairId].status === "open", "pair is already terminal");
+                invariant(progress[pair.pairId].status === "open", "该货舱已完成结算或封存");
                 currentOffer(pair, intent.offerId);
                 var cost = intent.payment === "tp" ? pair.counterPriceTp : pair.kCost;
-                invariant(intent.payment !== "tp" || tradePoints >= cost, "交易点不足");
-                invariant(intent.payment !== "k" || kPoints >= cost, "K 点不足");
+                invariant(intent.payment !== "tp" || tradePoints >= cost, "交易点不足，可先上交毛坯盲盒换取工钱");
+                invariant(intent.payment !== "k" || kPoints >= cost, "K 点不足，可改用交易点或按 50:1 兑换");
                 var token = "pv-" + revision + "-" + pair.pairId + "-" + intent.offerId + "-" + intent.payment;
                 var result = {
                     token: token,
@@ -501,12 +711,12 @@
                 var request = { token: token };
                 var prior = replay("purchaseCommit", callId, request);
                 if (prior) return prior;
-                invariant(pending === null, "先结清已揭晓的货物");
+                invariant(pending === null, "先结清已脱壳的货物");
                 var preview = previews[token];
-                invariant(!!preview && preview.revision === revision, "preview is stale");
+                invariant(!!preview && preview.revision === revision, "报价预览已过期，请重新选中货包");
                 var pair = currentPair(preview.pairId);
                 var offer = currentOffer(pair, preview.offerId);
-                invariant(progress[pair.pairId].status === "open", "pair is already terminal");
+                invariant(progress[pair.pairId].status === "open", "该货舱已完成结算或封存");
                 if (preview.payment === "tp") {
                     invariant(tradePoints >= preview.cost, "交易点不足");
                     tradePoints -= preview.cost;
@@ -515,13 +725,8 @@
                     kPoints -= preview.cost;
                 }
                 var valueDelta = offer.settlementTp
-                    - (preview.payment === "tp" ? preview.cost : preview.cost * 50);
-                // 揭晓释放：允许物品（e !== "banned"）给出真实身份与目录参考价；
-                // 购买前快照仍然零身份字段（bm22/bm-ui2 不变），释放只发生在成交之后。
-                var poolEntries = visualPoolEntries();
-                var poolEntry = (typeof offer.visualPool === "number" && offer.visualPool >= 0
-                    && poolEntries.length)
-                    ? poolEntries[offer.visualPool % poolEntries.length] : null;
+                    - (preview.payment === "tp" ? preview.cost : preview.cost * TP_PER_K);
+                var poolEntry = resolvePoolEntryFor(offer);
                 var releasable = poolEntry && poolEntry.e !== "banned";
                 progress[pair.pairId] = {
                     status: "pending",
@@ -532,7 +737,7 @@
                         displayName: releasable ? poolEntry.n
                             : "匿名影子货物 · " + (offer.syntheticTier === "high" ? "高值" : "低值"),
                         quantity: 1,
-                        basePrice: offer.settlementTp * 4,
+                        basePrice: releasable ? poolEntry.p : offer.settlementTp * 4,
                         resellValue: offer.settlementTp,
                         payment: preview.payment,
                         paidAmount: preview.cost,
@@ -550,6 +755,7 @@
                             actionType: poolEntry.at
                         } : null
                     },
+                    siblingResidue: null,
                     settlement: null
                 };
                 pending = { pairId: pair.pairId, offerId: offer.offerId, commitCallId: callId };
@@ -562,15 +768,36 @@
                 var request = { action: action };
                 var prior = replay("settle", callId, request);
                 if (prior) return prior;
-                invariant(action === "extract" || action === "resell", "settle action invalid");
-                invariant(!!pending, "no pending offer");
+                invariant(action === "extract" || action === "resell", "结算方式非法");
+                invariant(!!pending, "当前没有待结算的脱壳货物");
                 var pairId = pending.pairId;
+                var pair = currentPair(pairId);
                 var state = progress[pairId];
-                invariant(state.status === "pending" && !!state.revealed, "pending state invalid");
+                invariant(state.status === "pending" && !!state.revealed, "待结算状态异常");
                 if (action === "resell") tradePoints += state.revealed.resellValue;
                 else collectionCount += 1;
                 state.status = action === "resell" ? "resold" : "extracted";
                 state.settlement = action;
+
+                // 单组终局后释放被牺牲为纳米炸弹的兄弟件残片读数（反事实复盘学习，购买前零泄密）
+                var siblingOffer = pair.offers.filter(function(candidate) {
+                    return candidate.offerId !== state.selectedOfferId;
+                })[0];
+                if (siblingOffer) {
+                    var siblingPool = resolvePoolEntryFor(siblingOffer);
+                    var siblingReleasable = siblingPool && siblingPool.e !== "banned";
+                    var siblingDeltaV = siblingOffer.settlementTp - pair.counterPriceTp;
+                    state.siblingResidue = {
+                        side: siblingOffer.side,
+                        displayName: siblingReleasable ? siblingPool.n
+                            : "未收录黑货（" + (siblingOffer.syntheticTier === "high" ? "高值" : "低值") + "）",
+                        catalogPrice: siblingReleasable ? siblingPool.p : siblingOffer.settlementTp * 4,
+                        saleValue: siblingOffer.settlementTp,
+                        wasWinner: siblingDeltaV > 0,
+                        deltaV: siblingDeltaV
+                    };
+                }
+
                 var deltaTp = state.payment === "tp" ? -state.paidAmount : 0;
                 var deltaK = state.payment === "k" ? -state.paidAmount : 0;
                 if (action === "resell") deltaTp += state.revealed.resellValue;
@@ -582,7 +809,7 @@
                     payment: state.payment,
                     deltaTp: deltaTp,
                     deltaK: deltaK,
-                    deltaV: deltaTp + deltaK * 50,
+                    deltaV: deltaTp + deltaK * TP_PER_K,
                     terminal: state.status
                 });
                 pending = null;
@@ -595,9 +822,9 @@
                 var request = { pairId: pairId };
                 var prior = replay("skip", callId, request);
                 if (prior) return prior;
-                invariant(pending === null, "先结清已揭晓的货物");
+                invariant(pending === null, "先结清已脱壳的货物");
                 var pair = currentPair(pairId);
-                invariant(progress[pair.pairId].status === "open", "pair is already terminal");
+                invariant(progress[pair.pairId].status === "open", "该货舱已完成结算或封存");
                 progress[pair.pairId].status = "skipped";
                 history.push({
                     pageNumber: pageNumber,
@@ -619,9 +846,9 @@
                 var request = {};
                 var prior = replay("nextPage", callId, request);
                 if (prior) return prior;
-                invariant(pending === null, "先结清已揭晓的货物");
-                invariant(isComplete(), "current page is not complete");
-                invariant(supplyCredits > 0, "补货信用不足");
+                invariant(pending === null, "先结清已脱壳的货物");
+                invariant(isComplete(), "当前批次还有未处理的货舱");
+                invariant(supplyCredits > 0, "补货信用不足，可先上交毛坯盲盒获取信用");
                 supplyCredits -= 1;
                 pageNumber += 1;
                 page = preparePage();
@@ -630,17 +857,65 @@
                 var next = snapshot();
                 record("nextPage", callId, request, next);
                 return next;
+            },
+            // 保底正收益轨道：将战斗获取的未清洗毛坯直接卖给假肢仙人（零风险固定 TP + 补货信用）
+            redeemRawBox: function(callId) {
+                var request = { kind: "rawbox" };
+                var prior = replay("redeemRawBox", callId, request);
+                if (prior) return prior;
+                invariant(pending === null, "先结清已脱壳的货物");
+                invariant(rawBoxes > 0, "手头已没有未清洗毛坯盲盒");
+                rawBoxes -= 1;
+                tradePoints += RAW_BOX_REDEEM_TP;
+                supplyCredits += 1;
+                history.push({
+                    pageNumber: pageNumber,
+                    pairId: null,
+                    side: null,
+                    wasWinner: null,
+                    payment: null,
+                    deltaTp: RAW_BOX_REDEEM_TP,
+                    deltaK: 0,
+                    deltaV: RAW_BOX_REDEEM_TP,
+                    terminal: "rawbox"
+                });
+                bump();
+                var redeemed = snapshot();
+                record("redeemRawBox", callId, request, redeemed);
+                return redeemed;
+            },
+            // 50 TP -> 1 K 单向整额兑换（ΔV = 0，余数保留）
+            redeemK: function(kAmount, callId) {
+                var request = { kAmount: kAmount };
+                var prior = replay("redeemK", callId, request);
+                if (prior) return prior;
+                invariant(pending === null, "先结清已脱壳的货物");
+                invariant(isSafePositiveInteger(kAmount), "兑换 K 点数量必须为正整数");
+                var costTp = kAmount * TP_PER_K;
+                invariant(tradePoints >= costTp, "交易点不足，无法兑换 " + kAmount + " K");
+                tradePoints -= costTp;
+                kPoints += kAmount;
+                history.push({
+                    pageNumber: pageNumber,
+                    pairId: null,
+                    side: null,
+                    wasWinner: null,
+                    payment: "tp",
+                    deltaTp: -costTp,
+                    deltaK: kAmount,
+                    deltaV: 0,
+                    terminal: "redeem_k"
+                });
+                bump();
+                var exchanged = snapshot();
+                record("redeemK", callId, request, exchanged);
+                return exchanged;
             }
         };
 
         var surfacePort = {
             resolveSurface: function(visualHandle) {
                 var offer = currentOfferByHandle(visualHandle);
-                // 匿名视觉池：每页私有熵洗牌分配（preparePage 的 visualPool），指向
-                // visual-pool-manifest.js 里全目录渲染资格清单的某一格。Web 层只拿到
-                // 覆泥像素（图标文件名本是内容哈希），拿不到名称/价格/目录映射——
-                // 认出物品是设计允许的玩法，价格答案钥匙始终留在 Web 根外。
-                // 正式接入后由 Host 私有且不可逆的视觉字节端口替代（README「下一阶段」）。
                 var poolEntries = visualPoolEntries();
                 if (!poolEntries.length || typeof offer.visualPool !== "number" || offer.visualPool < 0) {
                     return {
@@ -685,7 +960,12 @@
                     identityBoundary: IDENTITY_BOUNDARY,
                     pageNumber: pageNumber,
                     decryptLevel: decryptLevel,
-                    balances: { tradePoints: tradePoints, kPoints: kPoints, supplyCredits: supplyCredits },
+                    balances: {
+                        tradePoints: tradePoints,
+                        kPoints: kPoints,
+                        supplyCredits: supplyCredits,
+                        rawBoxes: rawBoxes
+                    },
                     history: clone(history)
                 };
             }
@@ -709,6 +989,8 @@
         ALGORITHM_VERSION: ALGORITHM_VERSION,
         HIDDEN_COLOR_MODE: HIDDEN_COLOR_MODE,
         IDENTITY_BOUNDARY: IDENTITY_BOUNDARY,
+        RAW_BOX_REDEEM_TP: RAW_BOX_REDEEM_TP,
+        TP_PER_K: TP_PER_K,
         LEVELS: LEVELS.slice(),
         COVERAGE_BY_LEVEL: clone(COVERAGE_BY_LEVEL),
         createShadowSession: createShadowSession,

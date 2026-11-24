@@ -427,11 +427,11 @@ async function main() {
         "shared resolved-state snapshot API missing");
     var productCoreIndex = registrySource.indexOf("modules/minigames/blackmarket/core/index.js");
     var focusIndex = registrySource.indexOf("modules/minigames/blackmarket/visual/inspection-focus.js");
+    var previewIndex = registrySource.indexOf("modules/minigames/blackmarket/visual/equipment-preview.js");
     var panelIndex = registrySource.indexOf("modules/minigames/blackmarket/blackmarket-panel.js");
-    assert(productCoreIndex >= 0 && productCoreIndex < focusIndex && focusIndex < panelIndex
-        && registrySource.indexOf("modules/minigames/blackmarket/dev/exact-lab-core.js") < 0
-        && registrySource.indexOf("modules/minigames/blackmarket/visual/equipment-preview.js") < 0,
-        "normal blackmarket lazy closure still includes exact Lab/equipment dependencies");
+    assert(productCoreIndex >= 0 && productCoreIndex < focusIndex && focusIndex < previewIndex && previewIndex < panelIndex
+        && registrySource.indexOf("modules/minigames/blackmarket/dev/exact-lab-core.js") < 0,
+        "normal blackmarket lazy closure order invalid or still includes exact Lab dependency");
 
     console.log("[blackmarket-equipment-preview] 44/44 passed; Web exactCatalogFiles="
         + webCatalogFiles.length + ", historicalUrlBacked=" + fs.existsSync(historicalCatalogPath)

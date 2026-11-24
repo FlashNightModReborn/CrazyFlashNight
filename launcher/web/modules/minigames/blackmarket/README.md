@@ -7,7 +7,7 @@
 
 普通 Launcher `BLACKMARKET_TEST` 运行匿名合成交易状态机：三舱、购买、TP/K、提取/回售、覆泥表面和放大检视可操作。公开 `category/subclass/counterPrice` 使用匿名分类和独立合成价格。2026-08-26 的测试版产品决策已让客户端视觉池携带真实图标、名称和参考价；购买前快照仍不投影身份，但客户端清单不构成保密边界。完整 exact catalog/oracle 仍只供 Node 开发测试，正式经济和存档未接入。
 
-全目录机械盘点、确定性配对 oracle、纸娃娃和武器素材验证已移到 Web 静态根外的 `tools/fixtures/blackmarket/`，只由 Node QA 读取。普通 lazy closure 与浏览器 harness 都不加载 exact oracle、catalog、`equipment-preview.js`、`EquipmentInspector`、dressup 或 portrait 依赖；产品 core/panel 不存在 marker、字符串 capability、exact session factory、Lab UI 或 catalog 注入钩子。历史 catalog URL 与旧 exact-core URL 在 Web 根均无文件可读。
+全目录机械盘点与确定性配对 oracle 仍留在 Web 静态根外的 `tools/fixtures/blackmarket/`，只由 Node QA 读取。普通 lazy closure 与浏览器 harness 均不加载 exact oracle 或 catalog；2026-11-24 按设计确认接回实时装备渲染（`asset-timeline` / `dressup-doll-renderer` / `merc-portrait-renderer` / `equipment-inspector` + `visual/equipment-preview.js`），单页仅 6 件货包实时渲染**完整武器本体（533/533）与非颈部防具局部聚焦纸娃娃（491/492）**，缺失分支或颈部装备优先回退透明掉落帧 `_2.webp`，再退回 `_1.webp`；不调用带标题的 `EquipmentInspector.open()`，产品 core/panel 仍不存在 marker、字符串 capability、exact session factory、Lab UI 或 catalog 注入钩子。历史 catalog URL 与旧 exact-core URL 在 Web 根均无文件可读。
 
 ## 边界
 
@@ -28,7 +28,7 @@
 - `visual/item-surface.js`：真实池图标的 Alpha/SDF、自动锚点、正交旋转和休眠纳米污泥算法；清单缺席时才用固定安全 SVG。
 - `visual/inspection-focus.js`：只消费匿名覆泥母版的 bounds/外扩半径，计算检视相机。
 - `../../../../../tools/fixtures/blackmarket/exact-oracle-core.js`：Web 静态根外的 Node-only 全目录开发 oracle。
-- `visual/equipment-preview.js`：仅供独立开发测试验证纸娃娃/武器 source，不在普通 lazy closure 中。
+- `visual/equipment-preview.js`：实时解析武器完整本体与非颈部防具局部纸娃娃（LRU 缓存 24 件、512px 离屏 PNG 喂给覆泥管道；同舱防具统一共享单性别分支），位于普通 lazy closure 且仅走离屏渲染，不调用 `EquipmentInspector.open()`。
 - `visual/visual-pool-manifest.js`：`tools/bake-black-market-visual-pool.js` 生成的全目录渲染资格 + 身份绑定清单（u/f/fm/h/g/n/t/sc/p/s/at/e/k，零注释全文）；可选 `f` 仅指同 iconKey 的另一帧，`fm` 区分透明完整帧与背包图的 Alpha 策略。
 - `launcher/web/assets/minigames/blackmarket/`：面板美术资产——`tank-interior.webp`（舱液背景，AI 精致化后人工验收）、`device-frame.webp`（合成台机体淡影，backdrop 用）。
 - `dev/qa-suite.js`：Node 逻辑门同时验证离线 exact oracle 和匿名产品契约，但明确选择不同 core。
@@ -62,9 +62,11 @@ name/instance；确认在 3 秒内丢失时 Web 只解除 pending 以允许重�
 
 Host 只接受当前 blackmarket exact instance、递增 sequence 与有界整数，按真实 Web 文档生命周期最多记录 64 条 `event=blackmarket_softlock_observation`。每个 heartbeat 至多维持一个 observation-only AS2 probe，用现有 socket generation 读取 `businessOwner/pauseOwner/sceneOwner/frameSequence`，并同时记录 Web pending、Host route outstanding 与 socket ready。探针没有业务写、timeout、retry、watchdog、自动关闭或修复能力；目前机器只能安全输出 `no_outstanding_operation` 或 `inconclusive`，主动复现时再按止血治理 ADR 结合现场日志裁决四种合法结论之一。该能力默认关闭、未进入正式 runtime，不能拿 heartbeat 存活或沉默单独推断卡顿 owner。
 
-P2 演出钩子：面板通过 `minigame_session` 的 `kind="fx"` 上报机器演出时刻（`fx` 字段取值
-`fx-poweron / fx-select / fx-reveal-profit / fx-reveal-loss / fx-error / fx-scan-open /
-fx-scan-rotate / fx-drain`），供 Host 或未来音效系统消费；纯通知、无状态依赖，Host 缺席即 no-op。
+P2/P4 机台化拟物演出与体验迭代（2026-11-24）：
+- 底栏左端嵌入呼应“终结者崇拜者”假肢工坊设定的 **T800 机械骷髅扩音首**（纯内联分层 SVG，零外部图片请求），随选中槽位左右盯货、说话时下颌张合、脱壳盈亏与报错切眼灯情绪，购买前零价值泄密。
+- 内置轻量工业机台 Web Audio 合成器与顶栏静音开关（`♪ 开/静`），直接消费既有 `fx-poweron / fx-select / fx-reveal-profit / fx-reveal-loss / fx-error / fx-scan-open / fx-scan-rotate / fx-drain` 及新增 `fx-rawbox / fx-redeem-k / fx-talk` 演出时刻，同时保留 `minigame_session` 的 `kind="fx"` 纯通知上报。
+- 渲染层改为增量 DOM 更新（仅切页/重载建壳，选货/切支付/单件揭晓就地 patch），消除气泡瞬移与画布闪屏；同舱中间升级为纳米引流电极桥，演出“选中件脱壳、牺牲件纳米聚团封为爆弹”，单组结清后在爆弹闸门释放牺牲体残片读数。
+- 影子会话内补齐保底毛坯上交（`redeemRawBox`）、50:1 单向兑 K（`redeemK`）、0–10 级完整解密梯度与真实价差同组配对（排除一图多义共享图标，盲选期望 `≤ 0`），检视台新增 `A | B 并排对照` 与双击/角标快检。
 所有演出 FX 均为 `pointer-events:none` 纯装饰层，不拦截输入、不改变任何逻辑时序。
 
 浏览器夹具：

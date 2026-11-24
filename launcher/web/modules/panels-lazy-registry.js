@@ -372,13 +372,18 @@
          'modules/settings-panel.js'],
         noop);
 
-    // ── blackmarket（匿名合成影子测试；Web 不加载价格/名称目录，覆泥像素走生成的视觉池清单）──
+    // ── blackmarket（匿名合成影子测试；装备走实时纸娃娃/武器本体渲染，购买前快照与 DOM 零身份）──
     Panels.registerLazy('blackmarket',
         ['modules/minigames/shared/host-bridge.js',
+         'modules/asset-timeline.js',
+         'modules/dressup-doll-renderer.js',
+         'modules/merc-portrait-renderer.js',
+         'modules/workbench-inspection-viewport.js',
+         'modules/equipment-inspector.js',
          'modules/minigames/blackmarket/visual/visual-pool-manifest.js',
          'modules/minigames/blackmarket/core/index.js',
-         'modules/workbench-inspection-viewport.js',
          'modules/minigames/blackmarket/visual/inspection-focus.js',
+         'modules/minigames/blackmarket/visual/equipment-preview.js',
          'modules/minigames/blackmarket/visual/item-surface.js',
          'modules/minigames/blackmarket/blackmarket-panel.js'],
         noop);

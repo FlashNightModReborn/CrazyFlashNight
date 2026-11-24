@@ -1,43 +1,55 @@
 .blackmarket-scale-shell {
     overflow: hidden;
+    animation: bm-shell-power 0.45s ease-out;
+}
+
+.blackmarket-scale-shell.is-powering-off {
+    animation: bm-shell-off 0.24s ease-in forwards;
 }
 
 .blackmarket-panel {
-    /* 终结者合成台设备色谱：枪灰机体 + 培养舱青主色 + 生物光黄副强调 + 试剂红绿语义色。
-       资产来源 flashswf/levels/地图-堕落城商业街.swf DefineSprite_33（终结者合成台）。 */
+    /* 外旧内液色谱：假肢仙人改装工坊磨损枪灰机壳 + 终结者合成台培养液青 + 旧金琥珀标价 + 试剂语义色 */
     --bm-ink: #080b0d;
-    --bm-panel: #101619;
-    --bm-panel-2: #172024;
-    --bm-line: rgba(111, 224, 207, 0.24);
-    --bm-line-strong: rgba(160, 240, 224, 0.55);
-    --bm-cyan: #6fe0cf;
-    --bm-cyan-pale: #d2f6ee;
-    --bm-bio: #ffd76a;
-    --bm-red: #ff5d55;
-    --bm-green: #82d95e;
-    --bm-vial-purple: #8f6fd8;
-    --bm-vial-green: #7fd45a;
-    --bm-vial-cyan: #4fc4d8;
-    --bm-vial-red: #e85a5a;
+    --bm-panel: #12171a;
+    --bm-panel-2: #192226;
+    --bm-line: rgba(124, 214, 200, 0.24);
+    --bm-line-strong: rgba(164, 236, 222, 0.52);
+    --bm-cyan: #72e2d0;
+    --bm-cyan-pale: #dbf7f0;
+    --bm-bio: #ffd36b;
+    --bm-amber-dim: #cfa24d;
+    --bm-red: #ff5b54;
+    --bm-green: #84df62;
+    --bm-vial-purple: #9c7de6;
+    --bm-vial-green: #80da5c;
+    --bm-vial-cyan: #52c9dc;
+    --bm-vial-red: #eb615b;
     --bm-font-display: "CF7Face--maoken-yingbi-kaishu-400", "Microsoft YaHei", sans-serif;
-    --bm-text: #d9d5ca;
-    --bm-dim: #8e938f;
+    --bm-text: #e2dfd5;
+    --bm-dim: #9eb3ae;
     --bm-cut: 18px;
     background:
-        linear-gradient(180deg, rgba(111,224,207,0.05), transparent 16%),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.014) 0 1px, transparent 1px 6px),
-        linear-gradient(150deg, #22262a 0%, #14181a 45%, #101314 78%, #191d1f 100%);
+        linear-gradient(180deg, rgba(114, 226, 208, 0.05), transparent 15%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0 1px, transparent 1px 6px),
+        linear-gradient(155deg, #25292d 0%, #15191c 46%, #101416 78%, #1a1f22 100%);
     border-color: var(--bm-line-strong);
     box-shadow:
         inset 0 0 0 3px #07090a,
-        inset 0 0 0 4px rgba(160,240,224,0.22),
-        inset 0 0 64px rgba(0,0,0,0.55);
+        inset 0 0 0 4px rgba(164, 236, 222, 0.2),
+        inset 0 0 56px rgba(0, 0, 0, 0.55);
     color: var(--bm-text);
     font-family: "Consolas", "Microsoft YaHei", monospace;
+    font-size: 12px;
     /* 逻辑画布 1024x576 是测试契约（bm-ui5 量 offsetWidth），盒模型在此钉死 */
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+}
+
+.blackmarket-panel *,
+.blackmarket-panel *::before,
+.blackmarket-panel *::after {
+    box-sizing: border-box;
 }
 
 .blackmarket-panel button {
@@ -49,23 +61,36 @@
     outline-offset: 2px;
 }
 
+.blackmarket-panel .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* ── 启动态 ─────────────────────────────────────────────── */
 .blackmarket-boot {
     display: grid;
     place-items: center;
     gap: 14px;
     height: 100%;
     color: var(--bm-cyan-pale);
+    font-size: 13px;
     letter-spacing: 2px;
     background:
-        linear-gradient(rgba(112,216,192,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(112,216,192,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(114, 226, 208, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(114, 226, 208, 0.04) 1px, transparent 1px);
     background-size: 32px 32px;
 }
 
 .blackmarket-loader {
     width: 38px;
     height: 38px;
-    border: 2px solid rgba(111,224,207,0.2);
+    border: 2px solid rgba(114, 226, 208, 0.22);
     border-top-color: var(--bm-cyan);
     border-radius: 50%;
     animation: blackmarket-spin 0.9s linear infinite;
@@ -73,83 +98,116 @@
 
 .blackmarket-boot-error {
     display: grid;
-    gap: 8px;
+    gap: 10px;
     width: min(560px, 80%);
-    padding: 26px;
-    border: 1px solid rgba(233,103,87,0.62);
-    background: rgba(35,13,12,0.86);
-    color: #f6b4a8;
+    padding: 24px;
+    border: 1px solid rgba(255, 91, 84, 0.62);
+    background: rgba(35, 13, 12, 0.9);
+    color: #f6bfb5;
+    font-size: 12px;
 }
 
 .blackmarket-boot-error b {
     color: var(--bm-red);
-    letter-spacing: 3px;
+    font-size: 14px;
+    letter-spacing: 2px;
 }
 
 .blackmarket-boot-error button {
     justify-self: start;
-    padding: 7px 12px;
-    border: 1px solid rgba(233,103,87,0.62);
-    background: rgba(8,11,13,0.72);
-    color: #f6b4a8;
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 91, 84, 0.62);
+    background: rgba(8, 11, 13, 0.78);
+    color: #f6bfb5;
     cursor: pointer;
 }
 
+/* ── 整机三段骨架（66px 顶栏 + 422px 三联舱 + 88px T800 结算轨 = 576px）── */
 .blackmarket-machine {
     position: relative;
     display: grid;
-    grid-template-rows: minmax(78px, auto) minmax(0, 1fr) minmax(82px, auto);
+    grid-template-rows: 66px minmax(0, 1fr) 88px;
     height: 100%;
     min-height: 0;
     overflow: hidden;
 }
 
+/* ── 顶栏（无压边、清晰四色试剂管） ──────────────────────── */
 .blackmarket-header {
     position: relative;
     z-index: 3;
     display: grid;
-    grid-template-columns: minmax(210px, 1fr) minmax(350px, 1.6fr) auto;
+    grid-template-columns: 222px minmax(0, 1fr) auto;
     align-items: center;
-    gap: 9px;
-    padding: 9px 11px 19px;
+    gap: 8px;
+    padding: 6px 10px;
     border-bottom: 1px solid var(--bm-line-strong);
     background:
-        linear-gradient(90deg, rgba(111,224,207,0.06), transparent 28%),
-        rgba(8,12,14,0.95);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.36);
+        linear-gradient(90deg, rgba(114, 226, 208, 0.07), transparent 28%),
+        linear-gradient(180deg, #101518, #0a0e10);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.36);
 }
 
 .blackmarket-brand span,
-.blackmarket-rail > div > span,
 .blackmarket-drawer > header span {
-    color: var(--bm-bio);
-    font-size: 8px;
-    letter-spacing: 1.8px;
+    display: block;
+    color: var(--bm-amber-dim);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .blackmarket-brand h1 {
     font-family: var(--bm-font-display);
-    margin: 5px 0 0;
+    margin: 2px 0 0;
     color: var(--bm-cyan-pale);
-    font-size: 18px;
-    line-height: 1.1;
-    letter-spacing: 1px;
+    font-size: 17px;
+    line-height: 1.15;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
 }
 
 .blackmarket-ledger {
     display: grid;
-    grid-template-columns: repeat(4, minmax(78px, 1fr));
+    grid-template-columns: 1.05fr 0.82fr 0.86fr 1.27fr;
     border: 1px solid var(--bm-line);
-    background: rgba(0,0,0,0.24);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.34);
+    overflow: hidden;
 }
 
 .blackmarket-ledger-cell {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     min-width: 0;
-    padding: 5px 8px;
+    padding: 5px 7px;
+    border: 0;
     border-right: 1px solid var(--bm-line);
+    background: transparent;
+    color: inherit;
+    text-align: left;
+}
+
+.blackmarket-ledger-cell.is-clickable {
+    cursor: pointer;
+    transition: background 120ms;
+}
+
+.blackmarket-ledger-cell.is-clickable:hover:not(:disabled) {
+    background: rgba(114, 226, 208, 0.1);
+}
+
+.blackmarket-ledger-cell.is-clickable:disabled {
+    cursor: default;
+    opacity: 0.68;
+}
+
+.blackmarket-ledger-cell:last-child {
+    border-right: 0;
 }
 
 .blackmarket-ledger-cell.vial-green { --vial: var(--bm-vial-green); }
@@ -160,13 +218,13 @@
 .blackmarket-vial-tube {
     position: relative;
     flex: 0 0 auto;
-    width: 10px;
-    height: 30px;
+    width: 11px;
+    height: 36px;
     overflow: hidden;
-    border: 2px solid #0a0c0d;
+    border: 2px solid #080a0b;
     border-radius: 5px 5px 6px 6px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.25));
-    box-shadow: inset 0 2px 3px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.02) 48%, rgba(0, 0, 0, 0.32));
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .blackmarket-vial-tube i {
@@ -177,7 +235,7 @@
     display: block;
     background: var(--vial);
     box-shadow: 0 0 8px var(--vial);
-    animation: bm-vial-shimmer 3.6s ease-in-out infinite;
+    transition: height 280ms ease-out;
 }
 
 .blackmarket-vial-tube i::before {
@@ -187,22 +245,40 @@
     right: 0;
     left: 0;
     height: 2px;
-    background: rgba(255,255,255,0.55);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* 解密试剂管 3/5/7 里程碑刻度 */
+.bm-vial-ticks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.bm-vial-ticks b {
+    position: absolute;
+    right: 0;
+    width: 4px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.blackmarket-ledger-cell.is-armed .blackmarket-vial-tube {
+    border-color: var(--vial);
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.6), 0 0 10px var(--vial);
 }
 
 .blackmarket-ledger-text {
     min-width: 0;
-}
-
-.blackmarket-ledger-cell:last-child {
-    border-right: 0;
+    flex: 1 1 auto;
 }
 
 .blackmarket-ledger-cell span {
     display: block;
     color: var(--bm-dim);
-    font-size: 7px;
-    letter-spacing: 1.2px;
+    font-size: 10px;
+    line-height: 1.15;
+    white-space: nowrap;
 }
 
 .blackmarket-ledger-cell strong {
@@ -210,19 +286,46 @@
     margin-top: 2px;
     overflow: hidden;
     color: var(--vial, var(--bm-cyan-pale));
-    font-size: 14px;
-    letter-spacing: 1px;
+    font-size: 13px;
+    line-height: 1.15;
     text-overflow: ellipsis;
-    text-shadow: 0 0 8px var(--vial, rgba(210,246,238,0.3));
+    white-space: nowrap;
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.65);
+}
+
+.bm-vial-delta {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.bm-vial-delta.is-up { color: var(--bm-green); }
+.bm-vial-delta.is-down { color: var(--bm-red); }
+.bm-vial-delta.is-pop {
+    animation: bm-delta-pop 0.9s ease-out forwards;
 }
 
 .blackmarket-head-actions,
 .blackmarket-rail-actions,
-.blackmarket-drawer-actions,
-.blackmarket-presets {
+.blackmarket-drawer-actions {
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+.blackmarket-shadow-chip {
+    padding: 3px 6px;
+    border: 1px dashed rgba(255, 211, 107, 0.48);
+    border-radius: 3px;
+    background: rgba(28, 22, 8, 0.8);
+    color: var(--bm-bio);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
 .blackmarket-head-actions button,
@@ -230,65 +333,47 @@
 .blackmarket-drawer button,
 .blackmarket-bay-footer button {
     border: 1px solid #07090a;
-    border-radius: 6px;
-    background: linear-gradient(180deg, #2c3134, #1a1e20 55%, #141719);
-    box-shadow: inset 0 1px 0 rgba(210,246,238,0.14), 0 2px 0 #07090a, 0 4px 8px rgba(0,0,0,0.4);
+    border-radius: 5px;
+    background: linear-gradient(180deg, #31373b, #1d2225 55%, #15191b);
+    box-shadow: inset 0 1px 0 rgba(219, 247, 240, 0.14), 0 2px 0 #07090a, 0 3px 7px rgba(0, 0, 0, 0.42);
     color: var(--bm-cyan-pale);
-    padding: 6px 8px;
+    padding: 5px 8px;
+    font-size: 11px;
+    line-height: 1.2;
     cursor: pointer;
-    transition: border-color 120ms, background 120ms, color 120ms, transform 80ms, box-shadow 80ms;
+    white-space: nowrap;
+    transition: border-color 120ms, background 120ms, color 120ms, transform 70ms, box-shadow 70ms;
 }
 
-.blackmarket-head-actions button:hover,
-.blackmarket-rail-actions button:hover,
-.blackmarket-drawer button:hover,
-.blackmarket-bay-footer button:hover {
+.blackmarket-head-actions button:hover:not(:disabled),
+.blackmarket-rail-actions button:hover:not(:disabled),
+.blackmarket-drawer button:hover:not(:disabled),
+.blackmarket-bay-footer button:hover:not(:disabled) {
     border-color: var(--bm-line-strong);
-    background: linear-gradient(180deg, #353b3f, #20262a 55%, #191d20);
+    background: linear-gradient(180deg, #3b4348, #232a2e 55%, #1a2023);
 }
 
-.blackmarket-head-actions button:active,
-.blackmarket-rail-actions button:active,
-.blackmarket-drawer button:active,
-.blackmarket-bay-footer button:active {
-    transform: translateY(2px);
-    box-shadow: inset 0 1px 0 rgba(210,246,238,0.08), 0 0 0 #07090a;
+.blackmarket-head-actions button:active:not(:disabled),
+.blackmarket-rail-actions button:active:not(:disabled),
+.blackmarket-drawer button:active:not(:disabled),
+.blackmarket-bay-footer button:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: inset 0 1px 0 rgba(219, 247, 240, 0.08), 0 0 0 #07090a;
+}
+
+.blackmarket-head-actions button.is-muted {
+    color: var(--bm-dim);
 }
 
 .blackmarket-head-actions .danger {
-    border-color: rgba(233,103,87,0.5);
+    border-color: rgba(255, 91, 84, 0.55);
     color: var(--bm-red);
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1;
+    padding: 4px 8px;
 }
 
-.blackmarket-shadow-banner {
-    position: absolute;
-    right: 11px;
-    bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 3px 8px;
-    border: 1px dashed rgba(255,215,106,0.45);
-    border-radius: 3px;
-    background: rgba(20,18,8,0.78);
-    color: var(--bm-dim);
-    font-size: 8px;
-    letter-spacing: 0.4px;
-}
-
-.blackmarket-shadow-banner b {
-    padding: 1px 6px;
-    background: var(--bm-red);
-    color: #160504;
-    letter-spacing: 1.5px;
-}
-
-.blackmarket-shadow-banner code {
-    color: var(--bm-bio);
-}
-
+/* ── 中部三联配对舱（外旧内液） ──────────────────────────── */
 .blackmarket-deck {
     position: relative;
     z-index: 1;
@@ -296,42 +381,55 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
     min-height: 0;
-    padding: 8px;
+    padding: 8px 9px;
     background:
-        linear-gradient(rgba(4,9,11,0.60), rgba(4,9,11,0.72)),
+        radial-gradient(ellipse at 50% 45%, rgba(62, 160, 152, 0.14), rgba(5, 10, 12, 0.82) 78%),
+        linear-gradient(180deg, rgba(6, 12, 15, 0.72), rgba(4, 9, 11, 0.85)),
         url("../../../assets/minigames/blackmarket/tank-interior.webp") center / cover no-repeat,
-        #0a1114;
+        #091013;
+}
+
+.blackmarket-bubbles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
 .blackmarket-bay {
     position: relative;
+    z-index: 1;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     min-width: 0;
     min-height: 0;
     border: 1px solid var(--bm-line-strong);
-    border-radius: 12px;
+    border-radius: 10px;
     background:
-        linear-gradient(165deg, rgba(111,224,207,0.10), rgba(8,14,16,0.55) 42%),
-        rgba(10,16,18,0.86);
+        linear-gradient(170deg, rgba(114, 226, 208, 0.09), rgba(10, 16, 19, 0.62) 40%),
+        rgba(12, 18, 21, 0.9);
     box-shadow:
-        inset 0 1px 0 rgba(210,246,238,0.12),
-        inset 0 0 34px rgba(0,0,0,0.55),
-        0 12px 26px rgba(0,0,0,0.3);
+        inset 0 1px 0 rgba(219, 247, 240, 0.14),
+        inset 0 0 28px rgba(0, 0, 0, 0.55),
+        0 10px 22px rgba(0, 0, 0, 0.34);
     transition: filter 160ms, opacity 160ms, border-color 160ms;
 }
 
 .blackmarket-bay.is-suppressed {
-    filter: grayscale(0.7) brightness(0.55);
-    opacity: 0.62;
+    filter: grayscale(0.68) brightness(0.58);
+    opacity: 0.66;
 }
 
 .blackmarket-bay.tone-profit {
-    border-color: rgba(130,217,94,0.72);
+    border-color: rgba(132, 223, 98, 0.78);
+    box-shadow: inset 0 0 24px rgba(132, 223, 98, 0.1), 0 10px 22px rgba(0, 0, 0, 0.34);
 }
 
 .blackmarket-bay.tone-loss {
-    border-color: rgba(233,103,87,0.72);
+    border-color: rgba(255, 91, 84, 0.78);
+    box-shadow: inset 0 0 24px rgba(255, 91, 84, 0.1), 0 10px 22px rgba(0, 0, 0, 0.34);
 }
 
 .blackmarket-rivet {
@@ -339,54 +437,57 @@
     z-index: 4;
     width: 5px;
     height: 5px;
-    border: 1px solid #3f5c56;
+    border: 1px solid #48635e;
     border-radius: 50%;
-    background: #242729;
+    background: #24292c;
 }
 
-.blackmarket-rivet.r1 { top: 7px; left: 7px; }
-.blackmarket-rivet.r2 { top: 7px; right: 12px; }
-.blackmarket-rivet.r3 { bottom: 7px; left: 7px; }
-.blackmarket-rivet.r4 { right: 7px; bottom: 7px; }
+.blackmarket-rivet.r1 { top: 6px; left: 6px; }
+.blackmarket-rivet.r2 { top: 6px; right: 6px; }
+.blackmarket-rivet.r3 { bottom: 6px; left: 6px; }
+.blackmarket-rivet.r4 { right: 6px; bottom: 6px; }
 
 .blackmarket-bay-header {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    align-items: baseline;
+    align-items: center;
     gap: 6px;
-    padding: 8px 10px 7px;
+    padding: 7px 14px 6px;
     border-bottom: 1px solid var(--bm-line);
-    background: rgba(0,0,0,0.26);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 9px 9px 0 0;
 }
 
-.blackmarket-bay-header span {
-    color: var(--bm-cyan);
-    font-size: 11px;
+.blackmarket-bay-header .bm-bay-no {
+    color: var(--bm-bio);
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .blackmarket-bay-header h2 {
     font-family: var(--bm-font-display);
     margin: 0;
     color: var(--bm-cyan-pale);
-    font-size: 12px;
-    letter-spacing: 2px;
+    font-size: 13px;
+    letter-spacing: 1.2px;
 }
 
 .blackmarket-bay-header em {
     min-width: 0;
     overflow: hidden;
     color: var(--bm-dim);
-    font-size: 8px;
+    font-size: 10px;
     font-style: normal;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+/* ── 左右货包与中央纳米引流电极桥 ─────────────────────────── */
 .blackmarket-offers {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 13px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr);
     min-height: 0;
-    padding: 6px 5px;
+    padding: 5px 6px 4px;
 }
 
 .blackmarket-divider {
@@ -400,74 +501,168 @@
     content: "";
     position: absolute;
     width: 1px;
-    height: 44%;
+    height: 40%;
     background: linear-gradient(transparent, var(--bm-line-strong));
 }
 
-.blackmarket-divider::before { top: 0; }
-.blackmarket-divider::after { bottom: 0; transform: rotate(180deg); }
+.blackmarket-divider::before { top: 4px; }
+.blackmarket-divider::after { bottom: 4px; transform: rotate(180deg); }
 
 .blackmarket-divider i {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     border: 1px solid var(--bm-cyan);
+    background: #0c1618;
     transform: rotate(45deg);
+    transition: border-color 140ms, background 140ms, box-shadow 140ms;
+}
+
+.blackmarket-divider .bm-bridge-beam {
+    position: absolute;
+    top: 46%;
+    left: -18px;
+    right: -18px;
+    height: 6px;
+    border-radius: 3px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 8;
+}
+
+.blackmarket-divider.is-firing i {
+    border-color: var(--bm-red);
+    background: var(--bm-red);
+    box-shadow: 0 0 12px var(--bm-red);
+}
+
+.blackmarket-divider.is-firing[data-siphon="a-to-b"] .bm-bridge-beam {
+    background: linear-gradient(90deg, rgba(114, 226, 208, 0.9), rgba(255, 211, 107, 0.95) 50%, rgba(255, 91, 84, 0.95));
+    box-shadow: 0 0 14px rgba(255, 91, 84, 0.85);
+    animation: bm-siphon-lr 0.48s ease-out forwards;
+}
+
+.blackmarket-divider.is-firing[data-siphon="b-to-a"] .bm-bridge-beam {
+    background: linear-gradient(270deg, rgba(114, 226, 208, 0.9), rgba(255, 211, 107, 0.95) 50%, rgba(255, 91, 84, 0.95));
+    box-shadow: 0 0 14px rgba(255, 91, 84, 0.85);
+    animation: bm-siphon-rl 0.48s ease-out forwards;
+}
+
+/* ── 单个货包卡槽 ────────────────────────────────────────── */
+.blackmarket-offer-slot {
+    position: relative;
+    display: grid;
+    min-width: 0;
+    min-height: 0;
 }
 
 .blackmarket-offer {
     position: relative;
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto auto;
-    gap: 4px;
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+    gap: 3px;
     min-width: 0;
     min-height: 0;
-    padding: 5px;
+    padding: 4px;
     border: 1px solid transparent;
     border-radius: 8px;
     background: transparent;
     color: var(--bm-text);
     text-align: left;
     cursor: pointer;
+    transition: border-color 120ms, background 120ms;
 }
 
 .blackmarket-offer:not(:disabled):hover,
 .blackmarket-offer.is-selected {
     border-color: var(--bm-line-strong);
-    background: rgba(111,224,207,0.07);
+    background: rgba(114, 226, 208, 0.08);
 }
 
 .blackmarket-offer.is-selected {
-    box-shadow: inset 0 0 0 1px rgba(112,216,192,0.36), 0 0 18px rgba(112,216,192,0.08);
+    border-color: var(--bm-cyan);
+    box-shadow: inset 0 0 0 1px rgba(114, 226, 208, 0.44), 0 0 16px rgba(114, 226, 208, 0.16);
 }
 
-.blackmarket-offer.is-lab-focus {
-    border-color: var(--bm-bio);
-    box-shadow: inset 0 0 0 1px rgba(112,216,192,0.45), 0 0 20px rgba(112,216,192,0.12);
+.blackmarket-offer.is-selected::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    z-index: 5;
+    pointer-events: none;
+    background:
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 top 0 / 12px 2px,
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 top 0 / 2px 12px,
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 top 0 / 12px 2px,
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 top 0 / 2px 12px,
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 bottom 0 / 12px 2px,
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 bottom 0 / 2px 12px,
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 bottom 0 / 12px 2px,
+        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 bottom 0 / 2px 12px;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 4px rgba(114, 226, 208, 0.65));
 }
 
 .blackmarket-offer:disabled {
     cursor: default;
 }
 
-.blackmarket-side {
-    color: var(--bm-dim);
-    font-size: 9px;
-    letter-spacing: 1.5px;
+.blackmarket-inspect-pin {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    z-index: 6;
+    padding: 1px 5px;
+    border: 1px solid rgba(114, 226, 208, 0.38);
+    border-radius: 3px;
+    background: rgba(8, 16, 18, 0.88);
+    color: var(--bm-cyan);
+    font-size: 10px;
+    line-height: 1.3;
+    cursor: pointer;
+    opacity: 0.72;
+    transition: opacity 120ms, border-color 120ms, color 120ms;
 }
 
+.blackmarket-offer-slot:hover .blackmarket-inspect-pin:not(:disabled),
+.blackmarket-inspect-pin:focus-visible {
+    opacity: 1;
+    border-color: var(--bm-bio);
+    color: var(--bm-bio);
+}
+
+.blackmarket-inspect-pin:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.blackmarket-side {
+    color: var(--bm-dim);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+}
+
+/* 培养囊（取消持续上下晃动，增加柔和冷青背透光，彻底根治暗物黑吞黑） */
 .blackmarket-asset {
     position: relative;
     display: grid;
     place-items: center;
     min-height: 0;
     overflow: hidden;
-    border: 1px solid rgba(111,224,207,0.16);
-    border-radius: 8px;
+    border: 1px solid rgba(124, 220, 206, 0.24);
+    border-radius: 7px;
     background:
-        radial-gradient(circle, rgba(112,216,192,0.09), transparent 60%),
-        rgba(0,0,0,0.3);
-    box-shadow: inset 0 -8px 18px rgba(79,196,216,0.10), inset 0 2px 6px rgba(0,0,0,0.6);
-    animation: bm-pod-bob 5.2s ease-in-out infinite;
+        radial-gradient(ellipse at 50% 46%, rgba(132, 222, 210, 0.24) 0%, rgba(48, 110, 112, 0.26) 48%, rgba(8, 18, 22, 0.76) 100%),
+        linear-gradient(180deg, rgba(164, 240, 228, 0.08), rgba(4, 12, 14, 0.55));
+    box-shadow:
+        inset 0 1px 0 rgba(219, 247, 240, 0.14),
+        inset 0 -10px 20px rgba(82, 201, 220, 0.14),
+        inset 0 2px 8px rgba(0, 0, 0, 0.62);
+}
+
+.blackmarket-offer.state-revealed .blackmarket-asset {
+    border-color: rgba(255, 211, 107, 0.45);
+    background:
+        radial-gradient(ellipse at 50% 45%, rgba(210, 246, 238, 0.24) 0%, rgba(30, 56, 58, 0.34) 55%, rgba(8, 14, 16, 0.84) 100%);
 }
 
 .blackmarket-asset.icon-proxy::after {
@@ -476,11 +671,10 @@
     right: 3px;
     bottom: 3px;
     z-index: 4;
-    padding: 1px 3px;
-    background: rgba(0,0,0,0.78);
+    padding: 1px 4px;
+    background: rgba(0, 0, 0, 0.78);
     color: var(--bm-red);
-    font-size: 7px;
-    letter-spacing: 0.8px;
+    font-size: 10px;
 }
 
 .blackmarket-asset.icon-proxy.source-dressup-paperdoll::after {
@@ -500,22 +694,22 @@
 .blackmarket-item-surface,
 .blackmarket-surface-guard {
     grid-area: 1 / 1;
-    width: 92%;
-    height: 94%;
+    width: 94%;
+    height: 95%;
     min-width: 0;
     min-height: 0;
-    transition: opacity 120ms;
+    transition: opacity 140ms;
 }
 
 .blackmarket-item-surface {
     z-index: 3;
     display: block;
     opacity: 0;
-    filter: drop-shadow(0 10px 13px rgba(0,0,0,0.74));
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.72)) contrast(1.06);
 }
 
-.blackmarket-item-surface[data-surface-state="loading"] {
-    background: radial-gradient(circle, rgba(112,216,192,0.06), transparent 55%);
+.blackmarket-offer.state-revealed .blackmarket-item-surface {
+    filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.8));
 }
 
 .blackmarket-surface-guard {
@@ -524,36 +718,23 @@
     display: grid;
     place-items: center;
     overflow: hidden;
-    border: 1px solid rgba(255,215,106,0.2);
+    border: 1px solid rgba(255, 211, 107, 0.2);
     background:
-        repeating-linear-gradient(0deg, rgba(112,216,192,0.035) 0 2px, transparent 2px 8px),
-        radial-gradient(ellipse at 50% 45%, rgba(20,42,39,0.96) 0 28%, rgba(4,13,14,0.99) 72%);
-    color: rgba(255,215,106,0.7);
+        repeating-linear-gradient(0deg, rgba(114, 226, 208, 0.04) 0 2px, transparent 2px 8px),
+        radial-gradient(ellipse at 50% 45%, rgba(22, 46, 44, 0.94) 0 32%, rgba(5, 13, 15, 0.98) 76%);
+    color: rgba(255, 211, 107, 0.82);
     opacity: 1;
     visibility: visible;
     transition: opacity 80ms linear, visibility 0s linear 80ms;
-}
-
-.blackmarket-surface-guard::before {
-    content: "";
-    position: absolute;
-    inset: 18% 14%;
-    border-radius: 46% 54% 38% 62%;
-    background:
-        radial-gradient(circle at 32% 25%, rgba(77,99,92,0.36), transparent 25%),
-        radial-gradient(circle at 65% 56%, rgba(44,70,64,0.5), transparent 36%),
-        #071112;
-    box-shadow: 0 0 24px rgba(0,0,0,0.9);
 }
 
 .blackmarket-surface-guard b {
     position: relative;
     z-index: 1;
     padding: 3px 6px;
-    background: rgba(1,8,9,0.84);
-    font-size: 8px;
+    background: rgba(2, 9, 10, 0.86);
+    font-size: 10px;
     font-weight: 500;
-    letter-spacing: 1px;
 }
 
 .blackmarket-asset.is-surface-ready .blackmarket-item-surface { opacity: 1; }
@@ -563,126 +744,216 @@
 }
 .blackmarket-asset.is-surface-fallback .blackmarket-item-surface { opacity: 0; }
 .blackmarket-asset.is-surface-fallback .blackmarket-surface-guard b { color: var(--bm-red); }
-.blackmarket-asset.is-surface-fallback .blackmarket-surface-guard b::after { content: " · 视觉封存"; }
+.blackmarket-asset.is-surface-fallback .blackmarket-surface-guard b::after { content: " · 封存"; }
 
-.blackmarket-surface-readout {
-    position: absolute;
-    z-index: 5;
-    right: 3px;
-    bottom: 3px;
-    left: 3px;
-    padding: 2px 3px;
-    overflow: hidden;
-    background: rgba(1,8,9,0.86);
-    color: var(--bm-bio);
-    font-size: 7px;
-    letter-spacing: 0.2px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.blackmarket-surface-readout:empty,
+.blackmarket-overlay-state:empty,
+.blackmarket-fx-slot:empty,
+.blackmarket-badge-slot:empty {
+    display: none;
 }
 
-.blackmarket-surface-readout:empty { display: none; }
+.blackmarket-overlay-state,
+.blackmarket-fx-slot {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
 
+.blackmarket-overlay-state { z-index: 4; }
+.blackmarket-fx-slot { z-index: 6; }
+
+/* ── 牺牲成爆弹防爆闸门 & 爆弹残片回执 ────────────────────── */
 .blackmarket-shutter,
 .blackmarket-sealed {
     position: absolute;
     inset: 0;
-    z-index: 3;
-}
-
-.blackmarket-lab-marker {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    z-index: 5;
-    padding: 2px 4px;
-    border: 1px solid rgba(112,216,192,0.62);
-    background: rgba(3,16,15,0.88);
-    color: var(--bm-bio);
-    font-size: 7px;
-    letter-spacing: 1px;
 }
 
 .blackmarket-shutter {
     display: grid;
     grid-template-rows: repeat(3, 1fr);
-    background: rgba(5,7,8,0.78);
+    background: rgba(14, 7, 8, 0.88);
+    border: 1px solid rgba(255, 91, 84, 0.48);
 }
 
 .blackmarket-shutter b {
-    border-bottom: 1px solid rgba(111,224,207,0.16);
-    background: repeating-linear-gradient(0deg, #171b1d 0 5px, #0e1112 5px 9px);
-}
-
-.blackmarket-shutter em,
-.blackmarket-sealed {
-    display: grid;
-    place-items: center;
-    color: var(--bm-red);
-    font-size: 10px;
-    font-style: normal;
-    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(255, 91, 84, 0.22);
+    background: repeating-linear-gradient(0deg, #1b1718 0 6px, #110e0f 6px 11px);
 }
 
 .blackmarket-shutter em {
     position: absolute;
-    inset: 0;
+    top: 20%;
+    left: 4px;
+    right: 4px;
+    padding: 4px 3px;
+    text-align: center;
+    background: rgba(24, 7, 7, 0.92);
+    border-top: 1px solid rgba(255, 91, 84, 0.55);
+    border-bottom: 1px solid rgba(255, 91, 84, 0.55);
+    color: #ff8c85;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0.6px;
 }
+
+.bm-bomb-residue {
+    position: absolute;
+    right: 4px;
+    bottom: 6px;
+    left: 4px;
+    display: grid;
+    gap: 2px;
+    padding: 5px 6px;
+    border: 1px solid rgba(255, 211, 107, 0.42);
+    border-radius: 4px;
+    background: rgba(8, 12, 14, 0.94);
+    text-align: left;
+}
+
+.bm-bomb-residue b {
+    border: 0;
+    background: transparent;
+    color: var(--bm-bio);
+    font-size: 10px;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bm-bomb-residue i {
+    color: var(--bm-text);
+    font-size: 10px;
+    font-style: normal;
+    line-height: 1.2;
+}
+
+.blackmarket-shutter.is-fresh {
+    animation: bm-bomb-overload 0.26s ease-out;
+}
+
+.blackmarket-shutter.is-fresh b {
+    animation: bm-shutter-drop 0.34s 0.14s cubic-bezier(0.55, 0, 0.8, 0.4) backwards;
+}
+
+.blackmarket-shutter.is-fresh b:nth-child(2) { animation-delay: 0.20s; }
+.blackmarket-shutter.is-fresh b:nth-child(3) { animation-delay: 0.26s; }
 
 .blackmarket-sealed {
-    border: 1px dashed rgba(233,103,87,0.48);
-    background: rgba(19,8,8,0.86);
-}
-
-.blackmarket-direction {
-    padding: 2px 5px;
-    font-size: 9px;
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    text-align: center;
+    border: 1px dashed rgba(255, 168, 92, 0.55);
+    background: rgba(20, 13, 8, 0.88);
+    color: #f3c28a;
+    font-size: 11px;
+    font-weight: 700;
     letter-spacing: 1px;
 }
 
-.blackmarket-direction.profit { color: var(--bm-green); border: 1px solid rgba(130,217,94,0.32); }
-.blackmarket-direction.loss { color: var(--bm-red); border: 1px solid rgba(233,103,87,0.32); }
+/* ── 货包文字与方向/波幅徽章（全量 >= 10px） ──────────────── */
+.blackmarket-direction,
+.blackmarket-spread-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.4px;
+}
+
+.blackmarket-direction.profit {
+    color: var(--bm-green);
+    background: rgba(24, 52, 20, 0.72);
+    border: 1px solid rgba(132, 223, 98, 0.55);
+}
+
+.blackmarket-direction.loss {
+    color: #ff8680;
+    background: rgba(58, 18, 18, 0.72);
+    border: 1px solid rgba(255, 91, 84, 0.55);
+}
+
+.blackmarket-direction.is-revealed {
+    animation: bm-result-pop 0.36s 0.28s ease-out backwards;
+}
+
+.blackmarket-spread-tag {
+    color: var(--bm-bio);
+    background: rgba(44, 34, 12, 0.72);
+    border: 1px solid rgba(255, 211, 107, 0.42);
+}
+
+.blackmarket-spread-tag.tier-large {
+    border-color: rgba(255, 152, 82, 0.7);
+    color: #ffb26b;
+}
 
 .blackmarket-offer-name {
     min-width: 0;
     overflow: hidden;
     color: var(--bm-cyan-pale);
-    font-size: 11px;
+    font-size: 12px;
+    line-height: 1.25;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.blackmarket-offer small {
+.blackmarket-offer.state-revealed .blackmarket-offer-name {
+    color: #ffffff;
+    white-space: normal;
     display: -webkit-box;
-    min-height: 2.6em;
-    overflow: hidden;
-    color: var(--bm-dim);
-    font-size: 8px;
-    line-height: 1.3;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
 
+.blackmarket-offer-sub {
+    display: block;
+    overflow: hidden;
+    color: var(--bm-dim);
+    font-size: 10px;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── 货舱底栏（标价作为第一视觉锚点） ────────────────────── */
 .blackmarket-bay-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 7px;
-    padding: 6px 8px;
+    gap: 6px;
+    padding: 6px 10px;
     border-top: 1px solid var(--bm-line);
-    background: rgba(0,0,0,0.28);
+    background: rgba(0, 0, 0, 0.34);
+    border-radius: 0 0 9px 9px;
+}
+
+.blackmarket-price-tag {
+    padding: 3px 8px;
+    border: 1px solid #07090a;
+    border-radius: 4px;
+    background: #0a0f11;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.82);
 }
 
 .blackmarket-price-tag span {
     display: block;
     color: var(--bm-dim);
-    font-size: 8px;
-    letter-spacing: 1.5px;
+    font-size: 10px;
+    line-height: 1.1;
 }
 
 .blackmarket-price-tag b {
     color: var(--bm-cyan-pale);
-    font-size: 10px;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    text-shadow: 0 0 7px rgba(255, 211, 107, 0.32);
 }
 
 .blackmarket-price-tag i {
@@ -696,134 +967,415 @@
 }
 
 .blackmarket-bay-footer button {
-    padding: 4px 5px;
-    font-size: 8px;
+    padding: 5px 8px;
+    font-size: 11px;
 }
 
-.blackmarket-bay-footer kbd {
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 0 3px;
-    background: rgba(0,0,0,0.35);
-    font: inherit;
+.blackmarket-bay-footer button.is-skip-armed {
+    border-color: var(--bm-bio);
+    background: linear-gradient(180deg, #4f3a14, #2d200a);
+    color: var(--bm-bio);
+}
+
+.blackmarket-bay-footer kbd,
+.blackmarket-rail kbd,
+.blackmarket-inspection-toolbar kbd,
+.blackmarket-help-keys kbd {
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 3px;
+    padding: 0 4px;
+    background: rgba(0, 0, 0, 0.42);
+    font-size: 10px;
 }
 
 .blackmarket-terminal {
     color: var(--bm-dim);
-    font-size: 10px;
-    letter-spacing: 1px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
 }
 
+.blackmarket-terminal.status-resold { color: var(--bm-green); }
+.blackmarket-terminal.status-extracted { color: var(--bm-cyan); }
+.blackmarket-terminal.status-pending { color: var(--bm-bio); }
+
+/* ── 底栏：T800 机械骷髅扩音头 + 右侧操作/结算区 ──────────── */
 .blackmarket-rail {
     position: relative;
-    z-index: 3;
+    z-index: 4;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(295px, 358px) minmax(0, 1fr);
     align-items: center;
     gap: 10px;
-    padding: 8px 12px;
+    padding: 6px 12px;
     border-top: 1px solid var(--bm-line-strong);
-    background: rgba(8,12,14,0.97);
-    box-shadow: 0 -12px 30px rgba(0,0,0,0.34);
+    background: linear-gradient(180deg, #0d1316, #080c0e);
+    box-shadow: 0 -10px 26px rgba(0, 0, 0, 0.42);
 }
 
-.blackmarket-rail h2 {
-    font-family: var(--bm-font-display);
-    margin: 3px 0 2px;
-    color: var(--bm-cyan-pale);
-    font-size: 16px;
+.blackmarket-rail.profit { border-top-color: rgba(132, 223, 98, 0.72); }
+.blackmarket-rail.loss { border-top-color: rgba(255, 91, 84, 0.72); }
+
+.bm-t800-unit {
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr);
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
 }
 
-.blackmarket-rail p {
+.bm-t800-mount {
+    position: relative;
+    width: 74px;
+    height: 74px;
+    margin-top: -6px;
+    padding: 2px;
+    border: 2px solid #2b3539;
+    border-radius: 8px;
+    background:
+        radial-gradient(circle at 50% 44%, rgba(255, 59, 48, 0.14), rgba(6, 10, 12, 0.96) 72%);
+    box-shadow:
+        inset 0 0 12px rgba(0, 0, 0, 0.85),
+        0 4px 12px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    overflow: visible;
+    transition: border-color 140ms, box-shadow 140ms;
+}
+
+.bm-t800-mount:hover {
+    border-color: var(--bm-bio);
+}
+
+.bm-t800-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.bm-t800-head {
+    transform-origin: 48px 58px;
+    transition: transform 200ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+
+.bm-t800-eyes {
+    transition: transform 180ms ease-out;
+}
+
+.bm-t800-jaw {
+    transform-origin: 48px 54px;
+}
+
+.bm-t800-eye-core {
+    fill: #ff3b30;
+    filter: drop-shadow(0 0 3px #ff3b30);
+    transition: fill 160ms;
+}
+
+.bm-t800-led {
+    fill: #72e2d0;
+}
+
+.bm-t800-wave {
+    stroke: #46615d;
+}
+
+/* 视线随选中货舱转向 */
+.bm-t800-mount[data-look="left"] .bm-t800-head { transform: rotate(-4.5deg) translateX(-1px); }
+.bm-t800-mount[data-look="left"] .bm-t800-eyes { transform: translateX(-2.6px); }
+.bm-t800-mount[data-look="right"] .bm-t800-head { transform: rotate(4.5deg) translateX(1px); }
+.bm-t800-mount[data-look="right"] .bm-t800-eyes { transform: translateX(2.6px); }
+
+/* 情绪颜色与微姿 */
+.bm-t800-mount[data-mood="profit"] {
+    border-color: rgba(132, 223, 98, 0.72);
+}
+.bm-t800-mount[data-mood="profit"] .bm-t800-eye-core {
+    fill: #ffd36b;
+    filter: drop-shadow(0 0 4px #ffd36b);
+}
+.bm-t800-mount[data-mood="profit"] .bm-t800-head {
+    transform: translateY(-2px) rotate(-3deg);
+}
+
+.bm-t800-mount[data-mood="loss"] {
+    border-color: rgba(255, 91, 84, 0.85);
+    box-shadow: inset 0 0 14px rgba(255, 59, 48, 0.25), 0 0 14px rgba(255, 59, 48, 0.35);
+}
+.bm-t800-mount[data-mood="loss"] .bm-t800-eye-core {
+    fill: #ff251c;
+    filter: drop-shadow(0 0 6px #ff251c);
+}
+
+.bm-t800-mount[data-mood="inspect"] {
+    border-color: rgba(114, 226, 208, 0.78);
+}
+.bm-t800-mount[data-mood="inspect"] .bm-t800-eye-core {
+    fill: #72e2d0;
+    filter: drop-shadow(0 0 4px #72e2d0);
+}
+
+.bm-t800-mount[data-mood="skip"] .bm-t800-head {
+    transform: rotate(6deg);
+}
+
+.bm-t800-mount[data-mood="error"] {
+    border-color: var(--bm-red);
+    animation: bm-t800-jolt 0.28s linear 2;
+}
+
+/* 说话下颌张合与大笑动效（仅在说话瞬间触发，待命静止） */
+.bm-t800-mount.is-talking .bm-t800-jaw {
+    animation: bm-jaw-talk 0.2s steps(2, end) infinite;
+}
+.bm-t800-mount.is-talking .bm-t800-wave {
+    stroke: var(--bm-bio);
+}
+.bm-t800-mount[data-mood="loss"].is-talking .bm-t800-jaw {
+    animation: bm-jaw-laugh 0.28s ease-in-out infinite;
+}
+
+.bm-t800-speech {
+    min-width: 0;
+    display: grid;
+    gap: 3px;
+}
+
+.bm-t800-nameplate {
+    color: var(--bm-bio);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+.bm-t800-caption {
     margin: 0;
-    color: var(--bm-dim);
-    font-size: 8px;
+    color: var(--bm-text);
+    font-size: 11px;
+    line-height: 1.38;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
-.blackmarket-rail.profit h2,
-.blackmarket-rail.profit p b { color: var(--bm-green); }
-.blackmarket-rail.loss h2,
-.blackmarket-rail.loss p b { color: var(--bm-red); }
+/* ── 底栏右侧主控区 ──────────────────────────────────────── */
+.blackmarket-rail-main {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    min-width: 0;
+}
+
+.bm-rail-summary {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.bm-rail-title-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.bm-stamp {
+    flex: 0 0 auto;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.bm-stamp.profit {
+    background: rgba(34, 80, 26, 0.85);
+    border: 1px solid var(--bm-green);
+    color: var(--bm-green);
+}
+
+.bm-stamp.loss {
+    background: rgba(84, 22, 22, 0.85);
+    border: 1px solid var(--bm-red);
+    color: #ff9089;
+}
+
+.bm-rail-summary h2 {
+    font-family: var(--bm-font-display);
+    margin: 0;
+    color: var(--bm-cyan-pale);
+    font-size: 15px;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.blackmarket-rail.profit .bm-rail-summary h2,
+.blackmarket-rail.profit .bm-rail-summary p b,
+.bm-rail-summary p b.is-pos {
+    color: var(--bm-green);
+}
+
+.blackmarket-rail.loss .bm-rail-summary h2,
+.blackmarket-rail.loss .bm-rail-summary p b,
+.bm-rail-summary p b.is-neg {
+    color: var(--bm-red);
+}
+
+.bm-rail-summary p {
+    margin: 3px 0 0;
+    color: var(--bm-dim);
+    font-size: 11px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bm-rail-summary small {
+    font-size: 10px;
+    color: var(--bm-dim);
+}
+
+.bm-rail-idle-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.bm-chip {
+    padding: 4px 8px;
+    border: 1px solid var(--bm-line);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.32);
+    color: var(--bm-cyan-pale);
+    font-size: 11px;
+}
 
 .blackmarket-payment {
     display: grid;
-    grid-template-columns: repeat(2, minmax(70px, 1fr));
-    gap: 4px;
+    grid-template-columns: repeat(2, minmax(96px, 1fr));
+    gap: 5px;
 }
 
 .blackmarket-payment button {
-    padding: 5px 7px;
+    padding: 5px 8px;
     border: 1px solid #07090a;
-    border-radius: 6px;
-    background: linear-gradient(180deg, #23272a, #141719);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.7);
+    border-radius: 5px;
+    background: linear-gradient(180deg, #252b2f, #15191b);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.72);
     color: var(--bm-dim);
     cursor: pointer;
+    text-align: left;
 }
 
 .blackmarket-payment button.active {
     border-color: var(--bm-bio);
     color: var(--bm-bio);
-    background: linear-gradient(180deg, #2a2b1e, #171a10);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.7), 0 0 10px rgba(255,215,106,0.25);
+    background: linear-gradient(180deg, #322f1d, #191a0f);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 211, 107, 0.25);
 }
 
 .blackmarket-payment span {
     display: block;
-    font-size: 8px;
-}
-
-.blackmarket-payment b {
     font-size: 10px;
 }
 
+.blackmarket-payment b {
+    display: block;
+    font-size: 12px;
+    color: var(--bm-cyan-pale);
+}
+
+.blackmarket-payment button.active b {
+    color: var(--bm-bio);
+}
+
+.blackmarket-payment em {
+    display: block;
+    font-size: 10px;
+    font-style: normal;
+    color: var(--bm-dim);
+}
+
+.blackmarket-rail-actions button {
+    padding: 7px 11px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.blackmarket-rail-actions button small {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
 .blackmarket-rail-actions .primary,
-.blackmarket-drawer-actions button:last-child {
-    border-color: rgba(111,224,207,0.6);
-    background: linear-gradient(180deg, #8cf0dd, #4cc3b1 60%, #3aa596);
-    color: #08110f;
+.blackmarket-drawer-actions button:first-child {
+    border-color: rgba(114, 226, 208, 0.68);
+    background: linear-gradient(180deg, #8ef2df, #4ec6b4 60%, #3ba697);
+    color: #071210;
     font-weight: 700;
+}
+
+.blackmarket-rail-actions .primary:hover:not(:disabled) {
+    background: linear-gradient(180deg, #a4f8e8, #5ed4c2 60%, #44b5a6);
 }
 
 .blackmarket-rail button:disabled,
 .blackmarket-bay-footer button:disabled {
-    opacity: 0.4;
+    opacity: 0.42;
     cursor: not-allowed;
 }
 
-.blackmarket-metrics {
-    display: grid;
-    gap: 3px;
-    text-align: right;
-}
-
-.blackmarket-metrics b { color: var(--bm-bio); }
-.blackmarket-metrics span { color: var(--bm-dim); font-size: 9px; }
-
+/* ── 报错与中性通信提示 ─────────────────────────────────── */
 .blackmarket-error {
     position: absolute;
-    z-index: 20;
-    right: 16px;
-    bottom: 118px;
+    z-index: 25;
+    right: 14px;
+    bottom: 98px;
     display: grid;
     grid-template-columns: auto minmax(160px, 1fr) auto;
     align-items: center;
     gap: 9px;
-    max-width: min(580px, 70%);
-    padding: 9px 11px;
-    border: 1px solid rgba(233,103,87,0.66);
-    background: rgba(39,12,11,0.96);
-    color: #f3c4bc;
-    font-size: 10px;
+    max-width: min(560px, 72%);
+    padding: 9px 12px;
+    border: 1px solid rgba(255, 91, 84, 0.72);
+    border-radius: 5px;
+    background: rgba(39, 12, 11, 0.96);
+    color: #f6cac2;
+    font-size: 11px;
+    animation: bm-error-blink 0.46s step-end 2;
 }
 
 .blackmarket-error b { color: var(--bm-red); }
-.blackmarket-error button { border: 0; background: transparent; color: var(--bm-red); cursor: pointer; }
+.blackmarket-error button {
+    border: 0;
+    background: transparent;
+    color: var(--bm-red);
+    font-size: 15px;
+    cursor: pointer;
+}
 
+.blackmarket-error.is-info {
+    border-color: rgba(114, 226, 208, 0.65);
+    background: rgba(10, 26, 28, 0.96);
+    color: var(--bm-cyan-pale);
+    animation: none;
+}
+
+.blackmarket-error.is-info b {
+    color: var(--bm-cyan);
+}
+
+/* ── 抽屉浮层（说明 / 50:1 兑K / 调试与遥测） ────────────── */
 .blackmarket-overlay {
     position: absolute;
     z-index: 40;
     inset: 0;
-    background: rgba(0,0,0,0.72);
+    background: rgba(0, 0, 0, 0.74);
     backdrop-filter: blur(3px);
 }
 
@@ -832,186 +1384,155 @@
     top: 0;
     right: 0;
     bottom: 0;
-    width: min(440px, 88%);
+    width: min(448px, 88%);
     overflow: auto;
-    padding: 22px;
+    padding: 18px 20px;
     border-left: 1px solid var(--bm-line-strong);
     background:
-        linear-gradient(155deg, rgba(111,224,207,0.08), transparent 38%),
-        #101618;
-    box-shadow: -24px 0 60px rgba(0,0,0,0.55);
+        linear-gradient(155deg, rgba(114, 226, 208, 0.08), transparent 36%),
+        #101619;
+    box-shadow: -22px 0 56px rgba(0, 0, 0, 0.6);
 }
 
 .blackmarket-drawer > header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 12px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--bm-line);
 }
 
 .blackmarket-drawer > header button {
-    padding: 2px 8px;
+    padding: 2px 9px;
     color: var(--bm-red);
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .blackmarket-drawer h2 {
     font-family: var(--bm-font-display);
-    margin: 22px 0 12px;
+    margin: 16px 0 10px;
     color: var(--bm-cyan-pale);
+    font-size: 17px;
 }
 
 .blackmarket-drawer h3 {
-    margin: 20px 0 8px;
+    margin: 16px 0 8px;
     color: var(--bm-bio);
-    font-size: 11px;
-    letter-spacing: 1.5px;
+    font-size: 12px;
+    letter-spacing: 0.8px;
 }
 
 .blackmarket-drawer p,
 .blackmarket-drawer li,
 .blackmarket-drawer dt,
 .blackmarket-drawer dd {
-    color: #b7bbb7;
+    color: #c8cec9;
     font-size: 11px;
-    line-height: 1.7;
+    line-height: 1.65;
 }
 
-.blackmarket-drawer li { margin: 8px 0; }
-.blackmarket-drawer .warning { padding: 8px 10px; border-left: 2px solid var(--bm-red); background: rgba(233,103,87,0.08); }
-.blackmarket-drawer dl { display: grid; grid-template-columns: auto 1fr; gap: 7px 14px; }
+.blackmarket-drawer ol {
+    padding-left: 18px;
+    margin: 8px 0;
+}
+
+.blackmarket-drawer li { margin: 7px 0; }
+.blackmarket-drawer .warning {
+    padding: 8px 10px;
+    border-left: 2px solid var(--bm-red);
+    background: rgba(255, 91, 84, 0.09);
+}
+
+.blackmarket-drawer dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 14px;
+    margin: 8px 0;
+}
+
 .blackmarket-drawer dt { color: var(--bm-dim); }
 .blackmarket-drawer dd { margin: 0; color: var(--bm-cyan-pale); overflow-wrap: anywhere; }
-.blackmarket-presets button.active { border-color: var(--bm-bio); color: var(--bm-bio); }
-.blackmarket-visual-controls { display: grid; gap: 6px; }
-.blackmarket-visual-controls button { width: 100%; padding: 8px 9px; text-align: left; }
-.blackmarket-visual-controls button.active {
-    border-color: var(--bm-bio);
-    background: rgba(112,216,192,0.09);
-    color: var(--bm-bio);
-}
+
 .blackmarket-visual-metrics {
-    margin: 8px 0 0;
-    padding: 9px;
-    border: 1px solid rgba(112,216,192,0.22);
-    background: rgba(0,0,0,0.2);
+    padding: 9px 10px;
+    border: 1px solid rgba(114, 226, 208, 0.24);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.26);
 }
-.blackmarket-drawer-actions { flex-wrap: wrap; margin-top: 20px; }
 
-.blackmarket-lab-search {
+.blackmarket-exchange-grid {
     display: grid;
-    gap: 5px;
-}
-
-.blackmarket-lab-search span,
-.blackmarket-lab-count {
-    color: var(--bm-dim);
-    font-size: 9px;
-}
-
-.blackmarket-lab-search input {
-    min-width: 0;
-    padding: 8px 9px;
-    border: 1px solid var(--bm-line);
-    border-radius: 0;
-    outline: 0;
-    background: rgba(0,0,0,0.34);
-    color: var(--bm-cyan-pale);
-    font: inherit;
-}
-
-.blackmarket-lab-search input:focus {
-    border-color: var(--bm-bio);
-    box-shadow: 0 0 0 1px rgba(112,216,192,0.22);
-}
-
-.blackmarket-lab-count {
-    margin: 6px 0 9px !important;
-    line-height: 1.45 !important;
-}
-
-.blackmarket-lab-focus {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    margin-bottom: 8px;
-    padding: 7px 9px;
-    border: 1px solid rgba(112,216,192,0.32);
-    background: rgba(112,216,192,0.07);
+    margin: 10px 0 14px;
 }
 
-.blackmarket-lab-focus span,
-.blackmarket-lab-focus small {
+.blackmarket-exchange-grid button {
+    padding: 9px 10px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.blackmarket-exchange-grid button small {
+    display: block;
+    margin-top: 2px;
     color: var(--bm-bio);
-    font-size: 8px;
-}
-
-.blackmarket-lab-focus b {
-    min-width: 0;
-    overflow: hidden;
-    color: var(--bm-cyan-pale);
     font-size: 10px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-weight: 400;
 }
 
-.blackmarket-lab-items {
+.blackmarket-debug-grid {
+    display: grid;
+    gap: 9px;
+    margin: 12px 0;
+}
+
+.blackmarket-debug-grid label {
     display: grid;
     gap: 4px;
-}
-
-.blackmarket-lab-items button {
-    display: grid;
-    grid-template-columns: 30px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 5px 7px;
-    text-align: left;
-}
-
-.blackmarket-lab-items img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-}
-
-.blackmarket-lab-items span,
-.blackmarket-lab-items b,
-.blackmarket-lab-items small {
-    display: block;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.blackmarket-lab-items b {
-    color: var(--bm-cyan-pale);
-    font-size: 10px;
-}
-
-.blackmarket-lab-items small {
     color: var(--bm-dim);
-    font-size: 8px;
+    font-size: 11px;
 }
 
-.blackmarket-lab-items em {
+.blackmarket-debug-grid select,
+.blackmarket-debug-grid input {
+    padding: 6px 8px;
+    border: 1px solid #07090a;
+    border-radius: 5px;
+    background: #0a0f11;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
     color: var(--bm-bio);
-    font-size: 8px;
-    font-style: normal;
+    font: inherit;
+    font-size: 12px;
+}
+
+.blackmarket-debug-grid select:focus,
+.blackmarket-debug-grid input:focus {
+    outline: 2px solid var(--bm-cyan);
+    outline-offset: 1px;
+}
+
+.blackmarket-debug-note {
+    color: var(--bm-dim);
+    font-size: 10px;
+    line-height: 1.55;
+}
+
+.blackmarket-drawer-actions {
+    flex-wrap: wrap;
+    margin-top: 12px;
 }
 
 .blackmarket-lab-empty {
-    padding: 14px;
+    padding: 12px;
     border: 1px dashed var(--bm-line);
     color: var(--bm-dim);
-    font-size: 10px;
+    font-size: 11px;
     text-align: center;
 }
 
+/* ── 放大检视扫描台（修复工具栏按钮 44px 错位与旋转裁切 + A/B 并排对照）── */
 .blackmarket-inspection-overlay {
     position: absolute;
     z-index: 50;
@@ -1019,7 +1540,7 @@
     display: grid;
     place-items: center;
     padding: 8px;
-    background: rgba(0,0,0,0.82);
+    background: rgba(0, 0, 0, 0.84);
     backdrop-filter: blur(5px);
 }
 
@@ -1032,11 +1553,11 @@
     min-height: 0;
     overflow: hidden;
     border: 1px solid var(--bm-line-strong);
+    border-radius: 8px;
     background:
-        linear-gradient(145deg, rgba(112,216,192,0.055), transparent 34%),
-        linear-gradient(325deg, rgba(111,224,207,0.05), transparent 38%),
+        linear-gradient(145deg, rgba(114, 226, 208, 0.06), transparent 34%),
         #071012;
-    box-shadow: 0 28px 90px rgba(0,0,0,0.82), inset 0 0 0 1px rgba(112,216,192,0.06);
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.86);
 }
 
 .blackmarket-inspection-dialog > header {
@@ -1044,21 +1565,21 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 7px 10px 6px;
+    padding: 7px 12px 6px;
     border-bottom: 1px solid var(--bm-line);
 }
 
 .blackmarket-inspection-dialog > header span {
     color: var(--bm-bio);
-    font-size: 8px;
-    letter-spacing: 2px;
+    font-size: 10px;
+    letter-spacing: 1.4px;
 }
 
 .blackmarket-inspection-dialog > header h2 {
     font-family: var(--bm-font-display);
-    margin: 3px 0 0;
+    margin: 2px 0 0;
     color: var(--bm-cyan-pale);
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .blackmarket-inspection-dialog > header button,
@@ -1066,60 +1587,66 @@
 .blackmarket-inspection-toolbar button,
 .blackmarket-inspection-camera-control {
     border: 1px solid var(--bm-line-strong);
-    background: rgba(111,224,207,0.07);
+    border-radius: 4px;
+    background: rgba(114, 226, 208, 0.08);
     color: var(--bm-cyan-pale);
     cursor: pointer;
 }
 
 .blackmarket-inspection-dialog > header button {
-    padding: 2px 8px;
+    padding: 2px 9px;
     color: var(--bm-red);
     font-size: 18px;
 }
 
 .blackmarket-inspection-switch {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    padding: 4px 10px;
-    border-bottom: 1px solid rgba(111,224,207,0.16);
-    background: rgba(0,0,0,0.2);
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 6px;
+    padding: 5px 12px;
+    border-bottom: 1px solid rgba(114, 226, 208, 0.16);
+    background: rgba(0, 0, 0, 0.24);
 }
 
 .blackmarket-inspection-switch button {
-    padding: 5px 8px;
+    padding: 5px 10px;
     color: var(--bm-dim);
-    font-size: 9px;
-    letter-spacing: 1.2px;
+    font-size: 11px;
+    letter-spacing: 0.8px;
 }
 
 .blackmarket-inspection-switch button[aria-pressed="true"] {
     border-color: var(--bm-bio);
-    background: rgba(112,216,192,0.09);
+    background: rgba(255, 211, 107, 0.12);
     color: var(--bm-bio);
+    font-weight: 700;
 }
 
-.blackmarket-inspection-switch button:disabled { opacity: 0.34; cursor: not-allowed; }
+.blackmarket-inspection-switch button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
 
-.blackmarket-inspection-viewport {
+.blackmarket-inspection-viewport,
+.blackmarket-inspection-compare {
     position: relative;
-    display: grid;
-    place-items: center;
     min-width: 0;
     min-height: 0;
     overflow: hidden;
     outline: 0;
-    cursor: grab;
     background:
-        linear-gradient(45deg, rgba(112,216,192,0.018) 25%, transparent 25% 75%, rgba(112,216,192,0.018) 75%),
-        linear-gradient(45deg, rgba(112,216,192,0.018) 25%, transparent 25% 75%, rgba(112,216,192,0.018) 75%),
-        radial-gradient(circle at 50% 44%, rgba(16,42,39,0.66), rgba(1,8,9,0.98) 68%);
+        linear-gradient(45deg, rgba(114, 226, 208, 0.025) 25%, transparent 25% 75%, rgba(114, 226, 208, 0.025) 75%),
+        linear-gradient(45deg, rgba(114, 226, 208, 0.025) 25%, transparent 25% 75%, rgba(114, 226, 208, 0.025) 75%),
+        radial-gradient(circle at 50% 48%, rgba(44, 104, 104, 0.42), rgba(4, 12, 15, 0.96) 72%);
     background-position: 0 0, 12px 12px, 0 0;
     background-size: 24px 24px, 24px 24px, auto;
 }
 
-.blackmarket-inspection-viewport:focus-visible {
-    box-shadow: inset 0 0 0 1px var(--bm-bio);
+.blackmarket-inspection-viewport {
+    display: grid;
+    place-items: center;
+    padding: 12px;
+    cursor: grab;
 }
 
 .blackmarket-inspection-viewport.is-dragging { cursor: grabbing; }
@@ -1141,24 +1668,64 @@
     display: block;
     width: auto;
     height: auto;
+    max-width: 88%;
+    max-height: 88%;
+    filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.78));
+}
+
+/* A/B 并排对照模式 */
+.blackmarket-inspection-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 12px 16px;
+}
+
+.bm-compare-pane {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    place-items: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 0;
+    padding: 8px;
+    border: 1px solid rgba(114, 226, 208, 0.25);
+    border-radius: 6px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(114, 226, 208, 0.14), rgba(5, 13, 16, 0.65) 75%);
+}
+
+.bm-compare-pane span {
+    justify-self: start;
+    color: var(--bm-bio);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.bm-compare-pane canvas {
+    display: block;
     max-width: 92%;
     max-height: 92%;
-    filter: drop-shadow(0 18px 24px rgba(0,0,0,0.78));
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.76));
 }
 
 .blackmarket-inspection-dialog > footer {
     display: grid;
-    grid-template-columns: minmax(170px, 1fr) minmax(430px, auto);
+    grid-template-columns: minmax(220px, 1fr) auto;
     align-items: center;
-    gap: 8px;
-    padding: 6px 10px 8px;
+    gap: 10px;
+    padding: 7px 12px;
     border-top: 1px solid var(--bm-line);
-    background: rgba(0,0,0,0.26);
+    background: rgba(0, 0, 0, 0.34);
 }
 
-.blackmarket-inspection-evidence { display: grid; gap: 3px; }
-.blackmarket-inspection-evidence b { color: var(--bm-bio); font-size: 10px; }
-.blackmarket-inspection-evidence span { color: var(--bm-dim); font-size: 8px; }
+.blackmarket-inspection-evidence { display: grid; gap: 2px; }
+.blackmarket-inspection-evidence b { color: var(--bm-bio); font-size: 11px; }
+.blackmarket-inspection-evidence span { color: var(--bm-dim); font-size: 10px; }
 
 .blackmarket-inspection-toolbar,
 .blackmarket-inspection-camera-controls,
@@ -1169,79 +1736,96 @@
     gap: 4px;
 }
 
-.blackmarket-inspection-toolbar { justify-content: flex-end; gap: 5px; }
-.blackmarket-inspection-toolbar button,
-.blackmarket-inspection-camera-control { min-width: 28px; padding: 4px 6px; font-size: 8px; }
+.blackmarket-inspection-toolbar {
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+/* 显式覆写 components.css 的 min-height: 44px，统一全部工具栏按键高度为 26px */
+.blackmarket-panel .blackmarket-inspection-toolbar button,
+.blackmarket-panel .blackmarket-inspection-camera-control {
+    min-width: 28px;
+    min-height: 26px;
+    height: 26px;
+    padding: 0 7px;
+    font-size: 11px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
 .blackmarket-inspection-toolbar button:hover:not(:disabled),
 .blackmarket-inspection-camera-control:hover:not(:disabled),
 .blackmarket-inspection-toolbar button:focus-visible,
-.blackmarket-inspection-camera-control:focus-visible { border-color: var(--bm-bio); color: var(--bm-bio); }
-.blackmarket-inspection-camera-status {
-    min-width: 42px;
+.blackmarket-inspection-camera-control:focus-visible {
+    border-color: var(--bm-bio);
+    background: rgba(255, 211, 107, 0.14);
     color: var(--bm-bio);
-    font: 700 9px/1 monospace;
+}
+
+.blackmarket-inspection-camera-status {
+    min-width: 44px;
+    color: var(--bm-bio);
+    font: 700 11px/1 monospace;
     text-align: center;
 }
-.blackmarket-inspection-toolbar > output { color: var(--bm-dim); font-size: 8px; white-space: nowrap; }
 
-#panel-container[data-panel="blackmarket"] #panel-content {
-    inset: 1.2% 1.2%;
+.blackmarket-inspection-toolbar > output {
+    color: var(--bm-dim);
+    font-size: 10px;
+    white-space: nowrap;
 }
 
-#panel-container[data-panel="blackmarket"] #panel-backdrop {
+/* ── 扫描台 HUD ─────────────────────────────────────────── */
+.bm-scan-hud {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.bm-hud-v,
+.bm-hud-h {
+    position: absolute;
+    background: rgba(114, 226, 208, 0.24);
+}
+
+.bm-hud-v { top: 6%; bottom: 6%; left: 50%; width: 1px; }
+.bm-hud-h { left: 6%; right: 6%; top: 50%; height: 1px; }
+
+.bm-hud-corners {
+    position: absolute;
+    inset: 10px;
     background:
-        radial-gradient(circle at 12% 14%, rgba(112,216,192,0.13), transparent 31%),
-        radial-gradient(circle at 88% 80%, rgba(111,224,207,0.12), transparent 34%),
-        rgba(2,4,5,0.92);
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) left 0 top 0 / 16px 2px,
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) left 0 top 0 / 2px 16px,
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) right 0 top 0 / 16px 2px,
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) right 0 top 0 / 2px 16px,
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) left 0 bottom 0 / 16px 2px,
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) left 0 bottom 0 / 2px 16px,
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) right 0 bottom 0 / 16px 2px,
+        linear-gradient(rgba(114, 226, 208, 0.55), rgba(114, 226, 208, 0.55)) right 0 bottom 0 / 2px 16px;
+    background-repeat: no-repeat;
 }
 
-@keyframes blackmarket-spin {
-    to { transform: rotate(360deg); }
+.bm-hud-sweep {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    height: 18%;
+    background: linear-gradient(180deg, transparent, rgba(114, 226, 208, 0.08) 70%, rgba(114, 226, 208, 0.2));
+    animation: bm-hud-sweep-loop 3.2s linear infinite;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .blackmarket-loader { animation: none; }
-    .blackmarket-panel * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+.blackmarket-inspection-viewport.is-detent .bm-scan-hud {
+    animation: bm-hud-detent 180ms ease-out;
 }
 
-/* ── P1 机器框架追加段 ─────────────────────────────── */
-
-/* LED 标价牌（内凹荧光数码） */
-.blackmarket-price-tag {
-    padding: 3px 7px;
-    border: 1px solid #07090a;
-    border-radius: 4px;
-    background: #0a0e0f;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
-}
-
-.blackmarket-price-tag b {
-    letter-spacing: 1px;
-    text-shadow: 0 0 7px rgba(255,215,106,0.4);
-}
-
-/* 培养囊悬浮与试剂液面呼吸；相位错开避免同频 */
-.blackmarket-bay:nth-child(2) .blackmarket-asset { animation-delay: -1.7s; }
-.blackmarket-bay:nth-child(3) .blackmarket-asset { animation-delay: -3.1s; }
-
-@keyframes bm-pod-bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-}
-
-@keyframes bm-vial-shimmer {
-    0%, 100% { filter: brightness(1); }
-    50% { filter: brightness(1.28); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .blackmarket-asset,
-    .blackmarket-vial-tube i { animation: none; }
-}
-
-/* ── P2 交互编舞追加段（全部 pointer-events:none 纯装饰，不拦截操作） ─────────── */
-
-/* 1. 揭晓三段式：爪落 → 扫描 → 盈/亏闪光（只随 pending 首次渲染出现一次） */
+/* ── 紧凑 0.52s 脱壳揭晓三段演出（爪落 → 剥离扫光 → 盈亏闪光）── */
 .bm-fx-reveal {
     position: absolute;
     inset: 0;
@@ -1254,286 +1838,141 @@
     position: absolute;
     top: 0;
     left: 50%;
-    width: 22px;
-    height: 46%;
+    width: 24px;
+    height: 44%;
     transform: translate(-50%, -105%);
-    animation: bm-fx-claw-drop 1.15s cubic-bezier(0.32, 0.9, 0.35, 1) forwards;
+    animation: bm-fx-claw-drop 0.54s cubic-bezier(0.32, 0.9, 0.35, 1) forwards;
 }
-.bm-fx-claw::before { /* 吊杆 */
+
+.bm-fx-claw::before {
     content: "";
     position: absolute;
     top: 0;
     left: 50%;
     width: 4px;
-    height: 70%;
+    height: 68%;
     transform: translateX(-50%);
-    background: linear-gradient(90deg, #0b0e0f, #3a4045 50%, #0b0e0f);
+    background: linear-gradient(90deg, #0b0e0f, #505a60 50%, #0b0e0f);
 }
-.bm-fx-claw::after { /* 爪头 */
+
+.bm-fx-claw::after {
     content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
-    width: 22px;
+    width: 24px;
     height: 14px;
     transform: translateX(-50%);
-    border: 3px solid #454d52;
+    border: 3px solid #596369;
     border-top: 0;
     border-radius: 0 0 11px 11px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
 }
 
 .bm-fx-scan {
     position: absolute;
     right: 0;
     left: 0;
-    top: -12%;
-    height: 12%;
+    top: -14%;
+    height: 14%;
     transform: translateY(-120%);
-    background: linear-gradient(180deg, transparent, rgba(111,224,207,0.5) 45%, rgba(210,246,238,0.85) 50%, rgba(111,224,207,0.5) 55%, transparent);
+    background: linear-gradient(180deg, transparent, rgba(114, 226, 208, 0.55) 45%, rgba(220, 250, 244, 0.92) 50%, rgba(114, 226, 208, 0.55) 55%, transparent);
     mix-blend-mode: screen;
-    animation: bm-fx-scan-sweep 0.62s 0.52s ease-in-out forwards;
+    animation: bm-fx-scan-sweep 0.36s 0.14s ease-in-out forwards;
+}
+
+.bm-fx-reveal.tone-profit .bm-fx-scan {
+    background: linear-gradient(180deg, transparent, rgba(132, 223, 98, 0.55) 45%, rgba(226, 255, 214, 0.92) 50%, rgba(132, 223, 98, 0.55) 55%, transparent);
 }
 
 .bm-fx-flash {
     position: absolute;
     inset: 0;
     opacity: 0;
-    animation: bm-fx-flash-pulse 0.55s 1.02s ease-out forwards;
+    animation: bm-fx-flash-pulse 0.38s 0.34s ease-out forwards;
 }
+
 .bm-fx-reveal.tone-profit .bm-fx-flash {
-    background: radial-gradient(circle at 50% 46%, rgba(130,217,94,0.55), rgba(130,217,94,0.12) 55%, transparent 75%);
+    background: radial-gradient(circle at 50% 46%, rgba(132, 223, 98, 0.56), rgba(132, 223, 98, 0.12) 55%, transparent 75%);
 }
+
 .bm-fx-reveal.tone-loss .bm-fx-flash {
-    background: radial-gradient(circle at 50% 46%, rgba(255,93,85,0.5), rgba(255,93,85,0.1) 55%, transparent 75%);
-}
-.bm-fx-reveal.tone-profit .bm-fx-scan {
-    background: linear-gradient(180deg, transparent, rgba(130,217,94,0.5) 45%, rgba(220,255,205,0.85) 50%, rgba(130,217,94,0.5) 55%, transparent);
+    background: radial-gradient(circle at 50% 46%, rgba(255, 91, 84, 0.52), rgba(255, 91, 84, 0.1) 55%, transparent 75%);
 }
 
-@keyframes bm-fx-claw-drop {
-    0% { transform: translate(-50%, -105%); }
-    38% { transform: translate(-50%, 12%); }
-    52% { transform: translate(-50%, 8%); }
-    78% { transform: translate(-50%, 6%); opacity: 1; }
-    100% { transform: translate(-50%, -105%); opacity: 0.4; }
-}
-
-@keyframes bm-fx-scan-sweep {
-    0% { transform: translateY(-120%); }
-    100% { transform: translateY(980%); }
-}
-
-@keyframes bm-fx-flash-pulse {
-    0% { opacity: 0; }
-    30% { opacity: 1; }
-    100% { opacity: 0.18; }
-}
-
-/* 2. 选中货物：四角瞄准框 + 舱青脉冲 */
-.blackmarket-offer.is-selected {
-    border-color: var(--bm-cyan);
-    animation: bm-offer-lockon 1.6s ease-in-out infinite;
-}
-.blackmarket-offer.is-selected::before {
-    content: "";
-    position: absolute;
-    inset: -4px;
-    z-index: 5;
-    pointer-events: none;
-    background:
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 top 0 / 12px 2px,
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 top 0 / 2px 12px,
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 top 0 / 12px 2px,
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 top 0 / 2px 12px,
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 bottom 0 / 12px 2px,
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) left 0 bottom 0 / 2px 12px,
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 bottom 0 / 12px 2px,
-        linear-gradient(var(--bm-cyan), var(--bm-cyan)) right 0 bottom 0 / 2px 12px;
-    background-repeat: no-repeat;
-    filter: drop-shadow(0 0 4px rgba(111,224,207,0.65));
-}
-
-@keyframes bm-offer-lockon {
-    0%, 100% { box-shadow: inset 0 0 0 1px rgba(111,224,207,0.36), 0 0 14px rgba(111,224,207,0.10); }
-    50% { box-shadow: inset 0 0 0 1px rgba(111,224,207,0.55), 0 0 22px rgba(111,224,207,0.22); }
-}
-
-/* 3. 选中支付方式的试剂管"预支"脉动 */
-.blackmarket-ledger-cell.is-armed .blackmarket-vial-tube {
-    border-color: var(--vial);
-    box-shadow: inset 0 2px 3px rgba(0,0,0,0.6), 0 0 10px var(--vial);
-}
-.blackmarket-ledger-cell.is-armed .blackmarket-vial-tube i {
-    animation: bm-vial-pump 0.9s ease-in-out infinite;
-}
-
-@keyframes bm-vial-pump {
-    0%, 100% { filter: brightness(1); transform: translateY(0); }
-    50% { filter: brightness(1.45); transform: translateY(-1.5px); }
-}
-
-/* 4. 放大检视 → 鉴定扫描台 HUD：十字准线 + 四角框 + 扫描线 + 旋转顿挫 */
-.bm-scan-hud {
-    position: absolute;
-    inset: 0;
-    z-index: 6;
-    overflow: hidden;
-    pointer-events: none;
-}
-.bm-hud-v,
-.bm-hud-h {
-    position: absolute;
-    background: rgba(111,224,207,0.28);
-}
-.bm-hud-v { top: 6%; bottom: 6%; left: 50%; width: 1px; }
-.bm-hud-h { left: 6%; right: 6%; top: 50%; height: 1px; }
-.bm-hud-corners {
-    position: absolute;
-    inset: 10px;
-    background:
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) left 0 top 0 / 16px 2px,
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) left 0 top 0 / 2px 16px,
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) right 0 top 0 / 16px 2px,
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) right 0 top 0 / 2px 16px,
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) left 0 bottom 0 / 16px 2px,
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) left 0 bottom 0 / 2px 16px,
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) right 0 bottom 0 / 16px 2px,
-        linear-gradient(rgba(111,224,207,0.55), rgba(111,224,207,0.55)) right 0 bottom 0 / 2px 16px;
-    background-repeat: no-repeat;
-}
-.bm-hud-sweep {
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 0;
-    height: 22%;
-    background: linear-gradient(180deg, transparent, rgba(111,224,207,0.09) 70%, rgba(111,224,207,0.22));
-    animation: bm-hud-sweep-loop 2.8s linear infinite;
-}
-.blackmarket-inspection-viewport.is-detent .bm-scan-hud {
-    animation: bm-hud-detent 180ms ease-out;
-}
-
-@keyframes bm-hud-sweep-loop {
-    0% { transform: translateY(-110%); }
-    100% { transform: translateY(520%); }
-}
-@keyframes bm-hud-detent {
-    0% { filter: brightness(2.2); }
-    100% { filter: brightness(1); }
-}
-
-/* 5. 通电过场：整屏 flicker + 舱液渐亮（每轮打开只播一次） */
+/* ── 开机通电过场 ───────────────────────────────────────── */
 .blackmarket-poweron {
     position: absolute;
     inset: 0;
     z-index: 60;
     pointer-events: none;
 }
+
 .blackmarket-poweron i:first-child {
     position: absolute;
     inset: 0;
     background: #04080a;
-    animation: bm-poweron-flicker 0.85s steps(1, end) forwards;
+    animation: bm-poweron-flicker 0.55s steps(1, end) forwards;
 }
+
 .blackmarket-poweron i:last-child {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 50% 42%, rgba(111,224,207,0.16), transparent 62%);
+    background: radial-gradient(ellipse at 50% 42%, rgba(114, 226, 208, 0.16), transparent 62%);
     opacity: 0;
-    animation: bm-poweron-glow 1.4s 0.3s ease-out forwards;
+    animation: bm-poweron-glow 0.85s 0.2s ease-out forwards;
 }
 
-@keyframes bm-poweron-flicker {
-    0% { opacity: 1; }
-    18% { opacity: 0.35; }
-    30% { opacity: 0.9; }
-    44% { opacity: 0.2; }
-    62% { opacity: 0.55; }
-    100% { opacity: 0; }
-}
-@keyframes bm-poweron-glow {
-    0% { opacity: 0; }
-    40% { opacity: 1; }
-    100% { opacity: 0; }
+/* ── 统一注释层（PanelTooltip）内的黑市语义样式 ──────────── */
+#panel-tooltip:has(.bm-ann),
+#panel-tooltip:has(.bm-ann-rich-wrap) {
+    background: rgba(9, 15, 18, 0.98) !important;
+    border-color: rgba(124, 214, 200, 0.55) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.78) !important;
 }
 
-/* 6. 机器报错：红 LED 两闪 */
-.blackmarket-error {
-    animation: bm-error-blink 0.5s step-end 2;
-}
-@keyframes bm-error-blink {
-    0%, 100% { box-shadow: 0 0 0 rgba(255,93,85,0); }
-    50% { box-shadow: 0 0 18px rgba(255,93,85,0.55); }
+/* 未揭晓短提示卡不拦截指针，避免覆盖下方“整舱放过”与底栏按键 */
+#panel-tooltip:has(.bm-ann-anon) {
+    pointer-events: none !important;
 }
 
-/* 7. 同舱撤回：闸门逐段落下——只在状态新鲜迁移时播一次（is-fresh 由面板按页门禁） */
-.blackmarket-shutter.is-fresh b {
-    animation: bm-shutter-drop 0.4s cubic-bezier(0.55, 0, 0.8, 0.4) backwards;
-}
-.blackmarket-shutter.is-fresh b:nth-child(2) { animation-delay: 0.08s; }
-.blackmarket-shutter.is-fresh b:nth-child(3) { animation-delay: 0.16s; }
-
-@keyframes bm-shutter-drop {
-    0% { transform: translateY(-102%); }
-    100% { transform: translateY(0); }
+.bm-ann-rich-wrap {
+    padding-top: 6px;
 }
 
-/* 8. reduced-motion 扩展 */
-@media (prefers-reduced-motion: reduce) {
-    .bm-fx-reveal,
-    .blackmarket-poweron,
-    .bm-hud-sweep { display: none; }
-    .blackmarket-offer.is-selected,
-    .blackmarket-ledger-cell.is-armed .blackmarket-vial-tube i,
-    .blackmarket-error,
-    .blackmarket-shutter.is-fresh b { animation: none; }
-}
-
-
-/* ── 统一注释层（PanelTooltip）内的黑市语义样式 ─────────────── */
 .bm-ann b {
-    color: var(--bm-cyan-pale, #d2f6ee);
+    color: var(--bm-cyan-pale, #dbf7f0);
     font-size: 13px;
-    letter-spacing: 1px;
+    letter-spacing: 0.6px;
 }
 
 .bm-ann-tax {
-    color: #ffd76a;
-    font-size: 10px;
+    color: #ffd36b;
+    font-size: 11px;
 }
 
 .bm-ann-note {
-    color: #8e938f;
-    font-size: 9px;
+    color: #9eb3ae;
+    font-size: 10px;
 }
 
 .bm-ann-price {
-    color: #d9d5ca;
-    font-size: 10px;
-    letter-spacing: 0.5px;
+    color: #e2dfd5;
+    font-size: 11px;
 }
 
-/* ── P3 环境层追加段 ───────────────────────────────────────── */
-
-/* 舱液气泡 canvas：垫在货舱之下 */
-.blackmarket-bubbles {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+/* ── 外框与合成台机体 Backdrop ──────────────────────────── */
+#panel-container[data-panel="blackmarket"] #panel-content {
+    inset: 1.2% 1.2%;
+    border: 2px solid #0a0d0e;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px rgba(164, 236, 222, 0.18), 0 0 42px rgba(0, 0, 0, 0.65);
 }
 
-.blackmarket-bay { z-index: 1; }
-
-/* 机器框架：面板内容之外是合成台机身（backdrop 为机体底色 + 侧立机体淡影） */
 #panel-container[data-panel="blackmarket"] #panel-backdrop {
     background:
-        radial-gradient(ellipse at 80% 40%, rgba(79,196,216,0.13), transparent 46%),
-        radial-gradient(ellipse at 18% 82%, rgba(0,0,0,0.62), transparent 58%),
+        radial-gradient(ellipse at 80% 40%, rgba(82, 201, 220, 0.14), transparent 46%),
+        radial-gradient(ellipse at 18% 82%, rgba(0, 0, 0, 0.64), transparent 58%),
         linear-gradient(150deg, #0b0e10, #060809);
 }
 
@@ -1547,78 +1986,144 @@
     pointer-events: none;
 }
 
-#panel-container[data-panel="blackmarket"] #panel-content {
-    border: 2px solid #0a0d0e;
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(160,240,224,0.18), 0 0 42px rgba(0,0,0,0.6);
-}
-
-/* 进出场：屏幕通电（每轮打开播一次；transform 属 PanelScale，只用 filter/opacity） */
-.blackmarket-scale-shell {
-    animation: bm-shell-power 0.55s ease-out;
-}
-
-.blackmarket-scale-shell.is-powering-off {
-    animation: bm-shell-off 0.28s ease-in forwards;
-}
+/* ── 关键帧 ─────────────────────────────────────────────── */
+@keyframes blackmarket-spin { to { transform: rotate(360deg); } }
 
 @keyframes bm-shell-power {
-    0% { opacity: 0.35; filter: brightness(0.4) blur(2px); }
-    45% { opacity: 1; filter: brightness(1.25) blur(0); }
+    0% { opacity: 0.4; filter: brightness(0.45); }
+    50% { opacity: 1; filter: brightness(1.18); }
     100% { opacity: 1; filter: none; }
 }
 
 @keyframes bm-shell-off {
     0% { opacity: 1; filter: brightness(1); }
-    40% { filter: brightness(1.6); }
-    100% { opacity: 0.2; filter: brightness(0.15); }
+    45% { filter: brightness(1.4); }
+    100% { opacity: 0.25; filter: brightness(0.2); }
 }
 
+@keyframes bm-delta-pop {
+    0% { opacity: 0; transform: translateY(6px); }
+    18% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(-4px); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+@keyframes bm-siphon-lr {
+    0% { opacity: 0; transform: scaleX(0.15); transform-origin: left center; }
+    35% { opacity: 1; transform: scaleX(1); transform-origin: left center; }
+    100% { opacity: 0; transform: scaleX(0.35); transform-origin: right center; }
+}
+
+@keyframes bm-siphon-rl {
+    0% { opacity: 0; transform: scaleX(0.15); transform-origin: right center; }
+    35% { opacity: 1; transform: scaleX(1); transform-origin: right center; }
+    100% { opacity: 0; transform: scaleX(0.35); transform-origin: left center; }
+}
+
+@keyframes bm-bomb-overload {
+    0% { box-shadow: inset 0 0 0 rgba(255, 91, 84, 0); }
+    45% { box-shadow: inset 0 0 36px rgba(255, 91, 84, 0.72); }
+    100% { box-shadow: inset 0 0 8px rgba(255, 91, 84, 0.2); }
+}
+
+@keyframes bm-shutter-drop {
+    0% { transform: translateY(-102%); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes bm-fx-claw-drop {
+    0% { transform: translate(-50%, -105%); }
+    42% { transform: translate(-50%, 10%); }
+    72% { transform: translate(-50%, 6%); opacity: 1; }
+    100% { transform: translate(-50%, -105%); opacity: 0.2; }
+}
+
+@keyframes bm-fx-scan-sweep {
+    0% { transform: translateY(-120%); }
+    100% { transform: translateY(840%); }
+}
+
+@keyframes bm-fx-flash-pulse {
+    0% { opacity: 0; }
+    35% { opacity: 1; }
+    100% { opacity: 0.12; }
+}
+
+@keyframes bm-result-pop {
+    0% { opacity: 0; transform: scale(0.88); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bm-jaw-talk {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(3.8px) rotate(1.2deg); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes bm-jaw-laugh {
+    0%, 100% { transform: translateY(0); }
+    45% { transform: translateY(5.2px) rotate(-1.5deg); }
+}
+
+@keyframes bm-t800-jolt {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+@keyframes bm-hud-sweep-loop {
+    0% { transform: translateY(-110%); }
+    100% { transform: translateY(620%); }
+}
+
+@keyframes bm-hud-detent {
+    0% { filter: brightness(2); }
+    100% { filter: brightness(1); }
+}
+
+@keyframes bm-poweron-flicker {
+    0% { opacity: 1; }
+    24% { opacity: 0.35; }
+    42% { opacity: 0.8; }
+    68% { opacity: 0.25; }
+    100% { opacity: 0; }
+}
+
+@keyframes bm-poweron-glow {
+    0% { opacity: 0; }
+    45% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes bm-error-blink {
+    0%, 100% { box-shadow: 0 0 0 rgba(255, 91, 84, 0); }
+    50% { box-shadow: 0 0 18px rgba(255, 91, 84, 0.55); }
+}
+
+/* ── 无障碍减动效 ───────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-    .blackmarket-bubbles { display: none; }
+    .blackmarket-loader,
     .blackmarket-scale-shell,
-    .blackmarket-scale-shell.is-powering-off { animation: none; }
-}
-
-/* ── 调试抽屉（影子会话参数） ─────────────────────────────── */
-.blackmarket-debug-grid {
-    display: grid;
-    gap: 10px;
-    margin: 14px 0;
-}
-
-.blackmarket-debug-grid label {
-    display: grid;
-    gap: 4px;
-    color: var(--bm-dim);
-    font-size: 10px;
-    letter-spacing: 1px;
-}
-
-.blackmarket-debug-grid select,
-.blackmarket-debug-grid input {
-    padding: 6px 8px;
-    border: 1px solid #07090a;
-    border-radius: 6px;
-    background: #0a0e0f;
-    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
-    color: var(--bm-bio);
-    font: inherit;
-    letter-spacing: 1px;
-}
-
-.blackmarket-debug-grid select:focus,
-.blackmarket-debug-grid input:focus {
-    outline: 2px solid var(--bm-cyan);
-    outline-offset: 1px;
-}
-
-.blackmarket-debug-note {
-    color: var(--bm-dim);
-    font-size: 9px;
-    line-height: 1.6;
-}
-
-.blackmarket-drawer-actions {
-    margin-top: 12px;
+    .blackmarket-scale-shell.is-powering-off,
+    .blackmarket-error,
+    .blackmarket-shutter.is-fresh,
+    .blackmarket-shutter.is-fresh b,
+    .blackmarket-direction.is-revealed,
+    .bm-t800-mount,
+    .bm-t800-mount.is-talking .bm-t800-jaw,
+    .bm-t800-mount[data-mood="loss"].is-talking .bm-t800-jaw,
+    .bm-vial-delta.is-pop {
+        animation: none !important;
+    }
+    .blackmarket-bubbles,
+    .bm-fx-reveal,
+    .blackmarket-poweron,
+    .bm-hud-sweep,
+    .blackmarket-divider .bm-bridge-beam {
+        display: none;
+    }
+    .blackmarket-panel * {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }

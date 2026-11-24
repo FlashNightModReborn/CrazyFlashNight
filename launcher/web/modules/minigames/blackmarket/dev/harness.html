@@ -18,6 +18,7 @@
 
 <script>
 window.__minigameOverlayRoot = "../../../../";
+window.CF7_DRESSUP_MANIFEST_URL = "../../../../assets/dressup/manifest.json";
 window.__BLACKMARKET_REQUEST_URLS__ = [];
 window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
 (function(originalFetch) {
@@ -34,10 +35,15 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
 <script src="../../shared/host-bridge.js"></script>
 <script src="../../shared/dev/harness-base.js"></script>
 <script src="../../../tooltip.js"></script>
+<script src="../../../asset-timeline.js"></script>
+<script src="../../../dressup-doll-renderer.js"></script>
+<script src="../../../merc-portrait-renderer.js"></script>
+<script src="../../../workbench-inspection-viewport.js"></script>
+<script src="../../../equipment-inspector.js"></script>
 <script src="../visual/visual-pool-manifest.js"></script>
 <script src="../core/index.js"></script>
-<script src="../../../workbench-inspection-viewport.js"></script>
 <script src="../visual/inspection-focus.js"></script>
+<script src="../visual/equipment-preview.js"></script>
 <script src="../visual/item-surface.js"></script>
 <script src="../blackmarket-panel.js"></script>
 <script>
@@ -385,6 +391,7 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
                 }
             },
             {
+                id: "bm-ui12",
                 title: "exact close 确认丢失后恢复可重试",
                 run: function(api) {
                     var originalSend = Bridge.send;
@@ -429,6 +436,90 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
                         throw error;
                     });
                 }
+            },
+            {
+                id: "bm-ui13",
+                title: "加载途中提前脱壳与换批不卡死其余槽位污泥",
+                run: function(api) {
+                    function skipRemainingPairs() {
+                        var snap = productSession && productSession.product.open();
+                        if (!snap || snap.page.openPairs <= 0) return Promise.resolve();
+                        var before = snap.page.openPairs;
+                        var skipBtn = document.querySelector('[data-bm-action="skip"]:not(:disabled)');
+                        api.assert(!!skipBtn, "skip button missing while openPairs=" + before);
+                        var pairId = skipBtn.getAttribute("data-pair-id");
+                        skipBtn.click();
+                        var confirmSkip = document.querySelector('[data-bm-action="skip"][data-pair-id="' + pairId + '"]:not(:disabled)');
+                        api.assert(!!confirmSkip, "armed skip button missing for " + pairId);
+                        confirmSkip.click();
+                        return api.waitFor(function() {
+                            var cur = productSession && productSession.product.open();
+                            return cur && cur.page.openPairs < before ? cur : null;
+                        }, 2500, "pair skipped").then(skipRemainingPairs);
+                    }
+                    function settleAllOpenAndAdvance() {
+                        return skipRemainingPairs().then(function() {
+                            return api.waitFor(function() {
+                                var next = document.querySelector('[data-bm-action="next-page"]');
+                                return next && !next.disabled ? next : null;
+                            }, 2500, "next page action ready");
+                        }).then(function(nextBtn) {
+                            nextBtn.click();
+                            return api.waitFor(function() {
+                                var snap = productSession && productSession.product.open();
+                                return snap && snap.page.number === 2 ? snap : null;
+                            }, 2500, "page 2 mounted");
+                        });
+                    }
+                    function buyFirstAffordableOffer() {
+                        var offers = document.querySelectorAll('[data-bm-action="select"]');
+                        for (var i = 0; i < offers.length; i += 2) {
+                            if (offers[i].disabled) continue;
+                            offers[i].click();
+                            var confirm = document.querySelector('[data-bm-action="confirm"]');
+                            if (confirm && !confirm.disabled) {
+                                confirm.click();
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                    return bootSession(api).then(function() {
+                        // 不等待全量水合完成，立即购买首个可负担槽位 A 并回售，验证其余槽位继续完成覆泥
+                        api.assert(buyFirstAffordableOffer(), "no affordable offer on page 1");
+                        return api.waitFor(function() {
+                            var settle = document.querySelector('[data-bm-action="settle"][data-settle="resell"]');
+                            return settle && !settle.disabled ? settle : null;
+                        }, 2500, "page 1 pending reveal");
+                    }).then(function(resellBtn) {
+                        resellBtn.click();
+                        return api.waitFor(function() {
+                            var readyAssets = document.querySelectorAll(".blackmarket-asset.is-surface-ready").length;
+                            var readyCanvases = document.querySelectorAll('.blackmarket-item-surface[data-surface-state="ready"]').length;
+                            return readyAssets === 6 && readyCanvases === 6 ? true : null;
+                        }, 30000, "all 6 surfaces ready on page 1 after mid-load purchase");
+                    }).then(function() {
+                        return settleAllOpenAndAdvance();
+                    }).then(function() {
+                        // 切换到第 2 批后，同样不等 6 槽全部读取完毕立即购买首个可负担槽位 A
+                        api.assert(buyFirstAffordableOffer(), "no affordable offer on page 2");
+                        return api.waitFor(function() {
+                            var settle = document.querySelector('[data-bm-action="settle"][data-settle="resell"]');
+                            return settle && !settle.disabled ? settle : null;
+                        }, 2500, "page 2 pending reveal");
+                    }).then(function(resellBtn2) {
+                        resellBtn2.click();
+                        return api.waitFor(function() {
+                            var readyAssets = document.querySelectorAll(".blackmarket-asset.is-surface-ready").length;
+                            var readyCanvases = document.querySelectorAll('.blackmarket-item-surface[data-surface-state="ready"]').length;
+                            var openPinsReady = Array.prototype.slice.call(document.querySelectorAll(".blackmarket-bay:not(.is-terminal) .blackmarket-inspect-pin"))
+                                .filter(function(pin) { return !pin.disabled; }).length;
+                            return readyAssets === 6 && readyCanvases === 6 && openPinsReady === 4 ? true : null;
+                        }, 30000, "all 6 surfaces and open inspection pins ready on page 2");
+                    }).then(function() {
+                        return "mid-load purchase on page 1 and page 2 preserved sibling hydration (6/6 ready, 4/4 open inspect pins enabled)";
+                    });
+                }
             }
         ];
     }
@@ -467,7 +558,13 @@ window.__CF7_PANEL_CLOSE_ACK_TIMEOUT_MS__ = 80;
         collectDump: collectDump
     });
 
-    window.addEventListener("load", function() { harness.boot(); });
+    window.addEventListener("load", function() {
+        if (query.clean === "1") {
+            var dbg = document.getElementById("debug-log");
+            if (dbg) dbg.style.display = "none";
+        }
+        harness.boot();
+    });
 })();
 </script>
 </body>
