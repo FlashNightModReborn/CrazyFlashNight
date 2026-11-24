@@ -67,107 +67,240 @@ internal sealed partial class PlayerHudState
         return new(ReadRows("rows"), ReadRows("overflow"));
     }
 
-    private static long WireInteger(string text, long min, long max)
+    private readonly HashSet<long> _hotSeen = new();
+    private bool _focusJsonDirty, _alliesJsonDirty;
+
+    private static long WireInteger(ReadOnlySpan<char> text, long min, long max)
     {
         if (!long.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out long number) ||
             number < min || number > max) throw new FormatException("hot_integer");
         return number;
     }
 
-    private static JValue WireNumber(string text)
+    private static long WireSignedInteger(ReadOnlySpan<char> text, long min, long max)
+    {
+        if (text.Length == 0 || text[0] == '+' ||
+            !long.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out long number) ||
+            number < min || number > max) throw new FormatException("hot_integer");
+        return number;
+    }
+
+    private static double WireDouble(ReadOnlySpan<char> text)
     {
         if (text.Length == 0 || text.Length > 32) throw new FormatException("hot_number");
         if (long.TryParse(text, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out long integer) &&
-            integer >= -1_000_000_000_000_000 && integer <= 1_000_000_000_000_000) return new JValue(integer);
+            integer >= -1_000_000_000_000_000 && integer <= 1_000_000_000_000_000) return integer;
         const NumberStyles style = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
-        if (!double.TryParse(text,style,CultureInfo.InvariantCulture,out double n) || !double.IsFinite(n) || Math.Abs(n) > 1e15)
+        if (!double.TryParse(text, style, CultureInfo.InvariantCulture, out double n) || !double.IsFinite(n) || Math.Abs(n) > 1e15)
             throw new FormatException("hot_number");
-        return new JValue(n);
+        return n;
     }
 
-    // A row's numeric JSON leaves are prepared before commit. Both the typed snapshot
-    // and the retained JSON comparison base must see the same accepted sequence.
-    private readonly record struct HotEdit(JObject Row, JArray Hp, JArray? Shield, JValue? Flag, bool Focus)
-    {
-        internal bool Changed => !JToken.DeepEquals(Row["hp"], Hp) || (Focus
-            ? !JToken.DeepEquals(Row["hits"], Flag)
-            : !JToken.DeepEquals(Row["shield"], Shield) || !JToken.DeepEquals(Row["down"], Flag));
+    private static JValue ToJsonNumber(double value) =>
+        value == Math.Truncate(value) && value >= -1_000_000_000_000_000 && value <= 1_000_000_000_000_000
+            ? new JValue((long)value)
+            : new JValue(value);
 
-        internal void Commit()
+    private static JValue WireNumber(string text) => ToJsonNumber(WireDouble(text.AsSpan()));
+
+    private static bool TryNextToken(ref ReadOnlySpan<char> rest, char sep, out ReadOnlySpan<char> token)
+    {
+        int idx = rest.IndexOf(sep);
+        if (idx < 0)
         {
-            Row["hp"] = Hp;
-            if (Focus)
+            token = rest;
+            rest = ReadOnlySpan<char>.Empty;
+            return false;
+        }
+        token = rest.Slice(0, idx);
+        rest = rest.Slice(idx + 1);
+        return true;
+    }
+
+    private static int SplitRecordFields(ReadOnlySpan<char> record, Span<Range> ranges)
+    {
+        int count = 0;
+        int start = 0;
+        for (int i = 0; i <= record.Length; i++)
+        {
+            if (i == record.Length || record[i] == ',')
             {
-                if (Flag == null) Row.Remove("hits");
-                else Row["hits"] = Flag;
+                if (count >= ranges.Length) return -1;
+                ranges[count++] = new Range(start, i);
+                start = i + 1;
             }
-            else
+        }
+        return count;
+    }
+
+    private void SyncDirtyJsonShadow()
+    {
+        if (_focusJsonDirty)
+        {
+            _focusJsonDirty = false;
+            if (Snapshot?.FocusTargets is { } targets && _groups.TryGetValue("focusTarget", out var ft) && ft is JArray fa)
             {
-                Row["shield"] = Shield;
-                Row["down"] = Flag;
+                int n = Math.Min(targets.Length, fa.Count);
+                for (int i = 0; i < n; i++)
+                {
+                    if (fa[i] is not JObject row) continue;
+                    var t = targets[i];
+                    row["hp"] = new JArray(ToJsonNumber(t.Hp), ToJsonNumber(t.HpMax));
+                    if (t.Hits == 0) row.Remove("hits");
+                    else row["hits"] = new JValue((long)t.Hits);
+                    bool hadExt = row["flags"] != null || t.ShieldMax > 0 || t.Shield > 0 || t.Poise >= 0 || t.Flags != 0 || t.HitSeq > 0;
+                    if (hadExt)
+                    {
+                        row["shield"] = new JArray(ToJsonNumber(t.Shield), ToJsonNumber(t.ShieldMax));
+                        row["poise"] = new JValue((long)t.Poise);
+                        row["flags"] = new JValue((long)t.Flags);
+                        if (t.HitSeq == 0) row.Remove("hitSeq");
+                        else row["hitSeq"] = new JValue(t.HitSeq);
+                    }
+                }
             }
+        }
+        if (_alliesJsonDirty)
+        {
+            _alliesJsonDirty = false;
+            if (Snapshot?.Allies is { } allies && _groups.TryGetValue("allies", out var al) && al is JObject ao)
+            {
+                SyncAllyArrayShadow(ao["rows"] as JArray, allies.Rows);
+                SyncAllyArrayShadow(ao["overflow"] as JArray, allies.Overflow);
+            }
+        }
+    }
+
+    private static void SyncAllyArrayShadow(JArray? array, PlayerHudAlly[] items)
+    {
+        if (array == null) return;
+        int n = Math.Min(items.Length, array.Count);
+        for (int i = 0; i < n; i++)
+        {
+            if (array[i] is not JObject row) continue;
+            var a = items[i];
+            row["hp"] = new JArray(ToJsonNumber(a.Hp), ToJsonNumber(a.HpMax));
+            row["shield"] = new JArray(ToJsonNumber(a.Shield), ToJsonNumber(a.ShieldMax));
+            row["down"] = new JValue(a.Down);
         }
     }
 
     private bool ReceiveTypedHotPacket(string wire, long now)
     {
-        if (!ReadHotHeader(wire, out var records, out var epoch, out var sequence)) return false;
-        var previous = Snapshot!;
+        if (wire.Length > 16384) throw new FormatException("hot_length");
+        var span = wire.AsSpan();
+        if (!TryNextToken(ref span, ';', out var headerSpan)) throw new FormatException("hot_rows");
+        Span<Range> fields = stackalloc Range[12];
+        if (SplitRecordFields(headerSpan, fields) != 3 || !headerSpan[fields[0]].SequenceEqual("~1".AsSpan()))
+            throw new FormatException("hot_header");
+        long epoch = WireInteger(headerSpan[fields[1]], 1, 1_000_000_000_000_000);
+        long sequence = WireInteger(headerSpan[fields[2]], 1, 1_000_000_000_000_000);
+        if (epoch < _epoch || (epoch == _epoch && sequence <= _sequence)) return false;
+        if (NeedsUnitSync || epoch != _epoch || sequence != _sequence + 1 || Snapshot == null) throw new FormatException("hot_base");
+
+        var previous = Snapshot;
         PlayerHudFocusTarget[]? focusEdits = null;
         PlayerHudAlly[]? visibleEdits = null, overflowEdits = null;
-        var edits = new HotEdit[records.Length - 1];
-        var seen = new HashSet<(string, int)>();
+        _hotSeen.Clear();
         var changes = PlayerHudGroups.None;
-        for (int i = 0; i < edits.Length; i++)
+        bool focusTouched = false, alliesTouched = false;
+        int recordCount = 0;
+
+        bool more = true;
+        while (more)
         {
-            var fields = records[i + 1].Split(',');
-            var kind = fields[0];
-            bool focus = kind == "f";
-            if ((!focus && kind is not ("a" or "o")) || fields.Length != (focus ? 6 : 9)) throw new FormatException("hot_item");
-            if (!_groups.TryGetValue(focus ? "focusTarget" : "allies", out var group)) throw new FormatException("hot_layout");
-            var rows = focus ? group as JArray : (group as JObject)?[kind == "a" ? "rows" : "overflow"] as JArray;
-            int index = (int)WireInteger(fields[1], 0, int.MaxValue);
-            if (rows == null || index >= rows.Count || !seen.Add((kind, index))) throw new FormatException("hot_index");
-            var row = Object(rows[index]);
-            long id = WireInteger(fields[2], 1, 1_000_000_000_000_000);
+            more = TryNextToken(ref span, ';', out var rec);
+            recordCount++;
+            if (recordCount > 64) throw new FormatException("hot_rows");
+
+            int fieldCount = SplitRecordFields(rec, fields);
+            if (fieldCount < 6) throw new FormatException("hot_item");
+            var kindSpan = rec[fields[0]];
+            if (kindSpan.Length != 1) throw new FormatException("hot_item");
+            char kind = kindSpan[0];
+            bool focus = kind == 'f';
+            if ((!focus && kind is not ('a' or 'o')) || (focus ? fieldCount is not (6 or 11) : fieldCount != 9))
+                throw new FormatException("hot_item");
+
+            int index = (int)WireInteger(rec[fields[1]], 0, int.MaxValue);
+            long seenKey = ((long)kind << 32) | (uint)index;
+            if (!_hotSeen.Add(seenKey)) throw new FormatException("hot_index");
+            long id = WireInteger(rec[fields[2]], 1, 1_000_000_000_000_000);
             int h = focus ? 3 : 4;
-            var current = WireNumber(fields[h]);
-            var maximum = WireNumber(fields[h + 1]);
-            double hp = current.Value<double>(), hpMax = maximum.Value<double>();
+            double hp = WireDouble(rec[fields[h]]);
+            double hpMax = WireDouble(rec[fields[h + 1]]);
             if (hpMax <= 0) throw new FormatException("hot_hp_max");
-            var hpJson = new JArray(current, maximum);
+
             if (focus)
             {
-                var old = previous.FocusTargets![index];
+                if (previous.FocusTargets == null || index >= previous.FocusTargets.Length || !_groups.ContainsKey("focusTarget"))
+                    throw new FormatException("hot_index");
+                var old = previous.FocusTargets[index];
                 if (old.Id != id) throw new FormatException("hot_identity");
-                int hits = (int)WireInteger(fields[5], 0, 999999);
-                focusEdits ??= (PlayerHudFocusTarget[])previous.FocusTargets.Clone();
-                focusEdits[index] = old with { Hp = hp, HpMax = hpMax, Hits = hits };
-                edits[i] = new(row, hpJson, null, hits == 0 ? null : new JValue((long)hits), true);
+                int hits = (int)WireInteger(rec[fields[5]], 0, 999999);
+                if (fieldCount == 11)
+                {
+                    double shCur = WireDouble(rec[fields[6]]);
+                    double shMax = WireDouble(rec[fields[7]]);
+                    if (shCur < 0 || shMax < 0) throw new FormatException("hot_shield");
+                    int poise = (int)WireSignedInteger(rec[fields[8]], -1, 255);
+                    int flags = (int)WireInteger(rec[fields[9]], 0, 15);
+                    long hitSeq = WireInteger(rec[fields[10]], 0, 9007199254740991);
+                    bool rowChanged = old.Hp != hp || old.HpMax != hpMax || old.Hits != hits
+                        || old.Shield != shCur || old.ShieldMax != shMax || old.Poise != poise
+                        || old.Flags != flags || old.HitSeq != hitSeq;
+                    if (rowChanged)
+                    {
+                        focusEdits ??= (PlayerHudFocusTarget[])previous.FocusTargets.Clone();
+                        focusEdits[index] = old with { Hp = hp, HpMax = hpMax, Hits = hits, Shield = shCur, ShieldMax = shMax, Poise = poise, Flags = flags, HitSeq = hitSeq };
+                        changes |= PlayerHudGroups.Focus;
+                        focusTouched = true;
+                    }
+                }
+                else
+                {
+                    bool rowChanged = old.Hp != hp || old.HpMax != hpMax || old.Hits != hits;
+                    if (rowChanged)
+                    {
+                        focusEdits ??= (PlayerHudFocusTarget[])previous.FocusTargets.Clone();
+                        focusEdits[index] = old with { Hp = hp, HpMax = hpMax, Hits = hits };
+                        changes |= PlayerHudGroups.Focus;
+                        focusTouched = true;
+                    }
+                }
             }
             else
             {
-                bool overflow = kind == "o";
-                var source = overflow ? previous.Allies!.Overflow : previous.Allies!.Rows;
+                if (previous.Allies == null || !_groups.ContainsKey("allies")) throw new FormatException("hot_layout");
+                bool overflow = kind == 'o';
+                var source = overflow ? previous.Allies.Overflow : previous.Allies.Rows;
+                if (index >= source.Length) throw new FormatException("hot_index");
                 var old = source[index];
-                if (old.Id != id || old.Generation != WireInteger(fields[3], 1, 1_000_000_000_000_000)) throw new FormatException("hot_identity");
-                var shield = WireNumber(fields[6]);
-                var shieldMax = WireNumber(fields[7]);
-                if (shieldMax.Value<double>() < 0) throw new FormatException("hot_shield_max");
-                bool down = WireInteger(fields[8], 0, 1) == 1;
-                var copy = overflow ? (overflowEdits ??= (PlayerHudAlly[])source.Clone()) : (visibleEdits ??= (PlayerHudAlly[])source.Clone());
-                copy[index] = old with { Hp = hp, HpMax = hpMax, Shield = shield.Value<double>(), ShieldMax = shieldMax.Value<double>(), Down = down };
-                edits[i] = new(row, hpJson, new JArray(shield, shieldMax), new JValue(down), false);
+                if (old.Id != id || old.Generation != WireInteger(rec[fields[3]], 1, 1_000_000_000_000_000))
+                    throw new FormatException("hot_identity");
+                double shCur = WireDouble(rec[fields[6]]);
+                double shMax = WireDouble(rec[fields[7]]);
+                if (shMax < 0) throw new FormatException("hot_shield_max");
+                bool down = WireInteger(rec[fields[8]], 0, 1) == 1;
+                bool rowChanged = old.Hp != hp || old.HpMax != hpMax || old.Shield != shCur || old.ShieldMax != shMax || old.Down != down;
+                if (rowChanged)
+                {
+                    var copy = overflow ? (overflowEdits ??= (PlayerHudAlly[])source.Clone()) : (visibleEdits ??= (PlayerHudAlly[])source.Clone());
+                    copy[index] = old with { Hp = hp, HpMax = hpMax, Shield = shCur, ShieldMax = shMax, Down = down };
+                    changes |= PlayerHudGroups.Allies;
+                    alliesTouched = true;
+                }
             }
-            if (edits[i].Changed) changes |= focus ? PlayerHudGroups.Focus : PlayerHudGroups.Allies;
         }
+
         var targets = focusEdits ?? previous.FocusTargets;
         var allies = visibleEdits == null && overflowEdits == null ? previous.Allies
             : new PlayerHudAllyRoster(visibleEdits ?? previous.Allies!.Rows, overflowEdits ?? previous.Allies!.Overflow);
         var next = new PlayerHudSnapshot(epoch, sequence, previous.Vitals, previous.Combat, previous.Loadout,
             previous.Cooldowns, previous.Buffs, previous.Resources, previous.ColdSkills,
             focusEdits == null ? previous.FocusTarget : focusEdits[0], targets, allies) { BuffCards = previous.BuffCards };
-        foreach (var edit in edits) edit.Commit();
+        if (focusTouched) _focusJsonDirty = true;
+        if (alliesTouched) _alliesJsonDirty = true;
         Snapshot = next;
         _sequence = sequence;
         LastReceivedMilliseconds = now;
@@ -181,6 +314,7 @@ internal sealed partial class PlayerHudState
     // then validates cold and hot data through exactly the same atomic adoption path.
     private JObject? ExpandHotPacket(string wire)
     {
+        SyncDirtyJsonShadow();
         if (!ReadHotHeader(wire, out var rows, out var epoch, out var sequence)) return null;
 
         var edits = new JObject();
@@ -190,7 +324,8 @@ internal sealed partial class PlayerHudState
             var fields = rows[i].Split(',');
             string kind = fields[0];
             bool focus = kind == "f";
-            if ((!focus && kind is not ("a" or "o")) || fields.Length != (focus ? 6 : 9)) throw new FormatException("hot_item");
+            if ((!focus && kind is not ("a" or "o")) || (focus ? fields.Length is not (6 or 11) : fields.Length != 9))
+                throw new FormatException("hot_item");
             var key = focus ? "focusTarget" : "allies";
             if (edits[key] == null)
             {
@@ -207,6 +342,17 @@ internal sealed partial class PlayerHudState
                 item["hp"] = new JArray(WireNumber(fields[3]), WireNumber(fields[4]));
                 long hits = WireInteger(fields[5],0,999999);
                 if (hits == 0) item.Remove("hits"); else item["hits"] = hits;
+                if (fields.Length == 11)
+                {
+                    var shCurVal = WireNumber(fields[6]);
+                    var shMaxVal = WireNumber(fields[7]);
+                    if (shCurVal.Value<double>() < 0 || shMaxVal.Value<double>() < 0) throw new FormatException("hot_shield");
+                    item["shield"] = new JArray(shCurVal, shMaxVal);
+                    item["poise"] = WireSignedInteger(fields[8], -1, 255);
+                    item["flags"] = WireInteger(fields[9], 0, 15);
+                    long hitSeq = WireInteger(fields[10], 0, 9007199254740991);
+                    if (hitSeq == 0) item.Remove("hitSeq"); else item["hitSeq"] = hitSeq;
+                }
             }
             else
             {

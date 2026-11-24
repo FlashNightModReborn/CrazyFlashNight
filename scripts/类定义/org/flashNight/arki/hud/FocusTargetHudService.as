@@ -432,11 +432,20 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         return cached;
     }
 
-    private static function buildRichSnapshot(state:Object, hp:Number, maximum:Number, hits:Number):Object {
+    private static function buildRichSnapshot(state:Object, hp:Number, maximum:Number, hits:Number,
+            includeUnitInfo:Boolean, shCur:Number, shMax:Number, poise:Number, flags:Number, hitSeq:Number):Object {
         var effectiveHits:Number = (hits > 0) ? hits : 0;
         var rich:Object = state.cachedRich;
         var prevHits:Number = (rich != null && rich.hits != undefined) ? rich.hits : 0;
-        if (rich != null && rich.hp[0] === hp && rich.hp[1] === maximum && prevHits === effectiveHits) return rich;
+        if (rich != null && rich.hp[0] === hp && rich.hp[1] === maximum && prevHits === effectiveHits) {
+            if (!includeUnitInfo) {
+                if (rich.flags == undefined) return rich;
+            } else if (rich.flags === flags && rich.poise === poise
+                    && rich.shield != null && rich.shield[0] === shCur && rich.shield[1] === shMax
+                    && ((rich.hitSeq != undefined ? rich.hitSeq : 0) === hitSeq)) {
+                return rich;
+            }
+        }
         rich = {id:state.id, role:state.role, name:state.label, hp:[hp, maximum]};
         var p:Object = state.portrait;
         if (p != null) {
@@ -444,6 +453,12 @@ class org.flashNight.arki.hud.FocusTargetHudService {
             if (p.doll != null) rich.doll = p.doll;
         }
         if (effectiveHits > 0) rich.hits = effectiveHits;
+        if (includeUnitInfo) {
+            rich.shield = [shCur, shMax];
+            rich.poise = poise;
+            rich.flags = flags;
+            if (hitSeq > 0) rich.hitSeq = hitSeq;
+        }
         state.cachedRich = rich;
         return rich;
     }
@@ -460,7 +475,7 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         var maximum = unit.hp满血值;
         if (!finite(hp) || !(hp > 0) || !finite(maximum) || !(maximum > 0)) return null;
         if (state.portrait == null) state.portrait = extractPortrait(unit);
-        return {state: state, hp: hp, maximum: maximum};
+        return {state: state, unit: unit, hp: hp, maximum: maximum};
     }
 
     private static function syncHeroAggroProperty(world:MovieClip, worldIdentity:Object, hero:Object, frame:Number):Void {
@@ -499,7 +514,8 @@ class org.flashNight.arki.hud.FocusTargetHudService {
      * Multi-target projection ordered by protect > boss > combat (capped at the negotiated display capacity).
      * Reuses the returned Array reference when all items are unchanged.
      */
-    public static function snapshotList(hero:Object, capacity:Number):Array {
+    public static function snapshotList(hero:Object, capacity:Number, includeUnitInfo:Boolean):Array {
+        var emitUnitInfo:Boolean = includeUnitInfo === true;
         syncBindingsWithPrimary();
         var world:MovieClip = _root.gameworld;
         if (typeof world != "movieclip") {
@@ -549,7 +565,7 @@ class org.flashNight.arki.hud.FocusTargetHudService {
                 continue;
             }
             if (state.portrait == null) state.portrait = extractPortrait(unit);
-            var item:Object = {state: state, hp: hp, maximum: maximum};
+            var item:Object = {state: state, unit: unit, hp: hp, maximum: maximum};
             if (state.role == "protect") protectCand.push(item);
             else bossCand.push(item);
         }
@@ -612,7 +628,44 @@ class org.flashNight.arki.hud.FocusTargetHudService {
         for (j = 0; j < candidates.length; j++) {
             var c:Object = candidates[j];
             var rowHits:Number = (j === comboRecipientIndex) ? activeCombo : 0;
-            list.push(buildRichSnapshot(c.state, c.hp, c.maximum, rowHits));
+            if (!emitUnitInfo) {
+                list.push(buildRichSnapshot(c.state, c.hp, c.maximum, rowHits, false, 0, 0, -1, 0, 0));
+            } else {
+                var u:MovieClip = c.unit;
+                var shCur:Number = 0;
+                var shMax:Number = 0;
+                var sh:Object = u.shield;
+                if (sh != null && typeof sh.getCapacity == "function" && typeof sh.getMaxCapacity == "function") {
+                    var sm:Number = Number(sh.getMaxCapacity());
+                    var sc:Number = Number(sh.getCapacity());
+                    if (isFinite(sc) && isFinite(sm) && sm > 0 && Math.abs(sc) <= 1000000000000000 && Math.abs(sm) <= 1000000000000000) {
+                        shMax = sm;
+                        shCur = sc > 0 ? sc : 0;
+                    }
+                }
+                var poise:Number = -1;
+                var rawPoise = u.nonlinearMappingResilience;
+                if (typeof rawPoise == "number" && isFinite(rawPoise)) {
+                    if (rawPoise <= 0) poise = 0;
+                    else if (rawPoise >= 1) poise = 255;
+                    else poise = Math.round(rawPoise * 255);
+                }
+                var airborne:Boolean = Boolean(u.浮空);
+                var down:Boolean = Boolean(u.倒地);
+                var man:Object = u.man;
+                var rigid:Boolean = Boolean(u.刚体 || (man != null && man.刚体标签));
+                var bcs = u.barColorState;
+                var darkened:Boolean = bcs != undefined && bcs != "" && bcs != "常态";
+                if (darkened && !airborne && !down) {
+                    var rf:Number = Number(u.remainingImpactForce);
+                    var sb:Number = Number(u.impactStaggerBoundary);
+                    if (isFinite(rf) && isFinite(sb) && sb > 0 && rf < sb) darkened = false;
+                }
+                var flags:Number = (airborne ? 1 : 0) | (down ? 2 : 0) | (rigid ? 4 : 0) | (darkened ? 8 : 0);
+                var rawHitSeq = u.__hudHitSeq;
+                var hitSeq:Number = (typeof rawHitSeq == "number" && rawHitSeq > 0 && isFinite(rawHitSeq)) ? Math.floor(rawHitSeq) : 0;
+                list.push(buildRichSnapshot(c.state, c.hp, c.maximum, rowHits, true, shCur, shMax, poise, flags, hitSeq));
+            }
         }
 
         if (cachedList != null && cachedList.length == list.length) {

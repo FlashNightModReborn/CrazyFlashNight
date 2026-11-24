@@ -77,9 +77,18 @@ class org.flashNight.arki.hud.PlayerHudUnitHotWireTest {
         var focus:Array = focusRows(65);
         return PlayerHudUnitHotWire.encodeUnitsOnly(3,8,step(focus,true,1),true,null,false,focus,null) == null;
     }
+    private static function extendedFocusUnitInfo():Boolean {
+        var oldRow:Object = {id:1, role:"boss", name:"甲", icon:"u", hp:[800,1000], shield:[200,500], poise:204, flags:4, hitSeq:1};
+        var nextRow:Object = {id:1, role:"boss", name:"甲", icon:"u", hp:[800,1000], shield:[150,500], poise:180, flags:12, hitSeq:2};
+        var wire:String = PlayerHudUnitHotWire.encode(2, 9, {focusTarget:[nextRow]}, [oldRow], null);
+        if (wire != "~1,2,9;f,0,1,800,1000,0,150,500,180,12,2") return false;
+        // Transition between legacy (no flags) and extended (with flags) falls back cleanly to JSON
+        var legacyRow:Object = {id:1, role:"boss", name:"甲", icon:"u", hp:[800,1000]};
+        return PlayerHudUnitHotWire.encode(2, 10, {focusTarget:[nextRow]}, [legacyRow], null) == null;
+    }
     public static function runAllTests():Void { run(); }
     public static function run():Void {
-        var ok:Boolean=measure(4,0,false) && mixedTail();
+        var ok:Boolean=measure(4,0,false) && mixedTail() && extendedFocusUnitInfo();
         ok=measure(4,0,true)&&ok;
         ok=measure(8,20,false)&&ok;
         ok=measure(8,20,true)&&ok;

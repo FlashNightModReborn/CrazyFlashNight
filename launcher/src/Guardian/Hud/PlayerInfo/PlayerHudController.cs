@@ -139,7 +139,7 @@ internal sealed class PlayerHudController : IDisposable
             if (_wireCapture != null) CaptureWire(packet.Payload);
         }
         if (CanInteract && _poiseRequestGeneration != Generation &&
-            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true, ["ammoDetails"] = true, ["coldSkills"] = true, ["focusTarget"] = true, ["focusTargets"] = true, ["focusTargetCapacity"] = 8, ["allyRoster"] = true, ["allySampling"] = Environment.GetEnvironmentVariable("CF7_HUD_ALLY_BATCH") ?? "deadline", ["unitHotV1"] = Environment.GetEnvironmentVariable("CF7_HUD_UNIT_WIRE") != "json", ["buffDetails"] = true, ["deckDetails"] = true }))
+            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true, ["ammoDetails"] = true, ["coldSkills"] = true, ["focusTarget"] = true, ["focusTargets"] = true, ["focusTargetCapacity"] = 8, ["focusUnitInfo"] = true, ["allyRoster"] = true, ["allySampling"] = Environment.GetEnvironmentVariable("CF7_HUD_ALLY_BATCH") ?? "deadline", ["unitHotV1"] = Environment.GetEnvironmentVariable("CF7_HUD_UNIT_WIRE") != "json", ["buffDetails"] = true, ["deckDetails"] = true }))
             _poiseRequestGeneration = Generation;
         if (Profiler != null && CanInteract && _profileGeneration != Generation &&
             Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["rosterReplay"] = Environment.GetEnvironmentVariable("CF7_HUD_ROSTER_TRACE") == "1", ["profileId"] = Profiler.Id }))

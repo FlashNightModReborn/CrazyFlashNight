@@ -93,6 +93,7 @@ class org.flashNight.arki.hud.FocusTargetHudTest {
         var hud:Object = org.flashNight.arki.hud.PlayerHudService;
         var oldEnabled:Boolean = hud.focusTargetEnabled;
         var oldMultiEnabled:Boolean = hud.focusTargetsEnabled;
+        var oldUnitInfoEnabled:Boolean = hud.focusUnitInfoEnabled;
         var oldForce:Boolean = hud.forceFull;
         var oldGroups:Object = hud.rawGroups;
         var world:MovieClip = _root.createEmptyMovieClip("__focusHudTestWorld", _root.getNextHighestDepth());
@@ -281,10 +282,35 @@ class org.flashNight.arki.hud.FocusTargetHudTest {
             check(FocusTargetHudService.snapshot() == null && FocusTargetHudService.snapshotList(hero, 8) == null,
                 "accepted stage end hides objectives and ignores late actor callbacks");
             api.clearScene();
-            hud.focusTargetEnabled = false; hud.focusTargetsEnabled = false;
-            PlayerHudService.testOnlyConfigure({}); check(hud.focusTargetEnabled === false && hud.focusTargetsEnabled === false, "old Host stays unextended");
-            PlayerHudService.testOnlyConfigure({focusTarget:1, focusTargets:1}); check(hud.focusTargetEnabled === false && hud.focusTargetsEnabled === false, "nonboolean opt-in rejected");
-            PlayerHudService.testOnlyConfigure({focusTarget:true, focusTargets:true}); check(hud.focusTargetEnabled === true && hud.focusTargetsEnabled === true, "new Host opts in");
+            hud.focusTargetEnabled = false; hud.focusTargetsEnabled = false; hud.focusUnitInfoEnabled = false;
+            PlayerHudService.testOnlyConfigure({}); check(hud.focusTargetEnabled === false && hud.focusTargetsEnabled === false && hud.focusUnitInfoEnabled === false, "old Host stays unextended");
+            PlayerHudService.testOnlyConfigure({focusTarget:1, focusTargets:1, focusUnitInfo:1}); check(hud.focusTargetEnabled === false && hud.focusTargetsEnabled === false && hud.focusUnitInfoEnabled === false, "nonboolean opt-in rejected");
+            PlayerHudService.testOnlyConfigure({focusTarget:true, focusTargets:true, focusUnitInfo:true}); check(hud.focusTargetEnabled === true && hud.focusTargetsEnabled === true && hud.focusUnitInfoEnabled === true, "new Host opts in");
+            var infoScope:Object = FocusTargetHudService.activateScope(world, "unit-info-run", 0);
+            var infoUnit:MovieClip = world.createEmptyMovieClip("infoBoss", 50);
+            infoUnit.marker = {}; infoUnit.hp = 600; infoUnit.hp满血值 = 1000; infoUnit.名字 = "护盾首领";
+            infoUnit.shield = { getCapacity: function():Number { return 250; }, getMaxCapacity: function():Number { return 500; } };
+            infoUnit.nonlinearMappingResilience = 0.8;
+            infoUnit.刚体 = true;
+            infoUnit.barColorState = "被击";
+            infoUnit.remainingImpactForce = 80;
+            infoUnit.impactStaggerBoundary = 50;
+            org.flashNight.arki.component.Effect.BloodBarEffectHandler.updateStatus(infoUnit);
+            var infoLease:Object = FocusTargetHudService.bind(world, worldMark, infoUnit, "marker", infoUnit.marker, "boss", "");
+            var legacyList:Array = FocusTargetHudService.snapshotList(null, 8);
+            check(legacyList != null && legacyList[0].flags == undefined && legacyList[0].poise == undefined && legacyList[0].shield == undefined, "legacy snapshotList omits unit info fields");
+            var extList:Array = FocusTargetHudService.snapshotList(null, 8, true);
+            check(extList != null && extList[0].shield[0] === 250 && extList[0].shield[1] === 500
+                && extList[0].poise === 204 && extList[0].flags === 12 && extList[0].hitSeq === 1,
+                "extended snapshotList projects shield, quantized poise, rigid+darkened flags and hitSeq");
+            check(FocusTargetHudService.snapshotList(null, 8, true) === extList, "unchanged extended snapshotList reuses array");
+            infoUnit.remainingImpactForce = 10;
+            var recovered:Array = FocusTargetHudService.snapshotList(null, 8, true);
+            check(recovered !== extList && recovered[0].flags === 4, "impact recovery clears darkened bit without mutating gameplay barColorState");
+            check(infoUnit.barColorState == "被击", "snapshotList stays strictly read-only");
+            FocusTargetHudService.clear(infoLease);
+            FocusTargetHudService.endEncounter(infoScope);
+            api.clearScene();
             hud.rawGroups = {};
             var groups:Object = {};
             check(hud.addGroup(groups,"focusTarget",first,true), "full includes target group");
@@ -296,7 +322,7 @@ class org.flashNight.arki.hud.FocusTargetHudTest {
         world.removeMovieClip(); _root.gameworld = oldWorld;
         _root.控制目标 = oldControl; _root.帧计时器 = oldTimer;
         api.binding = oldBinding; api.cached = oldCached; api.combatState = null; api.aggroState = null; api.cachedList = null;
-        hud.focusTargetEnabled = oldEnabled; hud.focusTargetsEnabled = oldMultiEnabled; hud.forceFull = oldForce; hud.rawGroups = oldGroups;
+        hud.focusTargetEnabled = oldEnabled; hud.focusTargetsEnabled = oldMultiEnabled; hud.focusUnitInfoEnabled = oldUnitInfoEnabled; hud.forceFull = oldForce; hud.rawGroups = oldGroups;
         trace("FocusTargetHudTest Tests Passed: " + passed);
         trace("FocusTargetHudTest Tests Failed: " + failed);
     }

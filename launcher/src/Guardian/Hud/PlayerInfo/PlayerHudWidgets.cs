@@ -175,6 +175,11 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
     private bool _upMatches;
     private int _resourceHintClock;
     private readonly PlayerHudDeckArt _deck = new();
+    private Bitmap? _staticChassis;
+    private (int Width, int Height, float ScaleX, float ScaleY, float Dx, float Dy) _staticChassisKey;
+    private readonly StringFormat _nameFormat = new(StringFormat.GenericTypographic) { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+    private readonly StringFormat _rawTextFormat = new(StringFormat.GenericTypographic) { Alignment = StringAlignment.Near, FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.None };
+    private static readonly string[] CombatModes = ["手枪", "手枪2", "长枪", "兵器", "手雷", "空手", "双枪", "长枪副武器"];
     private readonly PlayerHudDenialMotion _denial = new();
     private readonly int[] _readyFlash = new int[30];
     private readonly int[] _observedAmmoCapacity = new int[5];
@@ -201,7 +206,7 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
         | PlayerHudGroups.Loadout | PlayerHudGroups.Cooldowns | PlayerHudGroups.Resources | PlayerHudGroups.ColdSkills | PlayerHudGroups.Buffs;
     internal static RectangleF SkillRect(int index) => new(602.25f + index * 35.05f, 536.5f, 26, 26);
     internal static RectangleF ColdSkillRect(int index) => new(602.25f + index * 35.05f, 484.5f, 26, 26);
-    internal static RectangleF DrugRect(int lane) => new(343.8f + lane * 34.9f, 535.35f, 26, 26);
+    internal static RectangleF DrugRect(int lane) => new(343.8f + lane * 34.9f, 537.5f, 26, 26);
     internal static RectangleF UnequipRect(int index) => new(623.4f + index * 35f, 532.3f, 10, 10);
     internal static RectangleF DrugUnequipRect(int lane) => new(DrugRect(lane).X + 21.15f, DrugRect(lane).Y - 4.2f, 10, 10);
     internal static bool IsRemovalTarget(PlayerHudTarget t) => t.Kind switch {
@@ -210,7 +215,7 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
     internal static RectangleF TooltipAnchor(PlayerHudTarget t) => t.Kind switch {
         "skill" when t.Slot is >= 1 and <= 12 => SkillRect(t.Slot - 1),
         "drug" when t.Slot is >= 0 and <= 7 => DrugRect(t.Slot % 4), _ => t.Anchor };
-    internal static readonly RectangleF SwitchRect = new(308.9f, 535.35f, 26, 26);
+    internal static readonly RectangleF SwitchRect = new(308.9f, 537.5f, 26, 26);
     // The first authored header stripe doubles as the read-only details entry.
     internal static readonly RectangleF DetailsFace = new(947.3f, 518.05f, 19.65f, 7.7f);
     internal static readonly PointF[] DetailsOutline = [new(947.3f,518.05f),new(957.7f,518.05f),new(966.95f,525.75f),new(956.5f,525.75f)];
@@ -220,7 +225,7 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
     internal static RectangleF CooldownTrackRect(RectangleF slot) => new(slot.X+2,slot.Bottom-12,slot.Width-4,2);
     // Keep the count inside the icon and clear of the removal cross, including its shadow.
     internal static RectangleF CountRect(RectangleF slot) => new(slot.X+1,slot.Y+1,19,10);
-    internal static readonly RectangleF WeaponRect = new(560.55f, 534.65f, 26, 26);
+    internal static readonly RectangleF WeaponRect = new(560.55f, 536.8f, 26, 26);
     protected override RectangleF LogicalBounds => VisibleColdSkills(Snapshot).Length > 0
         ? new(0, 483, 1024, 93)
         : new(0, 512, 1024, 64);
@@ -375,19 +380,102 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
         }
         if (changed) base.OnStateChanged();
     }
+    private void PaintStaticChassis(Graphics g)
+    {
+        float sx, sy, tx, ty;
+        using (var transform = g.Transform)
+        {
+            var e = transform.Elements;
+            sx = e[0]; sy = e[3]; tx = e[4]; ty = e[5];
+        }
+        if (sx <= 0.01f || sy <= 0.01f) return;
+        float ox = tx, oy = 512f * sy + ty;
+        int leftPx = (int)Math.Floor(ox), topPx = (int)Math.Floor(oy);
+        float dx = ox - leftPx, dy = oy - topPx;
+        int w = Math.Max(1, (int)Math.Ceiling(1024f * sx + dx));
+        int h = Math.Max(1, (int)Math.Ceiling(64f * sy + dy));
+        var key = (w, h, sx, sy, dx, dy);
+        if (_staticChassis == null || _staticChassisKey != key)
+        {
+            var baked = new Bitmap(w, h, PixelFormat.Format32bppPArgb);
+            using (var local = Graphics.FromImage(baked))
+            {
+                local.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                local.SmoothingMode = g.SmoothingMode;
+                local.TranslateTransform(dx, dy - 512f * sy);
+                local.ScaleTransform(sx, sy);
+
+                var panel = local.Save();
+                local.SetClip(RectangleF.FromLTRB(298.5f, PlayerHudResourceLayout.DeckTop, 1024, 576), CombineMode.Intersect);
+                DrawArt(local, "bottom-panel", 49.7f, 568.45f, 0.8472137451f, 0.8472137451f);
+                local.Restore(panel);
+                _deck.Paint(local, Scale);
+
+                var levelTransform = local.Save();
+                local.TranslateTransform(PlayerHudResourceLayout.LevelOffsetX, 0);
+                using (var levelBase = new SolidBrush(Color.FromArgb(21, 24, 25)))
+                    local.FillPolygon(levelBase, [new PointF(4, PlayerHudResourceLayout.LevelTop), new PointF(74, PlayerHudResourceLayout.LevelTop), new PointF(84, 570.5f), new PointF(4, 570.5f)]);
+                using (var edge = new Pen(Color.FromArgb(75, 79, 80), 0.6f))
+                    local.DrawLines(edge, [new PointF(6, 554), new PointF(73, 554), new PointF(79, 560)]);
+                DrawSizedArt(local, "level-label", new RectangleF(12, 553.2f, 20.65f, 16.8f));
+                local.Restore(levelTransform);
+
+                using (var label = new SolidBrush(Color.FromArgb(131, 143, 145)))
+                    local.DrawString("EXP", _experienceLabel, label, 91.5f, 561.8f, StringFormat.GenericTypographic);
+
+                var skillBay = local.Save();
+                local.SetClip(RectangleF.FromLTRB(592, 529.5f, 1024, 571.0f), CombineMode.Intersect);
+                DrawArt(local, "skill-panel", 592.9f, 528.9f);
+                local.Restore(skillBay);
+                DrawSizedArt(local, "skill-label", new RectangleF(598.8f, 514.2f, 35.24f, 11.94f));
+                using (var spInk = new SolidBrush(Color.FromArgb(173, 182, 184)))
+                    local.DrawString("SP", _spLabel, spInk, 648.5f, 515.8f, StringFormat.GenericTypographic);
+                DrawArt(local, "drug-panel", 301.4f, 544.0f);
+
+                // Static recessed EXP rail track & top rim (dynamic fill + ticks draw over this)
+                using (var xpBg = new SolidBrush(Color.FromArgb(238, 12, 15, 17)))
+                    local.FillRectangle(xpBg, 5f, 571.4f, 1014f, 3.8f);
+                using (var xpRim = new Pen(Color.FromArgb(66, 196, 206, 210), 0.6f))
+                    local.DrawLine(xpRim, 5f, 571.4f, 1019f, 571.4f);
+
+                DrawArt(local, "name-background", 342.35f, 514.65f);
+                DrawNameGrid(local);
+
+                // Static base trays and '+' marks for all 12 skills, 4 drugs and the bank switch slot
+                using var authoredPlus = new SolidBrush(Color.FromArgb(229, 229, 229));
+                for (var i = 0; i < 12; i++)
+                {
+                    var r = SkillRect(i);
+                    DrawArt(local, "slot", r.X + 13, r.Y + 13.1f);
+                    local.DrawString("+", _slotMark, authoredPlus, r.X + 8.7f, r.Y + 4.3f);
+                }
+                for (var i = 0; i < 4; i++)
+                {
+                    var r = DrugRect(i);
+                    DrawArt(local, "slot", r.X + 13, r.Y + 13.1f);
+                    local.DrawString("+", _slotMark, authoredPlus, r.X + 8.7f, r.Y + 4.3f);
+                }
+                DrawArt(local, "slot", SwitchRect.X + 13, SwitchRect.Y + 13.1f);
+            }
+            _staticChassis?.Dispose();
+            _staticChassis = baked;
+            _staticChassisKey = key;
+        }
+        var saved = g.Save();
+        g.ResetTransform();
+        try { g.DrawImageUnscaled(_staticChassis, leftPx, topPx); }
+        finally { g.Restore(saved); }
+    }
+
     protected override void PaintLogical(Graphics g)
     {
         var s = Snapshot!; var v = s.Vitals;
         var muted = Color.FromArgb(204, 204, 204);
-        using var text = new SolidBrush(Color.FromArgb(239, 238, 220));
         using var dim = new SolidBrush(muted);
         using var poise = new SolidBrush(PlayerHudResourceStyle.Poise);
-        using var background = new SolidBrush(Color.FromArgb(200, 25, 30, 31));
-        var panel = g.Save();
-        g.SetClip(RectangleF.FromLTRB(298.5f,PlayerHudResourceLayout.DeckTop,1024,576),CombineMode.Intersect);
-        DrawArt(g, "bottom-panel", 49.7f, 568.45f, 0.8472137451f, 0.8472137451f);
-        g.Restore(panel);
-        _deck.Paint(g,Scale);
+
+        PaintStaticChassis(g);
+
         var poiseState = PlayerHudResourceStyle.PoiseStateLabel(v.PoiseDetail);
         var poiseBar = PlayerHudResourceLayout.PoiseBar;
         if (poiseState.Length == 0) poiseState = "韧性";
@@ -396,45 +484,48 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
         var poiseInk=poiseFlags.Airborne || poiseFlags.Down || v.PoiseDetail?.Phase=="unavailable" ? Color.FromArgb(160,167,171) : PlayerHudResourceStyle.Poise;
         _numbers.Draw(g, Math.Floor(v.Poise * 100).ToString(CultureInfo.InvariantCulture) + "%", PlayerHudResourceLayout.PoisePercentX, poiseBar.Bottom, 11.5f, Scale, PlayerHudResourceLayout.PoisePercentWidth, poiseInk);
         PaintPoise(g, v);
+
         var levelTransform=g.Save();g.TranslateTransform(PlayerHudResourceLayout.LevelOffsetX,0);
-        using (var levelBase = new SolidBrush(Color.FromArgb(21,24,25)))
-            g.FillPolygon(levelBase,[new PointF(4,PlayerHudResourceLayout.LevelTop),new PointF(74,PlayerHudResourceLayout.LevelTop),new PointF(86,573),new PointF(4,573)]);
-        using (var edge = new Pen(Color.FromArgb(75,79,80),0.6f))
-            g.DrawLines(edge,[new PointF(6,554),new PointF(73,554),new PointF(79,560)]);
-        DrawSizedArt(g, "level-label", new RectangleF(12, 554, 20.65f, 17.8f));
-        _numbers.Draw(g, v.Level.ToString(CultureInfo.InvariantCulture), 41, 572, 18, Scale, 37, muted);
+        _numbers.Draw(g, v.Level.ToString(CultureInfo.InvariantCulture), 41, 569.6f, 17.5f, Scale, 37, muted);
         g.Restore(levelTransform);
+
         var (earned, required) = PlayerHudResourceStyle.LevelExperience(v);
         var xp = required > 0 ? Math.Clamp(earned / required, 0, 1) : 0;
-        using (var label = new SolidBrush(Color.FromArgb(131,143,145)))
-            g.DrawString("EXP", _experienceLabel, label, 91.5f, 563.2f, StringFormat.GenericTypographic);
-        _numbers.Draw(g, PlayerHudResourceStyle.Percent(earned, required), 112, 571.1f, 9, Scale, 27, Color.FromArgb(174,184,186));
-        _numbers.DrawRight(g, PlayerHudResourceStyle.ExperienceGaugeText(v), 293, 571.1f, 9.2f, Scale, 152, Color.FromArgb(162,173,175));
-        const float xpWidth = 291;
-        g.FillRectangle(background, 5, 572.9f, xpWidth, 2.6f);
-        using (var xpBrush = new LinearGradientBrush(new RectangleF(5,572.9f,xpWidth,2.6f),
-            PlayerHudResourceStyle.ExperienceDark,PlayerHudResourceStyle.ExperienceLight,LinearGradientMode.Vertical))
-            g.FillRectangle(xpBrush, 5, 572.9f, (float)(xpWidth * xp), 2.6f);
+        _numbers.Draw(g, PlayerHudResourceStyle.Percent(earned, required), 112, 569.5f, 9, Scale, 27, Color.FromArgb(174,184,186));
+        _numbers.DrawRight(g, PlayerHudResourceStyle.ExperienceGaugeText(v), 293, 569.5f, 9.2f, Scale, 152, Color.FromArgb(162,173,175));
 
-        var skillBay = g.Save();
-        g.SetClip(RectangleF.FromLTRB(592,529.5f,1024,576),CombineMode.Intersect);
-        DrawArt(g, "skill-panel", 592.9f, 528.9f);
-        g.Restore(skillBay);
-        DrawSizedArt(g, "skill-label", new RectangleF(598.8f,514.2f,35.24f,11.94f));
-        using (var spInk=new SolidBrush(Color.FromArgb(173,182,184)))
-            g.DrawString("SP",_spLabel,spInk,648.5f,515.8f,StringFormat.GenericTypographic);
         _numbers.DrawRight(g,Number(v.SkillPoints),731.5f,525.2f,13.2f,Scale,62f,
             v.SkillPoints>0?Color.FromArgb(245,248,246):Color.FromArgb(152,162,164));
         PaintDetailsEntry(g);
-        DrawArt(g, "drug-panel", 301.4f, 541.8f);
-        DrawArt(g, "name-background", 342.35f, 514.65f);
+
+        // Unified full-width bottom experience rail fill + micro-ticks (track baked in _staticChassis)
+        const float xpLeft = 5f, xpTop = 571.4f, xpWidth = 1014f, xpHeight = 3.8f;
+        var xpTrack = new RectangleF(xpLeft, xpTop, xpWidth, xpHeight);
+        float xpFillW = (float)(xpWidth * xp);
+        if (xpFillW > 0.5f)
+        {
+            using var xpBrush = new LinearGradientBrush(xpTrack,
+                Color.FromArgb(246, 224, 234, 238), Color.FromArgb(246, 152, 166, 172), LinearGradientMode.Vertical);
+            g.FillRectangle(xpBrush, xpLeft, xpTop + 0.35f, xpFillW, xpHeight - 0.7f);
+            if (xp < 0.998)
+            {
+                using var tipBrush = new SolidBrush(Color.FromArgb(238, 245, 252, 255));
+                g.FillRectangle(tipBrush, Math.Max(xpLeft, xpLeft + xpFillW - 1.4f), xpTop + 0.35f, 1.4f, xpHeight - 0.7f);
+            }
+        }
+        using (var xpTick = new Pen(Color.FromArgb(115, 8, 10, 12), 0.75f))
+        {
+            for (int seg = 1; seg < 10; seg++)
+            {
+                float tx = xpLeft + xpWidth * (seg * 0.1f);
+                g.DrawLine(xpTick, tx, xpTop + 0.35f, tx, xpTop + xpHeight - 0.35f);
+            }
+        }
+
         // Keep the name still during combat; the full name is available in resource details.
         var saved = g.Save();
         g.SetClip(new RectangleF(342.35f, 514.85f, 134, 16), CombineMode.Intersect);
-        var nameWidth = g.MeasureString(v.Name, _nameFont, new SizeF(10000, 1000), StringFormat.GenericTypographic).Width;
-        DrawNameGrid(g);
-        using (var nameFormat = new StringFormat(StringFormat.GenericTypographic) { Trimming=StringTrimming.EllipsisCharacter, FormatFlags=StringFormatFlags.NoWrap })
-            g.DrawString(v.Name, _nameFont, dim, new RectangleF(346.05f,516.15f,NameVisibleWidth,14), nameFormat);
+        g.DrawString(v.Name, _nameFont, dim, new RectangleF(346.05f,516.15f,NameVisibleWidth,14), _nameFormat);
         g.Restore(saved);
 
         var visibleCold = VisibleColdSkills(s);
@@ -460,17 +551,17 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
         {
             var skill = s.Loadout.Skills[i];
             DrawSlot(g, SkillRect(i), skill.Equipped ? skill.Icon : "", skill.Hotkey,
-                "", s.Cooldowns[i + 1], "skill", i + 1);
+                "", s.Cooldowns[i + 1], "skill", i + 1, skipStaticSlotBg: true);
             if (skill.Equipped) DrawUnequip(g, UnequipRect(i), "skill", i + 1);
         }
         for (var i = 0; i < 4; i++)
         {
             var drug = s.Loadout.Drugs[i];
             DrawSlot(g, DrugRect(i), drug.Count > 0 ? drug.Icon : "", drug.Hotkey,
-                drug.Count > 0 ? Number(drug.Count) : "", s.Cooldowns[i + 13], "drug", drug.Slot);
+                drug.Count > 0 ? Number(drug.Count) : "", s.Cooldowns[i + 13], "drug", drug.Slot, skipStaticSlotBg: true);
             if (drug.Count > 0) DrawUnequip(g, DrugUnequipRect(i), "drug", drug.Slot);
         }
-        DrawSlot(g, SwitchRect, "", s.Loadout.SwitchKey, "", s.Cooldowns[17], "switch", 0, s.Loadout.Bank);
+        DrawSlot(g, SwitchRect, "", s.Loadout.SwitchKey, "", s.Cooldowns[17], "switch", 0, s.Loadout.Bank, skipStaticSlotBg: true);
         PaintCombat(g, s.Combat);
         PaintCoating(g, s.Combat.Deck);
         if (HasWeaponSlot(s.Combat))
@@ -552,21 +643,15 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
 
     private void DrawRawText(Graphics g, string text, Brush ink, RectangleF bounds)
     {
-        using var format = new StringFormat(StringFormat.GenericTypographic)
-        {
-            Alignment = StringAlignment.Near,
-            FormatFlags = StringFormatFlags.NoWrap,
-            Trimming = StringTrimming.None
-        };
         var saved = g.Save();
         g.SetClip(bounds, CombineMode.Intersect);
-        g.DrawString(text, _nameFont, ink, bounds, format);
+        g.DrawString(text, _nameFont, ink, bounds, _rawTextFormat);
         g.Restore(saved);
     }
 
     private void PaintCombat(Graphics g, PlayerHudCombat combat)
     {
-        var mode = Array.IndexOf(new[] { "手枪", "手枪2", "长枪", "兵器", "手雷", "空手", "双枪", "长枪副武器" }, combat.Mode);
+        var mode = Array.IndexOf(CombatModes, combat.Mode);
         if (mode < 0) return;
         var hasWeaponSlot = HasWeaponSlot(combat);
 
@@ -704,8 +789,9 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
     {
         PaintBankMatrix(g, bank);
     }
-    private void DrawSlot(Graphics g, RectangleF r, string icon, string key, string badge, PlayerHudCooldown cooldown, string kind, int slot, int bank = -1, bool blockedOverride = false)
+    private void DrawSlot(Graphics g, RectangleF r, string icon, string key, string badge, PlayerHudCooldown cooldown, string kind, int slot, int bank = -1, bool blockedOverride = false, bool skipStaticSlotBg = false)
     {
+        if (!g.IsVisible(RectangleF.Inflate(r, 4f, 4f))) return;
         if (kind == "coldSkill")
         {
             using var fill=new SolidBrush(Color.FromArgb(238,14,18,20));
@@ -713,8 +799,8 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
             g.FillRectangle(fill,r.X+.5f,r.Y+.5f,r.Width-1,r.Height-1);
             g.DrawRectangle(border,r.X+.5f,r.Y+.5f,r.Width-1,r.Height-1);
         }
-        else if (kind != "weapon") DrawArt(g, "slot", r.X + 13, r.Y + 13.1f);
-        if (kind is "skill" or "drug")
+        else if (kind != "weapon" && !skipStaticSlotBg) DrawArt(g, "slot", r.X + 13, r.Y + 13.1f);
+        if (!skipStaticSlotBg && kind is "skill" or "drug")
         {
             using var authoredPlus = new SolidBrush(Color.FromArgb(229, 229, 229));
             g.DrawString("+", _slotMark, authoredPlus, r.X + 8.7f, r.Y + 4.3f);
@@ -735,7 +821,7 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
         if (kind == "switch") DrawBankDots(g, bank);
         else if (kind == "weapon")
         {
-            DrawArt(g, "weapon", 573.55f, 547.65f);
+            DrawArt(g, "weapon", 573.55f, 549.8f);
             if (bitmap != null)
             {
                 // Keep the authored frame/title, replacing only the inner symbol with a readable badge backplate.
@@ -941,7 +1027,10 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
             var dual = s.Combat.Mode is "双枪" or "长枪副武器";
             for (var i=0;i<(dual?2:1);i++)
             {
-                var right = (dual || !HasWeaponSlot(s.Combat)) ? PlayerHudAmmoPainter.CardRightFull : PlayerHudAmmoPainter.CardRightCompact; var area = dual ? new RectangleF(484f, 516f + i * 25f, right - 484f, 22f) : new RectangleF(484f, 516f, right - 484f, 47f);
+                var right = (dual || !HasWeaponSlot(s.Combat)) ? PlayerHudAmmoPainter.CardRightFull : PlayerHudAmmoPainter.CardRightCompact;
+                var area = dual
+                    ? new RectangleF(PlayerHudAmmoPainter.CardLeft, PlayerHudAmmoPainter.Row0Top + i * PlayerHudAmmoPainter.RowStep, right - PlayerHudAmmoPainter.CardLeft, PlayerHudAmmoPainter.CardHeight)
+                    : new RectangleF(PlayerHudAmmoPainter.CardLeft, PlayerHudAmmoPainter.Row0Top, right - PlayerHudAmmoPainter.CardLeft, PlayerHudAmmoPainter.RowStep + PlayerHudAmmoPainter.CardHeight);
                 if (details[i] != null && area.Contains(point)) return Target("ammo",i,"",0,area);
             }
         }
@@ -986,6 +1075,9 @@ internal sealed partial class PlayerHudBottomWidget : PlayerHudWidgetBase
         _experienceLabel.Dispose();
         foreach(var caption in _captions)caption?.Path.Dispose();Array.Clear(_captions);
         foreach(var caption in _countdownCaptions)caption?.Path.Dispose();Array.Clear(_countdownCaptions);
+        _staticChassis?.Dispose(); _staticChassis = null;
+        _nameFormat.Dispose();
+        _rawTextFormat.Dispose();
         Cancel(); _deck.Dispose(); _icons.Dispose(); _art.Dispose(); _numbers.Dispose(); _poiseCells.Dispose(); _spLabel.Dispose(); _body.Dispose(); _small.Dispose(); _nameFont.Dispose(); _hotkeyFont.Dispose(); _poiseLabel.Dispose(); _slotMark.Dispose(); base.Dispose();
     }
 }

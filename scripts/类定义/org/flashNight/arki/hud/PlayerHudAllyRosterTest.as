@@ -53,6 +53,27 @@ class org.flashNight.arki.hud.PlayerHudAllyRosterTest {
         check(sample(25,43,false).rows[0].id!=newRow.id,"reused display-list name has new identity off-phase");
         u.__hudAllyRole="pet";
         check(sample(26,45,false).rows[0].role=="pet","existing script changes role on non-poll beat");
+        // Compaction & 2.5s downed auto-removal tests
+        var u2:MovieClip=born(w,"allyMid","merc");
+        var u3:MovieClip=born(w,"allyTail","merc");
+        var compactStart:Object=sample(27,1000,false);
+        check(compactStart.rows.length==3 && compactStart.rows[0].slot==0 && compactStart.rows[1].slot==1 && compactStart.rows[2].slot==2,"3 allies occupy contiguous slots 0..2");
+        u2.hp=0;
+        var downEarly:Object=sample(28,1500,false);
+        check(downEarly.rows.length==3 && downEarly.rows[1].down,"downed ally stays visible briefly");
+        // Pausing does not consume downed retention window
+        var downPaused:Object=sample(28,6000,true);
+        check(downPaused.rows.length==3 && downPaused.rows[1].down,"pause holds downed retention clock");
+        var downAfterPause:Object=sample(29,7000,false);
+        check(downAfterPause.rows.length==3 && downAfterPause.rows[1].down,"still visible before 2.5s unpaused elapsed");
+        var downExpired:Object=sample(30,9000,false);
+        check(downExpired.rows.length==2 && downExpired.rows[0].slot==0 && downExpired.rows[1].slot==1 && downExpired.rows[1].name=="allyTail","expired downed ally removed and remaining slots compacted left");
+        u2.hp=60;
+        var revived:Object=sample(31,9100,false);
+        check(revived.rows.length==3 && revived.rows[2].slot==2 && revived.rows[2].name=="allyMid" && !revived.rows[2].down,"revived ally re-enters cleanly");
+        u.removeMovieClip();
+        var afterDepart:Object=sample(32,9200,false);
+        check(afterDepart.rows.length==2 && afterDepart.rows[0].slot==0 && afterDepart.rows[1].slot==1,"departing front ally compacts remaining slots without holes");
         PlayerHudAllyRoster.configure("deadline");PlayerHudAllyRoster.clear();_root.gameworld=before;w.removeMovieClip();
         trace("ALLYBATCH FINISH "+(failures==0?"PASS":"FAIL"));
     }

@@ -15,22 +15,44 @@ namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeHudPointerSnapshot
 {
     private const float ColumnWidth = 294f;
-    internal const float RowHeight = 30f;
+    internal const float RowHeight = 34f;
     internal const float RowGap = 2f;
     internal const int ComboPulseDurationMs = 150;
 
     internal const float HpReadoutMaxWidth = 92f;
     internal const double ExactHpCompactThreshold = 1_000_000;
 
-    private sealed class TargetVisualState(UnitHealth health)
+    private sealed class TargetVisualState
     {
-        internal FocusLifeState Life = new(health);
+        internal FocusLifeState Life;
         internal int LastHits;
         internal int ComboPulseAgeMs = ComboPulseDurationMs;
+        internal string? RawName;
+        internal string SanitizedName = "";
         internal string? MeasuredName;
         internal float MeasuredScale, NameWidth;
-        internal int MeasuredHits = -1;
+        internal int MeasuredHitDigits = -1;
         internal float HitWidth, HitScale;
+
+        internal TargetVisualState(PlayerHudFocusTarget target)
+        {
+            var health = new UnitHealth(target.Hp, target.HpMax);
+            Life = new FocusLifeState(health);
+            Life.Apply(health, target.ShieldRatio, target.PoiseRatio, target.HasPoise,
+                target.Rigid, target.Airborne, target.Down, target.Darkened,
+                target.HitSeq, staticFeedback: true);
+        }
+
+        internal string GetSanitizedName(string raw)
+        {
+            if (ReferenceEquals(RawName, raw) || string.Equals(RawName, raw, StringComparison.Ordinal))
+                return SanitizedName;
+            RawName = raw;
+            SanitizedName = raw.IndexOf('\r') >= 0 || raw.IndexOf('\n') >= 0
+                ? raw.Replace('\r', ' ').Replace('\n', ' ')
+                : raw;
+            return SanitizedName;
+        }
 
         internal float ComboPulse => ComboPulseAgeMs >= ComboPulseDurationMs
             ? 0f
@@ -52,11 +74,16 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
     private readonly Dictionary<long, TargetVisualState> _states = new();
     private readonly HashSet<long> _activeIds = new();
     private readonly HashSet<string> _requestedDolls = new(StringComparer.Ordinal);
+    private readonly List<Rectangle> _damageScratch = new(16);
+    private readonly PointF[] _chipPoly = new PointF[4];
+    private PlayerHudFocusTarget[]? _lastRawTargets;
+    private PlayerHudFocusTarget[] _lastOrderedTargets = Array.Empty<PlayerHudFocusTarget>();
     private PlayerHudFocusTarget[] _lastTargets = Array.Empty<PlayerHudFocusTarget>();
     private RectangleF _lastLayout;
     private bool _lastSuppressed;
     private long _epoch;
     private string? _hoverKey;
+    private long _hoverId = -1;
     private readonly Font _denseFont = NativeHudFonts.CreateUiFont(8, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly Font _shortFont = NativeHudFonts.CreateUiFont(9, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly StringFormat _label = new(StringFormat.GenericTypographic) { FormatFlags = StringFormatFlags.NoWrap, Trimming = StringTrimming.EllipsisCharacter };
@@ -87,19 +114,59 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         }
     }
 
-    // The first focus is always wide. Further targets share one strip when the squad or focus list is dense.
-    private static bool Dense(int count, int allies) => count > 2 || allies > 3;
+    // Top two focus targets always get full-width rows (protect & active boss/combat guaranteed readable).
+    // Targets 3..8 share a single compact strip beneath row 1.
+    private static bool Dense(int count, int allies) => count > 2;
     internal static RectangleF BoundsForBuffCount(int buffCount, int targetCount = 1) => BoundsForBuffCount(buffCount,targetCount,0);
     internal static RectangleF BoundsForBuffCount(int buffCount, int targetCount, int allyCount) =>
-        new(6, 0, ColumnWidth, targetCount <= 1 ? 32 : Dense(targetCount, allyCount) ? 57 : 64);
+        new(6, 0, ColumnWidth, targetCount <= 1 ? 36 : targetCount == 2 ? 72 : 97);
 
     internal static RectangleF RowBounds(int buffCount, int index, int targetCount) => RowBounds(buffCount,index,targetCount,0);
     internal static RectangleF RowBounds(int buffCount, int index, int targetCount, int allyCount)
     {
-        if (index == 0) return new(6, 0, ColumnWidth, 32);
-        if (!Dense(targetCount, allyCount)) return new(6, 34, ColumnWidth, 30);
-        float width = (ColumnWidth - 4) / (targetCount - 1);
-        return new(8 + (index - 1) * width, 34, width, 23);
+        if (index == 0) return new(6, 0, ColumnWidth, 36);
+        if (index == 1) return new(6, 38, ColumnWidth, 34);
+        float width = (ColumnWidth - 4) / Math.Max(1, targetCount - 2);
+        return new(8 + (index - 2) * width, 74, width, 23);
+    }
+
+    // Guarantee both a primary protect (critical first) and an active enemy (boss > combat)
+    // occupy the two wide rows whenever 3+ targets coexist, without mutating raw wire order.
+    internal static PlayerHudFocusTarget[] OrderForDisplay(PlayerHudFocusTarget[] raw)
+    {
+        if (raw.Length <= 2) return raw;
+        int firstIdx = 0;
+        for (int i = 0; i < raw.Length; i++)
+        {
+            if (raw[i].Role == "protect" && Band(raw[i]) == 2)
+            {
+                firstIdx = i;
+                break;
+            }
+        }
+        int secondIdx = firstIdx == 0 ? 1 : 0;
+        if (raw[firstIdx].Role == "protect")
+        {
+            int enemyIdx = -1;
+            for (int i = 0; i < raw.Length; i++)
+            {
+                if (i == firstIdx) continue;
+                if (raw[i].Role == "boss") { enemyIdx = i; break; }
+                if (raw[i].Role == "combat" && enemyIdx < 0) enemyIdx = i;
+            }
+            if (enemyIdx >= 0) secondIdx = enemyIdx;
+        }
+        if (firstIdx == 0 && secondIdx == 1) return raw;
+        var ordered = new PlayerHudFocusTarget[raw.Length];
+        ordered[0] = raw[firstIdx];
+        ordered[1] = raw[secondIdx];
+        int dst = 2;
+        for (int i = 0; i < raw.Length; i++)
+        {
+            if (i == firstIdx || i == secondIdx) continue;
+            ordered[dst++] = raw[i];
+        }
+        return ordered;
     }
 
     internal PlayerHudFocusTargetWidget(Control anchor, PlayerHudController controller,
@@ -151,6 +218,33 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         }
     }
 
+    private static int DigitCount(int n)
+    {
+        if (n < 10) return 1;
+        if (n < 100) return 2;
+        if (n < 1000) return 3;
+        if (n < 10000) return 4;
+        if (n < 100000) return 5;
+        return 6;
+    }
+
+    private static bool TargetsEqual(PlayerHudFocusTarget[] a, PlayerHudFocusTarget[] b)
+    {
+        if (ReferenceEquals(a, b)) return true;
+        if (a.Length != b.Length) return false;
+        for (int i = 0; i < a.Length; i++)
+            if (!Equals(a[i], b[i])) return false;
+        return true;
+    }
+
+    private PlayerHudFocusTarget[] GetOrderedTargets(PlayerHudFocusTarget[] raw)
+    {
+        if (ReferenceEquals(raw, _lastRawTargets)) return _lastOrderedTargets;
+        _lastRawTargets = raw;
+        _lastOrderedTargets = OrderForDisplay(raw);
+        return _lastOrderedTargets;
+    }
+
     protected override void OnStateChanged()
     {
         var s = Snapshot;
@@ -160,14 +254,24 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
             _epoch = s?.Epoch ?? 0;
             _states.Clear();
             _requestedDolls.Clear();
+            _lastRawTargets = null;
             CancelHover();
         }
-        var targets = s?.TargetList ?? Array.Empty<PlayerHudFocusTarget>();
-        bool targetsChanged = epochChanged || !targets.SequenceEqual(_lastTargets);
+        var raw = s?.TargetList ?? Array.Empty<PlayerHudFocusTarget>();
+        var targets = GetOrderedTargets(raw);
+        bool targetsChanged = epochChanged || !TargetsEqual(targets, _lastTargets);
         bool stableRows = !epochChanged && targets.Length == _lastTargets.Length;
-        int changedHealth = 0, wholeRows = 0;
-        if (_hoverKey != null && (s == null || !targets.Any(t => t.Id.ToString(CultureInfo.InvariantCulture) == _hoverKey)))
-            CancelHover();
+        int changedHealth = 0, changedBars = 0, changedHits = 0, wholeRows = 0;
+        if (_hoverId >= 0)
+        {
+            bool hoverFound = false;
+            if (s != null)
+            {
+                for (int i = 0; i < targets.Length; i++)
+                    if (targets[i].Id == _hoverId) { hoverFound = true; break; }
+            }
+            if (!hoverFound) CancelHover();
+        }
 
         if (targets.Length == 0)
         {
@@ -177,7 +281,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         else if (targetsChanged)
         {
             _activeIds.Clear();
-            int fullRows = Dense(targets.Length, AllyCount) ? 1 : 2;
+            const int fullRows = 2;
             for (int i = 0; i < targets.Length; i++)
             {
                 var target = targets[i];
@@ -187,22 +291,38 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
                 if (!_states.TryGetValue(target.Id, out var st))
                 {
                     stableRows = false;
-                    st = new TargetVisualState(health);
+                    st = new TargetVisualState(target);
                     _states.Add(target.Id, st);
                 }
                 else
                 {
-                    st.Life.Apply(health, PlayerHudMotionSettings.StaticFeedback);
+                    st.Life.Apply(health, target.ShieldRatio, target.PoiseRatio, target.HasPoise,
+                        target.Rigid, target.Airborne, target.Down, target.Darkened,
+                        target.HitSeq, PlayerHudMotionSettings.StaticFeedback);
                     if (stableRows)
                     {
                         var old = _lastTargets[i];
                         if (!SameRow(old, target))
                             stableRows = false;
-                        else if (old.Hits != target.Hits || Band(old) != Band(target) ||
-                            (old.Hp > 0) != (target.Hp > 0))
+                        else if (Band(old) != Band(target) || (old.Hp > 0) != (target.Hp > 0))
                             wholeRows |= 1 << i;
-                        else if (old.Hp != target.Hp || old.HpMax != target.HpMax)
-                            changedHealth |= 1 << i;
+                        else
+                        {
+                            if (old.Hits != target.Hits)
+                            {
+                                // Only trigger a full-row repaint when HIT chip appears/disappears,
+                                // changes digit-width (shifting nameLeft), or lives on a compact row.
+                                if (compact || (old.Hits > 0) != (target.Hits > 0) || DigitCount(old.Hits) != DigitCount(target.Hits))
+                                    wholeRows |= 1 << i;
+                                else
+                                    changedHits |= 1 << i;
+                            }
+                            if (old.Hp != target.Hp || old.HpMax != target.HpMax)
+                                changedHealth |= 1 << i;
+                            else if (old.Shield != target.Shield || old.ShieldMax != target.ShieldMax ||
+                                old.Poise != target.Poise || old.Flags != target.Flags || old.HitSeq != target.HitSeq)
+                                changedBars |= 1 << i;
+                        }
                     }
                 }
 
@@ -225,10 +345,10 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         // TL 状态列实际底边上报分区仲裁，BL fallback 消息据此让位（ADR D5）。
         HudZoneLayout.ReportTopLeftBottom(TopLeftBottomFor(0, targets.Length, Suppressed || s == null, AllyCount));
         if (!targetsChanged && layout == _lastLayout && Suppressed == _lastSuppressed) return;
-        bool local = stableRows && (changedHealth | wholeRows) != 0 && layout == _lastLayout && !Suppressed && !_lastSuppressed;
+        bool local = stableRows && (changedHealth | changedBars | changedHits | wholeRows) != 0 && layout == _lastLayout && !Suppressed && !_lastSuppressed;
         var previous = _lastTargets;
         _lastTargets = targets; _lastLayout = layout; _lastSuppressed = Suppressed;
-        if (local) NotifyVisualChange(TrackDamage(targets.Length, changedHealth | wholeRows, previous, wholeRows));
+        if (local) NotifyVisualChange(TrackDamage(targets.Length, changedBars, changedHealth, previous, wholeRows, changedHits));
         else NotifyVisualChange(targetsChanged ? HudRepaintRegions.AuthoritativeWidget : EventArgs.Empty);
     }
 
@@ -254,9 +374,9 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         if (!Visible || Snapshot is not { Vitals.Paused: false } || PlayerHudMotionSettings.StaticFeedback || deltaMs <= 0) return;
         int step = deltaMs;
         bool changed = false;
-        int wholeRows = 0;
+        int changedHits = 0;
         int changedBars = 0;
-        var targets = Snapshot.TargetList;
+        var targets = _lastTargets;
 
         for (int i = 0; i < targets.Length; i++)
         {
@@ -273,42 +393,66 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
                 st.ComboPulseAgeMs = (int)Math.Min(ComboPulseDurationMs, (long)st.ComboPulseAgeMs + step);
                 if (st.ComboPulseAgeMs / 25 != oldBucket || st.ComboPulseAgeMs >= ComboPulseDurationMs)
                 {
-                    wholeRows |= 1 << i;
+                    changedHits |= 1 << i;
                     changed = true;
                 }
             }
         }
 
         if (!changed) return;
-        NotifyVisualChange(TrackDamage(targets.Length, changedBars | wholeRows, wholeRows: wholeRows));
+        NotifyVisualChange(TrackDamage(targets.Length, changedBars, changedHits: changedHits));
     }
 
-    // A pure trail/fill animation only changes pixels inside the life track.
-    // The changing geometry is painted inside trackPath; its outer rim is static.
-    private EventArgs TrackDamage(int count, int changed, PlayerHudFocusTarget[]? previous = null, int wholeRows = 0)
+    private static RectangleF HitChipBounds(RectangleF row, PlayerHudFocusTarget target, TargetVisualState state)
+    {
+        var portrait = Portrait(row);
+        float by = row.Top + (row.Top == 0 ? 4 : 3);
+        bool boss = target.Role == "boss", combat = target.Role == "combat";
+        float badgeW = boss ? 32 : combat ? 30 : 44;
+        float hitLeft = portrait.Right + 4.8f + badgeW + 4.5f;
+        float hitW = state.HitWidth > 0 ? state.HitWidth : 44f;
+        return new RectangleF(hitLeft, by, hitW, 12f);
+    }
+
+    // A pure trail/fill/shield/poise/hitFlash change only affects pixels inside the dual life track;
+    // combo hit count / pulse updates only affect the HIT chip rectangle.
+    private EventArgs TrackDamage(int count, int changedBars, int changedHealth = 0, PlayerHudFocusTarget[]? previous = null,
+        int wholeRows = 0, int changedHits = 0)
     {
         var viewport = Viewport;
         float scale = viewport.Height / 576f;
         if (scale <= 0) return EventArgs.Empty;
-        var regions = new List<Rectangle>(previous == null ? count : count * 2);
+        int all = changedBars | changedHealth | changedHits | wholeRows;
+        _damageScratch.Clear();
         int buffs = Snapshot!.BuffCards.Length;
+        int trackPad = Math.Max(1, (int)Math.Ceiling(scale * 0.75f + 1.0f));
         for (int i = 0; i < count; i++)
         {
-            if ((changed & (1 << i)) == 0) continue;
+            if ((all & (1 << i)) == 0) continue;
             var row = RowBounds(buffs, i, count, AllyCount);
             if ((wholeRows & (1 << i)) != 0)
             {
-                // The critical glow, combo pulse, name layout and portrait can affect the
+                // The critical glow, band shift, or HIT chip show/hide can affect the
                 // whole card. The centered GDI stroke also covers the half-pixel sample
                 // fringe: the Boss lower edge changes a second pixel at 1080p.
-                regions.Add(ToPixels(row, viewport, scale, Math.Max(1, (int)Math.Ceiling(scale * 0.5f + 0.5f))));
+                _damageScratch.Add(ToPixels(row, viewport, scale, Math.Max(1, (int)Math.Ceiling(scale * 0.5f + 0.5f))));
                 continue;
             }
-            regions.Add(ToPixels(LifeTrack(row), viewport, scale, 0));
-            if (previous != null)
-                regions.Add(ToPixels(ReadoutDamage(row, previous[i], _lastTargets[i], scale), viewport, scale, 2));
+            var rowPx = ToPixels(row, viewport, scale, 0);
+            if (((changedBars | changedHealth) & (1 << i)) != 0)
+            {
+                var trackPx = ToPixels(LifeTrack(row), viewport, scale, trackPad);
+                _damageScratch.Add(Rectangle.Intersect(trackPx, rowPx));
+            }
+            if (previous != null && (changedHealth & (1 << i)) != 0)
+                _damageScratch.Add(ToPixels(ReadoutDamage(row, previous[i], _lastTargets[i], scale), viewport, scale, 2));
+            if ((changedHits & (1 << i)) != 0 && !Secondary(row) && _states.TryGetValue(_lastTargets[i].Id, out var st))
+            {
+                var hitPx = ToPixels(HitChipBounds(row, _lastTargets[i], st), viewport, scale, 2);
+                _damageScratch.Add(Rectangle.Intersect(hitPx, rowPx));
+            }
         }
-        return new HudRepaintRegions(regions.ToArray(), authoritative: previous != null);
+        return new HudRepaintRegions(_damageScratch.ToArray(), authoritative: previous != null);
     }
 
     private static Rectangle ToPixels(RectangleF r, Rectangle viewport, float scale, int padding) =>
@@ -326,7 +470,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         {
             bool first = row.Top == 0;
             float pad = first ? 3.5f : 3f;
-            return new(row.X + 5.2f, row.Y + pad, first ? 24 : 22, row.Height - 2 * pad);
+            return new(row.X + 5.2f, row.Y + pad, first ? 26 : 24, row.Height - 2 * pad);
         }
         bool stacked = Stacked(row);
         return new(row.X + (stacked ? 5.8f : 6.5f), row.Y + 3,
@@ -340,26 +484,29 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         {
             bool first = row.Top == 0;
             float x = p.Right + 4.8f;
-            return new(x,row.Bottom - (first ? 10.2f : 9.2f),row.Right - 6 - x,first ? 6.8f : 6.4f);
+            return new(x, row.Bottom - (first ? 13.8f : 12.6f), row.Right - 6 - x, first ? 10.6f : 9.6f);
         }
         bool stacked = Stacked(row);
         float left = stacked ? p.X : p.Right + 4.5f;
-        return new(left,row.Bottom - (stacked ? 4 : 7),row.Right - (stacked ? 3 : 5) - left,stacked ? 2.8f : 4.2f);
+        return new(left, row.Bottom - (stacked ? 4.5f : 7.6f), row.Right - (stacked ? 3 : 5) - left, stacked ? 3.3f : 5.0f);
     }
 
-    private float _digitAdvance, _slashAdvance;
-    private float ReservedWidth(PlayerHudFocusTarget target)
+    private float _digitAdvance, _slashAdvance, _percentReserveWidth;
+    private float ReservedHpWidth(PlayerHudFocusTarget target)
     {
         if (_digitAdvance == 0)
         {
             for (char digit = '0'; digit <= '9'; digit++)
                 _digitAdvance = Math.Max(_digitAdvance, _numbers.Width(digit.ToString(), 11, HpReadoutMaxWidth));
             _slashAdvance = _numbers.Width("/", 11, HpReadoutMaxWidth);
+            _percentReserveWidth = Math.Max(26f, _numbers.Width("100%", 10.2f, 36f));
         }
         int maxDigits = PlayerHudNumberFormat.Full(target.HpMax).Length;
         int digits = Math.Max(maxDigits, PlayerHudNumberFormat.Full(target.Hp).Length) + maxDigits;
         return Math.Min(HpReadoutMaxWidth, digits * _digitAdvance + _slashAdvance);
     }
+
+    private float ReservedWidth(PlayerHudFocusTarget target) => ReservedHpWidth(target) + 4.5f + _percentReserveWidth;
 
     private RectangleF ReadoutDamage(RectangleF row, PlayerHudFocusTarget old, PlayerHudFocusTarget target, float scale)
     {
@@ -368,37 +515,44 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
             var p = Portrait(row);
             bool stacked = Stacked(row);
             float tx = p.Right + (stacked ? 2.6f : 4.5f);
-            return RectangleF.FromLTRB(Math.Max(tx, row.Right - (stacked ? 3 : 5) - 26) - 2,
-                row.Y + (stacked ? 8 : 1),row.Right,row.Y + (stacked ? 19 : 15));
+            float readoutSpan = row.Width >= 220f ? 128f : row.Width >= 140f ? 84f : 28f;
+            return RectangleF.FromLTRB(Math.Max(tx, row.Right - (stacked ? 3 : 5) - readoutSpan) - 2,
+                row.Y + (stacked ? 8 : 1), row.Right, row.Y + (stacked ? 19 : 16));
         }
         float reserve = ReservedWidth(target);
         float left = reserve == ReservedWidth(old) ? row.Right - 6 - reserve : Portrait(row).Right;
-        return RectangleF.FromLTRB(left - 2, row.Top + 1, row.Right - 2, row.Top + 19);
+        return RectangleF.FromLTRB(left - 3, row.Top + 1, row.Right - 2, row.Top + 20);
     }
 
     protected override void PaintLogical(Graphics g)
     {
         var s = Snapshot!;
-        var targets = s.TargetList;
+        var targets = _lastTargets;
         var buffCount = s.BuffCards.Length;
         float scale = Scale;
+        float tx, ty, sx, sy;
+        using (var transform = g.Transform)
+        {
+            var e = transform.Elements;
+            sx = e[0]; sy = e[3]; tx = e[4]; ty = e[5];
+        }
         using var clip = g.Clip;
         var prevSmooth = g.SmoothingMode;
         g.SmoothingMode = SmoothingMode.AntiAlias;
         try
         {
-            if (targets.Length > 1 && Dense(targets.Length, AllyCount))
+            if (targets.Length > 2)
             {
-                var strip = new RectangleF(6, 34, ColumnWidth, 23);
+                var strip = new RectangleF(6, 74, ColumnWidth, 23);
                 if (clip.IsVisible(RectangleF.Inflate(strip, 1, 1)))
-                    MetalPlate(g, strip, ChamferedPlaque(strip, 2, 5, 2, 2), 0x23282B, 0x111517, 0x090C0D,
-                        Color.FromArgb(102, 214, 217, 215), .8f);
+                    MetalPlate(g, strip, 2, 5, 2, 2, 0x23282B, 0x111517, 0x090C0D,
+                        Color.FromArgb(118, 206, 214, 212), .8f, sx, sy, tx, ty);
             }
             for (int i = 0; i < targets.Length; i++)
             {
                 var row = RowBounds(buffCount, i, targets.Length, AllyCount);
                 if (clip.IsVisible(RectangleF.Inflate(row, 2f, 2f)))
-                    PaintRow(g, clip, targets[i], row, scale, i);
+                    PaintRow(g, clip, targets[i], row, scale, i, sx, sy, tx, ty);
             }
         }
         finally
@@ -421,35 +575,33 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
 
     private static Color Rgb(int value) => Color.FromArgb(unchecked((int)0xff000000) | value);
 
-    private void MetalPlate(Graphics g, RectangleF r, PointF[] points, int top, int middle, int bottom, Color rim, float rimWidth)
+    private void MetalPlate(Graphics g, RectangleF r, float tl, float tr, float br, float bl,
+        int top, int middle, int bottom, Color rim, float rimWidth, float sx, float sy, float tx, float ty)
     {
-        using var transform=g.Transform;
-        var origin=new[]{new PointF(r.Left,r.Top)};
-        transform.TransformPoints(origin);
-        float scale=transform.Elements[0];
-        int left=(int)Math.Floor(origin[0].X)-3,topPx=(int)Math.Floor(origin[0].Y)-3;
-        float dx=origin[0].X-left,dy=origin[0].Y-topPx;
-        int w=(int)Math.Ceiling(r.Width*scale)+7,h=(int)Math.Ceiling(r.Height*scale)+7;
-        var stampKey=(r,top,middle,bottom,rim.ToArgb(),rimWidth,scale,dx,dy);
-        if ((long)w*h*4<=768*1024)
+        float ox = r.Left * sx + tx, oy = r.Top * sy + ty;
+        int left = (int)Math.Floor(ox) - 3, topPx = (int)Math.Floor(oy) - 3;
+        float dx = ox - left, dy = oy - topPx;
+        int w = (int)Math.Ceiling(r.Width * sx) + 7, h = (int)Math.Ceiling(r.Height * sy) + 7;
+        var stampKey = (r, top, middle, bottom, rim.ToArgb(), rimWidth, sx, dx, dy);
+        if ((long)w * h * 4 <= 768 * 1024)
         {
-            if (!_plates.TryGetValue(stampKey,out var tile))
+            if (!_plates.TryGetValue(stampKey, out var tile))
             {
-                if (_plateBytes+(long)w*h*4>2*1024*1024) ClearPlates();
-                tile=new Bitmap(w,h,System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-                using var local=Graphics.FromImage(tile);
-                local.SmoothingMode=g.SmoothingMode;
-                local.TranslateTransform(dx-r.Left*scale,dy-r.Top*scale);
-                local.ScaleTransform(scale,scale);
-                DrawPlate(local,r,points,top,middle,bottom,rim,rimWidth);
-                _plates.Add(stampKey,tile);
-                _plateBytes+=(long)w*h*4;
+                if (_plateBytes + (long)w * h * 4 > 2 * 1024 * 1024) ClearPlates();
+                tile = new Bitmap(w, h, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                using var local = Graphics.FromImage(tile);
+                local.SmoothingMode = g.SmoothingMode;
+                local.TranslateTransform(dx - r.Left * sx, dy - r.Top * sy);
+                local.ScaleTransform(sx, sy);
+                DrawPlate(local, r, ChamferedPlaque(r, tl, tr, br, bl), top, middle, bottom, rim, rimWidth);
+                _plates.Add(stampKey, tile);
+                _plateBytes += (long)w * h * 4;
             }
-            var saved=g.Save();g.ResetTransform();
-            try {g.DrawImageUnscaled(tile,left,topPx);} finally {g.Restore(saved);}
+            var saved = g.Save(); g.ResetTransform();
+            try { g.DrawImageUnscaled(tile, left, topPx); } finally { g.Restore(saved); }
             return;
         }
-        DrawPlate(g,r,points,top,middle,bottom,rim,rimWidth);
+        DrawPlate(g, r, ChamferedPlaque(r, tl, tr, br, bl), top, middle, bottom, rim, rimWidth);
     }
 
     private readonly Dictionary<(RectangleF,int,int,int,int,float,float,float,float),Bitmap> _plates=new();
@@ -477,11 +629,15 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
     }
 
     private static Color Accent(PlayerHudFocusTarget t, int band) => Rgb(band == 2 ? 0xff6656 : band == 1 ? 0xe0b052 :
-        t.Role == "boss" ? 0xa83832 : t.Role == "combat" ? 0x8e9694 : 0x649aa2);
+        t.Role == "boss" ? 0xc6483e : t.Role == "combat" ? 0xb0bcba : 0x52b6c4);
 
-    private static Color HealthInk(int band) => Rgb(band == 2 ? 0xff8a78 : band == 1 ? 0xf1c970 : 0xe8eeec);
+    private static Color HealthInk(int band) => Rgb(band == 2 ? 0xff8a78 : band == 1 ? 0xf1c970 : 0xeef2f0);
 
-    private void PaintRow(Graphics g, Region clip, PlayerHudFocusTarget target, RectangleF row, float scale, int index)
+    private static Color PercentInk(PlayerHudFocusTarget t, int band) => Rgb(band == 2 ? 0xff9c88 : band == 1 ? 0xf6cf74 :
+        t.Role == "boss" ? 0xf2a094 : t.Role == "combat" ? 0xc2d8dc : 0x86e8f2);
+
+    private void PaintRow(Graphics g, Region clip, PlayerHudFocusTarget target, RectangleF row, float scale, int index,
+        float sx, float sy, float tx, float ty)
     {
         bool compact = Secondary(row);
         bool boss = target.Role == "boss", combat = target.Role == "combat";
@@ -491,21 +647,33 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         if (!compact)
         {
             bool first = row.Top == 0;
-            var shape = ChamferedPlaque(row, first ? 0 : 2.5f, first ? 0 : 4, 6, first ? 4 : 2.5f);
-            var rim = _hoverKey == target.Id.ToString(CultureInfo.InvariantCulture) ? Color.White :
-                band == 2 ? Rgb(0xff6656) : band == 1 ? Color.FromArgb(189,224,180,92) : Color.FromArgb(133,182,190,188);
             bool protect = !boss && !combat;
-            MetalPlate(g,row,shape,band == 2 ? 0x341717 : protect ? 0x1f2629 : 0x23272a,
-                band == 2 ? 0x180b0c : protect ? 0x101517 : 0x111416,band == 2 ? 0x0c0708 : 0x090c0d,rim,band == 2 ? 1.25f : .85f);
+            // Keep outer card rim static per role/band so combo pulses never thrash _plates cache
+            // or trigger whole-row repaints; the HIT chip border carries the combo pulse.
+            var rim = _hoverId == target.Id ? Color.White :
+                band == 2 ? Rgb(0xff6656) :
+                band == 1 ? Color.FromArgb(205, 228, 182, 92) :
+                boss ? Color.FromArgb(195, 206, 96, 84) :
+                protect ? Color.FromArgb(178, 86, 184, 198) :
+                Color.FromArgb(184, 192, 204, 202);
+            MetalPlate(g, row, first ? 0 : 2.5f, first ? 0 : 4, 6, first ? 4 : 2.5f,
+                band == 2 ? 0x341717 : boss ? 0x2a1f21 : protect ? 0x1b2629 : 0x23272a,
+                band == 2 ? 0x180b0c : boss ? 0x151012 : protect ? 0x0f1618 : 0x111416,
+                band == 2 ? 0x0c0708 : 0x090c0d,
+                rim, band == 2 ? 1.25f : boss ? 1.0f : .85f, sx, sy, tx, ty);
         }
-        else if (index > 1)
+        else if (index > 2 && clip.IsVisible(new RectangleF(row.Left - 2f, row.Top, 4f, row.Height)))
         {
-            using var divider = new Pen(Color.FromArgb(56,214,217,215),.8f);
-            g.DrawLine(divider,row.Left + 1.5f,row.Top + 2.5f,row.Left - 1.5f,row.Bottom - 2.5f);
+            using var divider = new Pen(Color.FromArgb(56, 214, 217, 215), .8f);
+            g.DrawLine(divider, row.Left + 1.5f, row.Top + 2.5f, row.Left - 1.5f, row.Bottom - 2.5f);
         }
-        using (var blade = new SolidBrush(Accent(target,band)))
-            g.FillRectangle(blade,row.X + (compact ? 2.5f : 1.3f),row.Y + (row.Top == 0 ? 1.5f : 3f),
-                compact ? 2.2f : 2.1f,row.Height - (row.Top == 0 ? 4.5f : 6f));
+        var bladeRect = new RectangleF(row.X + (compact ? 2.5f : 1.3f), row.Y + (row.Top == 0 ? 1.5f : 3f),
+            compact ? 2.2f : 2.1f, row.Height - (row.Top == 0 ? 4.5f : 6f));
+        if (clip.IsVisible(RectangleF.Inflate(bladeRect, 1f, 1f)))
+        {
+            using var blade = new SolidBrush(Accent(target, band));
+            g.FillRectangle(blade, bladeRect);
+        }
         if (clip.IsVisible(RectangleF.Inflate(portrait,2,2)))
         {
             PaintPortrait(g,portrait,target,boss,combat,band == 2);
@@ -518,44 +686,93 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
             }
         }
         var track = LifeTrack(row);
-        if (clip.IsVisible(RectangleF.Inflate(track,2,2)))
+        if (clip.IsVisible(RectangleF.Inflate(track, 2.5f, 2.5f)))
         {
             var visual = state.Life.Visual with { Critical = band == 2 };
             var style = FillStyle(target.Role);
-            if (_gpuFill != null && !_gpuFill.Rectangles[index].IsEmpty)
-            {
-                var saved = g.Save();
-                try
-                {
-                    using var transform = g.Transform;
-                    g.ResetTransform();
-                    g.ExcludeClip(_gpuFill.Rectangles[index]);
-                    g.Transform = transform;
-                    UnitLifeBarPainter.Paint(g,track,visual,style,PlayerHudMotionSettings.EventStrength,focusV38:true);
-                }
-                finally { g.Restore(saved); }
-            }
-            else UnitLifeBarPainter.Paint(g,track,visual,style,PlayerHudMotionSettings.EventStrength,focusV38:true);
+            UnitLifeBarPainter.Paint(g, track, visual, style, PlayerHudMotionSettings.EventStrength, sx, sy, tx, ty);
         }
-        if (!clip.IsVisible(new RectangleF(row.X,row.Top,row.Width,compact && Stacked(row) ? 18.5f : 17.5f))) return;
-        if (compact) PaintSecondaryText(g,clip,target,row,portrait,band,scale);
-        else PaintPrimaryText(g,clip,target,state,row,portrait,band,scale);
+        if (!clip.IsVisible(new RectangleF(row.X, row.Top, row.Width, compact ? 18.5f : 20.5f))) return;
+        if (compact) PaintSecondaryText(g, clip, target, state, row, portrait, band, scale);
+        else PaintPrimaryText(g, clip, target, state, row, portrait, band, scale);
     }
 
-    private void PaintSecondaryText(Graphics g, Region clip, PlayerHudFocusTarget target, RectangleF row, RectangleF portrait, int band, float scale)
+    private void PaintSecondaryText(Graphics g, Region clip, PlayerHudFocusTarget target, TargetVisualState state,
+        RectangleF row, RectangleF portrait, int band, float scale)
     {
         bool stacked = Stacked(row);
+        bool boss = target.Role == "boss", combat = target.Role == "combat";
         float left = portrait.Right + (stacked ? 2.6f : 4.5f);
         float right = row.Right - (stacked ? 3 : 5);
-        float numberWidth = Math.Min(26,right - left);
-        float nameWidth = (stacked ? right : right - numberWidth - 3) - left - 1;
-        var nameBounds=new RectangleF(left,row.Y + (stacked ? 0 : 1),nameWidth,stacked ? 11 : 14);
-        if (nameWidth > 0 && clip.IsVisible(RectangleF.Inflate(nameBounds,2,2)))
-            g.DrawString(target.Name.Replace('\r',' ').Replace('\n',' '),stacked ? _denseFont : _shortFont,
-                Brushes.White,nameBounds,_label);
-        string percent = target.HpMax > 0 ? Math.Round(target.Hp / target.HpMax * 100,MidpointRounding.AwayFromZero).ToString("0",CultureInfo.InvariantCulture) + "%" : "--";
-        _numbers.DrawRight(g,percent,right,row.Y + (stacked ? 17.1f : 11.8f),
-            stacked ? 8f : row.Width >= 145 ? 9.6f : 8.4f,scale,Math.Max(1,numberWidth),HealthInk(band));
+        string percent = PlayerHudResourceStyle.Percent(target.Hp, target.HpMax);
+
+        if (row.Width >= 220f)
+        {
+            // Single compact cell (290px): enough room for full role badge + optional HIT + name + % + full HP.
+            var badge = new RectangleF(left, row.Y + 1.5f, boss ? 30 : combat ? 28 : 38, 11);
+            var fill = Rgb(band == 2 ? 0x4d1715 : band == 1 ? 0x272013 : boss ? 0x421819 : combat ? 0x242a2d : 0x16262a);
+            var edge = band == 2 ? Rgb(0xff7a6b) : band == 1 ? Rgb(0xd8a84c) : boss ? Rgb(0xd87062) : combat ? Rgb(0xa4b2b0) : Rgb(0x64b8c4);
+            if (clip.IsVisible(RectangleF.Inflate(badge, 2, 2)))
+                Chip(g, badge, fill, edge, boss ? "Boss" : combat ? "交战" : band == 2 ? "濒危" : "保护", boss);
+            left = badge.Right + 4f;
+
+            string exact = PlayerHudNumberFormat.Full(target.Hp) + "/" + PlayerHudNumberFormat.Full(target.HpMax);
+            float hpW = _numbers.DrawRight(g, exact, right, row.Y + 11.8f, 9.6f, scale, 82f, HealthInk(band), compactThreshold: ExactHpCompactThreshold);
+            float pctW = _numbers.DrawRight(g, percent, right - hpW - 4f, row.Y + 11.8f, 9.2f, scale, 28f, PercentInk(target, band));
+            float nameRight = right - hpW - pctW - 9f;
+
+            if (target.Hits > 0 && nameRight - left >= 58f)
+            {
+                string hitText = target.Hits.ToString(CultureInfo.InvariantCulture) + " HIT";
+                float hitW = Math.Clamp((float)Math.Ceiling(g.MeasureString(hitText, _denseFont, PointF.Empty, _label).Width) + 8f, 32f, 52f);
+                var hitRect = new RectangleF(left, row.Y + 1.5f, hitW, 11f);
+                if (clip.IsVisible(RectangleF.Inflate(hitRect, 2, 2)))
+                    Chip(g, hitRect, Rgb(0x171c1e), Color.FromArgb(142 + (int)(64 * state.ComboPulse), 192, 202, 200), hitText, false);
+                left += hitW + 4f;
+            }
+            if (nameRight > left)
+                g.DrawString(state.GetSanitizedName(target.Name), _shortFont, Brushes.White,
+                    new RectangleF(left, row.Y + 1f, nameRight - left, 13f), _label);
+            return;
+        }
+
+        if (row.Width >= 140f)
+        {
+            // Two compact cells (~145px): mini 1-char role tag + name + compact HP + %.
+            var mini = new RectangleF(left, row.Y + 2f, 12f, 10.5f);
+            var fill = Rgb(band == 2 ? 0x4d1715 : boss ? 0x421819 : combat ? 0x262c2e : 0x16262a);
+            var edge = band == 2 ? Rgb(0xff7a6b) : boss ? Rgb(0xd87062) : combat ? Rgb(0xa4b2b0) : Rgb(0x64b8c4);
+            if (clip.IsVisible(RectangleF.Inflate(mini, 1, 1)))
+                Chip(g, mini, fill, edge, boss ? "首" : combat ? "战" : "护", false);
+            left = mini.Right + 3f;
+
+            float pctW = _numbers.DrawRight(g, percent, right, row.Y + 11.8f, 9.2f, scale, 26f, PercentInk(target, band));
+            string compactHp = DenseValue(target.Hp) + "/" + DenseValue(target.HpMax);
+            float hpW = _numbers.DrawRight(g, compactHp, right - pctW - 3.5f, row.Y + 11.8f, 8.8f, scale, 52f, HealthInk(band));
+            float nameWidth = right - pctW - hpW - 7.5f - left;
+            if (nameWidth > 4f)
+                g.DrawString(state.GetSanitizedName(target.Name), _shortFont, Brushes.White,
+                    new RectangleF(left, row.Y + 1f, nameWidth, 13f), _label);
+            return;
+        }
+
+        float numberWidth = Math.Min(26, right - left);
+        if (!stacked)
+        {
+            var mini = new RectangleF(left, row.Y + 2.2f, 11.5f, 10f);
+            var fill = Rgb(band == 2 ? 0x4d1715 : boss ? 0x421819 : combat ? 0x262c2e : 0x16262a);
+            var edge = band == 2 ? Rgb(0xff7a6b) : boss ? Rgb(0xd87062) : combat ? Rgb(0xa4b2b0) : Rgb(0x64b8c4);
+            if (clip.IsVisible(RectangleF.Inflate(mini, 1, 1)))
+                Chip(g, mini, fill, edge, boss ? "首" : combat ? "战" : "护", false);
+            left = mini.Right + 2.5f;
+        }
+        float narrowNameWidth = (stacked ? right : right - numberWidth - 3) - left - 1;
+        var nameBounds = new RectangleF(left, row.Y + (stacked ? 0 : 1), narrowNameWidth, stacked ? 11 : 14);
+        if (narrowNameWidth > 0 && clip.IsVisible(RectangleF.Inflate(nameBounds, 2, 2)))
+            g.DrawString(state.GetSanitizedName(target.Name), stacked ? _denseFont : _shortFont,
+                Brushes.White, nameBounds, _label);
+        _numbers.DrawRight(g, percent, right, row.Y + (stacked ? 17.1f : 11.8f),
+            stacked ? 8f : 8.4f, scale, Math.Max(1, numberWidth), PercentInk(target, band));
     }
 
     private void PaintPrimaryText(Graphics g, Region clip, PlayerHudFocusTarget target, TargetVisualState state,
@@ -563,64 +780,81 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
     {
         float by = row.Top + (row.Top == 0 ? 4 : 3);
         bool boss = target.Role == "boss", combat = target.Role == "combat";
-        var badge = new RectangleF(portrait.Right + 4.8f,by,boss ? 32 : combat ? 30 : 44,12);
-        var fill = Rgb(band == 2 ? 0x4d1715 : band == 1 ? 0x272013 : boss ? 0x1e2224 : combat ? 0x222628 : 0x172225);
-        var edge = band == 2 ? Rgb(0xff7a6b) : band == 1 ? Rgb(0xd8a84c) : boss ? Color.FromArgb(148,176,184,182) : combat ? Rgb(0x8a9290) : Rgb(0x769aa0);
-        if (clip.IsVisible(RectangleF.Inflate(badge,2,2)))
-            Chip(g,badge,fill,edge,boss ? "Boss" : combat ? "交战" : band == 2 ? "濒危" : "保护目标",boss);
+        var badge = new RectangleF(portrait.Right + 4.8f, by, boss ? 32 : combat ? 30 : 44, 12);
+        var fill = Rgb(band == 2 ? 0x4d1715 : band == 1 ? 0x272013 : boss ? 0x421819 : combat ? 0x242a2d : 0x16262a);
+        var edge = band == 2 ? Rgb(0xff7a6b) : band == 1 ? Rgb(0xd8a84c) : boss ? Rgb(0xd87062) : combat ? Rgb(0xa4b2b0) : Rgb(0x64b8c4);
+        if (clip.IsVisible(RectangleF.Inflate(badge, 2, 2)))
+            Chip(g, badge, fill, edge, boss ? "Boss" : combat ? "交战" : band == 2 ? "濒危" : "保护目标", boss);
         float right = row.Right - 6;
-        if (clip.IsVisible(new RectangleF(right-HpReadoutMaxWidth-3,by-4,HpReadoutMaxWidth+6,20)))
+        float totalReserve = ReservedWidth(target);
+        if (clip.IsVisible(new RectangleF(right - totalReserve - 4, by - 4, totalReserve + 8, 20)))
         {
             string exact = PlayerHudNumberFormat.Full(target.Hp) + "/" + PlayerHudNumberFormat.Full(target.HpMax);
-            _numbers.DrawRight(g,exact,right,by + 10.2f,11,scale,HpReadoutMaxWidth,HealthInk(band),compactThreshold:double.PositiveInfinity);
+            float hpW = _numbers.DrawRight(g, exact, right, by + 10.2f, 11, scale, HpReadoutMaxWidth, HealthInk(band), compactThreshold: double.PositiveInfinity);
+            string pct = PlayerHudResourceStyle.Percent(target.Hp, target.HpMax);
+            _numbers.DrawRight(g, pct, right - hpW - 4.5f, by + 10.2f, 10.2f, scale, _percentReserveWidth, PercentInk(target, band));
         }
         float nameLeft = badge.Right + 4.5f;
-        float nameRight = right - ReservedWidth(target) - 4;
-        string name = target.Name.Replace('\r',' ').Replace('\n',' ');
+        float nameRight = right - totalReserve - 4;
+        string name = state.GetSanitizedName(target.Name);
         if (state.MeasuredName != name || state.MeasuredScale != scale)
         {
-            state.NameWidth = g.MeasureString(name,_font,PointF.Empty,_label).Width;
+            state.NameWidth = g.MeasureString(name, _font, PointF.Empty, _label).Width;
             state.MeasuredName = name;
             state.MeasuredScale = scale;
         }
         if (target.Hits > 0)
         {
-            string hitText = target.Hits.ToString(CultureInfo.InvariantCulture) + " HIT";
-            if (state.MeasuredHits != target.Hits || state.HitScale != scale)
+            int hitDigits = DigitCount(target.Hits);
+            if (state.MeasuredHitDigits != hitDigits || state.HitScale != scale)
             {
-                state.HitWidth = Math.Max(38,(float)Math.Ceiling(g.MeasureString(hitText,_badgeFont,PointF.Empty,_label).Width) + 8);
-                state.MeasuredHits = target.Hits;
+                string sample = hitDigits switch
+                {
+                    1 => "8 HIT",
+                    2 => "88 HIT",
+                    3 => "888 HIT",
+                    4 => "8888 HIT",
+                    _ => new string('8', hitDigits) + " HIT"
+                };
+                state.HitWidth = Math.Max(38, (float)Math.Ceiling(g.MeasureString(sample, _badgeFont, PointF.Empty, _label).Width) + 8);
+                state.MeasuredHitDigits = hitDigits;
                 state.HitScale = scale;
             }
             float width = state.HitWidth;
-            if (width + 5 + state.NameWidth <= nameRight - nameLeft)
+            if (nameRight - nameLeft >= width + 24f)
             {
-                var hit = new RectangleF(nameLeft,by,width,12);
-                if (clip.IsVisible(RectangleF.Inflate(hit,2,2)))
-                    Chip(g,hit,Rgb(0x171c1e),Color.FromArgb(122 + (int)(64 * state.ComboPulse),186,194,192),hitText,false);
+                var hit = new RectangleF(nameLeft, by, width, 12);
+                if (clip.IsVisible(RectangleF.Inflate(hit, 2, 2)))
+                {
+                    string hitText = target.Hits.ToString(CultureInfo.InvariantCulture) + " HIT";
+                    Chip(g, hit, Rgb(0x171c1e), Color.FromArgb(138 + (int)(68 * state.ComboPulse), 192, 202, 200), hitText, false);
+                }
                 nameLeft += width + 5;
             }
         }
-        if (nameRight > nameLeft && clip.IsVisible(new RectangleF(nameLeft-2,by-4,nameRight-nameLeft+4,20)))
+        if (nameRight > nameLeft && clip.IsVisible(new RectangleF(nameLeft - 2, by - 4, nameRight - nameLeft + 4, 20)))
         {
             using var ink = new SolidBrush(Rgb(band == 1 ? 0xf6e5bc : 0xf2f5f3));
-            g.DrawString(name,_font,ink,new RectangleF(nameLeft,by - 2,nameRight - nameLeft,16),_label);
+            g.DrawString(name, _font, ink, new RectangleF(nameLeft, by - 2, nameRight - nameLeft, 16), _label);
         }
     }
 
     private void Chip(Graphics g, RectangleF r, Color fill, Color edge, string text, bool boss)
     {
-        PointF[] poly = [new(r.Left + 2.4f,r.Top),new(r.Right,r.Top),new(r.Right - 2.4f,r.Bottom),new(r.Left,r.Bottom)];
+        _chipPoly[0] = new(r.Left + 2.4f, r.Top);
+        _chipPoly[1] = new(r.Right, r.Top);
+        _chipPoly[2] = new(r.Right - 2.4f, r.Bottom);
+        _chipPoly[3] = new(r.Left, r.Bottom);
         using var brush = new SolidBrush(fill);
-        using var pen = new Pen(edge,.7f);
-        g.FillPolygon(brush,poly);
-        g.DrawPolygon(pen,poly);
+        using var pen = new Pen(edge, .7f);
+        g.FillPolygon(brush, _chipPoly);
+        g.DrawPolygon(pen, _chipPoly);
         if (boss)
         {
-            using var red = new Pen(Rgb(0xb03932),2.3f);
-            g.DrawLine(red,r.Left + 4,r.Top + .8f,r.Left + 1.8f,r.Bottom - .8f);
+            using var red = new Pen(Rgb(0xb03932), 2.3f);
+            g.DrawLine(red, r.Left + 4, r.Top + .8f, r.Left + 1.8f, r.Bottom - .8f);
         }
-        g.DrawString(text,_badgeFont,Brushes.White,r,_center);
+        g.DrawString(text, _badgeFont, Brushes.White, r, _center);
     }
 
     private void PaintPortrait(Graphics g, RectangleF rect, PlayerHudFocusTarget target, bool isBoss, bool isCombat, bool critical)
@@ -728,7 +962,8 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
 
     private PlayerHudTarget? Hit(Point screen)
     {
-        if (!Visible || !Controller.CanInteract || Snapshot is not { TargetList: { Length: > 0 } targets } s || Scale <= 0) return null;
+        if (!Visible || !Controller.CanInteract || Snapshot is not { } s || _lastTargets.Length == 0 || Scale <= 0) return null;
+        var targets = _lastTargets;
         var pt = Logical(screen);
         var buffCount = s.BuffCards.Length;
         for (int i = 0; i < targets.Length; i++)
@@ -755,6 +990,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         if (target?.Key == _hoverKey) return;
         CancelHover();
         _hoverKey = target?.Key;
+        _hoverId = target != null && long.TryParse(target.Key, NumberStyles.None, CultureInfo.InvariantCulture, out long hid) ? hid : -1;
         if (target != null) Controller.ShowTooltip(target);
         Repaint();
     }
@@ -763,6 +999,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
     {
         if (_hoverKey == null) return;
         _hoverKey = null;
+        _hoverId = -1;
         Controller.HideTooltip();
         Repaint();
     }

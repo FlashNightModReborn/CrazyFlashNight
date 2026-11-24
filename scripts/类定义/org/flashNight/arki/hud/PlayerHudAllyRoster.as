@@ -13,9 +13,11 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
     private static var installed:Boolean = false;
 
 
+    public static var DOWN_RETENTION_MS:Number = 2500;
     private static var sampling:String = "deadline";
     private static var dirty:Boolean = true;
     private static var lastSampleMs:Number = -1;
+    private static var lastTickMs:Number = -1;
     private static var lastPause:Boolean;
     public static var sampled:Boolean;
     public static function configure(mode:String):Void {
@@ -43,7 +45,7 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
     }
 
     public static function clear():Void {
-        dirty = true; lastSampleMs = -1;
+        dirty = true; lastSampleMs = -1; lastTickMs = -1;
         entries = [];
         cached = {rows:[], overflow:[]};
         owner = null;
@@ -75,7 +77,7 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
         var prior:Object = unit.__hudAllyEntry;
         if (prior != null && prior.owner === owner && prior.version === unit.version) return prior;
         var entry:Object = {owner:owner, key:unit._name, version:unit.version, id:++serial, role:role,
-            rank:role == "merc" ? 3 : (role == "pet" ? 2 : 1), slot:-1, portraitTick:-30};
+            rank:role == "merc" ? 3 : (role == "pet" ? 2 : 1), slot:-1, portraitTick:-30, downSince:-1, downExpired:false};
         unit.__hudAllyEntry = entry;
         _global.ASSetPropFlags(unit, ["__hudAllyEntry"], 1, 0);
         entries.push(entry);
@@ -107,10 +109,10 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
         if (!finite(hp) || !finite(maximum) || maximum <= 0) return null;
         var shield:Object = unit.shield;
         var sc:Number = 0, sm:Number = 0;
-        if (typeof shield.getCapacity == "function" && typeof shield.getMaxCapacity == "function") {
+        if (shield != null && typeof shield.getCapacity == "function" && typeof shield.getMaxCapacity == "function") {
             sm = Number(shield.getMaxCapacity());
             sc = Number(shield.getCapacity());
-            if (!finite(sc) || !finite(sm) || sm <= 0) sc = sm = 0;
+            if (!isFinite(sc) || !isFinite(sm) || sm <= 0 || Math.abs(sc) > 1000000000000000 || Math.abs(sm) > 1000000000000000) sc = sm = 0;
         }
         if (pass - entry.portraitTick >= 30) {
             var portrait:Object = FocusTargetHudService.extractPortrait(unit);
@@ -169,6 +171,8 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
         // Check just identity and critical edges on skipped beats. Shield accessors,
         // portrait extraction, seat assignment and immutable row reads stay on full samples.
         var critical:Boolean = dirty || force === true || paused !== lastPause;
+        var pauseDelta:Number = (paused && lastTickMs >= 0 && now >= lastTickMs) ? (now - lastTickMs) : 0;
+        lastTickMs = now;
         lastPause = paused;
         var i:Number, entry:Object, unit:MovieClip;
         for (i=0; i<entries.length; i++) {
@@ -185,6 +189,17 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
                 entry.leaseOnly = false; entry.row = null; critical = true;
             }
             var band:Number = hpBand(unit.hp, unit.hp满血值);
+            // Non-protected downed allies stay visible briefly (DOWN_RETENTION_MS) then leave their seat.
+            var wasExpired:Boolean = entry.downExpired === true;
+            if (band == 0 && !protect) {
+                if (entry.downSince < 0 || now < entry.downSince) entry.downSince = now;
+                else if (pauseDelta > 0) entry.downSince += pauseDelta;
+                if (!paused && (now - entry.downSince) >= DOWN_RETENTION_MS) entry.downExpired = true;
+            } else if (band > 0 || protect) {
+                entry.downSince = -1;
+                entry.downExpired = false;
+            }
+            if (wasExpired !== (entry.downExpired === true)) critical = true;
             if (protect !== entry.wasProtected || masked !== entry.masked || entry.band === undefined
                     || band != entry.band
                     || (paused && entry.row != null && (unit.hp !== entry.row.hp[0] || unit.hp满血值 !== entry.row.hp[1]))) critical = true;
@@ -205,7 +220,9 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
                 if (unit.__hudAllyEntry === entry) delete unit.__hudAllyEntry;
                 continue;
             }
-            if (entry.focusPass === pass && shown["i"+entry.focusId] === true) { entry.slot = -1; continue; }
+            if ((entry.focusPass === pass && shown["i"+entry.focusId] === true) || (!isProtected && entry.downExpired === true)) {
+                entry.slot = -1; continue;
+            }
             if (isProtected) {
                 if (entry.slot >= 20) held[entry.slot-20] = entry;
                 else pending.push(entry);
@@ -220,6 +237,32 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
                 held[h] = entry; entry.slot = h+20;
             } else place(entry, seats);
         }
+        // Compact vacated ordinary seats left so departed or expired allies never leave empty holes.
+        var writeSlot:Number = 0;
+        for (i = 0; i < 20; i++) {
+            entry = seats[i];
+            if (entry != null) {
+                if (i != writeSlot) {
+                    seats[writeSlot] = entry;
+                    seats[i] = null;
+                }
+                entry.slot = writeSlot;
+                writeSlot++;
+            }
+        }
+        var writeHeld:Number = 0;
+        for (i = 0; i < held.length; i++) {
+            entry = held[i];
+            if (entry != null) {
+                if (i != writeHeld) {
+                    held[writeHeld] = entry;
+                    held[i] = null;
+                }
+                entry.slot = 20 + writeHeld;
+                writeHeld++;
+            }
+        }
+        held.length = writeHeld;
         var rows:Array = [], overflow:Array = [], row:Object;
         for (i = 0; i < seats.length + held.length; i++) {
             entry = i < 20 ? seats[i] : held[i-20];
@@ -230,7 +273,7 @@ class org.flashNight.arki.hud.PlayerHudAllyRoster {
         }
         for (i = 0; i < entries.length; i++) {
             entry = entries[i];
-            if (entry.slot != -1 || (entry.focusPass === pass && shown["i"+entry.focusId] === true)) continue;
+            if (entry.slot != -1 || entry.downExpired === true || (entry.focusPass === pass && shown["i"+entry.focusId] === true)) continue;
             row = read(entry, world[entry.key], false);
             if (row != null) overflow.push(row);
         }

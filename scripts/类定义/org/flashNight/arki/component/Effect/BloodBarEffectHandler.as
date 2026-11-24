@@ -25,6 +25,15 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
      * @param hitTarget 被击对象
      */
     public static function updateStatus(hitTarget:MovieClip):Void {
+        if (hitTarget != null) {
+            var hudHitSeq:Number = hitTarget.__hudHitSeq;
+            if (hudHitSeq > 0) {
+                hitTarget.__hudHitSeq = hudHitSeq + 1;
+            } else {
+                hitTarget.__hudHitSeq = 1;
+                _global.ASSetPropFlags(hitTarget, ["__hudHitSeq"], 1, 0);
+            }
+        }
         var state:String = hitTarget.barColorState;
         var ic:MovieClip = hitTarget.新版人物文字信息;
         var hpBar:MovieClip = ic.头顶血槽;

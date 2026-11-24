@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using System.Globalization;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 
@@ -47,6 +48,9 @@ namespace CF7Launcher.Guardian.Hud
 
         private sealed class MessageLine
         {
+            public List<FlashHtmlParser.TextSegment> BaseSegments;
+            public string BasePlainText;
+            public int Count = 1;
             public List<FlashHtmlParser.TextSegment> Segments;
             public string PlainText;
             public int Age;
@@ -253,13 +257,61 @@ namespace CF7Launcher.Guardian.Hud
         /// <summary>测试/诊断：当前实际可见的消息行数（受分区高度约束）。</summary>
         internal int VisibleLineCount { get { return _lines.Count == 0 ? 0 : _lines.Count - _visibleStart; } }
 
+        /// <summary>测试/诊断：当前活跃消息的纯文本快照（含折叠后的 ×N 尾标）。</summary>
+        internal string[] ActivePlainLinesForTest
+        {
+            get
+            {
+                string[] result = new string[_lines.Count];
+                for (int i = 0; i < _lines.Count; i++) result[i] = _lines[i].PlainText;
+                return result;
+            }
+        }
+
+        private static readonly Color DuplicateBadgeColor = Color.FromArgb(255, 224, 198, 130);
+
         private void AppendMessage(string text)
         {
             bool wasEmpty = _lines.Count == 0;
             List<FlashHtmlParser.TextSegment> segments = FlashHtmlParser.Parse(text, " ");
             string plain = FlashHtmlParser.ToPlainText(segments);
 
+            // Fold identical active messages into a single "text ×N" entry (matching NotchWidget.AddGameNotice)
+            // so repeated system triggers (e.g. mech shield full) cannot flood all 8 lines.
+            if (!string.IsNullOrWhiteSpace(plain))
+            {
+                for (int i = _lines.Count - 1; i >= 0; i--)
+                {
+                    MessageLine existing = _lines[i];
+                    if (string.Equals(existing.BasePlainText, plain, StringComparison.Ordinal))
+                    {
+                        existing.Count++;
+                        string suffix = " ×" + existing.Count.ToString(CultureInfo.InvariantCulture);
+                        List<FlashHtmlParser.TextSegment> merged = new List<FlashHtmlParser.TextSegment>(existing.BaseSegments.Count + 1);
+                        merged.AddRange(existing.BaseSegments);
+                        merged.Add(new FlashHtmlParser.TextSegment { Text = suffix, Color = DuplicateBadgeColor });
+                        existing.Segments = merged;
+                        existing.PlainText = existing.BasePlainText + suffix;
+                        existing.Age = FadeInMs;
+                        if (i != _lines.Count - 1)
+                        {
+                            _lines.RemoveAt(i);
+                            _lines.Add(existing);
+                        }
+                        _remainingMs = DisplayLifetimeMs;
+                        _globalAlpha = 1f;
+                        _lastBoundsScale = -1f;
+                        FireBounds();
+                        FireRepaint();
+                        return;
+                    }
+                }
+            }
+
             MessageLine line = new MessageLine();
+            line.BaseSegments = segments;
+            line.BasePlainText = plain;
+            line.Count = 1;
             line.Segments = segments;
             line.PlainText = plain;
             line.Age = 0;

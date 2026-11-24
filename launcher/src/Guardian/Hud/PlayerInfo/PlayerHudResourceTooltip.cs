@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -125,6 +126,21 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
                 });
                 Add("生命："+PlayerHudFocusTargetWidget.HealthText(focus)+"（"+PlayerHudResourceStyle.Percent(focus.Hp,focus.HpMax)+"）");
                 if (focus.Hp > focus.HpMax) Add("超额：+"+Number(Math.Max(0,focus.Hp-focus.HpMax)));
+                if (focus.ShieldMax > 0 && focus.Shield > 0)
+                    Add("护盾："+Number(focus.Shield)+" / "+Number(focus.ShieldMax)+"（"+PlayerHudResourceStyle.Percent(focus.Shield,focus.ShieldMax)+"）");
+                if (focus.HasPoise || focus.Flags != 0)
+                {
+                    var tags = new List<string>(4);
+                    if (focus.Rigid) tags.Add("刚体霸体");
+                    if (focus.Airborne) tags.Add("浮空");
+                    if (focus.Down) tags.Add("倒地");
+                    if (focus.Darkened && !focus.Airborne && !focus.Down) tags.Add("受击硬直");
+                    string poiseText = focus.HasPoise
+                        ? "韧性：" + Math.Round(focus.PoiseRatio * 100f, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.InvariantCulture) + "%"
+                        : "姿态";
+                    if (tags.Count > 0) poiseText += " · " + string.Join(" / ", tags);
+                    Add(poiseText);
+                }
                 if (focus.Hits > 0) Add("当前连击："+focus.Hits.ToString(CultureInfo.InvariantCulture)+" Hit");
                 var band = PlayerHudFocusTargetWidget.Band(focus);
                 if (focus.Role == "protect" && focus.Hp > 0 && band > 0)

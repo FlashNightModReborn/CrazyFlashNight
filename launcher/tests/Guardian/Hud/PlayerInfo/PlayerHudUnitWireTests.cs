@@ -108,4 +108,65 @@ public class PlayerHudUnitWireTests
         Assert.False(s.Receive(PlayerHudStateTests.Encode(replacement),2));
         Assert.Same(prior,s.Snapshot);Assert.True(s.NeedsUnitSync);
     }
+
+    [Fact]
+    public void ExtendedFocusHotPacketAdoptsUnitInfoAndRejectsInvalidRanges()
+    {
+        var basePacket = Full();
+        var row = (JObject)basePacket["groups"]["focusTarget"][0];
+        row["shield"] = new JArray(200, 300);
+        row["poise"] = 180;
+        row["flags"] = 0;
+        row["hitSeq"] = 1;
+
+        var s = new PlayerHudState();
+        Assert.True(s.Receive(PlayerHudStateTests.Encode(basePacket), 1));
+        Assert.Equal(200, s.Snapshot.TargetList[0].Shield);
+        Assert.Equal(300, s.Snapshot.TargetList[0].ShieldMax);
+        Assert.Equal(180, s.Snapshot.TargetList[0].Poise);
+        Assert.Equal(1, s.Snapshot.TargetList[0].HitSeq);
+
+        var notified = PlayerHudGroups.None;
+        s.Changed += () => notified = s.NotifyingGroups;
+        // 11-field extended focus hot record updating shield, poise, rigid+darkened flags, and hitSeq
+        Assert.True(s.Receive("~1,1,2;f,0,1,75.25,100,4,150,300,204,12,7", 2));
+        Assert.Equal(PlayerHudGroups.Focus, notified);
+        var t = s.Snapshot.TargetList[0];
+        Assert.Equal(75.25, t.Hp);
+        Assert.Equal(4, t.Hits);
+        Assert.Equal(150, t.Shield);
+        Assert.Equal(300, t.ShieldMax);
+        Assert.Equal(204, t.Poise);
+        Assert.Equal(12, t.Flags);
+        Assert.True(t.Rigid && t.Darkened && !t.Airborne && !t.Down);
+        Assert.Equal(7, t.HitSeq);
+
+        // Unavailable poise (-1) and hitSeq 0 are valid
+        Assert.True(s.Receive("~1,1,3;f,0,1,75.25,100,0,0,0,-1,3,0", 3));
+        var t2 = s.Snapshot.TargetList[0];
+        Assert.False(t2.HasPoise);
+        Assert.Equal(-1, t2.Poise);
+        Assert.True(t2.Airborne && t2.Down);
+        Assert.Equal(0, t2.HitSeq);
+
+        // Out-of-range poise/flags/shield/hitSeq reject fail-closed without mutating state
+        long seq = 4;
+        foreach (var badSuffix in new[] {
+            "f,0,1,70,100,0,0,0,256,0,0",
+            "f,0,1,70,100,0,0,0,-2,0,0",
+            "f,0,1,70,100,0,0,0,0,16,0",
+            "f,0,1,70,100,0,-1,100,0,0,0",
+            "f,0,1,70,100,0,0,-1,0,0,0"
+        })
+        {
+            var before = s.Snapshot;
+            Assert.False(s.Receive($"~1,1,{seq};{badSuffix}", seq));
+            Assert.Same(before, s.Snapshot);
+            Assert.True(s.NeedsUnitSync);
+            seq += 2;
+            Assert.True(s.Receive(PlayerHudStateTests.Encode(Full(seq)), seq));
+            Assert.False(s.NeedsUnitSync);
+            seq++;
+        }
+    }
 }

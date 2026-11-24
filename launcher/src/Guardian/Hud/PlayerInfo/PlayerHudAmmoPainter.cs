@@ -44,8 +44,8 @@ internal static class PlayerHudAmmoPainter
     internal const float CardLeft = 484.0f;
     internal const float CardRightFull = 588.0f;
     internal const float CardRightCompact = 553.0f;
-    internal const float Row0Top = 515.5f;
-    internal const float Row1Top = 541.5f;
+    internal const float Row0Top = 517.5f;
+    internal const float Row1Top = 543.5f;
     internal const float RowStep = 26.0f;
     internal const float CardHeight = 22.0f;
     internal const float ContentPadX = 5.2f;

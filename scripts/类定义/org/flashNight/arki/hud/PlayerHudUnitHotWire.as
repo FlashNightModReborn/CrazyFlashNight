@@ -57,8 +57,19 @@ class org.flashNight.arki.hud.PlayerHudUnitHotWire {
             }
             if (row.name !== old.name || row.role !== old.role || row.icon !== old.icon || row.doll !== old.doll
                 || row.compact !== old.compact || row["protected"] !== old["protected"]) stat.cold = true;
-            if (row.hp[0] !== old.hp[0] || row.hp[1] !== old.hp[1] || (kind == "f" ? row.hits !== old.hits
-                : row.shield[0] !== old.shield[0] || row.shield[1] !== old.shield[1] || row.down !== old.down)) stat.rows++;
+            if (kind == "f") {
+                var hasExt:Boolean = row.flags != undefined;
+                var oldExt:Boolean = old.flags != undefined;
+                if (hasExt != oldExt || (hasExt && (row.shield == null || old.shield == null))) stat.cold = true;
+                else if (row.hp[0] !== old.hp[0] || row.hp[1] !== old.hp[1] || row.hits !== old.hits
+                        || (hasExt && (row.shield[0] !== old.shield[0] || row.shield[1] !== old.shield[1]
+                            || row.poise !== old.poise || row.flags !== old.flags
+                            || (row.hitSeq == undefined ? 0 : row.hitSeq) !== (old.hitSeq == undefined ? 0 : old.hitSeq))))
+                    stat.rows++;
+            } else if (row.hp[0] !== old.hp[0] || row.hp[1] !== old.hp[1]
+                    || row.shield[0] !== old.shield[0] || row.shield[1] !== old.shield[1] || row.down !== old.down) {
+                stat.rows++;
+            }
         }
     }
 
@@ -70,16 +81,33 @@ class org.flashNight.arki.hud.PlayerHudUnitHotWire {
             if (old === row) continue;
             if (row.id !== old.id || row.name !== old.name || row.role !== old.role || row.icon !== old.icon
                 || row.doll !== old.doll || row.compact !== old.compact) return false;
+            var hp:Array = row.hp, oldHp:Array = old.hp;
             if (kind == "f") {
+                var hasExt:Boolean = row.flags != undefined;
+                var oldExt:Boolean = old.flags != undefined;
+                if (hasExt != oldExt) return false;
                 var hits:Number = row.hits == undefined ? 0 : row.hits;
-                if (row.hp[0] !== old.hp[0] || row.hp[1] !== old.hp[1] || row.hits !== old.hits)
-                    parts.push("f," + i + "," + row.id + "," + row.hp[0] + "," + row.hp[1] + "," + hits);
+                if (!hasExt) {
+                    if (hp[0] !== oldHp[0] || hp[1] !== oldHp[1] || row.hits !== old.hits)
+                        parts.push("f," + i + "," + row.id + "," + hp[0] + "," + hp[1] + "," + hits);
+                } else {
+                    var fsh:Array = row.shield, oldFsh:Array = old.shield;
+                    if (fsh == null || oldFsh == null) return false;
+                    var hitSeq:Number = row.hitSeq == undefined ? 0 : row.hitSeq;
+                    var oldHitSeq:Number = old.hitSeq == undefined ? 0 : old.hitSeq;
+                    if (hp[0] !== oldHp[0] || hp[1] !== oldHp[1] || row.hits !== old.hits
+                            || fsh[0] !== oldFsh[0] || fsh[1] !== oldFsh[1]
+                            || row.poise !== old.poise || row.flags !== old.flags || hitSeq !== oldHitSeq)
+                        parts.push("f," + i + "," + row.id + "," + hp[0] + "," + hp[1] + "," + hits
+                            + "," + fsh[0] + "," + fsh[1] + "," + row.poise + "," + row.flags + "," + hitSeq);
+                }
             } else {
                 if (row.generation !== old.generation || row.slot !== old.slot || row["protected"] !== old["protected"]) return false;
-                if (row.hp[0] !== old.hp[0] || row.hp[1] !== old.hp[1] || row.shield[0] !== old.shield[0]
-                    || row.shield[1] !== old.shield[1] || row.down !== old.down)
-                    parts.push(kind + "," + i + "," + row.id + "," + row.generation + "," + row.hp[0] + "," +
-                        row.hp[1] + "," + row.shield[0] + "," + row.shield[1] + "," + (row.down ? "1" : "0"));
+                var ash:Array = row.shield, oldAsh:Array = old.shield;
+                if (hp[0] !== oldHp[0] || hp[1] !== oldHp[1] || ash[0] !== oldAsh[0]
+                    || ash[1] !== oldAsh[1] || row.down !== old.down)
+                    parts.push(kind + "," + i + "," + row.id + "," + row.generation + "," + hp[0] + "," +
+                        hp[1] + "," + ash[0] + "," + ash[1] + "," + (row.down ? "1" : "0"));
             }
             if (parts.length > 65) return false;
         }

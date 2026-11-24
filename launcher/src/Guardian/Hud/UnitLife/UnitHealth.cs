@@ -11,9 +11,25 @@ internal readonly record struct UnitHealth(double Current, double Maximum)
         ? Math.Clamp((Current - Maximum) / Maximum, 0, 1) : 0;
 }
 
-// Presentation output accepted by the bar painter independently of the owner, clock or layout.
-internal readonly record struct UnitLifeBarVisual(UnitHealth Health, double TrailRatio,
-    float LossAlpha, bool LossActive, double HealStartRatio, float GainAlpha, bool Critical)
+// Unified presentation output shared by Focus HUD and future World head bars,
+// independent of the owner, clock or layout.
+internal readonly record struct UnitLifeBarVisual(
+    UnitHealth Health,
+    double TrailRatio,
+    float LossAlpha,
+    bool LossActive,
+    double HealStartRatio,
+    float GainAlpha,
+    bool Critical,
+    double ShieldRatio = 0,
+    double PoiseRatio = 0,
+    bool HasPoise = false,
+    bool Rigid = false,
+    bool Airborne = false,
+    bool Down = false,
+    bool Darkened = false,
+    float HitFlash = 0f,
+    float Alpha = 1f)
 {
     internal static UnitLifeBarVisual Resting(UnitHealth health) =>
         new(health, health.Ratio, 0, false, health.Ratio, 0, false);

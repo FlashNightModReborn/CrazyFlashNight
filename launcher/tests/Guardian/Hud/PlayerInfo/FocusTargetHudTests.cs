@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,13 +12,16 @@ using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Guardian.Hud.Loot;
 using CF7Launcher.Guardian.Hud.PlayerInfo;
+using CF7Launcher.Guardian.Hud.UnitLife;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace CF7Launcher.Tests.Guardian.Hud.PlayerInfo;
 
-public sealed class FocusTargetHudTests
+public sealed class FocusTargetHudTests(ITestOutputHelper output)
 {
+    private readonly ITestOutputHelper _output = output;
     private static JObject Target(long id = 1) => new()
     {
         ["id"] = id, ["role"] = "boss", ["name"] = "元老 | 引号\"", ["hp"] = new JArray(70, 100)
@@ -94,7 +98,7 @@ public sealed class FocusTargetHudTests
         using var controller = new PlayerHudController(value => { sent.Add(value); return true; }, () => true, dispatch.Enqueue);
         controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Full()));
         dispatch.Dequeue()();
-        Assert.Contains(sent, value => value.Contains("\"focusTarget\":true"));
+        Assert.Contains(sent, value => value.Contains("\"focusTarget\":true") && value.Contains("\"focusUnitInfo\":true"));
         Assert.NotNull(controller.State.Snapshot.FocusTarget);
         controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Full(1, 2)));
         controller.Disconnected();
@@ -110,9 +114,11 @@ public sealed class FocusTargetHudTests
     public void FirstRowKeepsTheAuthoredAnchorWhenBuffCountChanges(int buffs)
     {
         var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(buffs);
-        Assert.Equal(new RectangleF(6,0,294,32),bounds);
-        Assert.Equal(new RectangleF(6,34,294,30),PlayerHudFocusTargetWidget.RowBounds(buffs,1,2,3));
-        Assert.Equal(new RectangleF(8,34,290,23),PlayerHudFocusTargetWidget.RowBounds(buffs,1,2,4));
+        Assert.Equal(new RectangleF(6,0,294,36),bounds);
+        // Second focus target stays full-width even when allies > 3
+        Assert.Equal(new RectangleF(6,38,294,34),PlayerHudFocusTargetWidget.RowBounds(buffs,1,2,3));
+        Assert.Equal(new RectangleF(6,38,294,34),PlayerHudFocusTargetWidget.RowBounds(buffs,1,2,4));
+        Assert.Equal(new RectangleF(8,74,290,23),PlayerHudFocusTargetWidget.RowBounds(buffs,2,3,4));
         Assert.True(bounds.Left >= 0 && bounds.Right <= 1024 && bounds.Bottom < 576);
         var notchLeft = (1024 - RightHudLayout.PreferredNotchMaxWidthBase) / 2f;
         Assert.True(bounds.Right + RightHudLayout.NotchRightGapBase <= notchLeft);
@@ -157,11 +163,12 @@ public sealed class FocusTargetHudTests
             using (var graphics = Graphics.FromImage(bitmap)) { graphics.Clear(Color.Transparent); widget.Paint(graphics, 1, origin); }
             float scale = viewport.Height / 576f;
             var logical = PlayerHudFocusTargetWidget.BoundsForBuffCount(buffs);
-            int barY = (int)(viewport.Top + (logical.Top + 23) * scale);
+            int barY = (int)(viewport.Top + (logical.Top + 25) * scale);
             var filled = bitmap.GetPixel((int)(viewport.Left + (logical.Left + 52) * scale), barY);
             var empty = bitmap.GetPixel((int)(viewport.Left + (logical.Right - 12) * scale), barY);
             Assert.True(filled.A > 0 && empty.A > 0);
-            Assert.True(role == "boss" ? filled.R > filled.G : filled.B > filled.R);
+            // D2 Muted Tactical AS2 palette: healthy HP is muted olive-green across roles (critical red only on protect <30%).
+            Assert.True(filled.G > filled.R && filled.G > filled.B, $"Expected D2 olive-green HP pixel, got {filled}");
             Assert.True(empty.R < 60 && empty.G < 60 && empty.B < 60);
             Assert.Equal(0, bitmap.GetPixel(viewport.Left + 2, viewport.Top + 2).A);
             // Exercise the actual widest notch and both persistent rows from the
@@ -344,8 +351,8 @@ public sealed class FocusTargetHudTests
                     if (bitmap.GetPixel(x, y).A > 0) hasBossPortraitPixel = true;
             Assert.True(hasBossPortraitPixel);
 
-            // Hover row 2 (combat target)
-            var combatRowPt = new Point(widget.ScreenBounds.Left + 195, widget.ScreenBounds.Top + 45);
+            // Hover row 2 (combat target in full-width compact strip y=74..97)
+            var combatRowPt = new Point(widget.ScreenBounds.Left + 150, widget.ScreenBounds.Top + 84);
             widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, combatRowPt.X, combatRowPt.Y, 0), MouseEventKind.Move);
             Assert.True(tooltip.Widget.Visible);
             var combatText = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(r => r.Text));
@@ -373,13 +380,13 @@ public sealed class FocusTargetHudTests
         Assert.True(Receive(state, packet));
         Assert.Equal(8, state.Snapshot.TargetList.Length);
         Assert.All(state.Snapshot.TargetList, row => Assert.True(row.Compact));
-        Assert.Equal(new RectangleF(8 + 6 * (290f / 7),34,290f / 7,23), PlayerHudFocusTargetWidget.RowBounds(0, 7, 8));
-        Assert.Equal(new RectangleF(6,0,294,57), PlayerHudFocusTargetWidget.BoundsForBuffCount(0, 8));
+        Assert.Equal(new RectangleF(8 + 5 * (290f / 6),74,290f / 6,23), PlayerHudFocusTargetWidget.RowBounds(0, 7, 8));
+        Assert.Equal(new RectangleF(6,0,294,97), PlayerHudFocusTargetWidget.BoundsForBuffCount(0, 8));
         var fewer = new JArray(targets.Take(3).Select(t => t.DeepClone()));
         Assert.True(Receive(state, Delta(2, new JObject { ["focusTarget"] = fewer })));
         Assert.Equal(3, state.Snapshot.TargetList.Length);
         Assert.True(state.Snapshot.TargetList[0].Compact);
-        Assert.Equal(new RectangleF(153,34,145,23), PlayerHudFocusTargetWidget.RowBounds(0, 2, 3));
+        Assert.Equal(new RectangleF(8,74,290,23), PlayerHudFocusTargetWidget.RowBounds(0, 2, 3));
         Assert.Equal("9999", PlayerHudFocusTargetWidget.DenseValue(9999));
         Assert.Equal("1万", PlayerHudFocusTargetWidget.DenseValue(10000));
         Assert.Equal("1.9万", PlayerHudFocusTargetWidget.DenseValue(19999));
@@ -395,12 +402,12 @@ public sealed class FocusTargetHudTests
     [Theory]
     [InlineData(1, 1)]
     [InlineData(2, 2)]
-    [InlineData(3, 1)]
-    [InlineData(4, 1)]
-    [InlineData(5, 1)]
-    [InlineData(6, 1)]
-    [InlineData(7, 1)]
-    [InlineData(8, 1)]
+    [InlineData(3, 2)]
+    [InlineData(4, 2)]
+    [InlineData(5, 2)]
+    [InlineData(6, 2)]
+    [InlineData(7, 2)]
+    [InlineData(8, 2)]
     public void SecondaryTargetsShareOneRowAndEveryCellHoversItsOwnTarget(int count, int wide)
     {
         Sta(() =>
@@ -431,6 +438,9 @@ public sealed class FocusTargetHudTests
             }));
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
             Assert.Equal(count, controller.State.Snapshot!.TargetList.Length);
+            var displayed = PlayerHudFocusTargetWidget.OrderForDisplay(controller.State.Snapshot!.TargetList);
+            if (count >= 2)
+                Assert.Equal("克隆兽", displayed[1].Name); // active combat enemy always promoted to wide row 1
             using var bitmap = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
             var origin = anchor.PointToScreen(Point.Empty);
             using (var graphics = Graphics.FromImage(bitmap))
@@ -444,37 +454,39 @@ public sealed class FocusTargetHudTests
             }
             for (int i = 0; i < count; i++)
             {
-                var item = PlayerHudFocusTargetWidget.RowBounds(0,i,count);
+                var item = PlayerHudFocusTargetWidget.RowBounds(0, i, count);
                 Assert.Equal(i < wide, item.Width == 294);
-                var cell = new Point((int)(item.Left + item.Width/2),(int)(item.Top + item.Height/2));
+                var cell = new Point((int)(item.Left + item.Width / 2), (int)(item.Top + item.Height / 2));
                 Assert.NotEqual(0, bitmap.GetPixel(cell.X, cell.Y).A);
                 var screen = anchor.PointToScreen(cell);
                 widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, screen.X, screen.Y, 0), MouseEventKind.Move);
                 Assert.True(tooltip.Widget.Visible);
                 var text = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(section => section.Runs).Select(run => run.Text));
-                Assert.Contains(i + 1 == count ? "克隆兽" : protects[i], text);
+                Assert.Contains(displayed[i].Name, text);
                 Assert.Contains("15743 / 21800", text);
-                Assert.Equal(i < wide && i + 1 == count ? 1f : 0f, widget.GetComboPulse(i + 1));
+                Assert.Equal(i < wide && displayed[i].Hits > 0 ? 1f : 0f, widget.GetComboPulse(displayed[i].Id));
             }
             var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(0, count);
-            Assert.Equal(count == 1 ? 32f : count == 2 ? 64f : 57f, bounds.Bottom);
+            Assert.Equal(count == 1 ? 36f : count == 2 ? 72f : 97f, bounds.Bottom);
             Assert.Equal(bounds.Bottom, PlayerHudFocusTargetWidget.TopLeftBottomFor(0, count, false));
 
             if (count == 5)
             {
+                // Row 1 is wide combat enemy (克隆兽); row 2 compact strip has 3 protects: 翅虎, 火凤, 黑龙.
                 var queue = (JArray)packet["groups"]["focusTarget"]!;
-                var wideOrHalf = anchor.PointToScreen(new Point(198, 45));
-                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, wideOrHalf.X, wideOrHalf.Y, 0), MouseEventKind.Move);
+                var wideRow1 = anchor.PointToScreen(new Point(150, 52));
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, wideRow1.X, wideRow1.Y, 0), MouseEventKind.Move);
+                Assert.Contains("克隆兽", string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text)));
+                // Drop 克隆兽 -> remaining 4 protects: 浮士德兄弟 (row 0), 翅虎 (row 1), 火凤 & 黑龙 (row 2 strip)
                 var four = new JArray(queue.Take(4).Select(item => item.DeepClone()));
                 Assert.True(Receive(controller.State, Delta(2, new JObject { ["focusTarget"] = four })));
-                Assert.True(tooltip.Widget.Visible);
-                var current = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text));
-                Assert.Contains("黑龙", current);
-                var formerEnemyCell = anchor.PointToScreen(new Point(280, 45));
-                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, formerEnemyCell.X, formerEnemyCell.Y, 0), MouseEventKind.Move);
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, wideRow1.X, wideRow1.Y, 0), MouseEventKind.Move);
+                Assert.Contains("翅虎", string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text)));
+                var rightStripCell = anchor.PointToScreen(new Point(250, 84));
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, rightStripCell.X, rightStripCell.Y, 0), MouseEventKind.Move);
                 Assert.Contains("黑龙", string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text)));
                 Assert.True(Receive(controller.State, Delta(3, new JObject { ["focusTarget"] = queue.DeepClone() })));
-                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, formerEnemyCell.X, formerEnemyCell.Y, 0), MouseEventKind.Move);
+                widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, wideRow1.X, wideRow1.Y, 0), MouseEventKind.Move);
                 Assert.Contains("克隆兽", string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(run => run.Text)));
             }
         });
@@ -587,6 +599,247 @@ public sealed class FocusTargetHudTests
             widget.Tick(33);
             Assert.True(Assert.Single(Assert.IsType<HudRepaintRegions>(damage).Bounds).Height < wholeRow.Height / 2);
         });
+    }
+
+    [Fact]
+    public void D2UnitInfoBarRendersShieldPoiseRigidCriticalAndTooltipDetails()
+    {
+        Sta(() =>
+        {
+            RuntimeFontCatalog.Configure(Root());
+            PlayerHudMotionSettings.Configure("full");
+            using var form = new Form { ClientSize = new Size(1920, 1080), AutoScaleMode = AutoScaleMode.None };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            form.Controls.Add(anchor);
+            form.CreateControl();
+            anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var tooltip = new PlayerHudResourceTooltip(anchor, controller, true);
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+
+            var packet = Full();
+            var target = Target();
+            target["hp"] = new JArray(7800, 10000);
+            target["shield"] = new JArray(420, 600);
+            target["poise"] = 204; // 80%
+            target["flags"] = 4;   // rigid
+            target["hitSeq"] = 1;
+            packet["groups"]["focusTarget"] = new JArray(target);
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+
+            var origin = anchor.PointToScreen(Point.Empty);
+            using var bmp = new Bitmap(1920, 1080, PixelFormat.Format32bppPArgb);
+            using (var g = Graphics.FromImage(bmp)) { g.Clear(Color.Transparent); widget.Paint(g, 1, origin); }
+            var viewport = RightHudLayout.ViewportFromPanelSize(1920, 1080);
+            float scale = viewport.Height / 576f;
+
+            // Sample upper shield cap (~y=23.2), upper HP body (~y=26.6), lower rigid track (~y=31.2) at x=90
+            int sampleX = (int)(viewport.Left + 90 * scale);
+            var shieldPx = bmp.GetPixel(sampleX, (int)(viewport.Top + 23.2f * scale));
+            var hpPx = bmp.GetPixel(sampleX, (int)(viewport.Top + 26.6f * scale));
+            var rigidPx = bmp.GetPixel(sampleX, (int)(viewport.Top + 31.2f * scale));
+            Assert.True(shieldPx.B > shieldPx.R && shieldPx.G > shieldPx.R, $"Expected ice-cyan shield cap, got {shieldPx}");
+            Assert.True(hpPx.G > hpPx.R && hpPx.G > hpPx.B, $"Expected D2 olive-green HP fill, got {hpPx}");
+            Assert.True(rigidPx.R > rigidPx.B + 40 && rigidPx.R > 120, $"Expected molten-orange rigid track, got {rigidPx}");
+
+            // Hover tooltip shows shield, poise and rigid status
+            var hoverPt = new Point(widget.ScreenBounds.Left + 60, widget.ScreenBounds.Top + 18);
+            widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, hoverPt.X, hoverPt.Y, 0), MouseEventKind.Move);
+            Assert.True(tooltip.Widget.Visible);
+            var tipText = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(r => r.Text));
+            Assert.Contains("护盾：420 / 600（70%）", tipText);
+            Assert.Contains("韧性：80% · 刚体霸体", tipText);
+
+            // Protect critical (<30%) flips upper HP bar to crimson red
+            var crit = (JObject)target.DeepClone();
+            crit["role"] = "protect";
+            crit["hp"] = new JArray(2000, 10000);
+            crit["shield"] = new JArray(0, 0);
+            crit["flags"] = 0;
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(2, new JObject { ["focusTarget"] = new JArray(crit) })));
+            using var critBmp = new Bitmap(1920, 1080, PixelFormat.Format32bppPArgb);
+            using (var g = Graphics.FromImage(critBmp)) { g.Clear(Color.Transparent); widget.Paint(g, 1, origin); }
+            var critPx = critBmp.GetPixel((int)(viewport.Left + 55 * scale), (int)(viewport.Top + 25.5f * scale));
+            Assert.True(critPx.R > critPx.G + 40 && critPx.R > critPx.B + 40, $"Expected critical red HP fill, got {critPx}");
+        });
+    }
+
+    [Fact]
+    public void ShieldPoiseAndHitSeqOnlyRepaintLifeTrackWithoutTouchingReadout()
+    {
+        Sta(() =>
+        {
+            RuntimeFontCatalog.Configure(Root());
+            PlayerHudMotionSettings.Configure("full");
+            using var form = new Form();
+            using var anchor = new Panel { Size = new Size(1600, 900) };
+            form.Controls.Add(anchor);
+            form.CreateControl();
+            anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+
+            var row = Target();
+            row["shield"] = new JArray(200, 500);
+            row["poise"] = 180;
+            row["flags"] = 0;
+            row["hitSeq"] = 1;
+            var p1 = Full(1, 1);
+            p1["groups"]["focusTarget"] = new JArray(row.DeepClone());
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(p1));
+            Assert.False(widget.WantsAnimationTick); // initial hitSeq does not spuriously flash
+
+            EventArgs? damage = null;
+            widget.RepaintRequested += (_, e) => damage = e;
+
+            // Only shield, poise, rigid, hitSeq change while HP stays constant -> single track-only dirty rect
+            row["shield"] = new JArray(120, 500);
+            row["poise"] = 128;
+            row["flags"] = 4;
+            row["hitSeq"] = 2;
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(2, new JObject { ["focusTarget"] = new JArray(row.DeepClone()) })));
+            var area = Assert.Single(Assert.IsType<HudRepaintRegions>(damage).Bounds);
+            Assert.True(widget.ScreenBounds.Contains(area));
+            Assert.True(area.Height < widget.ScreenBounds.Height / 2);
+            Assert.True(widget.WantsAnimationTick); // hitSeq bump triggered 115ms hit flash
+
+            widget.Tick(130);
+            Assert.False(widget.WantsAnimationTick);
+        });
+    }
+
+    [Fact]
+    public void ComboHitIncrementAndPulseEmitNarrowHitChipDamagePixelIdenticalToFullRepaint()
+    {
+        Sta(() =>
+        {
+            RuntimeFontCatalog.Configure(Root());
+            using var form = new Form { AutoScaleMode = AutoScaleMode.None, ClientSize = new Size(1920, 1080) };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            form.Controls.Add(anchor); form.CreateControl(); anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+
+            var packet = PlayerHudStateTests.Full();
+            packet["groups"]["focusTarget"] = new JArray(
+                new JObject { ["id"] = 1, ["role"] = "protect", ["name"] = "Tomboy", ["hp"] = new JArray(15000, 20000) },
+                new JObject { ["id"] = 2, ["role"] = "combat", ["name"] = "克隆兽", ["hp"] = new JArray(15000, 20000), ["hits"] = 12, ["shield"] = new JArray(200, 500), ["poise"] = 160, ["flags"] = 1, ["hitSeq"] = 1 });
+            Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(packet), 1));
+
+            var origin = anchor.PointToScreen(Point.Empty);
+            using var partial = new Bitmap(600, 160, PixelFormat.Format32bppPArgb);
+            using var full = new Bitmap(600, 160, PixelFormat.Format32bppPArgb);
+            using (var g = Graphics.FromImage(partial)) widget.Paint(g, 1f, origin);
+
+            Rectangle[]? damaged = null;
+            widget.RepaintRequested += (_, e) => damaged = (e as HudRepaintRegions)?.Bounds;
+
+            // Same-digit combo increment (12 -> 13) + HP drop must NOT trigger whole-row repaint
+            Assert.True(controller.State.Receive("~1,1,2;f,1,2,14500,20000,13,200,500,160,1,2", 2));
+            Assert.NotNull(damaged);
+            Assert.Equal(3, damaged!.Length);
+            long area = damaged!.Sum(r => (long)r.Width * r.Height);
+            long wholeRowArea = (long)Math.Ceiling(294 * 1.875) * (long)Math.Ceiling(34 * 1.875);
+            Assert.True(area < wholeRowArea * 0.75, $"Expected narrow track+readout+hitChip dirty area (<75% of row), got {area} vs row {wholeRowArea}");
+
+            void ApplyPartial(Rectangle[] rects)
+            {
+                using var g = Graphics.FromImage(partial);
+                using var reg = new Region();
+                reg.MakeEmpty();
+                foreach (var r in rects) reg.Union(new Rectangle(r.X - origin.X, r.Y - origin.Y, r.Width, r.Height));
+                g.SetClip(reg, System.Drawing.Drawing2D.CombineMode.Replace);
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                g.FillRectangle(Brushes.Transparent, 0, 0, partial.Width, partial.Height);
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                widget.Paint(g, 1f, origin);
+            }
+
+            ApplyPartial(damaged!);
+            using (var g = Graphics.FromImage(full)) { g.Clear(Color.Transparent); widget.Paint(g, 1f, origin); }
+            AssertBitmapsEqual(full, partial);
+
+            // ComboPulse tick must also stay narrow and pixel-identical
+            damaged = null;
+            widget.Tick(33);
+            Assert.NotNull(damaged);
+            long tickArea = damaged!.Sum(r => (long)r.Width * r.Height);
+            Assert.True(tickArea < wholeRowArea * 0.55, $"Expected narrow combo+track tick area (<55% of row), got {tickArea} vs row {wholeRowArea}");
+            ApplyPartial(damaged!);
+            using (var g = Graphics.FromImage(full)) { g.Clear(Color.Transparent); widget.Paint(g, 1f, origin); }
+            AssertBitmapsEqual(full, partial);
+        });
+    }
+
+    private static void AssertBitmapsEqual(Bitmap expected, Bitmap actual)
+    {
+        Assert.Equal(expected.Size, actual.Size);
+        for (int y = 0; y < expected.Height; y++)
+            for (int x = 0; x < expected.Width; x++)
+                Assert.True(expected.GetPixel(x, y) == actual.GetPixel(x, y), $"Pixel mismatch at ({x},{y}): expected {expected.GetPixel(x, y)} actual {actual.GetPixel(x, y)}");
+    }
+
+    [Fact]
+    public void WorldScaleUnitLifeBarPainter100BarsOffscreenBenchmark()
+    {
+        // Offscreen benchmark for future #38 world-space unit info migration:
+        // 100 heterogeneous 45×6.8 logical bars at 1080p (1.875x -> ~84×13 px) painted per frame.
+        UnitLifeBarPainter.ClearCache();
+        using var bmp = new Bitmap(1920, 1080, PixelFormat.Format32bppPArgb);
+        using var g = Graphics.FromImage(bmp);
+        g.ScaleTransform(1.875f, 1.875f);
+
+        var rects = new RectangleF[100];
+        var visuals = new UnitLifeBarVisual[100];
+        for (int i = 0; i < 100; i++)
+        {
+            int col = i % 10, row = i / 10;
+            rects[i] = new RectangleF(12f + col * 98f, 12f + row * 52f, 45f, 6.8f);
+            double hp = 15 + (i * 19 % 86);
+            double trail = Math.Min(1.0, hp / 100.0 + (i % 3 == 0 ? 0.18 : 0.0));
+            visuals[i] = new UnitLifeBarVisual(
+                new UnitHealth(hp, 100),
+                trail,
+                LossAlpha: 1f,
+                LossActive: trail > hp / 100.0,
+                HealStartRatio: hp / 100.0,
+                GainAlpha: 0f,
+                Critical: false,
+                ShieldRatio: i % 4 == 0 ? 0.6 : 0.0,
+                PoiseRatio: (i % 10) / 10.0,
+                HasPoise: true,
+                Rigid: i % 7 == 0,
+                Airborne: i % 11 == 0,
+                Down: false,
+                Darkened: i % 5 == 0,
+                HitFlash: i % 9 == 0 ? 0.8f : 0f,
+                Alpha: i % 13 == 0 ? 0.65f : 1f);
+        }
+
+        // Cold bake + warmup
+        for (int w = 0; w < 5; w++)
+            for (int i = 0; i < 100; i++)
+                UnitLifeBarPainter.Paint(g, rects[i], visuals[i], UnitLifeBarStyle.Hostile, 1f,
+                    UnitInfoBarTheme.As2ClassicWorld, slanted: false);
+
+        const int frames = 40;
+        var timesMs = new double[frames];
+        var sw = new Stopwatch();
+        for (int f = 0; f < frames; f++)
+        {
+            sw.Restart();
+            for (int i = 0; i < 100; i++)
+                UnitLifeBarPainter.Paint(g, rects[i], visuals[i], UnitLifeBarStyle.Hostile, 1f,
+                    UnitInfoBarTheme.As2ClassicWorld, slanted: false);
+            sw.Stop();
+            timesMs[f] = sw.Elapsed.TotalMilliseconds;
+        }
+        Array.Sort(timesMs);
+        double p50 = timesMs[frames / 2];
+        double p95 = timesMs[(int)(frames * 0.95)];
+        _output.WriteLine($"[UnitLifeBarPainter 100x world bars @1080p] p50={p50:F2}ms p95={p95:F2}ms min={timesMs[0]:F2}ms max={timesMs[^1]:F2}ms");
+        // Verify reasonable CPU headroom on offscreen GDI+ surface (wide CI-safe bound; real measurement printed above)
+        Assert.True(p95 < 100.0, $"100-bar offscreen p95 unexpectedly high: {p95:F2}ms");
     }
 
     private static string Root()

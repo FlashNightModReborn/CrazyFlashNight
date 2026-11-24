@@ -53,10 +53,11 @@ internal sealed class PlayerHudAllyWidget : PlayerHudWidgetBase, INativeHudPoint
         var s=Snapshot;
         var next=s?.Allies;
         var rows=next?.Rows ?? Array.Empty<PlayerHudAlly>();
+        var overflow=next?.Overflow ?? Array.Empty<PlayerHudAlly>();
         int slots=rows.Length==0 ? 0 : rows.Max(a=>a.Slot)+1;
         int focus=s?.TargetList.Length??0;
         float top=focus==0 ? 0 : PlayerHudFocusTargetWidget.TopLeftBottomFor(0,focus,false,rows.Length)+6;
-        var tray=PlayerHudAllyLayout.Tray(slots,focus,top);
+        var tray=PlayerHudAllyLayout.Tray(slots,focus,top,overflow.Length>0);
         var changes = new HashSet<int>();
         if (s?.Vitals.Paused == true || Suppressed)
         {
@@ -155,15 +156,22 @@ internal sealed class PlayerHudAllyWidget : PlayerHudWidgetBase, INativeHudPoint
             LogManager.Log($"event=ally_hud_paint epoch={_epoch} seq={Snapshot?.Sequence} rows={Rows.Length} overflow={Overflow.Length} slots="+
                 string.Join(",",Rows.Select(a=>$"{a.Slot}/{a.Role}/{a.Id}/{a.Generation}/{a.Hp.ToString(CultureInfo.InvariantCulture)}")));
         }
-        Plate(g,_tray);
+        bool hasOverflow = Overflow.Length > 0;
+        int rowCount = Math.Max(hasOverflow ? 1 : 0, PlayerHudAllyLayout.RowCount(_slots, _focus));
         using var blade = new SolidBrush(Color.FromArgb(220,154,162,160));
-        g.FillRectangle(blade,_tray.X+1.4f,_tray.Y+2.2f,2,_tray.Height-4.4f);
+        for (int row = 0; row < rowCount; row++)
+        {
+            var plate = PlayerHudAllyLayout.RowTray(row, _slots, _focus, _tray.Y, hasOverflow);
+            if (plate.IsEmpty || !g.IsVisible(plate)) continue;
+            Plate(g, plate);
+            g.FillRectangle(blade, plate.X + 1.4f, plate.Y + 2.2f, 2f, plate.Height - 4.4f);
+        }
         bool dense=PlayerHudAllyLayout.Dense(_slots,_focus);
         foreach (var a in Rows)
         {
             var r=Cell(a.Slot);
             if (!g.IsVisible(r)) continue;
-            var face=dense ? new RectangleF(r.X,r.Y,r.Width,19.5f) : new RectangleF(r.X+3.5f,r.Y+1,20,20);
+            var face=dense ? new RectangleF(r.X,r.Y,r.Width,19f) : new RectangleF(r.X+3.5f,r.Y+1,20,20);
             double ratio = Math.Clamp(a.Hp / a.HpMax,0,1);
             bool critical = a.Down || ratio < .30;
             bool calm = !a.Down && ratio > .60;
@@ -181,14 +189,14 @@ internal sealed class PlayerHudAllyWidget : PlayerHudWidgetBase, INativeHudPoint
             if (a.Role == "pet")
                 g.FillRectangle(Brushes.Silver,face.Left+.5f,dense ? face.Top+.5f : face.Bottom-3,2.5f,2.5f);
             float barX=dense?r.X:face.Right+4.5f;
-            var track=new RectangleF(barX,r.Bottom-4,r.Right-barX,3.4f);
+            var track=new RectangleF(barX,dense ? r.Bottom-3.6f : r.Bottom-4f,r.Right-barX,dense ? 3.2f : 3.4f);
             g.FillRectangle(Brushes.Black,track);
             using var color=new SolidBrush(HealthColor(a));
             float fill=track.Width*(float)ratio;
             if (fill > 0)
                 g.FillPolygon(color,new PointF[] {new(track.X+Math.Min(1,fill),track.Top),new(track.X+fill,track.Top),
                     new(track.X+Math.Max(0,fill-1),track.Bottom),new(track.X,track.Bottom)});
-            if (a.ShieldMax>0 && a.Shield>0) g.FillRectangle(Brushes.SteelBlue,track.X,track.Y-1.5f,track.Width*(float)Math.Clamp(a.Shield/a.ShieldMax,0,1),1.25f);
+            if (a.ShieldMax>0 && a.Shield>0) g.FillRectangle(Brushes.SteelBlue,track.X,track.Y-(dense ? 1.4f : 1.5f),track.Width*(float)Math.Clamp(a.Shield/a.ShieldMax,0,1),dense ? 1.2f : 1.25f);
             if (!dense)
             {
                 Text(g,a.Name,new RectangleF(barX,r.Y,Math.Max(1,track.Width-29),14),Brushes.Gainsboro);
@@ -221,7 +229,7 @@ internal sealed class PlayerHudAllyWidget : PlayerHudWidgetBase, INativeHudPoint
             using var rim=new Pen(Color.FromArgb(140,123,133,132),.8f);
             g.FillPath(metal,capsule);
             g.DrawPath(rim,capsule);
-            Text(g,"+"+Overflow.Length,t,Overflow.Any(a=>a.Down || a.Hp/a.HpMax<.3)?Brushes.Coral:Brushes.Gainsboro);
+            g.DrawString("+"+Overflow.Length,_font,Overflow.Any(a=>a.Down || a.Hp/a.HpMax<.3)?Brushes.Coral:Brushes.Gainsboro,t,_center);
         }
         if (_open)
         {
@@ -237,7 +245,7 @@ internal sealed class PlayerHudAllyWidget : PlayerHudWidgetBase, INativeHudPoint
         else if (Array.Find(Rows,a=>a.Slot==_hoverSlot) is {} hover)
         {
             var hint=Hint;Plate(g,hint);
-            Text(g,$"{RoleLabel(hover.Role)} {hover.Name}  {Math.Floor(hover.Hp)}/{Math.Floor(hover.HpMax)}",hint,Brushes.Gainsboro);
+            Text(g,$"{RoleLabel(hover.Role)} {hover.Name}  {Math.Floor(hover.Hp)}/{Math.Floor(hover.HpMax)}",new(hint.X+5,hint.Y+2,hint.Width-9,hint.Height-4),Brushes.Gainsboro);
         }
     }
     public object? CapturePointerTarget(Point screen)

@@ -48,6 +48,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var unitHotEnabled:Boolean = false;
     private static var focusTargetEnabled:Boolean = false;
     private static var focusTargetsEnabled:Boolean = false;
+    private static var focusUnitInfoEnabled:Boolean = false;
     private static var focusTargetCapacity:Number = 4;
     private static var buffDetailsEnabled:Boolean = false;
     private static var lastFull:Number = 0;
@@ -295,13 +296,14 @@ class org.flashNight.arki.hud.PlayerHudService {
             focusTargetsEnabled = true;
             focusTargetCapacity = p.focusTargetCapacity === 8 ? 8 : 4;
         }
+        if (p.focusUnitInfo === true) focusUnitInfoEnabled = true;
         if (p.buffDetails === true) { buffDetailsEnabled = true; buffProjection.setDetailsEnabled(true); }
         forceFull = true;
     }
     public static function tick():Void {
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) return;
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; deckDetailsEnabled = false; buffProjection.setDeckDetails(false); allyRosterEnabled = false; unitHotEnabled = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; focusTargetsEnabled = false; focusTargetCapacity = 4; buffDetailsEnabled = false; buffProjection.setDetailsEnabled(false); forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; deckDetailsEnabled = false; buffProjection.setDeckDetails(false); allyRosterEnabled = false; unitHotEnabled = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; focusTargetsEnabled = false; focusUnitInfoEnabled = false; focusTargetCapacity = 4; buffDetailsEnabled = false; buffProjection.setDetailsEnabled(false); forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         // 热路径只观察外层屏障；重算仍由领域冷路及显式读取负责。
@@ -334,7 +336,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (profileEnabled) profileMarks[6] = getTimer();
         var oldFocus = rawGroups.focusTarget;
         var oldAllies = rawGroups.allies;
-        var focusRows = focusTargetsEnabled ? FocusTargetHudService.snapshotList(unit, focusTargetCapacity)
+        var focusRows = focusTargetsEnabled ? FocusTargetHudService.snapshotList(unit, focusTargetCapacity, focusUnitInfoEnabled)
             : (focusTargetEnabled ? FocusTargetHudService.snapshot() : null);
         if ((focusTargetsEnabled || focusTargetEnabled) && addGroup(groups, "focusTarget", focusRows, full)) count++;
         if (allyRosterEnabled && addGroup(groups, "allies", PlayerHudAllyRoster.snapshotAt(unit,focusRows,Number(_root.帧计时器.当前帧数),getTimer(),_root.暂停===true,forceFull), full)) count++;

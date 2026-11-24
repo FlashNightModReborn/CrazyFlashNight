@@ -60,7 +60,17 @@ internal sealed record PlayerHudBuff(string Id, bool Timed, double Total, double
     internal string Role { get; init; } = "";
 }
 internal sealed record PlayerHudFocusTarget(long Id, string Role, string Name, double Hp, double HpMax,
-    string Icon = "", IReadOnlyDictionary<string, string>? Doll = null, string PortraitKey = "", int Hits = 0, bool Compact = false);
+    string Icon = "", IReadOnlyDictionary<string, string>? Doll = null, string PortraitKey = "", int Hits = 0, bool Compact = false,
+    double Shield = 0, double ShieldMax = 0, int Poise = -1, int Flags = 0, long HitSeq = 0)
+{
+    internal bool HasPoise => Poise >= 0;
+    internal float PoiseRatio => Poise >= 0 ? Math.Clamp(Poise / 255f, 0f, 1f) : 0f;
+    internal float ShieldRatio => ShieldMax > 0 && Shield > 0 ? (float)Math.Clamp(Shield / ShieldMax, 0d, 1d) : 0f;
+    internal bool Airborne => (Flags & 1) != 0;
+    internal bool Down => (Flags & 2) != 0;
+    internal bool Rigid => (Flags & 4) != 0;
+    internal bool Darkened => (Flags & 8) != 0;
+}
 internal sealed record PlayerHudColdSkill(string Name, string Icon, string Key, int Level, PlayerHudCooldown Cooldown, bool Blocked);
 internal sealed record PlayerHudSnapshot(long Epoch, long Sequence, PlayerHudVitals Vitals,
     PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs, PlayerHudResourceHints? Resources = null,
@@ -98,7 +108,7 @@ internal sealed partial class PlayerHudState
 
     internal void Disconnect()
     {
-        NeedsUnitSync = false; _groups.Clear(); _epoch = 0; _sequence = 0; Snapshot = null;
+        NeedsUnitSync = false; _groups.Clear(); _focusJsonDirty = false; _alliesJsonDirty = false; _epoch = 0; _sequence = 0; Snapshot = null;
         NotifyChanged(PlayerHudGroups.All);
     }
 
@@ -176,7 +186,7 @@ internal sealed partial class PlayerHudState
             if (!visible)
             {
                 if (!full || packet["groups"] != null) throw new FormatException("invalid_clear");
-                _epoch = epoch; _sequence = sequence; _groups.Clear(); Snapshot = null; NeedsUnitSync = false;
+                _epoch = epoch; _sequence = sequence; _groups.Clear(); _focusJsonDirty = false; _alliesJsonDirty = false; Snapshot = null; NeedsUnitSync = false;
                 LastReceivedMilliseconds = now; AcceptedPackets++; ReceivedBytes += encoded.Length;
                 NotifyChanged(PlayerHudGroups.All); return true;
             }
@@ -186,11 +196,13 @@ internal sealed partial class PlayerHudState
             var candidate = full ? new Dictionary<string, JToken>(StringComparer.Ordinal)
                 : new Dictionary<string, JToken>(_groups, StringComparer.Ordinal);
             foreach (var property in incoming.Properties()) candidate[property.Name] = property.Value;
-            if (new[] { "vitals", "combat", "loadout", "cooldowns", "buffs" }.Any(key => !candidate.ContainsKey(key))) throw new FormatException("incomplete_full_state");
+            if (!candidate.ContainsKey("vitals") || !candidate.ContainsKey("combat") || !candidate.ContainsKey("loadout")
+                || !candidate.ContainsKey("cooldowns") || !candidate.ContainsKey("buffs")) throw new FormatException("incomplete_full_state");
             var changes = PlayerHudGroups.None;
             if (Snapshot == null || epoch != _epoch) changes = PlayerHudGroups.All;
             else
             {
+                if ((_focusJsonDirty && incoming.ContainsKey("focusTarget")) || (_alliesJsonDirty && incoming.ContainsKey("allies"))) SyncDirtyJsonShadow();
                 foreach (var entry in incoming.Properties())
                     if (!_groups.TryGetValue(entry.Name,out var old) || !(entry.Name == "buffs"
                         ? SameBuffData(old, entry.Value) : JToken.DeepEquals(old, entry.Value)))
@@ -228,6 +240,8 @@ internal sealed partial class PlayerHudState
                 BuffCards = keepBuffs ? Snapshot!.BuffCards : PlayerHudBuffCard.Project(buffs)
             };
             _groups.Clear(); foreach (var pair in candidate) _groups.Add(pair.Key, pair.Value);
+            if (full || incoming.ContainsKey("focusTarget")) _focusJsonDirty = false;
+            if (full || incoming.ContainsKey("allies")) _alliesJsonDirty = false;
             if (full) NeedsUnitSync = false;
             Snapshot = next; _epoch = epoch; _sequence = sequence;
             LastReceivedMilliseconds = now; AcceptedPackets++; ReceivedBytes += encoded.Length;
@@ -412,7 +426,8 @@ internal sealed partial class PlayerHudState
 
     private static PlayerHudFocusTarget ReadFocusTargetItem(JToken token)
     {
-        var target = Object(token); Keys(target, "id", "role", "name", "hp", "icon", "doll", "hits", "compact");
+        var target = Object(token);
+        Keys(target, "id", "role", "name", "hp", "icon", "doll", "hits", "compact", "shield", "poise", "flags", "hitSeq");
         var id = Integer(target["id"], 1, 9007199254740991);
         var role = Text(target["role"], 16); var name = Text(target["name"], 192);
         var hp = Numbers(target["hp"], 2);
@@ -422,7 +437,19 @@ internal sealed partial class PlayerHudState
         var doll = target["doll"] == null || target["doll"]!.Type == JTokenType.Null ? null : ReadFocusDoll(target["doll"]!);
         var portraitKey = doll != null ? DollPortraitKey.Compute(doll) : icon;
         var hits = target["hits"] == null || target["hits"]!.Type == JTokenType.Null ? 0 : (int)Integer(target["hits"], 1, 999999);
-        return new(id, role, name, hp[0], hp[1], icon, doll, portraitKey, hits, target["compact"] != null && Boolean(target["compact"]));
+        double shield = 0, shieldMax = 0;
+        if (target["shield"] != null && target["shield"]!.Type != JTokenType.Null)
+        {
+            var sh = Numbers(target["shield"], 2);
+            if (sh[0] < 0 || sh[1] < 0) throw new FormatException("focus_shield");
+            shield = sh[0];
+            shieldMax = sh[1];
+        }
+        int poise = target["poise"] == null || target["poise"]!.Type == JTokenType.Null ? -1 : (int)Integer(target["poise"], -1, 255);
+        int flags = target["flags"] == null || target["flags"]!.Type == JTokenType.Null ? 0 : (int)Integer(target["flags"], 0, 15);
+        long hitSeq = target["hitSeq"] == null || target["hitSeq"]!.Type == JTokenType.Null ? 0 : Integer(target["hitSeq"], 0, 9007199254740991);
+        return new(id, role, name, hp[0], hp[1], icon, doll, portraitKey, hits, target["compact"] != null && Boolean(target["compact"]),
+            shield, shieldMax, poise, flags, hitSeq);
     }
 
     private static IReadOnlyDictionary<string, string> ReadFocusDoll(JToken token)

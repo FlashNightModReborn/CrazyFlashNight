@@ -79,7 +79,7 @@ internal sealed partial class PlayerHudBottomWidget
     }
 
     private static RectangleF StanceArea(PlayerHudCombat combat) =>
-        new(PlayerHudAmmoPainter.CardLeft,515.5f,combat.Mode=="手雷" && !HasWeaponSlot(combat)?104:69,48);
+        new(PlayerHudAmmoPainter.CardLeft, 517.5f, combat.Mode=="手雷" && !HasWeaponSlot(combat)?104:69, 48);
 
     private void PaintStance(Graphics g,PlayerHudCombat combat)
     {
@@ -93,10 +93,10 @@ internal sealed partial class PlayerHudBottomWidget
         bool grenade=combat.Mode=="手雷";
         var first=new RectangleF(area.Left,area.Top,area.Width,grenade?48:22);
         PlayerHudAmmoPainter.PaintTacticalCard(g,first,Scale,Color.Silver);
-        if (!grenade) PlayerHudAmmoPainter.PaintTacticalCard(g,new(area.X,541.5f,area.Width,22),Scale,Color.SlateGray);
+        if (!grenade) PlayerHudAmmoPainter.PaintTacticalCard(g,new(area.X,543.5f,area.Width,22),Scale,Color.SlateGray);
         if (grenade)
         {
-            float x=area.X+5.1f, y=521.2f;
+            float x=area.X+5.1f, y=523.2f;
             using var pin=new Pen(Color.FromArgb(192,202,203),1.15f);
             g.DrawLines(pin,[new PointF(x+3.1f,y+1),new(x+6.3f,y+1),new(x+8.5f,y+2.7f),new(x+9.2f,y+5.3f)]);
             g.DrawLine(pin,x+3.5f,y+1,x+3.5f,y+3.1f);
@@ -107,14 +107,14 @@ internal sealed partial class PlayerHudBottomWidget
             g.DrawLine(pin,x+1.8f,y+6,x+7.1f,y+6);g.DrawLine(pin,x+2.1f,y+8.3f,x+6.8f,y+8.3f);
             var count=combat.Ammo[1];
             float countWidth=HasWeaponSlot(combat)?18:36;
-            _numbers.Draw(g,count.Length==0?"—":count,area.X+18,532,12,Scale,countWidth,
+            _numbers.Draw(g,count.Length==0?"—":count,area.X+18,534,12,Scale,countWidth,
                 count=="0"?PlayerHudAmmoPainter.EmptyLoadedText:Color.Silver);
             if (!HasWeaponSlot(combat) && count.Length!=0)
-                g.DrawString("枚",_small,label,area.X+20+_numbers.Width(count,12,countWidth),522.7f,StringFormat.GenericTypographic);
+                g.DrawString("枚",_small,label,area.X+20+_numbers.Width(count,12,countWidth),524.7f,StringFormat.GenericTypographic);
             fit.Alignment=StringAlignment.Far;
-            g.DrawString("威力",_experienceLabel,label,new RectangleF(area.Right-40,516,35,10),fit);
+            g.DrawString("威力",_experienceLabel,label,new RectangleF(area.Right-40,518,35,10),fit);
             using var powerInk=new SolidBrush(Color.FromArgb(183,193,194));
-            g.DrawString(power,_small,powerInk,new RectangleF(area.Right-44,525,39,12),fit);
+            g.DrawString(power,_small,powerInk,new RectangleF(area.Right-44,527,39,12),fit);
             fit.Alignment=StringAlignment.Near;
         }
         else
@@ -125,20 +125,20 @@ internal sealed partial class PlayerHudBottomWidget
             var image=_art.Get(id,(int)Math.Ceiling(bounds.Width*Scale),(int)Math.Ceiling(bounds.Height*Scale));
             float sx=image.Width/bounds.Width,sy=image.Height/bounds.Height;
             var crop=new RectangleF((-1.5f-bounds.X)*sx,(11.2f-bounds.Y)*sy,29*sx,27.5f*sy);
-            g.DrawImage(image,new RectangleF(area.X+5.2f,521.2f,11.2f,10.6f),crop,GraphicsUnit.Pixel);
-            _numbers.Draw(g,power,area.Left+20.5f,530.4f,12.6f,Scale,44,Color.Silver);
+            g.DrawImage(image,new RectangleF(area.X+5.2f,523.2f,11.2f,10.6f),crop,GraphicsUnit.Pixel);
+            _numbers.Draw(g,power,area.Left+20.5f,532.4f,12.6f,Scale,44,Color.Silver);
         }
-        g.DrawString(name,_small,label,new RectangleF(area.X+5.5f,547.7f,area.Width-10.5f,13),fit);
+        g.DrawString(name,_small,label,new RectangleF(area.X+5.5f,549.7f,area.Width-10.5f,13),fit);
     }
 
     private void PaintWeaponColumn(Graphics g,bool occupied)
     {
         using var bed=new SolidBrush(Color.FromArgb(22,26,28));
         using var edge=new Pen(Color.FromArgb(66,75,79),.8f);
-        var head=new RectangleF(558.5f,515.5f,29.5f,13);
+        var head=new RectangleF(558.5f,517.5f,29.5f,13);
         g.FillRectangle(bed,head);
         g.DrawRectangle(edge,head.X,head.Y,head.Width,head.Height);
-        g.DrawString("战技",_small,Brushes.LightGray,563,516.6f,StringFormat.GenericTypographic);
+        g.DrawString("战技",_small,Brushes.LightGray,563,518.6f,StringFormat.GenericTypographic);
         if (occupied) return;
         g.FillRectangle(bed,WeaponRect);
         g.DrawRectangle(edge,WeaponRect.X,WeaponRect.Y,WeaponRect.Width,WeaponRect.Height);

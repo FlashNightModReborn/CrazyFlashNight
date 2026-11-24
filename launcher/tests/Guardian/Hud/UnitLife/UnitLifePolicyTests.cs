@@ -9,10 +9,10 @@ public sealed class UnitLifePolicyTests
     private static readonly WorldLifeIdentity Unit = new(3, 7, 42, 1);
     private static WorldLifeFacts Hp(double value) => new(new UnitHealth(value, 100));
     private static WorldLifeState Start(double hp = 100, WorldLifeStart start = WorldLifeStart.Spawn,
-        int phase = 0) => new(Unit, 0, Hp(hp), 100, start, phase);
+        bool revealedInitially = true) => new(Unit, 0, Hp(hp), 100, start, revealedInitially);
 
-    // Flash corpus: 100px logical bar, 100 -> 40 HP at frame 4. Counter = (frame-4)/4.
-    // Golden values come from the AVM1 updater's quadratic ease and <5px snap.
+    // Wheel-free 30fps frame clock matches AS2's exact 2s hold (60f), 3.07s ease-out (152f),
+    // <5px snap, and 7.07s..10s fade (212..300f) for both dense and coalesced frames.
     [Theory]
     [InlineData(8, 1, 1)]
     [InlineData(64, 1, 1)]
@@ -23,7 +23,7 @@ public sealed class UnitLifePolicyTests
     [InlineData(216, .4, 1)]
     [InlineData(260, .4, .5)]
     [InlineData(304, .4, 0)]
-    public void LegacyWorldTraceMatchesBothDenseAndCoalescedFrames(int frame, double residual, double alpha)
+    public void WorldFrameClockMatchesGoldenPointsForDenseAndCoalescedFrames(int frame, double residual, double alpha)
     {
         var dense = Start();
         var sparse = Start();
@@ -33,8 +33,39 @@ public sealed class UnitLifePolicyTests
         Assert.True(sparse.Apply(Unit, frame, Hp(40)));
         Assert.Equal(residual, dense.Residual, 10);
         Assert.Equal(alpha, dense.Alpha, 10);
-        Assert.Equal(dense.Residual, sparse.Residual);
-        Assert.Equal(dense.Alpha, sparse.Alpha);
+        Assert.Equal(dense.Residual, sparse.Residual, 10);
+        Assert.Equal(dense.Alpha, sparse.Alpha, 10);
+    }
+
+    [Fact]
+    public void WorldFrameClockSmoothlyInterpolatesBetweenLegacyFourFrameBoundaries()
+    {
+        var bar = Start();
+        Assert.True(bar.Apply(Unit, 4, Hp(40)));
+        Assert.True(bar.Apply(Unit, 65, Hp(40)));
+        Assert.True(bar.Residual < 1.0 && bar.Residual > 0.95);
+        Assert.True(bar.Apply(Unit, 66, Hp(40)));
+        double at66 = bar.Residual;
+        Assert.True(bar.Apply(Unit, 67, Hp(40)));
+        Assert.True(bar.Residual < at66);
+    }
+
+    [Fact]
+    public void SpawnStartsHiddenUntilHitOrDamageAndMultipliesWeatherOpacity()
+    {
+        var spawned = Start(100, WorldLifeStart.Spawn, revealedInitially: false);
+        Assert.False(spawned.Revealed);
+        Assert.Equal(0d, spawned.Alpha);
+        Assert.True(spawned.Apply(Unit, 20, Hp(100)));
+        Assert.Equal(0d, spawned.Alpha);
+        Assert.True(spawned.Apply(Unit, 21, Hp(80) with { WeatherOpacity = 0.5f }));
+        Assert.True(spawned.Revealed);
+        Assert.Equal(1d, spawned.BarAlpha, 6);
+        Assert.Equal(0.5d, spawned.Alpha, 6);
+        var visual = spawned.ToVisual();
+        Assert.Equal(0.5f, visual.Alpha, 3);
+        Assert.Equal(0.8, visual.Health.Ratio, 6);
+        Assert.Equal(1.0, visual.TrailRatio, 6);
     }
 
     [Fact]
@@ -71,7 +102,9 @@ public sealed class UnitLifePolicyTests
         Assert.Equal(50, bar.ColorOffset);
         Assert.Equal(2 * .3025932028680198, bar.OffsetY, 10);
         Assert.True(bar.Apply(Unit, 304, Hp(100) with { Darkened = true }));
-        Assert.Equal(-75, bar.ColorOffset);
+        Assert.Equal(50, bar.ColorOffset); // 4-frame hit flash still active at frame 304
+        Assert.True(bar.Apply(Unit, 305, Hp(100) with { Darkened = true }));
+        Assert.Equal(-75, bar.ColorOffset); // hit flash ends after 4 frames -> falls back to Darkened
         foreach (var wrong in new[] { Unit with { StreamEpoch = 8 }, Unit with { SceneEpoch = 4 },
                                       Unit with { Handle = 43 }, Unit with { Generation = 2 } })
         {
@@ -79,17 +112,15 @@ public sealed class UnitLifePolicyTests
             Assert.False(bar.Hit(wrong, 310, 15, 1, 50));
         }
         Assert.False(bar.Hit(Unit, 300, 15, 1, 50));
-        Assert.True(bar.Apply(Unit, 305, Hp(90)));
-        Assert.NotEqual(0d, bar.OffsetY);
-        Assert.True(bar.Apply(Unit, 308, Hp(90)));
+        Assert.True(bar.Apply(Unit, 306, Hp(90)));
         Assert.Equal(0d, bar.OffsetX);
         Assert.Equal(0d, bar.OffsetY);
-        Assert.True(bar.Apply(Unit, 312, Hp(90)));
+        Assert.True(bar.Apply(Unit, 307, Hp(90)));
         Assert.Equal(0, bar.ColorOffset);
     }
 
     [Fact]
-    public void MaxOnlyChangeLeavesFadedBarAndHiddenHpChangesWaitForFirstVisibleWheelVisit()
+    public void MaxOnlyChangeLeavesFadedBarAndHiddenHpChangesApplyImmediatelyWhenVisible()
     {
         var bar = Start();
         bar.Apply(Unit, 300, Hp(100));
@@ -101,10 +132,9 @@ public sealed class UnitLifePolicyTests
         var damaged = largerMax with { Health = new(70, 200) };
         bar.Apply(Unit, 308, damaged with { InformationVisible = false });
         bar.Apply(Unit, 600, damaged with { InformationVisible = false });
-        bar.Apply(Unit, 601, damaged);
         Assert.Equal(0d, bar.Alpha);
         Assert.Equal(1d, bar.Actual);
-        bar.Apply(Unit, 604, damaged);
+        bar.Apply(Unit, 601, damaged);
         Assert.Equal(1d, bar.Alpha);
         Assert.Equal(.35, bar.Actual);
         Assert.Equal(.5, bar.Residual);
@@ -135,10 +165,10 @@ public sealed class UnitLifePolicyTests
     }
 
     [Fact]
-    public void PausedFrameDoesNotAdvanceAndHiddenWheelVisitsDoNotAge()
+    public void PausedFrameDoesNotAdvanceAndHiddenFramesDoNotAge()
     {
-        var bar = Start(40, phase: 2);
-        Assert.True(bar.Apply(Unit, 2, Hp(40) with { InformationVisible = false }));
+        var bar = Start(40);
+        Assert.True(bar.Apply(Unit, 1, Hp(40) with { InformationVisible = false }));
         Assert.Equal(0d, bar.Alpha);
         Assert.True(bar.Apply(Unit, 998, Hp(40) with { InformationVisible = false }));
         Assert.True(bar.Apply(Unit, 999, Hp(40)));
@@ -157,7 +187,8 @@ public sealed class UnitLifePolicyTests
         var facts = Hp(20) with { Shield = new(0, 10), Poise = .6, TaggedRigid = true };
         var bar = new WorldLifeState(id, 30, facts, 80, WorldLifeStart.Resync);
         Assert.Equal(.2, bar.Residual);
-        Assert.True(bar.ShieldVisible);
+        Assert.True(bar.Revealed);
+        Assert.False(bar.ShieldVisible); // AS2 BaseShield.isEmpty() hides zero-capacity shield
         Assert.Equal(0d, bar.ShieldRatio);
         Assert.Equal(.6, bar.PoiseRatio);
         Assert.True(bar.Rigid);
@@ -171,12 +202,17 @@ public sealed class UnitLifePolicyTests
         Assert.True(bar.Apply(id, 36, facts with { Health = new(-3, 100), Shield = new(8, 10), Down = true }));
         Assert.Equal(-3d, bar.Facts.Health.Current);
         Assert.Equal(0d, bar.Facts.Health.Ratio);
+        Assert.True(bar.ShieldVisible);
         Assert.Equal(.8, bar.ShieldRatio);
         Assert.Equal(0d, bar.PoiseRatio);
+        var visual = bar.ToVisual();
+        Assert.Equal(.8, visual.ShieldRatio, 6);
+        Assert.True(visual.Down && visual.Rigid);
+        Assert.Equal(0d, visual.PoiseRatio);
     }
 
     [Fact]
-    public void FocusUsesItsOwnMillisecondLossGainAndHysteresisCurve()
+    public void FocusUsesItsOwnMillisecondLossGainHysteresisAndUnitInfoChannels()
     {
         var focus = new FocusLifeState(new(100, 100));
         focus.Apply(new(20, 100));
@@ -198,9 +234,39 @@ public sealed class UnitLifePolicyTests
         Assert.False(focus.HasActiveTransition);
         focus.Apply(new(31, 100));
         Assert.False(focus.Critical);
-        focus.Apply(new(140, 100), staticFeedback: true);
+
+        // Shield, poise, posture flags, and 85ms quadratic hitSeq flash with rapid-burst gating
+        focus.Apply(new(31, 100), shieldRatio: 0.65, poiseRatio: 0.72, hasPoise: true,
+            rigid: true, airborne: false, down: false, darkened: true, hitSeq: 4, staticFeedback: false);
+        Assert.Equal(0.65, focus.Visual.ShieldRatio, 6);
+        Assert.Equal(0.72, focus.Visual.PoiseRatio, 6);
+        Assert.True(focus.Visual.HasPoise && focus.Visual.Rigid && focus.Visual.Darkened);
+        Assert.Equal(1f, focus.HitFlash, 3);
+        Assert.True(focus.HasActiveTransition);
+        Assert.True(focus.Tick(40));
+        float midFlash = focus.HitFlash;
+        Assert.True(midFlash > 0f && midFlash < 0.5f); // quadratic falloff decays quickly
+        // Rapid consecutive hitSeq during active flash must NOT pin flash back to 1.0
+        focus.Apply(new(31, 100), shieldRatio: 0.65, poiseRatio: 0.72, hasPoise: true,
+            rigid: true, airborne: false, down: false, darkened: true, hitSeq: 5, staticFeedback: false);
+        Assert.Equal(midFlash, focus.HitFlash, 3);
+        Assert.True(focus.Tick(50));
+        Assert.Equal(0f, focus.HitFlash, 3);
+        Assert.False(focus.HasActiveTransition);
+        // Once settled, next hitSeq fires a fresh pulse
+        focus.Apply(new(31, 100), shieldRatio: 0.65, poiseRatio: 0.72, hasPoise: true,
+            rigid: true, airborne: false, down: false, darkened: true, hitSeq: 6, staticFeedback: false);
+        Assert.Equal(1f, focus.HitFlash, 3);
+        focus.Tick(90);
+        Assert.False(focus.HasActiveTransition);
+
+        // Static feedback suppresses hit flash while retaining authoritative facts
+        focus.Apply(new(140, 100), shieldRatio: 0.25, poiseRatio: 0.4, hasPoise: true,
+            rigid: false, airborne: true, down: false, darkened: false, hitSeq: 7, staticFeedback: true);
         Assert.Equal(1d, focus.TrailRatio);
         Assert.Equal(.4, focus.Visual.Health.OverflowRatio, 9);
+        Assert.Equal(0f, focus.HitFlash, 3);
+        Assert.True(focus.Visual.Airborne);
         Assert.False(focus.HasActiveTransition);
     }
 }

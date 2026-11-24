@@ -108,6 +108,28 @@ namespace CF7Launcher.Tests.Guardian
         });
 
         [Fact]
+        public void FallbackMessagesFoldDuplicateTextIntoSingleRowWithCounter() => Sta(() =>
+        {
+            RuntimeFontCatalog.Configure(Root());
+            using var form = new Form { ClientSize = new Size(1024, 576), AutoScaleMode = AutoScaleMode.None };
+            using var anchor = new Panel { Dock = DockStyle.Fill }; form.Controls.Add(anchor); form.CreateControl(); anchor.CreateControl();
+            using var toast = new ToastWidget(anchor);
+            toast.SetReady();
+            for (int i = 0; i < 8; i++) toast.AddMessage("钛合金机甲：护盾充满");
+            Assert.Equal(1, toast.VisibleLineCount);
+            Assert.Equal(new[] { "钛合金机甲：护盾充满 ×8" }, toast.ActivePlainLinesForTest);
+
+            toast.AddMessage("<font color='#FFCC00'>波次刷新</font>");
+            Assert.Equal(2, toast.VisibleLineCount);
+            Assert.Equal(new[] { "钛合金机甲：护盾充满 ×8", "波次刷新" }, toast.ActivePlainLinesForTest);
+
+            // Repeating an earlier visible message folds it and bumps it to the newest (bottom) slot
+            toast.AddMessage("钛合金机甲：护盾充满");
+            Assert.Equal(2, toast.VisibleLineCount);
+            Assert.Equal(new[] { "波次刷新", "钛合金机甲：护盾充满 ×9" }, toast.ActivePlainLinesForTest);
+        });
+
+        [Fact]
         public void PanelToastBecomesPlainNotchNoticeWithFirstSemanticColor()
         {
             WebOverlayForm.DescribePanelToast("<font color='#FF6666'>失败</font>：材料不足", out string plain, out Color accent);
