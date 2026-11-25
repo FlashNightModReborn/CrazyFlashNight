@@ -8,7 +8,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -18,7 +18,22 @@
                   "content": [
                     {
                       "type": "text",
-                      "text": "【机密】γ-ECHO感染病理摘要"
+                      "text": "【机密】"
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 0,
+                      "encryptedText": "█-E",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "γ-ECHO"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": "感染病理摘要"
                     }
                   ]
                 }
@@ -79,7 +94,37 @@
                   "content": [
                     {
                       "type": "text",
-                      "text": "审批：外部接口人（统合部门联络）"
+                      "text": "审批："
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 0,
+                      "encryptedText": "██接口人",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "外部接口人"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": "（"
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 0,
+                      "encryptedText": "██部门",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "统合部门"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": "联络）"
                     }
                   ]
                 }
@@ -136,7 +181,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- 血清γ-ECHO抗体滴度≤1:80"
+                  "text": "- 血清"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 0,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "抗体滴度≤1:80"
                 }
               ]
             },
@@ -167,7 +227,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -278,7 +338,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -288,7 +348,22 @@
                   "content": [
                     {
                       "type": "text",
-                      "text": "第四期：骨刺化（D+7至D+14）"
+                      "text": "第四期："
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 0,
+                      "encryptedText": "██化",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "骨刺化"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": "（D+7至D+14）"
                     }
                   ]
                 }
@@ -326,7 +401,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- 神经系统完全被γ-ECHO信号接管"
+                  "text": "- 神经系统完全被"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 0,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "信号接管"
                 }
               ]
             },
@@ -416,7 +506,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -436,8 +526,19 @@
               "kind": "text",
               "content": [
                 {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "γ-ECHO本质上是一种"
+                  "text": "本质上是一种"
                 },
                 {
                   "type": "strong",
@@ -499,8 +600,19 @@
               "kind": "text",
               "content": [
                 {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "γ-ECHO载体本身具备生物学必然性，感染后将不可避免地启动转化进程。"
+                  "text": "载体本身具备生物学必然性，感染后将不可避免地启动转化进程。"
                 }
               ]
             },
@@ -535,7 +647,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -606,7 +718,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- 形态武器化：0.1-2秒（瞬间完成骨刺化、体型膨胀）"
+                  "text": "- 形态武器化：0.1-2秒（瞬间完成"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "、体型膨胀）"
                 }
               ]
             },
@@ -646,7 +773,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -712,7 +839,22 @@
                 },
                 {
                   "type": "text",
-                  "text": "增生与骨刺化是同一进程的不同阶段。"
+                  "text": "增生与"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "是同一进程的不同阶段。"
                 }
               ]
             },
@@ -730,7 +872,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "进入骨刺化阶段后，体型将持续膨胀直至宿主结构崩溃。"
+                  "text": "进入"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "阶段后，体型将持续膨胀直至宿主结构崩溃。"
                 }
               ]
             },
@@ -752,7 +909,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -782,7 +939,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- 骨刺化感染者："
+                  "text": "- "
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "感染者："
                 },
                 {
                   "type": "strong",
@@ -795,7 +967,22 @@
                 },
                 {
                   "type": "text",
-                  "text": "（无Protocol-12式再生复活能力，但可发生死后骨刺增生）"
+                  "text": "（无"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "Protocol-██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-12"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "式再生复活能力，但可发生死后骨刺增生）"
                 }
               ]
             },
@@ -831,7 +1018,22 @@
                 },
                 {
                   "type": "text",
-                  "text": "死后骨刺化不可逆，即使自杀个体仍会完成转化，存在二次处置风险"
+                  "text": "死后"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "不可逆，即使自杀个体仍会完成转化，存在二次处置风险"
                 }
               ]
             },
@@ -840,7 +1042,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- 骨刺化个体具备母体潜力，感染半径可达500米"
+                  "text": "- "
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "个体具备母体潜力，感染半径可达500米"
                 }
               ]
             },
@@ -862,7 +1079,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -878,7 +1095,37 @@
                 },
                 {
                   "type": "text",
-                  "text": "本摘要仅涉及γ-ECHO（Protocol-7）相关病理。"
+                  "text": "本摘要仅涉及"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "Protocol-█",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-7"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）相关病理。"
                 }
               ]
             },
@@ -886,8 +1133,64 @@
               "kind": "text",
               "content": [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-H",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "θ-HIVE"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "θ-HIVE强化型（Protocol-9）及Σ-ITE永生型（Protocol-12）病理参见各自独立档案。"
+                  "text": "强化型（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "Protocol-█",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-9"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）及"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-I",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Σ-ITE"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "永生型（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "Protocol-██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-12"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）病理参见各自独立档案。"
                 }
               ]
             },
@@ -913,8 +1216,19 @@
                   ]
                 },
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "Protocol-██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-12"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "Protocol-12受试者禁止在确认死亡前火化处理，观察期不少于72小时。"
+                  "text": "受试者禁止在确认死亡前火化处理，观察期不少于72小时。"
                 }
               ]
             },
@@ -977,7 +1291,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -1000,8 +1314,34 @@
                   "type": "strong",
                   "content": [
                     {
+                      "type": "decryptText",
+                      "level": 5,
+                      "encryptedText": "█-E",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "γ-ECHO"
+                        }
+                      ]
+                    },
+                    {
                       "type": "text",
-                      "text": "γ-ECHO / Σ-ITE 交叉感染现象："
+                      "text": " / "
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 5,
+                      "encryptedText": "█-I",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Σ-ITE"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " 交叉感染现象："
                     }
                   ]
                 }
@@ -1012,7 +1352,37 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "已有报告显示，Protocol-12感染者吞噬骨刺化个体后，出现以下变化："
+                  "text": "已有报告显示，"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "Protocol-██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-12"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "感染者吞噬"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "██化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "骨刺化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "个体后，出现以下变化："
                 }
               ]
             },
@@ -1043,7 +1413,22 @@
                 },
                 {
                   "type": "text",
-                  "text": "（Σ-ITE核心优势）"
+                  "text": "（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█-I",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Σ-ITE"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "核心优势）"
                 }
               ]
             },
@@ -1065,7 +1450,22 @@
                 },
                 {
                   "type": "text",
-                  "text": "（γ-ECHO的2-4周衰竭期被延长）"
+                  "text": "（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "的2-4周衰竭期被延长）"
                 }
               ]
             },
@@ -1088,7 +1488,37 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- γ-ECHO基因序列与Σ-ITE永生机制存在排斥反应"
+                  "text": "- "
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "基因序列与"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█-I",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Σ-ITE"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "永生机制存在排斥反应"
                 }
               ]
             },
@@ -1128,7 +1558,7 @@
       "blocks": [
         {
           "type": "terminalLog",
-          "title": "γ-ECHO病理摘要",
+          "title": "PATH-2012-1221-07 // 病理摘要",
           "entries": [
             {
               "kind": "text",
@@ -1149,7 +1579,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- 纯γ-ECHO：高攻击力 + 短寿命（2-4周）= 一次性消耗品"
+                  "text": "- 纯"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "：高攻击力 + 短寿命（2-4周）= 一次性消耗品"
                 }
               ]
             },
@@ -1158,7 +1603,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "- 纯Σ-ITE：高再生力 + 长寿命 = 持久战单位"
+                  "text": "- 纯"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "█-I",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Σ-ITE"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "：高再生力 + 长寿命 = 持久战单位"
                 }
               ]
             },
@@ -1263,7 +1723,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "\"Protocol-12已进入第三阶段。\""
+                  "text": "\""
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "Protocol-██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-12"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "已进入第三阶段。\""
                 }
               ]
             }

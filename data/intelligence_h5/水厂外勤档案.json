@@ -719,8 +719,34 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██接口人",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "外部接口人"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "外部接口人（统合部门）"
+                  "text": "（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██部门",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "统合部门"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）"
                 }
               ]
             ]
@@ -877,7 +903,22 @@
             },
             {
               "type": "text",
-              "text": "B区（南城支管网）：θ-HIVE强化剂 | 批次TH-2012-12-A | 200ml"
+              "text": "B区（南城支管网）："
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "█-H",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "θ-HIVE"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "强化剂 | 批次TH-2012-12-A | 200ml"
             },
             {
               "type": "text",
@@ -885,7 +926,22 @@
             },
             {
               "type": "text",
-              "text": "C区（工业区循环系统）：Σ-ITE永生诱导剂 | 批次SI-2012-12-C | 300ml"
+              "text": "C区（工业区循环系统）："
+            },
+            {
+              "type": "decryptText",
+              "level": 3,
+              "encryptedText": "█-I",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Σ-ITE"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "永生诱导剂 | 批次SI-2012-12-C | 300ml"
             },
             {
               "type": "text",
@@ -908,7 +964,22 @@
             [
               {
                 "type": "text",
-                "text": "A区：骨刺增生速率测试，观察体型膨胀倍率与攻击性变化（Protocol-7）"
+                "text": "A区：骨刺增生速率测试，观察体型膨胀倍率与攻击性变化（"
+              },
+              {
+                "type": "decryptText",
+                "level": 3,
+                "encryptedText": "Protocol-█",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Protocol-7"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "）"
               }
             ]
           ]
@@ -938,8 +1009,19 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "γ-ECHO载体溶液 | 批次CL-2012-12-B | 500ml"
+                  "text": "载体溶液 | 批次CL-2012-12-B | 500ml"
                 }
               ]
             ],
@@ -952,8 +1034,19 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "█-H",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "θ-HIVE"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "θ-HIVE强化剂 | 批次TH-2012-12-A | 200ml"
+                  "text": "强化剂 | 批次TH-2012-12-A | 200ml"
                 }
               ]
             ],
@@ -966,8 +1059,19 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "█-I",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Σ-ITE"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "Σ-ITE永生诱导剂 | 批次SI-2012-12-C | 300ml"
+                  "text": "永生诱导剂 | 批次SI-2012-12-C | 300ml"
                 }
               ]
             ],
@@ -990,7 +1094,22 @@
               [
                 {
                   "type": "text",
-                  "text": "骨刺增生速率测试，观察体型膨胀倍率与攻击性变化（Protocol-7）"
+                  "text": "骨刺增生速率测试，观察体型膨胀倍率与攻击性变化（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "Protocol-█",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-7"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）"
                 }
               ]
             ],
@@ -1004,7 +1123,22 @@
               [
                 {
                   "type": "text",
-                  "text": "综合强化效果验证，观察变异稳定性与行为可控度（Protocol-9）"
+                  "text": "综合强化效果验证，观察变异稳定性与行为可控度（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "Protocol-█",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-9"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）"
                 }
               ]
             ],
@@ -1018,7 +1152,22 @@
               [
                 {
                   "type": "text",
-                  "text": "角质硬化与再生周期测试，观察神经保留率（Protocol-12）"
+                  "text": "角质硬化与再生周期测试，观察神经保留率（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "Protocol-██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Protocol-12"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）"
                 }
               ]
             ]
@@ -1030,7 +1179,22 @@
             [
               {
                 "type": "text",
-                "text": "B区：综合强化效果验证，观察变异稳定性与行为可控度（Protocol-9）"
+                "text": "B区：综合强化效果验证，观察变异稳定性与行为可控度（"
+              },
+              {
+                "type": "decryptText",
+                "level": 3,
+                "encryptedText": "Protocol-█",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Protocol-9"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "）"
               }
             ]
           ]
@@ -1041,7 +1205,22 @@
             [
               {
                 "type": "text",
-                "text": "C区：角质硬化与再生周期测试，观察神经保留率（Protocol-12）"
+                "text": "C区：角质硬化与再生周期测试，观察神经保留率（"
+              },
+              {
+                "type": "decryptText",
+                "level": 3,
+                "encryptedText": "Protocol-██",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Protocol-12"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "）"
               }
             ]
           ]
@@ -1254,8 +1433,15 @@
               ],
               [
                 {
-                  "type": "text",
-                  "text": "统合部门"
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██部门",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "统合部门"
+                    }
+                  ]
                 }
               ]
             ],
@@ -1450,7 +1636,18 @@
             },
             {
               "type": "text",
-              "text": "4. 仓库B区设备移交地铁站项目组"
+              "text": "4. 仓库B区设备移交"
+            },
+            {
+              "type": "redaction",
+              "mask": "block",
+              "text": "------",
+              "reveal": [
+                {
+                  "type": "text",
+                  "text": "地铁站项目组"
+                }
+              ]
             }
           ]
         }
@@ -1499,8 +1696,15 @@
               ],
               [
                 {
-                  "type": "text",
-                  "text": "统合部门"
+                  "type": "decryptText",
+                  "level": 3,
+                  "encryptedText": "██部门",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "统合部门"
+                    }
+                  ]
                 }
               ]
             ],
@@ -1781,7 +1985,37 @@
           "content": [
             {
               "type": "text",
-              "text": "SEC-071、SEC-072出现γ-ECHO疑似症状，已上报统合部门。"
+              "text": "SEC-071、SEC-072出现"
+            },
+            {
+              "type": "decryptText",
+              "level": 0,
+              "encryptedText": "█-E",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "γ-ECHO"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "疑似症状，已上报"
+            },
+            {
+              "type": "decryptText",
+              "level": 0,
+              "encryptedText": "██部门",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "统合部门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
             },
             {
               "type": "text",
@@ -2173,8 +2407,19 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "γ-ECHO抗体滴度1:160（临界值）"
+                  "text": "抗体滴度1:160（临界值）"
                 }
               ]
             ],
@@ -2215,8 +2460,19 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "γ-ECHO"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "γ-ECHO抗体滴度1:320（阳性）"
+                  "text": "抗体滴度1:320（阳性）"
                 }
               ]
             ],
@@ -2242,7 +2498,22 @@
             [
               {
                 "type": "text",
-                "text": "体检结果：γ-ECHO抗体滴度1:160（临界值）"
+                "text": "体检结果："
+              },
+              {
+                "type": "decryptText",
+                "level": 4,
+                "encryptedText": "█-E",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "γ-ECHO"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "抗体滴度1:160（临界值）"
               }
             ]
           ]
@@ -2315,7 +2586,22 @@
             [
               {
                 "type": "text",
-                "text": "体检结果：γ-ECHO抗体滴度1:320（阳性）"
+                "text": "体检结果："
+              },
+              {
+                "type": "decryptText",
+                "level": 4,
+                "encryptedText": "█-E",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "γ-ECHO"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "抗体滴度1:320（阳性）"
               }
             ]
           ]
@@ -2411,8 +2697,19 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-H",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "θ-HIVE"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "θ-HIVE强化标记物检出，变异指数稳定"
+                  "text": "强化标记物检出，变异指数稳定"
                 }
               ]
             ],
@@ -2453,8 +2750,19 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█-I",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Σ-ITE"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "Σ-ITE永生指标超标，角质硬化进行中"
+                  "text": "永生指标超标，角质硬化进行中"
                 }
               ]
             ],
@@ -2480,7 +2788,22 @@
             [
               {
                 "type": "text",
-                "text": "体检结果：θ-HIVE强化标记物检出，变异指数稳定"
+                "text": "体检结果："
+              },
+              {
+                "type": "decryptText",
+                "level": 4,
+                "encryptedText": "█-H",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "θ-HIVE"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "强化标记物检出，变异指数稳定"
               }
             ]
           ]
@@ -2553,7 +2876,22 @@
             [
               {
                 "type": "text",
-                "text": "体检结果：Σ-ITE永生指标超标，角质硬化进行中"
+                "text": "体检结果："
+              },
+              {
+                "type": "decryptText",
+                "level": 4,
+                "encryptedText": "█-I",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Σ-ITE"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "永生指标超标，角质硬化进行中"
               }
             ]
           ]
@@ -3036,7 +3374,22 @@
           "content": [
             {
               "type": "text",
-              "text": "B区（南城）- θ-HIVE强化剂"
+              "text": "B区（南城）- "
+            },
+            {
+              "type": "decryptText",
+              "level": 4,
+              "encryptedText": "█-H",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "θ-HIVE"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "强化剂"
             }
           ]
         },
@@ -3092,7 +3445,22 @@
           "content": [
             {
               "type": "text",
-              "text": "C区（工业区）- Σ-ITE永生诱导剂"
+              "text": "C区（工业区）- "
+            },
+            {
+              "type": "decryptText",
+              "level": 4,
+              "encryptedText": "█-I",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Σ-ITE"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "永生诱导剂"
             }
           ]
         },
@@ -3498,7 +3866,22 @@
             },
             {
               "type": "text",
-              "text": "2. θ-HIVE强化剂储存罐 ×2（剩余容量约60%）"
+              "text": "2. "
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "█-H",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "θ-HIVE"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "强化剂储存罐 ×2（剩余容量约60%）"
             },
             {
               "type": "text",
@@ -3506,7 +3889,22 @@
             },
             {
               "type": "text",
-              "text": "3. Σ-ITE永生诱导剂储存罐 ×2（剩余容量约55%）"
+              "text": "3. "
+            },
+            {
+              "type": "decryptText",
+              "level": 5,
+              "encryptedText": "█-I",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Σ-ITE"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "永生诱导剂储存罐 ×2（剩余容量约55%）"
             },
             {
               "type": "text",
@@ -3628,7 +4026,49 @@
                 ],
                 [
                   "罐体标记",
-                  "γ-ECHO / θ-HIVE / Σ-ITE"
+                  [
+                    {
+                      "type": "decryptText",
+                      "level": 5,
+                      "encryptedText": "█-E",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "γ-ECHO"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " / "
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 5,
+                      "encryptedText": "█-H",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "θ-HIVE"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "text": " / "
+                    },
+                    {
+                      "type": "decryptText",
+                      "level": 5,
+                      "encryptedText": "█-I",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Σ-ITE"
+                        }
+                      ]
+                    }
+                  ]
                 ],
                 [
                   "异常",
@@ -3801,8 +4241,34 @@
               ],
               [
                 {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "██接口人",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "外部接口人"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "外部接口人（统合部门）"
+                  "text": "（"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 5,
+                  "encryptedText": "██部门",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "统合部门"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "）"
                 }
               ]
             ],

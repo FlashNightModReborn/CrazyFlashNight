@@ -40,7 +40,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "*数据流意外恢复自：废弃天网节点#7749。推测为Project_ECHO植入芯片紧急上传。获取路径已损坏。*"
+                  "text": "*数据流意外恢复自：废弃天网节点#7749。推测为"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 0,
+                  "encryptedText": "███计划",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Project_ECHO"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "植入芯片紧急上传。获取路径已损坏。*"
                 }
               ]
             },
@@ -58,7 +73,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "今天食堂的粥又是馊的。老张说是因为米放太久，我觉得是WP又在省成本。"
+                  "text": "今天食堂的粥又是馊的。老张说是因为米放太久，我觉得是"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 0,
+                  "encryptedText": "██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "WP"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "又在省成本。"
                 }
               ]
             },
@@ -236,7 +266,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "楼道里贴了告示：近期失踪克隆体增多，请注意安全。"
+                  "text": "楼道里贴了告示：近期失踪"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 0,
+                  "encryptedText": "█体",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "克隆体"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "增多，请注意安全。"
                 }
               ]
             }
@@ -506,7 +551,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "我不是真正的易柯？"
+                  "text": "我"
+                },
+                {
+                  "type": "redaction",
+                  "mask": "block",
+                  "text": "-------",
+                  "reveal": [
+                    {
+                      "type": "text",
+                      "text": "不是真正的易柯"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "？"
                 }
               ]
             }
@@ -606,8 +666,19 @@
               "kind": "text",
               "content": [
                 {
+                  "type": "redaction",
+                  "mask": "block",
+                  "text": "----",
+                  "reveal": [
+                    {
+                      "type": "text",
+                      "text": "我原来就是"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "我原来就是..."
+                  "text": "..."
                 }
               ]
             }
@@ -699,7 +770,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "我自己是克隆人..?"
+                  "text": "我"
+                },
+                {
+                  "type": "redaction",
+                  "mask": "block",
+                  "text": "------",
+                  "reveal": [
+                    {
+                      "type": "text",
+                      "text": "自己是克隆人"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "..?"
                 }
               ]
             }
@@ -823,8 +909,19 @@
               "kind": "system",
               "content": [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██████-██",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "WORLD-PULSE"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "WORLD-PULSE EMERGENCY PROTOCOL"
+                  "text": " EMERGENCY PROTOCOL"
                 }
               ]
             },
@@ -841,8 +938,34 @@
               "kind": "text",
               "content": [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "████-E",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "ACTIVATE-ECHO"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "ACTIVATE-ECHO GROUP-B INITIATED"
+                  "text": " "
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "G-█",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "GROUP-B"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " INITIATED"
                 }
               ]
             }
@@ -1035,7 +1158,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "[034-B] ERROR - INACTIVE TAG - NO SIGNAL SENT"
+                  "text": "[034-B] "
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "E██████R",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "ERROR"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " - INACTIVE TAG - NO SIGNAL SENT"
                 }
               ]
             },
@@ -1070,8 +1208,34 @@
               "kind": "system",
               "content": [
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "E██████R",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "ERROR"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "ERROR。只有我是ERROR。"
+                  "text": "。只有我是"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "E██████R",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "ERROR"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
                 }
               ]
             },
@@ -1145,7 +1309,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "\"我原来就是它\""
+                  "text": "\""
+                },
+                {
+                  "type": "redaction",
+                  "mask": "block",
+                  "text": "----",
+                  "reveal": [
+                    {
+                      "type": "text",
+                      "text": "我原来就是"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "它\""
                 }
               ]
             },
@@ -1163,7 +1342,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "如果信号来了，如果ERROR被修复..."
+                  "text": "如果信号来了，如果"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 0,
+                  "encryptedText": "E██████R",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "ERROR"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "被修复..."
                 }
               ]
             },
@@ -1264,7 +1458,22 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "他们不懂科学。但他们是对的。他们阻止了一个母体。"
+                  "text": "他们不懂科学。但他们是对的。他们阻止了一个"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█体",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "母体"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
                 }
               ]
             }
@@ -1433,8 +1642,34 @@
                   ]
                 },
                 {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "█体",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "母体"
+                    }
+                  ]
+                },
+                {
                   "type": "text",
-                  "text": "母体。2小时完全转化。"
+                  "text": "。2小时"
+                },
+                {
+                  "type": "decryptText",
+                  "level": 4,
+                  "encryptedText": "██转化",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "完全转化"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
                 },
                 {
                   "type": "decryptText",
