@@ -813,7 +813,12 @@ var LootView = (function() {
         if (report.omittedKillTypes) notices.push('另有 '+report.omittedKillTypes+' 类敌人未展开');
         if (report.omittedIndividualKills) notices.push('另有 '+report.omittedIndividualKills+' 次人形击杀未展开');
         if (report.rewardRollOmissions) notices.push(report.rewardRollOmissions+' 项奖励配置未进入本轮结算');
-        if (report.rewardStashed) notices.push('本轮物资已存入暂存区，可稍后从角色物品页整理。');
+        var stageStashState=stageStashSummary(report);
+        if (report.rewardStashed && stageStashState.hasStashed) {
+            notices.push(stageStashState.hasAcquired
+                ? '部分物资已存入暂存区，可稍后从角色物品页整理。'
+                : '本轮物资已存入暂存区，可稍后从角色物品页整理。');
+        }
         this.killStatus.textContent=notices.join(' · ')||('展示 '+report.kills.length+' 条记录');
 
         while (this.allyList.firstChild) this.allyList.removeChild(this.allyList.firstChild);
@@ -846,7 +851,9 @@ var LootView = (function() {
         this.assetSummary.querySelector('[data-settlement-summary-status]').textContent=summary.partial?'仅统计已展开明细':'获得 / 消耗';
         this.flowStatus.textContent=summary.partial?'另有 '+report.omittedItemFlowTypes+' 类明细未展开':'';
         this.rewardSection.querySelector('[data-settlement-gain-note]').textContent=this.isStashedReport
-            ? '战斗拾取与关卡奖励。关卡奖励已存入暂存区，可在角色物品页整理。'
+            ? (stageStashState.hasStashed
+                ? '战斗拾取与关卡奖励。未收入背包的关卡奖励已存入暂存区，可在角色物品页整理。'
+                : '战斗拾取与关卡奖励。关卡奖励已优先收入背包或收集品栏。')
             : '本关已获得的物资；上方待领取奖励领取后进入背包。';
         if (this.tooltipScope) { this.tooltipScope.releaseTree(this.flowList);this.tooltipScope.releaseTree(this.lossList); }
         this.flowList.textContent='';this.lossList.textContent='';
@@ -1894,7 +1901,9 @@ var LootView = (function() {
         }
         if (this.commitBar) this.commitBar.update(
             this.isStashedReport && (this.options.transitionPreview || state.phase==='active' && !busy)
-                ? {label:'完成结算',status:'奖励已保存，可在角色物品页整理暂存物资；关闭结算不会丢失奖励。',state:'ready',canCommit:true}
+                ? {label:'完成结算',status:hasStashedStageFlow(this.init.report)
+                    ? '奖励已保存，未能放入背包的物资可在角色物品页整理暂存；关闭结算不会丢失奖励。'
+                    : '奖励已发放并保存；关闭结算不会丢失奖励。',state:'ready',canCommit:true}
                 : commitPresentation(
                 state,claimAll,organizerActive,this.isSettlement,this.isRewardInbox,
                 !this.isRewardInbox || this.init.rootAdmissionEnabled === true));
@@ -2169,6 +2178,20 @@ var LootView = (function() {
     function escapeHtml(value) {
         return String(value==null?'':value).replace(/&/g,'&amp;')
             .replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function stageStashSummary(report) {
+        var flows=report&&Array.isArray(report.itemFlows)?report.itemFlows:[];
+        var hasStashed=false,hasAcquired=false;
+        for (var i=0;i<flows.length;i++) {
+            var flow=flows[i];
+            if (!flow) continue;
+            if (flow.reason==='stage_reward_stashed') hasStashed=true;
+            else if (flow.reason==='stage_reward_acquired') hasAcquired=true;
+        }
+        return {hasStashed:hasStashed,hasAcquired:hasAcquired};
+    }
+    function hasStashedStageFlow(report) {
+        return stageStashSummary(report).hasStashed;
     }
 
     function normalizeReportPresentation(value) {

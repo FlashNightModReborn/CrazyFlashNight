@@ -14,7 +14,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6SoldierLootTest.as','scripts/类定义/org/flashNight/arki/item/RewardStashServiceTest.as') `
     -SuiteFqns @('org.flashNight.arki.scene.Cf6SoldierLootTest','org.flashNight.arki.item.RewardStashServiceTest') `
     -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6SoldierLootFixture.as','scripts/类定义/org/flashNight/arki/scene/Cf6FixedActionsFixture.as') `
-    -ExpectedTracePatterns @('(?m)^Cf6SoldierLootTest: \d+ passed, 0 failed; isolated real save boundary\r?$','(?m)^RewardStashServiceTest Tests Passed: 179\r?$','(?m)^RewardStashServiceTest Tests Failed: 0\r?$') `
+    -ExpectedTracePatterns @('(?m)^Cf6SoldierLootTest: \d+ passed, 0 failed; isolated real save boundary\r?$','(?m)^RewardStashServiceTest Tests Passed: 188\r?$','(?m)^RewardStashServiceTest Tests Failed: 0\r?$') `
     -SuccessSummary 'Fixed soldier exact loot/save faults and canonical reward stash regression' `
     -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile
 exit $LASTEXITCODE

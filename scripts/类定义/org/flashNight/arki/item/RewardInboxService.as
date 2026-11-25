@@ -29,6 +29,7 @@ class org.flashNight.arki.item.RewardInboxService {
     private static var _durableCutProbe:Function = null;
     private static var _durableCutAttemptProbe:Function = null;
     private static var _stashDelivery:Function = null;
+    private static var _lastSupplyDeliveryStashed:Boolean = true;
 
     public static function setStashDelivery(deliver:Function):Void { _stashDelivery = deliver; }
 
@@ -62,6 +63,7 @@ class org.flashNight.arki.item.RewardInboxService {
         _rootPersistPending = false;
         _rootPersistPendingId = "";
         _rootPersistVisibleBefore = null;
+        _lastSupplyDeliveryStashed = true;
     }
 
     /** 时间线只获得这个窄 facade，不允许自行拼待领取批次或存档事务。 */
@@ -92,7 +94,13 @@ class org.flashNight.arki.item.RewardInboxService {
      */
     public static function requestOpenPanel():Boolean {
         if (_root._saveExt.rewardInbox.v === 2) {
-            try { _root.发布消息("补给已存入暂存区，可从物品页整理。"); } catch (noticeError) { }
+            var supplyStashed:Boolean = _lastSupplyDeliveryStashed !== false;
+            _lastSupplyDeliveryStashed = true;
+            try {
+                _root.发布消息(supplyStashed
+                    ? "补给已存入暂存区，可从物品页整理。"
+                    : "补给已收入背包。");
+            } catch (noticeError) { }
             return true;
         }
         var authority:Object = materializeAuthority();
@@ -138,7 +146,13 @@ class org.flashNight.arki.item.RewardInboxService {
                 || !ItemUtil.isItem(packName)) {
             return {success:false, error:"invalid_supply_delivery"};
         }
-        if (_stashDelivery != null) return _stashDelivery(packName, sourceKey, supplySessionPrefix());
+        if (_stashDelivery != null) {
+            var stashResult:Object = _stashDelivery(packName, sourceKey, supplySessionPrefix());
+            if (stashResult != null && stashResult.success === true && stashResult.duplicate !== true) {
+                _lastSupplyDeliveryStashed = stashResult.stashed !== false;
+            }
+            return stashResult;
+        }
         var feature:Object = ensureFeature();
         if (feature == null) return {success:false, error:"service_not_ready"};
         if (inspectRootLane(feature).quarantined === true) {

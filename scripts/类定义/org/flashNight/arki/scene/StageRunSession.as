@@ -528,7 +528,8 @@ class org.flashNight.arki.scene.StageRunSession {
         // 暂存的提交回执可能在恢复旧结算、或异步落盘后才发布。只允许本轮这一次
         // 已提交奖励穿过返回冻结；普通领取/搬运、旧轮回执仍不能回流进报告。
         var settlementReceipt:Boolean = projection.source === "stage_settlement"
-            && projection.reason === "stage_reward_stashed"
+            && (projection.reason === "stage_reward_stashed"
+                || projection.reason === "stage_reward_acquired")
             && projection.operationId === String(_run.settlementId) + ".stash";
         if (settlementReceipt && _run.settlement == "stashed") return;
         if (_returnRequested && !settlementReceipt) return;
@@ -907,7 +908,7 @@ class org.flashNight.arki.scene.StageRunSession {
         detail += " items=" + items.length + " outcome=" + String(_run.outcome)
             + " configured=" + (_root.关卡可获得奖励品 instanceof Array ? _root.关卡可获得奖励品.length : 0)
             + " omitted=" + Number(_run.rewardRollOmissions);
-        var context:Object = {source:"stage_settlement", reason:"stage_reward_stashed", operationId:operationId};
+        var context:Object = {source:"stage_settlement", reason:"stage_reward_stashed", inventoryReason:"stage_reward_acquired", operationId:operationId};
         if (!org.flashNight.arki.item.RewardStashService.begin(operationId, context, stashResolved, {run:_run})) {
             settlementDiag("stash", detail + " result=begin_failed"
                 + " error=" + safeText(org.flashNight.arki.item.RewardStashService.lastError, 96, "unknown"));
@@ -916,7 +917,7 @@ class org.flashNight.arki.scene.StageRunSession {
         try {
             var admitted:Boolean = _run.restoredSettlement === true
                 ? org.flashNight.arki.item.RewardStashService.admitRestoredSettlement(items, context)
-                : org.flashNight.arki.item.RewardStashService.admit(items, false, true, context);
+                : org.flashNight.arki.item.RewardStashService.admit(items, true, true, context);
             if (!admitted) {
                 org.flashNight.arki.item.RewardStashService.cancel("invalid_stage_reward");
                 settlementDiag("stash", detail + " result=admit_failed");

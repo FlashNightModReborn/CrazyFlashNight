@@ -151,6 +151,10 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         cleanState();for(var i:Number=0;i<50;i++)_root.物品栏.背包.add(i,BaseItem.create("G1111",1));
         unit=actor("fullBag");Cf6SoldierLoot.combatDeath(unit);drain();
         check(RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==1 && _root.物品栏.背包.getIndexes().length==50,"full bag admits entire packet to stash");
+        cleanState();choice=.95;unit=actor("materialDrop");Cf6SoldierLoot.combatDeath(unit);drain();
+        check(packet("materialDrop").kind=="mod_material" && packet("materialDrop").ground==null
+            && _root.收集品栏.材料.getValue("透镜")==1
+            && RewardStashService.peek().entries.length==0,"non-ground mod_material enters material collection directly without stashing");
         cleanState();unit=actor("exit");Cf6SoldierLoot.combatDeath(unit);exitCalls=0;
         _root.gameCommands={safeExit:function():Void {
             Cf6SoldierLootTest.exitCalls++;Cf6SoldierLootTest.sm.flushBeforeTransition("safe_exit");

@@ -218,7 +218,7 @@ class org.flashNight.arki.scene.Cf6SoldierLoot {
                         packet.groundEntries.push(entries[n].entryId);
                     }
                     if(!RewardStashService.admit(packet.consumables,true,true,origin))throw new Error("capture_ammo_admission_failed");
-                }else if(!RewardStashService.admit(items,false,true,origin))throw new Error("capture_admission_failed");
+                }else if(!RewardStashService.admit(items,true,true,origin))throw new Error("capture_admission_failed");
                 packet.state="OWNED";packet.admissionOperationId=active.operationId;
             }
         }

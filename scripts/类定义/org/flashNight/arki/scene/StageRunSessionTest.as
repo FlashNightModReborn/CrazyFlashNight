@@ -94,6 +94,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testEarlyBoundReportClose();
         testZeroRewardOfflineSettlementSurvivesSceneExpiry();
         testSettlementRewardInformationCapFilter();
+        testSettlementDirectVsFullBagFallback();
         testRestoredInformationOverflow();
         testPreparedSettlementPersistsWithoutReroll();
         testReturnRequiresDurableSettlementFlush();
@@ -1693,7 +1694,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                         && _root.__returnRetryProjection.canReturnBase === true
                         && _root.__returnRetryProjection.reviveAllowed === false
                         && (kinds[i] == "fade" ? prepared.settlement === "stashed"
-                            && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1
+                            && ownedRewardTotal(REWARD) == 1
+                            && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 0
                             : prepared.settlement === "prepared" && prepared.inventory.size() == 1),
                     kinds[i] + " nonempty prepared reward keeps a return-only visible projection");
                 assertTrue(prepared.returnRequested === (kinds[i] == "fade")
@@ -1720,7 +1722,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 assertTrue(recovered.returnRequested && !recovered.canRetryReturn
                         && recovered.returnFailure === "" && _root.当前为战斗地图 === false
                         && recovered.inventory == null && recovered.report === prepared.report
-                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1
+                        && ownedRewardTotal(REWARD) == 1
+                        && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 0
                         && recovered.settlementId === prepared.settlementId,
                     kinds[i] + " original HUD retries the same frozen settlement without reroll");
                 var fadesAfter:Number = _root.__returnRetryFades;
@@ -3557,7 +3560,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         var state:Object = StageRunSession.testOnlySnapshot();
         assertTrue(state.returnRequested === true, "return freezes the run before transition");
         assertEquals("stashed", state.settlement, "return atomically stashes the frozen reward source");
-        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD), "frozen reward has one durable stash owner");
+        assertTrue(ItemUtil.getTotal(REWARD) == 1 && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 0,
+            "empty bag settlement delivers reward directly into backpack");
         assertFalse(StageRunSession.canRequestRevive(),
             "return transition removes the revive capability before base load");
         assertEquals("return_in_progress",
@@ -3581,7 +3585,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         state = StageRunSession.testOnlySnapshot();
         assertEquals("stashed", state.settlement,
             "offline report does not reacquire asset authority");
-        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD), "offline report cannot lose the stored reward");
+        assertEquals(1, ownedRewardTotal(REWARD), "offline report cannot lose the delivered reward");
         assertFalse(LootContainerService.hasStageSettlementPending(),
             "stored rewards do not keep a pending asset authority");
         var expiry:Object = LootContainerService.expireScene("scene_cleanup");
@@ -3636,8 +3640,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertEquals(1, report.totalItemGains, "committed reward enters final report " + saveResult);
         assertEquals(1, report.itemFlows.length, "committed reward has one visible row " + saveResult);
         assertEquals("stage_settlement", report.itemFlows[0].source, "row retains reward source " + saveResult);
-        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD),
-            "report count matches committed stash " + saveResult);
+        assertTrue(ItemUtil.getTotal(REWARD) == 1 && RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD) == 0,
+            "report count matches directly delivered reward " + saveResult);
         StageRunSession.onReturnBaseStarted();
         assertEquals(1, StageRunSession.testOnlySnapshot().report.totalItemGains,
             "repeated return does not duplicate report or reward " + saveResult);
@@ -3685,8 +3689,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.begin("过场结算交接" + outcome, "简单"), "curtain handoff begins " + outcome);
         if (outcome != "retreat") StageRunSession.finish(outcome);
         assertTrue(StageRunSession.onReturnBaseStarted(), "curtain handoff freezes " + outcome);
-        var stashed:Number = RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD);
-        assertEquals(rewardCount, stashed, "return stashes rewards before any presentation " + outcome);
+        var stashed:Number = ownedRewardTotal(REWARD);
+        assertEquals(rewardCount, stashed, "return delivers rewards before any presentation " + outcome);
         var token:String = flow.prepareTransition("地图-联合大学");
         flow.acceptTransition(token);
         flow.beginSceneLoad(token, "地图-联合大学");
@@ -3722,7 +3726,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         transition.tick();
         assertEquals(1, _transitionPanelCalls, "successful curtain release dispatches one report " + outcome);
         assertFalse(StageRunSession.hasUnpresentedSettlementReport(), "report request ends its automatic-help wait " + outcome);
-        assertEquals(stashed, RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD), "release never replays a reward write " + outcome);
+        assertEquals(stashed, ownedRewardTotal(REWARD), "release never replays a reward write " + outcome);
         transition.clear();
         org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",returnedWorld,token,readyIdentity);
         assertEquals(1, _transitionPanelCalls, "late ready and duplicate clear never redispatch the report " + outcome);
@@ -3840,8 +3844,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             assertEquals(0,_transitionPanelCalls,"dismissed report never reopens on arrival " + mode);
         }
         assertFalse(transition.isPresentationPending(),"parallel presentation completes " + mode + outcome);
-        assertEquals(rewardCount,RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD),
-            "presentation never rerolls or reclaims the stored reward " + mode + outcome);
+        assertEquals(rewardCount,ownedRewardTotal(REWARD),
+            "presentation never rerolls or reclaims the delivered reward " + mode + outcome);
         org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",world,token,identity);
         assertEquals(mode == "manage" ? 1 : 0,_transitionPanelCalls,"late arrival cannot reopen a report " + mode + outcome);
         releaseCurtainCamera();fixture.removeMovieClip(); _root.淡出动画 = savedFade; transition.sendOverride = oldSend;
@@ -3897,7 +3901,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         transition.action({requestId:current.requestId,revision:current.revision,verb:"closeReport"});
         assertFalse(_transitionMessages[_transitionMessages.length-1].reportVisible,"authority-confirmed early closure returns to the same curtain");
         assertFalse(StageRunSession.hasUnpresentedSettlementReport(),"early business close cannot reopen the report on arrival");
-        assertEquals(1,RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD),"early business close preserves the committed stash without a second reward write");
+        assertEquals(1,ownedRewardTotal(REWARD),"early business close preserves the committed reward without a second reward write");
         transition.clear();transition.sendOverride=oldSend;_root.淡出动画=oldFade;
     }
 
@@ -3918,6 +3922,11 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertEquals("stashed", state.settlement, "retreat durably closes its empty reward source");
     }
 
+    private static function ownedRewardTotal(itemName:String):Number {
+        return ItemUtil.getTotal(itemName)
+            + RewardStashStore.ownedQuantity(RewardStashService.peek(), itemName);
+    }
+
     private static function testSettlementRewardInformationCapFilter():Void {
         var intel:String = "StageRunSession测试情报";
         addMeta(intel, "收集品", "情报");
@@ -3932,10 +3941,10 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "victory return prepares the settlement");
         var state:Object = StageRunSession.testOnlySnapshot();
-        assertEquals(1, RewardStashService.peek().entries.length,
-            "capped story intel does not enter the stash");
-        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD),
-            "only actually generated rewards acquire stash ownership");
+        assertEquals(0, RewardStashService.peek().entries.length,
+            "capped story intel and direct reward leave stash empty");
+        assertEquals(1, ItemUtil.getTotal(REWARD),
+            "only actually generated uncapped reward acquires directly into backpack");
         assertEquals(1, state.report.rewardRollOmissions,
             "the capped intel roll is counted as an omission");
 
@@ -3947,10 +3956,101 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "victory return prepares the second settlement");
         state = StageRunSession.testOnlySnapshot();
-        assertEquals(2, RewardStashService.peek().entries.length,
-            "uncapped intel is stashed alongside the other reward");
-        assertEquals(1, RewardStashStore.ownedQuantity(RewardStashService.peek(),intel),
-            "stashed intel remains available exactly once");
+        assertEquals(0, RewardStashService.peek().entries.length,
+            "uncapped intel and normal reward do not bypass collections/backpack to stash");
+        assertTrue(_root.收集品栏.情报.getValue(intel) == 1
+                && ItemUtil.getTotal(REWARD) == 1,
+            "uncapped intel enters collection and normal reward enters backpack directly");
+    }
+
+    private static function testSettlementDirectVsFullBagFallback():Void {
+        var intel:String = "StageRunSession直发情报";
+        var mat:String = "StageRunSession直发材料";
+        var equip:String = "StageRunSession满包装备";
+        addMeta(intel, "收集品", "情报");
+        ItemUtil.informationMaxValueDict[intel] = 1;
+        addMeta(mat, "收集品", "材料");
+        ItemUtil.materialDict[mat] = true;
+        addMeta(equip, "武器", "长枪");
+        ItemUtil.equipmentDict[equip] = true;
+
+        resetWorld(0);
+        for (var s:Number = 0; s < 50; s++) {
+            _root.物品栏.背包.add(s, org.flashNight.arki.item.BaseItem.create(REWARD, 1));
+        }
+        org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            org.flashNight.arki.item.PlayerAssetWireProjector.forEachEffect(receipt,
+                function(effect:Object, effectIndex:Number):Void {
+                    StageRunSession.recordAssetProjection(
+                        org.flashNight.arki.item.PlayerAssetWireProjector.buildMessage({
+                            version:1, direction:effect.direction, kind:effect.kind,
+                            itemKey:effect.name, name:effect.name, icon:effect.name,
+                            count:effect.count, tier:effect.tier, source:effect.source,
+                            reason:effect.reason, operationId:receipt.operationId
+                        }));
+                }, null);
+        });
+        try {
+            _root.关卡可获得奖励品 = [[intel, 1, 1], [mat, 1, 1], [mat, 1, 1], [equip, 1, 1]];
+            assertTrue(StageRunSession.begin("混合直发与暂存", "简单"),
+                "full-bag mixed settlement run begins");
+            StageRunSession.finish("victory");
+            assertTrue(StageRunSession.onReturnBaseStarted(),
+                "full-bag mixed settlement commits cleanly");
+            assertTrue(_root.收集品栏.情报.getValue(intel) == 1
+                    && _root.收集品栏.材料.getValue(mat) == 2,
+                "full bag still delivers intel and material directly into collections");
+            assertTrue(RewardStashStore.ownedQuantity(RewardStashService.peek(), equip) == 1
+                    && RewardStashService.peek().entries.length == 1,
+                "full bag falls back to stash only for overflow equipment");
+            var flows:Array = StageRunSession.testOnlySnapshot().report.itemFlows;
+            var acquiredReasons:Number = 0;
+            var stashedReasons:Number = 0;
+            for (var f:Number = 0; f < flows.length; f++) {
+                if (flows[f].reason == "stage_reward_acquired") acquiredReasons++;
+                else if (flows[f].reason == "stage_reward_stashed") stashedReasons++;
+            }
+            assertTrue(flows.length == 3 && acquiredReasons == 2 && stashedReasons == 1,
+                "report itemFlows distinguish stage_reward_acquired from stage_reward_stashed");
+
+            var saveWriter:Object = SaveManager.getInstance();
+            var originalPack:Function = saveWriter.packGameState;
+            resetWorld(0);
+            for (var f2:Number = 0; f2 < 50; f2++) {
+                _root.物品栏.背包.add(f2, org.flashNight.arki.item.BaseItem.create(REWARD, 1));
+            }
+            _root.关卡可获得奖励品 = [[intel, 1, 1], [equip, 1, 1]];
+            StageRunSession.begin("满包回滚检验", "困难");
+            StageRunSession.finish("victory");
+            saveWriter.packGameState = function() { throw new Error("full_bag_pack_fail"); };
+            try {
+                assertFalse(StageRunSession.onReturnBaseStarted(),
+                    "pack failure rolls back mixed full-bag settlement");
+            } finally {
+                saveWriter.packGameState = originalPack;
+            }
+            assertTrue(_root.收集品栏.情报.getValue(intel) == 0
+                    && (RewardStashService.peek() == null
+                        || RewardStashStore.ownedQuantity(RewardStashService.peek(), equip) == 0),
+                "not_committed rollback reverts both direct intel and stashed equipment");
+
+            _root.强制存盘 = function() { return "pending"; };
+            _root.存档系统.flushBeforeTransition = _root.强制存盘;
+            assertFalse(StageRunSession.onReturnBaseStarted(),
+                "unknown save parks mixed full-bag candidate");
+            var pendingOp:String = RewardStashService.pendingOperationId();
+            assertTrue(pendingOp != ""
+                    && (RewardStashService.committedFeature() == null
+                        || RewardStashStore.ownedQuantity(RewardStashService.committedFeature(), equip) == 0),
+                "unknown save hides unconfirmed stashed equipment from committedFeature");
+            SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true});
+            assertTrue(RewardStashService.resume(pendingOp).success
+                    && _root.收集品栏.情报.getValue(intel) == 1
+                    && RewardStashStore.ownedQuantity(RewardStashService.peek(), equip) == 1,
+                "resuming unknown mixed settlement lands both intel and stashed equipment once");
+        } finally {
+            org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(null);
+        }
     }
 
     private static function testRestoredInformationOverflow():Void {
@@ -4109,7 +4209,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                 && second.returnRequested === true
                 && second.inventory == null && inventory.size() == 1
                 && String(second.settlementId) == settlementId
-                && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1,
+                && ownedRewardTotal(REWARD) == 1
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 0,
             "durable retry reuses one settlement id and reward object without rerolling");
         delete _root.__stageRunSessionTestFlushCalls;
     }
@@ -4356,7 +4457,8 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "late terminal cleanup recognizes an already stashed source");
         assertTrue(store.pending == null && store.lastTerminal.settlementId == settlementId
                 && store.lastTerminal.terminalState == "stashed"
-                && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 1,
+                && ownedRewardTotal(REWARD) == 1
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(),REWARD) == 0,
             "terminal marker preserves stash finality and its single asset owner");
         var duplicate:Object = StageRunSession.clearPersistedSettlement(
             settlementId, "stashed", null);
@@ -4410,10 +4512,11 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "not_committed rollback restores the exact persisted pending record");
         assertTrue(StageRunSession.hasPersistedSettlementPending(),
             "not_committed keeps persisted settlement authority");
-        assertTrue(RewardStashService.committedFeature() == null
+        assertTrue((RewardStashService.committedFeature() == null
                 || RewardStashStore.ownedQuantity(
-                    RewardStashService.committedFeature(), REWARD) == 0,
-            "not_committed exposes no stashed stock");
+                    RewardStashService.committedFeature(), REWARD) == 0)
+                && ownedRewardTotal(REWARD) == 0,
+            "not_committed exposes no stashed or inventory stock");
         assertEquals("", RewardStashService.pendingOperationId(),
             "not_committed releases the reward commit lock");
         assertTrue(findDiagLine(StageRunSession._getSettlementDiagForTest(),
@@ -4470,8 +4573,9 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "committed candidate releases the run to stashed terminal state");
         assertEquals("", RewardStashService.pendingOperationId(),
             "resolved candidate releases the reward commit lock");
-        assertTrue(RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD) == 1,
-            "resolved candidate lands the exact stashed reward");
+        assertTrue(ownedRewardTotal(REWARD) == 1
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), REWARD) == 0,
+            "resolved candidate lands the exact reward in backpack");
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "resolved stash lets the same return request proceed");
 

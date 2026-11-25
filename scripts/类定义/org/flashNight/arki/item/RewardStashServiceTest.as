@@ -89,7 +89,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         check(RewardStashStore.normalize(empty).ok && empty.entries instanceof Array, "known empty AMF shape normalized");
     }
     private static function testSourceTransactions():Void {
-        var keys:Array = ["savePath", "允许存档", "角色名", "等级", "基础身价值", "身价", "存档系统", "mydata", "_saveExt", "暂停", "UpdateTaskProgress", "物品栏", "收集品栏", "金钱", "虚拟币", "经验值", "技能点数", "gameworld", "主角被动技能", "商城已购买物品", "UI系统", "tasks_to_do", "tasks_finished", "task_chains_progress", "等级限制", "根据等级得升级所需经验", "根据等级计算获得技能点", "提交任务完成状态", "投影已提交任务成长", "taskCompleteCheck", "isChallengeMode", "_lastTaskFinishError", "__stashGrowthNotices"];
+        var keys:Array = ["savePath", "允许存档", "角色名", "等级", "基础身价值", "身价", "存档系统", "mydata", "_saveExt", "暂停", "UpdateTaskProgress", "物品栏", "收集品栏", "金钱", "虚拟币", "经验值", "技能点数", "gameworld", "主角被动技能", "商城已购买物品", "UI系统", "tasks_to_do", "tasks_finished", "task_chains_progress", "等级限制", "根据等级得升级所需经验", "根据等级计算获得技能点", "提交任务完成状态", "投影已提交任务成长", "taskCompleteCheck", "isChallengeMode", "_lastTaskFinishError", "__stashGrowthNotices", "发布消息"];
         var previous:Object = {};
         for (var i:Number = 0; i < keys.length; i++) previous[keys[i]] = _root[keys[i]];
         var tasksBefore:Object = TaskUtil.tasks;
@@ -159,19 +159,25 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             sm._configureSaveFlowForTest({flushResult:true});
             check(RewardStashService.resume(RewardStashService.pendingOperationId()).success && box.killedCount == 1, "map resolves then ends entity once");
             var owned:Number = RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试材料");
+            var matOwned:Number = _root.收集品栏.材料.getValue("暂存测试材料");
             check(MapChestStashService.open(box, kill).success && box.killedCount == 1
-                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试材料") == owned, "duplicate source cannot grant again");
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试材料") == owned
+                && _root.收集品栏.材料.getValue("暂存测试材料") == matOwned, "duplicate source cannot grant again");
             // 模拟保存成功后动画前的同源恢复：只看保存的消费证明，不靠死亡布尔值。
             delete box.__rewardStashCommitted; delete box.__rewardStashEnded;
             check(MapChestStashService.open(box, kill).success
-                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试材料") == owned, "durable map proof survives lost visual marker");
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试材料") == owned
+                && _root.收集品栏.材料.getValue("暂存测试材料") == matOwned, "durable map proof survives lost visual marker");
             check(so.data[SaveManager.SAVE_KEY].shop.商城已购买物品.length == 0 && so.data.商城已购买物品.length == 0, "full save keeps empty K mirrors equal");
             testTaskTurnIn(sm);
             testLegacyK(sm, so);
             testPacks(sm);
             testConstellations(sm);
             testHistoricalKey(sm, so);
+            testDirectDeliveryPreferences(sm);
         } finally {
+            org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(null);
+            RewardInboxService.setStashDelivery(null);
             if (RewardStashService.pendingOperationId() != "") {
                 sm._configureSaveFlowForTest({flushResult:true}); RewardStashService.resume(RewardStashService.pendingOperationId());
             }
@@ -257,6 +263,128 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         return {task:"cmd",action:"itemUseStashOpenMany",callId:1,v:2,panelInstanceId:"type61.star",sessionGeneration:1,
             operationId:op,storeId:store.storeId,expectedRevision:store.commitRevision,count:count,
             source:{physicalSlot:49,slotLease:String(snapshot.slots[49].slotLease),itemName:"61计划星座机缘箱",backpackVersion:Number(snapshot.containerVersion)}};
+    }
+    private static function testDirectDeliveryPreferences(sm:SaveManager):Void {
+        var bag:Object = _root.物品栏.背包;
+        var clearBag:Function = function():Void {
+            var ids:Array = bag.getIndexes();
+            for (var i:Number = 0; i < ids.length; i++) bag.remove(ids[i]);
+        };
+        var fillBag:Function = function():Void {
+            clearBag();
+            for (var i:Number = 0; i < 50; i++) bag.add(i, BaseItem.create("暂存测试装备", 1));
+        };
+        var notices:Array = [];
+        _root.发布消息 = function(text:String):Void { notices.push(String(text)); };
+        _root.收集品栏.材料 = new org.flashNight.arki.item.itemCollection.DictCollection(null);
+        _root.收集品栏.情报 = new org.flashNight.arki.item.itemCollection.InformationCollection(null);
+        delete _root._saveExt.rewardInbox;
+        clearBag();
+        for (var k:Number = 0; k < 49; k++) bag.add(k, BaseItem.create("暂存测试装备", 1));
+
+        var observedReasons:Array = [];
+        org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            for (var e:Number = 0; e < receipt.effects.length; e++) {
+                observedReasons.push(receipt.effects[e].name + ":" + receipt.effects[e].reason);
+            }
+        });
+        var admitCtx:Object = {source:"stage_settlement", reason:"stage_reward_stashed",
+            inventoryReason:"stage_reward_acquired", operationId:"pref.direct.1"};
+        check(RewardStashService.begin("pref.direct.1", admitCtx, null, null)
+                && RewardStashService.admit([
+                    {name:"暂存测试材料", value:2, lastUpdate:1},
+                    {name:"暂存测试装备", value:{level:2, tier:"", mods:[], shots:1}, lastUpdate:2},
+                    {name:"暂存测试装备", value:{level:3, tier:"", mods:[], shots:2}, lastUpdate:3}
+                ], true, true, admitCtx)
+                && RewardStashService.end("pref.direct.1", {success:true}, "stage.return_base").success,
+            "mixed admit splits directly acquired and overflow stashed items");
+        var stats:Object = RewardStashService.lastAdmitStats();
+        var reasonsText:String = "|" + observedReasons.join("|") + "|";
+        check(stats != null && stats.directCount == 2 && stats.stashedCount == 1
+                && _root.收集品栏.材料.getValue("暂存测试材料") == 2
+                && bag.getItem(49).value.level == 2
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == 1
+                && reasonsText.indexOf("|暂存测试材料:stage_reward_acquired|") >= 0
+                && reasonsText.indexOf("|暂存测试装备:stage_reward_acquired|") >= 0
+                && reasonsText.indexOf("|暂存测试装备:stage_reward_stashed|") >= 0,
+            "admit records distinct direct vs stashed stats and transaction reasons");
+        org.flashNight.arki.item.PlayerAssetTransaction.setTestSink(null);
+
+        _root.gameworld = {}; MapChestStashService.beginWorld(_root.gameworld);
+        var noopKill:Function = function(target:Object):Boolean { return true; };
+        clearBag();
+        var chestDirect:Object = {presetName:"装备箱", row:1, col:1,
+            掉落物:[{名字:"暂存测试装备", 最小数量:1, 最大数量:1, 总数:1}]};
+        var stashBefore:Number = RewardStashService.peek().entries.length;
+        notices = [];
+        check(MapChestStashService.open(chestDirect, noopKill).success
+                && ItemUtil.getTotal("暂存测试装备") == 1
+                && RewardStashService.peek().entries.length == stashBefore
+                && notices[notices.length - 1] == "箱中物资已收入背包或收集品栏。",
+            "map chest prefers empty backpack and reports direct collection");
+
+        fillBag();
+        var chestFull:Object = {presetName:"装备箱", row:1, col:2,
+            掉落物:[{名字:"暂存测试装备", 最小数量:1, 最大数量:1, 总数:1}]};
+        notices = [];
+        check(MapChestStashService.open(chestFull, noopKill).success
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == 2
+                && notices[notices.length - 1] == "箱中物资已存入暂存区。",
+            "map chest falls back to stash on full bag and reports stashed");
+
+        var chestMixed:Object = {presetName:"装备箱", row:1, col:3,
+            掉落物:[{名字:"暂存测试材料", 最小数量:3, 最大数量:3, 总数:3},
+                {名字:"暂存测试装备", 最小数量:1, 最大数量:1, 总数:1}]};
+        notices = [];
+        check(MapChestStashService.open(chestMixed, noopKill).success
+                && _root.收集品栏.材料.getValue("暂存测试材料") == 5
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == 3
+                && notices[notices.length - 1] == "箱中部分物资已领取，其余已存入暂存区。",
+            "map chest splits materials directly and equipment to stash with partial notice");
+
+        ItemUtil.itemDataDict["满上限情报"] = {name:"满上限情报", type:"收集品", use:"情报",
+            displayname:"满上限情报", icon:"a", price:100, maxvalue:1};
+        ItemUtil.informationMaxValueDict["满上限情报"] = 1;
+        _root.收集品栏.情报.add("满上限情报", 1);
+        var moneyBefore:Number = Number(_root.金钱);
+        var chestConverted:Object = {presetName:"装备箱", row:1, col:4,
+            掉落物:[{名字:"满上限情报", 最小数量:1, 最大数量:1, 总数:1}]};
+        stashBefore = RewardStashService.peek().entries.length;
+        notices = [];
+        check(MapChestStashService.open(chestConverted, noopKill).success
+                && Number(_root.金钱) == moneyBefore
+                && RewardStashService.peek().entries.length == stashBefore
+                && notices[notices.length - 1] == "箱中物资已领取。",
+            "map chest truncates capped intel without stashing and announces direct claim");
+
+        ItemUtil.itemDataDict["在线补给包·Ⅰ"] = {name:"在线补给包·Ⅰ", type:"消耗品", use:"礼包",
+            displayname:"在线补给包·Ⅰ", icon:"a", data:{level:1}};
+        ItemUtil.itemDataDict["在线补给包·Ⅱ"] = {name:"在线补给包·Ⅱ", type:"消耗品", use:"礼包",
+            displayname:"在线补给包·Ⅱ", icon:"a", data:{level:1}};
+        RewardInboxService.setStashDelivery(RewardStashService.deliverSupply);
+        clearBag();
+        notices = [];
+        var s1:Object = RewardInboxService.deliverOnlineSupplyPack("在线补给包·Ⅰ", "christmas_tree:online-10m");
+        RewardInboxService.requestOpenPanel();
+        check(s1.success && s1.duplicate === false && s1.stashed === false
+                && ItemUtil.getTotal("在线补给包·Ⅰ") == 1
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "在线补给包·Ⅰ") == 0
+                && notices[notices.length - 1] == "补给已收入背包。",
+            "online supply enters empty backpack directly without stashing");
+        var s1Dup:Object = RewardInboxService.deliverOnlineSupplyPack("在线补给包·Ⅰ", "christmas_tree:online-10m");
+        check(s1Dup.success && s1Dup.duplicate === true
+                && ItemUtil.getTotal("在线补给包·Ⅰ") == 1,
+            "duplicate online supply sourceKey replays without granting twice");
+        fillBag();
+        notices = [];
+        var s2:Object = RewardInboxService.deliverOnlineSupplyPack("在线补给包·Ⅱ", "christmas_tree:online-20m");
+        RewardInboxService.requestOpenPanel();
+        check(s2.success && s2.duplicate === false && s2.stashed === true
+                && ItemUtil.getTotal("在线补给包·Ⅱ") == 0
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), "在线补给包·Ⅱ") == 1
+                && notices[notices.length - 1] == "补给已存入暂存区，可从物品页整理。",
+            "online supply falls back to stash on full bag and preserves stash notice");
+        RewardInboxService.setStashDelivery(null);
     }
     private static function starRecipe():Object {
         var names:Array=["光剑天秤","光斧金牛","光刀狮子","光刃摩羯","血色光剑天秤"],entries:Array=[];
