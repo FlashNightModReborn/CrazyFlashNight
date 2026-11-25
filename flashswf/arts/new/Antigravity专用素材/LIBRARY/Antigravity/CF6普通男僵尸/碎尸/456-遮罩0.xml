@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/456-遮罩0" itemID="6af00000-4e546551" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6普通男僵尸/碎尸/456-遮罩0" itemID="6af00000-4e546551" symbolType="graphic">
   <timeline>
     <DOMTimeline name="456-遮罩0">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-1587 930|-1591 928|-1592 927|-1612 906|-1615 897|-1640 893|-1654 909|-1666 943|-1674 946[-1685 986 -1659 1033|-1657 1035|-1578 1021|-1569 1022|-1548 1024[-1538 984 -1551 940|-1587 929|-1587 930" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-1587 930|-1591 928!-1591 928|-1592 927!-1592 927|-1612 906!-1612 906|-1615 897!-1615 897|-1640 893!-1640 893|-1654 909!-1654 909|-1666 943!-1666 943|-1674 946!-1674 946[-1685 986 -1659 1033!-1659 1033|-1657 1035!-1657 1035|-1578 1021
+!-1578 1021|-1569 1022!-1569 1022|-1548 1024!-1548 1024[-1538 984 -1551 940!-1551 940|-1587 929!-1587 929|-1587 930"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -27,7 +27,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/394-小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.050437" b="-0.219344" c="0.219344" d="-0.050437" tx="-105.519459" ty="51.602388"/>
+                    <Matrix a="-0.0504302978515625" b="-0.219329833984375" c="0.219329833984375" d="-0.0504302978515625" tx="-105.5" ty="51.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

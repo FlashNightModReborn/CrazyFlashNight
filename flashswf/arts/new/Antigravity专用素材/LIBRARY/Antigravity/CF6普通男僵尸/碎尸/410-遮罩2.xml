@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/410-遮罩2" itemID="6af00000-d05d477e" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6普通男僵尸/碎尸/410-遮罩2" itemID="6b05989e-0000318e" symbolType="graphic">
   <timeline>
     <DOMTimeline name="410-遮罩2">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,9 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-714 -1477|-723 -1490|-731 -1477|-732 -1477|-733 -1476|-719 -1443|-718 -1439[-703 -1417 -678 -1400[-626 -1369 -563 -1357|-542 -1354|-566 -1382|-572 -1388|-575 -1392|-578 -1393|-615 -1458|-623 -1452|-642 -1469|-651 -1471|-655 -1471|-656 -1472|-661 -1479|-681 -1483|-691 -1476|-694 -1474|-697 -1475|-714 -1477" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-578 -1393|-615 -1458!-615 -1458|-623 -1452!-623 -1452|-642 -1469!-642 -1469|-651 -1471!-651 -1471|-655 -1471!-655 -1471|-656 -1472!-656 -1472|-661 -1479!-661 -1479|-681 -1483!-681 -1483|-691 -1476!-691 -1476|-694 -1474!-694 -1474|-697
+ -1475!-697 -1475|-714 -1477!-714 -1477|-723 -1490!-723 -1490|-731 -1477!-731 -1477|-732 -1477!-732 -1477|-733 -1476!-733 -1476|-719 -1443!-719 -1443|-718 -1439!-718 -1439[-703 -1417 -678 -1400!-678 -1400[-626 -1369 -563 -1357!-563 -1357
+|-542 -1354!-542 -1354|-566 -1382!-566 -1382|-572 -1388!-572 -1388|-575 -1392!-575 -1392|-578 -1393"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -27,7 +28,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/401-头部" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.199093" b="-0.143311" c="0.143311" d="0.199093" tx="-31.457217" ty="-59.445517"/>
+                    <Matrix a="0.199081420898438" b="-0.143310546875" c="0.143310546875" d="0.199081420898438" tx="-31.45" ty="-59.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

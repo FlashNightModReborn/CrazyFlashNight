@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/438-遮罩6" itemID="6af00000-abe78462" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6普通男僵尸/碎尸/438-遮罩6" itemID="6b05989e-000031bd" symbolType="graphic">
   <timeline>
     <DOMTimeline name="438-遮罩6">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-2155 1096|-2137 1113|-2137 1123|-2136 1123|-2125 1102|-2089 1114[-2030 1140 -1979 1180|-1933 1131[-1945 1108 -1974 1098|-1998 1085|-2008 1076|-2009 1074|-2010 1064[-2088 1065 -2155 1096" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-2010 1064[-2088 1065 -2155 1096!-2155 1096|-2137 1113!-2137 1113|-2137 1123!-2137 1123|-2136 1123!-2136 1123|-2125 1102!-2125 1102|-2089 1114!-2089 1114[-2030 1140 -1979 1180!-1979 1180|-1933 1131!-1933 1131[-1945 1108 -1974 1098!-1974
+ 1098|-1998 1085!-1998 1085|-2008 1076!-2008 1076|-2009 1074!-2009 1074|-2010 1064"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -27,7 +27,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/393-脚靴" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.198056" b="-0.106535" c="0.106531" d="-0.198057" tx="-104.833876" ty="63.731298"/>
+                    <Matrix a="-0.198043823242188" b="-0.106521606445313" c="0.106521606445313" d="-0.198043823242188" tx="-104.8" ty="63.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

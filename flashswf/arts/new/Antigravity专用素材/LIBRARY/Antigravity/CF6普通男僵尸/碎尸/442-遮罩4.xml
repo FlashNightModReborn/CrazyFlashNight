@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/442-遮罩4" itemID="6af00000-285adae4" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6普通男僵尸/碎尸/442-遮罩4" itemID="6af00000-285adae4" symbolType="graphic">
   <timeline>
     <DOMTimeline name="442-遮罩4">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-1779 1046[-1802 1035 -1820 1029[-1865 1026 -1879 1064|-1880 1091|-1861 1101|-1854 1107|-1816 1134|-1794 1122|-1772 1111|-1770 1091[-1768 1066 -1779 1046" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-1779 1046[-1802 1035 -1820 1029!-1820 1029[-1865 1026 -1879 1064!-1879 1064|-1880 1091!-1880 1091|-1861 1101!-1861 1101|-1854 1107!-1854 1107|-1816 1134!-1816 1134|-1794 1122!-1794 1122|-1772 1111!-1772 1111|-1770 1091!-1770 1091[-1768
+ 1066 -1779 1046"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -27,7 +27,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/394-小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.105489" b="-0.198814" c="0.198814" d="-0.105489" tx="-98.458663" ty="55.425036"/>
+                    <Matrix a="-0.105484008789063" b="-0.198806762695313" c="0.198806762695313" d="-0.105484008789063" tx="-98.45" ty="55.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1639-遮罩7" itemID="6af00000-2b2360c9" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6女僵尸/碎尸/1639-遮罩7" itemID="6af00000-2b2360c9" symbolType="graphic">
   <timeline>
     <DOMTimeline name="1639-遮罩7">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-1447 -1241|-1470 -1241|-1468 -1232|-1452 -1213|-1439 -1206|-1445 -1206|-1440 -1204|-1438 -1205|-1439 -1206|-1436 -1211[-1432 -1229 -1447 -1241" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-1470 -1241|-1468 -1232!-1468 -1232|-1452 -1213!-1452 -1213|-1439 -1206!-1439 -1206|-1436 -1211!-1436 -1211[-1432 -1229 -1447 -1241!-1447 -1241|-1470 -1241"/>
+                    <Edge fillStyle1="1" edges="!-1439 -1206|-1438 -1205!-1438 -1205|-1440 -1204!-1440 -1204|-1445 -1206!-1445 -1206|-1439 -1206"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -25,9 +25,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部母版" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Antigravity/1627-头部母版" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.127044" b="-0.147508" c="0.147508" d="0.127044" tx="-125.15" ty="-55.55"/>
+                    <Matrix a="0.127029418945313" b="-0.147506713867188" c="0.147506713867188" d="0.127029418945313" tx="-125.15" ty="-55.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

@@ -1,83 +1,82 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/敌人-CF6女僵尸" itemID="6af00000-7c9e1b86" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="敌人-CF6女僵尸">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6女僵尸/敌人-CF6女僵尸" itemID="6af00000-7c9e1b86" linkageExportForAS="true" linkageIdentifier="敌人-CF6女僵尸" lastModified="1795528920">
   <timeline>
-    <DOMTimeline name="敌人-CF6女僵尸">
+    <DOMTimeline name="敌人-CF6女僵尸" currentFrame="114">
       <layers>
         <DOMLayer name="Labels Layer" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728" name="空手站立" labelType="name">
+            <DOMFrame index="1" name="空手站立" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728" duration="7">
+            <DOMFrame index="2" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="9728" name="空手行走" labelType="name">
+            <DOMFrame index="9" name="空手行走" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="10" keyMode="9728" duration="9">
+            <DOMFrame index="10" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" keyMode="9728" name="空手跑" labelType="name">
+            <DOMFrame index="19" name="空手跑" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="20" keyMode="9728" duration="9">
+            <DOMFrame index="20" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728" name="空手跳" labelType="name">
+            <DOMFrame index="29" name="空手跳" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="30" keyMode="9728" duration="11">
+            <DOMFrame index="30" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" keyMode="9728" name="空手攻击" labelType="name">
+            <DOMFrame index="41" name="空手攻击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" keyMode="9728" duration="9">
+            <DOMFrame index="42" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728" name="拾取" labelType="name">
+            <DOMFrame index="51" name="拾取" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="52" keyMode="9728" duration="9">
+            <DOMFrame index="52" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="61" keyMode="9728" name="躲闪" labelType="name">
+            <DOMFrame index="61" name="躲闪" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="62" keyMode="9728" duration="9">
+            <DOMFrame index="62" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" keyMode="9728" name="被击" labelType="name">
+            <DOMFrame index="71" name="被击" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" keyMode="9728" duration="7">
+            <DOMFrame index="72" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" keyMode="9728" duration="9" name="击倒" labelType="name">
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="88" keyMode="9728" duration="7" name="倒地" labelType="name">
+            <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="95" keyMode="9728" name="被投" labelType="name">
+            <DOMFrame index="95" name="被投" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="96" keyMode="9728" duration="8">
+            <DOMFrame index="96" duration="8" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="104" keyMode="9728" name="血腥死" labelType="name">
+            <DOMFrame index="104" name="血腥死" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="105" keyMode="9728" duration="15">
+            <DOMFrame index="105" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" name="消失" labelType="name">
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="121" keyMode="9728" duration="6">
+            <DOMFrame index="121" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -103,7 +102,7 @@ if(this.配置音效)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728" duration="118">
+            <DOMFrame index="2" duration="118" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="120" keyMode="9728">
@@ -113,14 +112,14 @@ if(this.配置音效)
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="121" keyMode="9728" duration="6">
+            <DOMFrame index="121" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="文字信息层" color="#4FFF4F" locked="true">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="120">
+            <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/共用/人物文字信息" name="人物文字信息">
                   <matrix>
@@ -132,18 +131,18 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" duration="7">
+            <DOMFrame index="120" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="碰撞箱area层" color="#4FFF4F" outline="true" useOutlineView="true">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="88">
+            <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/共用/area框" name="area">
                   <matrix>
-                    <Matrix a="2.117157" d="5.482483" tx="-26.45" ty="-126.5"/>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -151,11 +150,11 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="88" keyMode="9728" duration="7">
+            <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/共用/area框" name="area">
                   <matrix>
-                    <Matrix a="5.723862" d="1.680969" tx="-63.6" ty="-31.65"/>
+                    <Matrix a="5.72386169433594" d="1.68095397949219" tx="-63.6" ty="-31.65"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -163,14 +162,14 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="95" keyMode="9728" duration="32">
+            <DOMFrame index="95" duration="32" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="思考标签层" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="29">
+            <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/共用/思考标签">
                   <matrix>
@@ -182,18 +181,18 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728" duration="98">
+            <DOMFrame index="29" duration="98" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="行走控制块层" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="29">
+            <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/共用/控制块" name="控制块">
                   <matrix>
-                    <Matrix a="0.014465" d="0.015854" tx="-31.5" ty="-21"/>
+                    <Matrix a="0.0144500732421875" d="0.0158538818359375" tx="-31.5" ty="-21"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -210,21 +209,21 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728" duration="98">
+            <DOMFrame index="29" duration="98" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="被投area层" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="95">
+            <DOMFrame index="0" duration="95" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="95" keyMode="9728" duration="9">
+            <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/共用/被投旋转area" name="area">
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/被投旋转area" name="area" centerPoint3DY="-59.8">
                   <matrix>
-                    <Matrix a="2.117157" d="5.486511"/>
+                    <Matrix a="2.11715698242188" d="5.48649597167969"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -238,16 +237,16 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" keyMode="9728" duration="23">
+            <DOMFrame index="104" duration="23" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动作man层" color="#4FFF4F">
+        <DOMLayer name="动作man层" color="#4FFF4F" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="9">
+            <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/站立" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/站立" name="man" centerPoint3DX="7.6" centerPoint3DY="-59.55">
                   <matrix>
                     <Matrix tx="7.5" ty="-59.55"/>
                   </matrix>
@@ -266,9 +265,9 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" keyMode="9728" duration="10">
+            <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/行走" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/行走" name="man">
                   <matrix>
                     <Matrix tx="5.85" ty="-60.55"/>
                   </matrix>
@@ -281,9 +280,9 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" keyMode="9728" duration="10">
+            <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/行走" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/行走" name="man">
                   <matrix>
                     <Matrix tx="5.85" ty="-60.55"/>
                   </matrix>
@@ -296,12 +295,12 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728" duration="12">
+            <DOMFrame index="29" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="41" keyMode="9728" duration="10">
+            <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/攻击" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/攻击" name="man">
                   <matrix>
                     <Matrix tx="4.25" ty="-63.55"/>
                   </matrix>
@@ -314,12 +313,12 @@ if(this.配置音效)
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728" duration="10">
+            <DOMFrame index="51" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="61" keyMode="9728" duration="10">
+            <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/站立" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/站立" name="man">
                   <matrix>
                     <Matrix tx="7.5" ty="-59.55"/>
                   </matrix>
@@ -342,9 +341,9 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" keyMode="9728" duration="8">
+            <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/被击" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/被击" name="man">
                   <matrix>
                     <Matrix tx="8.95" ty="-59.95"/>
                   </matrix>
@@ -363,9 +362,9 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" keyMode="9728" duration="9">
+            <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/击倒" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/击倒" name="man" centerPoint3DX="0.15" centerPoint3DY="-63.8">
                   <matrix>
                     <Matrix tx="5.5" ty="-59"/>
                   </matrix>
@@ -384,9 +383,9 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="88" keyMode="9728" duration="7">
+            <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/倒地" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/倒地" name="man" centerPoint3DX="6.7" centerPoint3DY="-65.2">
                   <matrix>
                     <Matrix tx="5.5" ty="-59"/>
                   </matrix>
@@ -404,12 +403,9 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="95" keyMode="9728" duration="9">
+            <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/被投" name="man">
-                  <matrix>
-                    <Matrix/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="Antigravity/被投" name="man">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
@@ -425,9 +421,9 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" keyMode="9728" duration="16">
+            <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/动作/血腥死" name="man">
+                <DOMSymbolInstance libraryItemName="Antigravity/血腥死" name="man" selected="true" centerPoint3DX="6.45" centerPoint3DY="-59.15">
                   <matrix>
                     <Matrix tx="7" ty="-60.15"/>
                   </matrix>
@@ -447,18 +443,18 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" duration="7">
+            <DOMFrame index="120" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="接地阴影层" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="79">
+            <DOMFrame index="0" duration="79" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/共用/接地阴影">
                   <matrix>
-                    <Matrix a="0.319611" d="0.130127" tx="-3.5" ty="-0.35"/>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-3.5" ty="-0.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -482,7 +478,7 @@ onClipEvent(unload){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" keyMode="9728" duration="48">
+            <DOMFrame index="79" duration="48" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

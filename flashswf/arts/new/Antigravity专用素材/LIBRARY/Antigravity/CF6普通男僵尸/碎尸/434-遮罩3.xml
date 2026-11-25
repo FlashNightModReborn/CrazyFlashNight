@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/434-遮罩3" itemID="6af00000-a732fa02" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6普通男僵尸/碎尸/434-遮罩3" itemID="6b05989e-000031af" symbolType="graphic">
   <timeline>
     <DOMTimeline name="434-遮罩3">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-1520 997|-1521 1006|-1523 1027|-1438 1024|-1428 988|-1429 988|-1427 984|-1426 983|-1405 963|-1396 960|-1392 935|-1408 921|-1442 909|-1445 901[-1485 890 -1532 916|-1534 919|-1520 997" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-1534 919|-1520 997!-1520 997|-1521 1006!-1521 1006|-1523 1027!-1523 1027|-1438 1024!-1438 1024|-1428 988!-1428 988|-1429 988!-1429 988|-1427 984!-1427 984|-1426 983!-1426 983|-1405 963!-1405 963|-1396 960!-1396 960|-1392 935!-1392 935
+|-1408 921!-1408 921|-1442 909!-1442 909|-1445 901!-1445 901[-1485 890 -1532 916!-1532 916|-1534 919"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -27,7 +27,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/394-小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.219343" b="-0.050437" c="0.050437" d="0.219343" tx="-76.552484" ty="23.23042"/>
+                    <Matrix a="0.219329833984375" b="-0.0504302978515625" c="0.0504302978515625" d="0.219329833984375" tx="-76.55" ty="23.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

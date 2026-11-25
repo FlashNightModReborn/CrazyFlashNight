@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1639-遮罩2" itemID="6af00000-56832a2e" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6女僵尸/碎尸/1639-遮罩2" itemID="6af00000-56832a2e" symbolType="graphic">
   <timeline>
     <DOMTimeline name="1639-遮罩2">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-1274 -1569|-1278 -1573|-1288 -1588|-1314 -1579|-1314 -1564|-1307 -1551|-1291 -1540[-1284 -1526 -1272 -1526|-1274 -1569" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-1274 -1569|-1278 -1573!-1278 -1573|-1288 -1588!-1288 -1588|-1314 -1579!-1314 -1579|-1314 -1564!-1314 -1564|-1307 -1551!-1307 -1551|-1291 -1540!-1291 -1540[-1284 -1526 -1272 -1526!-1272 -1526|-1274 -1569"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -25,9 +24,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部母版" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Antigravity/1627-头部母版" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.194138" b="-0.014471" c="0.014471" d="0.194138" tx="-98.95" ty="-97.1"/>
+                    <Matrix a="0.194137573242188" b="-0.01446533203125" c="0.01446533203125" d="0.194137573242188" tx="-98.95" ty="-97.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

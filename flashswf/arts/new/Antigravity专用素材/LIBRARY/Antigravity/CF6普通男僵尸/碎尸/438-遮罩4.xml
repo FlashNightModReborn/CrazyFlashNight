@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/438-遮罩4" itemID="6af00000-ec027320" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6普通男僵尸/碎尸/438-遮罩4" itemID="6b05989e-000031bc" symbolType="graphic">
   <timeline>
     <DOMTimeline name="438-遮罩4">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-1870 1000|-1864 1020|-1863 1029|-1856 1075|-1831 1082|-1808 1090|-1793 1077[-1773 1061 -1768 1039|-1784 998[-1814 964 -1851 981|-1870 1000" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-1784 998[-1814 964 -1851 981!-1851 981|-1870 1000!-1870 1000|-1864 1020!-1864 1020|-1863 1029!-1863 1029|-1856 1075!-1856 1075|-1831 1082!-1831 1082|-1808 1090!-1808 1090|-1793 1077!-1793 1077[-1773 1061 -1768 1039!-1768 1039|-1784
+ 998"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -27,7 +27,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/394-小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.065991" b="-0.215176" c="0.215176" d="0.065991" tx="-97.299817" ty="47.488523"/>
+                    <Matrix a="0.06597900390625" b="-0.215164184570313" c="0.215164184570313" d="0.06597900390625" tx="-97.3" ty="47.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

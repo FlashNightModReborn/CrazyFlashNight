@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/1625-前臂-遮罩0" itemID="6af00000-3287d7b6" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="1625-前臂-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!145 -247[46 -292 -111 -275!-111 -275[-111 -265 -116 -260!-116 -260|-129 -251!-129 -251[-215 -209 -259 -119!-259 -119|-271 -115!-271 -115|-271 85!-271 85[-261 85 -256 90!-256 90[-251 95 -251 105!-251 105[-259 443 -214 725!-214 725|-211
+ 765!-211 765[-221 765 -226 770!-226 770|-235 777!-235 777[-265 791 -253 845!-253 845|-251 865!-251 865[-241 865 -236 870!-236 870|-226 880!-226 880|-191 905!-191 905|-191 925!-191 925|-191 945!-191 945[-171 1390 -190 1785!-190 1785|-191
+ 1825!-191 1825[-181 1825 -176 1830!-176 1830|-166 1838!-166 1838[-141 1855 -111 1865!-111 1865|-96 1860!-96 1860|-91 1855!-91 1855[52 1881 189 1845!189 1845|189 1825!189 1825|188 1805!188 1805[163 1413 207 1005!207 1005|209 965!209 965
+|209 945!209 945|209 935!209 935[306 962 289 885!289 885|285 873!285 873|269 865!269 865[291 813 229 785!229 785|229 765!229 765|229 745!229 745[232 368 286 44!286 44|289 5!289 5|289 -15!289 -15|286 -34!286 -34[255 -131 206 -213!206 -213
+|189 -235!189 -235|153 -243!153 -243|145 -247"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/1625-前臂-遮罩1" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

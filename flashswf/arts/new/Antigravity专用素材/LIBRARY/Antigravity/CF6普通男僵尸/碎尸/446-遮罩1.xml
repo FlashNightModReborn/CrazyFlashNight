@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/446-遮罩1" itemID="6af00000-6a6e63d1" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6普通男僵尸/碎尸/446-遮罩1" itemID="6af00000-6a6e63d1" symbolType="graphic">
   <timeline>
     <DOMTimeline name="446-遮罩1">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-1356 1123|-1362 1126|-1391 1143|-1376 1150[-1330 1177 -1284 1181[-1268 1158 -1232 1161|-1213 1169|-1214 1149|-1214 1146|-1231 1130[-1265 1105 -1302 1092|-1356 1123" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-1214 1149|-1214 1146!-1214 1146|-1231 1130!-1231 1130[-1265 1105 -1302 1092!-1302 1092|-1356 1123!-1356 1123|-1362 1126!-1362 1126|-1391 1143!-1391 1143|-1376 1150!-1376 1150[-1330 1177 -1284 1181!-1284 1181[-1268 1158 -1232 1161!-1232
+ 1161|-1213 1169!-1213 1169|-1214 1149"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -27,7 +27,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/394-小腿" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.105489" b="-0.198814" c="0.198815" d="-0.105489" tx="-69.108445" ty="62.075158"/>
+                    <Matrix a="-0.105484008789063" b="-0.198806762695313" c="0.198806762695313" d="-0.105484008789063" tx="-69.1" ty="62.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

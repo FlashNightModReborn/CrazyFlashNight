@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1639-遮罩1" itemID="6af00000-20837b42" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6女僵尸/碎尸/1639-遮罩1" itemID="6af00000-20837b42" symbolType="graphic" lastModified="1795528896">
   <timeline>
     <DOMTimeline name="1639-遮罩1">
       <layers>
-        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" locked="true" current="true" isSelected="true" layerType="mask">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!-466 -1427|-464 -1428|-463 -1425|-463 -1432|-466 -1427" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!-466 -1427|-464 -1428!-464 -1428|-463 -1425!-463 -1425|-463 -1432!-463 -1432|-466 -1427"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -25,9 +24,9 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部母版" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Antigravity/1627-头部母版" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.183777" b="-0.064224" c="0.064224" d="0.183777" tx="-70.55" ty="-86.5"/>
+                    <Matrix a="0.18377685546875" b="-0.064208984375" c="0.064208984375" d="0.18377685546875" tx="-70.55" ty="-86.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

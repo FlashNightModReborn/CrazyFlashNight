@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1673" itemID="6af00000-e555149d" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6女僵尸/碎尸/1673" itemID="6b05989e-00003171" symbolType="graphic">
   <timeline>
     <DOMTimeline name="1673">
       <layers>
-        <DOMLayer name="原生矢量层" color="#4FFF4F">
+        <DOMLayer name="原生矢量层" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!1016 -440|1017 -443|1015 -440|1016 -440" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!1016 -440|1017 -443!1017 -443|1015 -440!1015 -440|1016 -440"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
@@ -24,7 +23,9 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!1385 46|1386 46|1381 46|1379 46|1379 47|1382 46|1385 46" fillStyle0="1"/>
+                    <Edge edges="!1386 46|1385 46"/>
+                    <Edge fillStyle0="1" fillStyle1="1" edges="!1385 46|1382 46"/>
+                    <Edge fillStyle0="1" edges="!1382 46|1381 46!1381 46|1379 46!1379 46|1379 47!1379 47|1382 46"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1671" itemID="6af00000-9157fc50" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Antigravity/CF6女僵尸/碎尸/1671" itemID="6b05989e-00003170" symbolType="graphic">
   <timeline>
     <DOMTimeline name="1671">
       <layers>
-        <DOMLayer name="原生矢量层" color="#4FFF4F">
+        <DOMLayer name="原生矢量层" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!506 -943|507 -944|507 -947|506 -943" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!506 -943|507 -944!507 -944|507 -947!507 -947|506 -943"/>
                   </edges>
                 </DOMShape>
                 <DOMShape isDrawingObject="true">
@@ -24,7 +23,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge edges="!986 -568|990 -569|990 -570|985 -569|983 -568|984 -567|986 -568" fillStyle0="1"/>
+                    <Edge fillStyle0="1" edges="!986 -568|990 -569!990 -569|990 -570!990 -570|985 -569!985 -569|983 -568!983 -568|984 -567!984 -567|986 -568"/>
                   </edges>
                 </DOMShape>
               </elements>
