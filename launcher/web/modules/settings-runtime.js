@@ -86,6 +86,189 @@
             dataUrl:value.dataUrl};
     }
 
+    function normalizeHitNumberPreview(value) {
+        if (!value || typeof value !== 'object' || value.v !== 1) return null;
+        var origin = typeof value.origin === 'string' ? value.origin.trim() : '';
+        if (!/^https:\/\/[a-z0-9.-]+$/i.test(origin)) return null;
+        var width = value.width;
+        var height = value.height;
+        if (!integer(width, 256, 640) || !integer(height, 144, 360)
+            || Math.abs(width * 9 - height * 16) > 16) return null;
+        if (!Array.isArray(value.presets) || value.presets.length < 1 || value.presets.length > 12) return null;
+        var presets = [];
+        var seen = {};
+        for (var i = 0; i < value.presets.length; i++) {
+            var row = value.presets[i];
+            if (!row || typeof row !== 'object' || !validOpaque(row.id) || seen[row.id]
+                || typeof row.label !== 'string' || !row.label.trim()
+                || typeof row.description !== 'string'
+                || !integer(row.durationMs, 500, 60000)
+                || !integer(row.representativeTimeMs, 0, row.durationMs)) return null;
+            seen[row.id] = true;
+            presets.push({
+                id:row.id,
+                label:row.label.trim(),
+                description:row.description.trim(),
+                durationMs:row.durationMs,
+                representativeTimeMs:row.representativeTimeMs
+            });
+        }
+        return {v:1, origin:origin, width:width, height:height, presets:presets};
+    }
+
+    function finiteInRange(value, min, max) {
+        return typeof value === 'number' && isFinite(value) && value >= min && value <= max;
+    }
+
+    function normalizeCameraPreview(value) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)
+            || typeof value.available !== 'boolean'
+            || !finiteInRange(value.stageWidth, 64, 8192)
+            || !finiteInRange(value.stageHeight, 64, 8192)) return null;
+        if (!value.available) {
+            return {available:false, stageWidth:value.stageWidth, stageHeight:value.stageHeight};
+        }
+        if (!finiteInRange(value.viewWidth, 1, 8192)
+            || !finiteInRange(value.viewHeight, 1, 8192)
+            || !finiteInRange(value.bgWidth, 1, 1000000)
+            || !finiteInRange(value.bgHeight, 1, 1000000)
+            || !finiteInRange(value.entryX, -1000000, 1000000)
+            || !finiteInRange(value.entryY, -1000000, 1000000)
+            || !finiteInRange(value.entryScale, 0.05, 20)
+            || !finiteInRange(value.targetX, -1000000, 1000000)
+            || !finiteInRange(value.targetY, -1000000, 1000000)
+            || typeof value.facingRight !== 'boolean'
+            || !finiteInRange(value.biasX, -1000000, 1000000)
+            || !finiteInRange(value.biasY, -1000000, 1000000)
+            || !finiteInRange(value.minZoom, 0, 20)) return null;
+        var viewport = null;
+        if (value.viewport !== null && value.viewport !== undefined) {
+            var vp = value.viewport;
+            if (!vp || typeof vp !== 'object' || Array.isArray(vp)
+                || !finiteInRange(vp.x, 0, 1) || !finiteInRange(vp.y, 0, 1)
+                || !finiteInRange(vp.minX, -1000000, 0) || !finiteInRange(vp.minY, -1000000, 0)
+                || !finiteInRange(vp.maxX, vp.minX, 0) || !finiteInRange(vp.maxY, vp.minY, 0)) return null;
+            viewport = {x:vp.x, y:vp.y, minX:vp.minX, minY:vp.minY, maxX:vp.maxX, maxY:vp.maxY};
+        }
+        return {
+            available:true,
+            stageWidth:value.stageWidth,
+            stageHeight:value.stageHeight,
+            viewWidth:value.viewWidth,
+            viewHeight:value.viewHeight,
+            bgWidth:value.bgWidth,
+            bgHeight:value.bgHeight,
+            entryX:value.entryX,
+            entryY:value.entryY,
+            entryScale:value.entryScale,
+            targetX:value.targetX,
+            targetY:value.targetY,
+            facingRight:value.facingRight,
+            biasX:value.biasX,
+            biasY:value.biasY,
+            minZoom:value.minZoom,
+            viewport:viewport
+        };
+    }
+
+    /**
+     * 与 AS2 HorizontalScroller.composeFrame() 同源的稳态镜头构图投影。
+     * 输出基于 transform-origin: 0 0 的 translate(tx%, ty%) scale(r) 参数，
+     * 严格复现角色朝向偏置、底部 64px 状态栏扣除、场景边界钳制与小图左上角贴齐。
+     */
+    function computeCameraPreviewTransform(options) {
+        options = options || {};
+        var basic = Number(options.basicZoomScale);
+        if (!isFinite(basic) || basic < 0.5 || basic > 3) basic = 1;
+        var dynamicOn = options.cameraZoomToggle === true;
+        var dynamicMult = dynamicOn && finiteInRange(Number(options.dynamicMultiplier), 1, 2)
+            ? Number(options.dynamicMultiplier) : 1;
+        var camera = normalizeCameraPreview(options.camera);
+        if (!camera || !camera.available) {
+            var baseline = Number(options.fallbackEntryScale);
+            if (!isFinite(baseline) || baseline < 0.05 || baseline > 20) baseline = 1;
+            var fallbackEffective = basic * dynamicMult;
+            var fallbackRelative = fallbackEffective / baseline;
+            var stageW = camera ? camera.stageWidth : 1024;
+            var stageH = camera ? camera.stageHeight : 576;
+            return {
+                mode:'fallback',
+                basicScale:basic,
+                effectiveScale:fallbackEffective,
+                entryScale:baseline,
+                relativeScale:fallbackRelative,
+                translateXPct:(1 - fallbackRelative) * 50,
+                translateYPct:(1 - fallbackRelative) * 50,
+                targetWorldX:0,
+                targetWorldY:0,
+                clampedX:false,
+                clampedY:false,
+                pinnedX:false,
+                pinnedY:false,
+                hudBandPct:(64 / stageH) * 100,
+                focusScreenXPct:50,
+                focusScreenYPct:50
+            };
+        }
+        var effectiveScale = basic * dynamicMult;
+        if (dynamicOn && camera.minZoom > 0 && effectiveScale < camera.minZoom) {
+            effectiveScale = camera.minZoom;
+        }
+        var viewW = camera.viewWidth;
+        var viewH = camera.viewHeight;
+        var effBgW = camera.bgWidth * effectiveScale;
+        var effBgH = camera.bgHeight * effectiveScale;
+        var minX = Math.ceil(viewW - effBgW);
+        var maxX = 0;
+        var minY = Math.ceil(viewH - effBgH);
+        var maxY = 0;
+
+        var halfScale = effectiveScale * 0.5;
+        var directionOffset = 100 / (halfScale > 1 ? halfScale : 1);
+        var tx = viewW * 0.5 + (camera.facingRight ? -directionOffset : directionOffset) + camera.biasX;
+        var ty = viewH - 100 + camera.biasY;
+        if (camera.viewport) {
+            tx = viewW * camera.viewport.x;
+            ty = viewH * camera.viewport.y;
+            minX = Math.max(minX, Math.ceil(camera.viewport.minX * effectiveScale));
+            minY = Math.max(minY, Math.ceil(camera.viewport.minY * effectiveScale));
+            maxX = Math.max(minX, Math.floor(camera.viewport.maxX * effectiveScale));
+            maxY = Math.max(minY, Math.floor(camera.viewport.maxY * effectiveScale));
+        }
+
+        var rawX = tx - camera.targetX * effectiveScale;
+        var rawY = ty - camera.targetY * effectiveScale;
+        var pinnedX = !(viewW < effBgW);
+        var pinnedY = !(viewH < effBgH);
+        var clampedXVal = pinnedX ? 0 : (rawX < minX ? minX : (rawX > maxX ? maxX : rawX));
+        var clampedYVal = pinnedY ? 0 : (rawY < minY ? minY : (rawY > maxY ? maxY : rawY));
+        var targetWorldX = clampedXVal < 0 ? ((clampedXVal - 0.5) | 0) : ((clampedXVal + 0.5) | 0);
+        var targetWorldY = clampedYVal < 0 ? ((clampedYVal - 0.5) | 0) : ((clampedYVal + 0.5) | 0);
+
+        var relativeScale = effectiveScale / camera.entryScale;
+        var translateXStage = targetWorldX - relativeScale * camera.entryX;
+        var translateYStage = targetWorldY - relativeScale * camera.entryY;
+        var hudBandPx = Math.max(0, camera.stageHeight - viewH);
+        return {
+            mode:'as2_exact',
+            basicScale:basic,
+            effectiveScale:effectiveScale,
+            entryScale:camera.entryScale,
+            relativeScale:relativeScale,
+            translateXPct:(translateXStage / camera.stageWidth) * 100,
+            translateYPct:(translateYStage / camera.stageHeight) * 100,
+            targetWorldX:targetWorldX,
+            targetWorldY:targetWorldY,
+            clampedX:!pinnedX && (rawX < minX || rawX > maxX),
+            clampedY:!pinnedY && (rawY < minY || rawY > maxY),
+            pinnedX:pinnedX,
+            pinnedY:pinnedY,
+            hudBandPct:(hudBandPx / camera.stageHeight) * 100,
+            focusScreenXPct:((targetWorldX + camera.targetX * effectiveScale) / camera.stageWidth) * 100,
+            focusScreenYPct:((targetWorldY + camera.targetY * effectiveScale) / camera.stageHeight) * 100
+        };
+    }
+
     function selectCheatHelpMarkdown(text, challengeMode) {
         text = String(text || '');
         if (!challengeMode) return text;
@@ -345,7 +528,9 @@
             modeLabel:String(response.modeLabel || '未知'),
             cheatHelp:Array.isArray(response.cheatHelp) ? copy(response.cheatHelp) : [],
             forceControls:response.forceControls && typeof response.forceControls === 'object'
-                ? copy(response.forceControls) : {}, previewActive:response.previewActive === true,
+                ? copy(response.forceControls) : {},
+            cameraPreview:normalizeCameraPreview(response.cameraPreview),
+            previewActive:response.previewActive === true,
             migrationPending:response.migrationPending === true,
             keyMigrationNotice:response.keyMigrationNotice};
     }
@@ -363,6 +548,21 @@
             || JSON.stringify(snapshot.keys.map(function(row) { return [row.id,row.keyCode]; }))
                 !== JSON.stringify(draft.keys.map(function(row) { return [row.id,row.keyCode]; }));
     }
+    function countGameChanges(snapshot, draft) {
+        if (!snapshot || !draft) return 0;
+        var count = 0;
+        var keys = Object.keys(snapshot.settings || {});
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            if (JSON.stringify(snapshot.settings[key]) !== JSON.stringify(draft.settings[key])) count++;
+        }
+        var snapKeys = snapshot.keys || [];
+        var draftKeys = draft.keys || [];
+        for (var k = 0; k < Math.min(snapKeys.length, draftKeys.length); k++) {
+            if (snapKeys[k].keyCode !== draftKeys[k].keyCode) count++;
+        }
+        return count;
+    }
     function keyLabel(code, allowedCodes) {
         for (var i = 0; i < (allowedCodes || []).length; i++)
             if (Number(allowedCodes[i].code) === Number(code)) return String(allowedCodes[i].name || code);
@@ -373,6 +573,9 @@
         parseAuthority:parseAuthority,reduceAuthority:reduceAuthority,persistenceView:persistenceView,
         validateKeyDraft:validateKeyDraft, validateKeyCandidate:validateKeyCandidate,
         normalizeSnapshot:normalizeSnapshot, normalizeFlashPreview:normalizeFlashPreview,
+        normalizeHitNumberPreview:normalizeHitNumberPreview,
+        normalizeCameraPreview:normalizeCameraPreview,
+        computeCameraPreviewTransform:computeCameraPreviewTransform,
         normalizePerformanceConfig:normalizePerformanceConfig,
         normalizePerformanceState:normalizePerformanceState,
         hasPerformanceChanges:hasPerformanceChanges,
@@ -380,5 +583,6 @@
         PERFORMANCE_HEIGHTS:PERFORMANCE_HEIGHTS.slice(),
         selectCheatHelpMarkdown:selectCheatHelpMarkdown,
         gameDraft:gameDraft, applyPayload:applyPayload, hasGameChanges:hasGameChanges,
+        countGameChanges:countGameChanges,
         keyLabel:keyLabel, copy:copy};
 });

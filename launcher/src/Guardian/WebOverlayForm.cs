@@ -1404,6 +1404,7 @@ namespace CF7Launcher.Guardian
         private BookshelfOriginalContent _bookshelfOriginalContent;
         private GymTrainingTask _gymTrainingTask;
         private SettingsTask _settingsTask;
+        private CF7Launcher.Guardian.HitNumbers.HitNumberPreviewSandbox _hitNumberPreviewSandbox;
         private EquipmentTuningTask _equipmentTuningTask;
         private ItemUseTask _itemUseTask;
         private CharacterBuildTask _characterBuildTask;
@@ -1843,6 +1844,11 @@ namespace CF7Launcher.Guardian
                 // 字体只允许通过 catalog exact-set handler 暴露；不再映射可枚举目录。
                 RuntimeFontCatalog.RegisterWebResources(_webView.CoreWebView2, "WebOverlayForm");
                 BookshelfOriginalWebResources.Register(_webView.CoreWebView2, () => _bookshelfOriginalContent);
+                _hitNumberPreviewSandbox ??= new CF7Launcher.Guardian.HitNumbers.HitNumberPreviewSandbox();
+                CF7Launcher.Guardian.HitNumbers.HitNumberPreviewWebResources.Register(
+                    _webView.CoreWebView2,
+                    () => _hitNumberPreviewSandbox,
+                    () => _settingsTask?.PanelInstanceId);
 
                 // 游戏素材虚拟主机：https://cfn-assets.local/ → {projectRoot}/flashswf/
                 TryRegisterGameAssetsVirtualHost(
@@ -4715,6 +4721,8 @@ namespace CF7Launcher.Guardian
                 _webReadinessDeadline?.Dispose();
                 _webReadinessDeadline = null;
                 _bookshelfOriginalContent?.Dispose();
+                _hitNumberPreviewSandbox?.Dispose();
+                _hitNumberPreviewSandbox = null;
                 if (_materialShopNavigationCoordinator != null)
                 {
                     _materialShopNavigationCoordinator
@@ -5121,6 +5129,7 @@ namespace CF7Launcher.Guardian
             _settingsTask = task;
             task.SetPostToWeb(PostToWeb);
             task.SetAuthorityResponseLeaseProvider(CaptureResponseSink);
+            task.SetPanelLifecycleEnded(() => _hitNumberPreviewSandbox?.ReleaseResources());
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 

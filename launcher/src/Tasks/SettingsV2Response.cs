@@ -84,6 +84,7 @@ namespace CF7Launcher.Tasks
                 || snapshot["defaultKeys"] is not JArray defaults || defaults.Count!=36 || snapshot["allowedKeyCodes"] is not JArray allowed
                 || snapshot["cheatHelp"] is not JArray || snapshot["forceControls"] is not JObject)return false;
             if(!Booleans((JObject)snapshot["forceControls"],"returnBaseAvailable","tryReviveAvailable","resurrectionRestricted"))return false;
+            if(!SettingsTask.IsValidOptionalCameraPreview(snapshot["cameraPreview"]))return false;
             if(!SettingsCanonical.TryEncode(settings,keys,false,out _) || ((string)snapshot["keyMigrationNotice"]).Length>160
                 || ((string)snapshot["keyMigrationNotice"]).Any(char.IsControl) || ((string)snapshot["modeLabel"]).Length>64
                 || allowed.Count>256 || ((JArray)snapshot["cheatHelp"]).Count>64)return false;

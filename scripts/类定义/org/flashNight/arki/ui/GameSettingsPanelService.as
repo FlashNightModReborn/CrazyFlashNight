@@ -691,6 +691,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             modeLabel:modeLabel(),
             cheatHelp:buildCheatHelp(),
             forceControls:buildForceControls(),
+            cameraPreview:org.flashNight.arki.camera.HorizontalScroller.buildPreviewSnapshot(),
             previewActive:_previewBaseline != undefined,
             keyMigrationNotice:buildKeyMigrationNotice()
         };

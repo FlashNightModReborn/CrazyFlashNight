@@ -340,7 +340,7 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 本机性能方案仅经绑定实例的 `settings.host_set` 写入：`performance={preset,mode,maxRenderHeight}`，预设为 `balanced/performance/quality`，模式为 `auto/fixed`；允许的高度集合以 `PerformancePolicy` 为准。
 `performanceUndo=true` 只撤销一次，是命令而非持久字段。snapshot 与这两种成功回包携同一 `{v:1,current,previous}` 状态；失败回滚两份本机配置，不写 Flash 存档，也不扩大欢迎页 `config_set` 白名单。
 切预设保留手填高度；配置保存与实际呈现确认分开，当前运行值见刘海屏。执行与验证见[动态分辨率与性能方案](perf/flash-compositor/README.md#动态分辨率与性能方案)。
-`tutorialsAutoOpen` 默认开启，作用于全部自动教程与玩家槽位。自动教程底栏的“关闭教程弹窗”或“设置 → 本机与 Web → 自动打开教程页面”都保存同一本机偏好；失败回滚。关闭后触发教程改为一次刘海屏通知提醒，手动帮助与场景操作图示继续可用。
+`tutorialsAutoOpen` 默认开启，作用于全部自动教程与玩家槽位。自动教程底栏的“关闭教程弹窗”或“设置 → 界面与音频 → 自动打开教程页面”都保存同一本机偏好；失败回滚。关闭后触发教程改为一次刘海屏通知提醒，手动帮助与场景操作图示继续可用。
 Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tutorial_preference_result` 窄协议：version 1、callId 与当前 exact panelInstanceId。只允许关闭自动弹窗，不能调用 Settings RPC、修改其他偏好或游戏状态；保存确认后关闭当前教程，结果未知不重发。
 
 <a id="打击伤害数字生产路径"></a> **打击伤害数字生产路径**：AS2 仍负责伤害结算，`HitNumberBatchProcessor` 仅发送结算后的逐段事实；C# `HitNumberRuntime` 是唯一表现状态机，负责短寿命状态、模式投影和世界行裁剪，`HitNumberOverlay` 消费 latest-wins frame 并以紧边界持久 DIB 绘制。打击数字不经过 V8；GameInput 与 Tooltip 分属独立 V8，Flash renderer 不再作为 fallback。
@@ -480,14 +480,19 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
   地图普通导航受 AS2 lifecycle lock 保护；独立撤退由 AS2 冻结/落盘，Host 校验当前实例，未知结果只查询，见[地图主动撤退](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md#0c-2026-09-08-地图主动撤退入口)。loader staging 按 drop→reward 提交；跨淡出保持正整数 `callId`。Stage Select 先投递再关闭，transport false/throw 保留重试；NativeHud down 冻结 action/revision，suspend/hide/capture loss/外放取消。
   有效 `stage_settlement` 报告可在 `remaining=0` 时 suspend/reopen，`map_chest` 不继承。Panel close 仅在 close 起点与恢复前两次 live foreground 都属于 CF7 时恢复 Flash，切到 QQ/浏览器后不得抢焦。完整权威与生命周期详见[关卡结果与基地结算 ADR](../docs/关卡结果与基地结算-CSharp-Web-ADR-2026-08-27.md)。
 - `settings` 在 `1024×576` anchor 内全屏复用 Launcher bootstrap Web 壳的品牌铭牌、终端状态、DLS 青/锈红/骨白令牌与切角，不挂 `workbench-shell`。两页手工复刻的铭牌/kicker/分隔线/状态点/角标/扫描线/按钮/终端卡片已收敛为共享 [terminal.css](web/css/terminal.css)，bootstrap.html 与 overlay.html 均直接 link。新增公开 Web 可写设置字段须经 `config_set` 白名单并同步上方用户偏好注册表（见「运行时配置」节）；Host-only 字段不得因前端同名而获得写权限。
-  新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的 `--term-*` 派生 token；顶栏直接承载“游戏 / 键位 / 本机与 Web”三页，不保留重复“作弊码”页，玩家解释统一走共享 `PanelTooltip` `simple-tooltip`，不使用原生 `title`。
-  默认游戏页把单击“尝试复活/立即返回基地”、声音、画面/性能和紧凑作弊码输入聚合在首屏；完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md)维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
+  新表面层级/灰阶只取 [tokens.css](web/css/workbench/tokens.css) 的派生 token；顶栏承载按玩家高频心智划分的“常用 / 画面与战斗 / 键位 / 界面与音频”四页，不保留重复“作弊码”页，关闭未保存确认使用面板内自绘模态（淘汰原生 `window.confirm`），玩家解释统一走共享 `PanelTooltip` `simple-tooltip`（切页、滚动与弹层时即时收起），不使用原生 `title`。
+  默认“常用”首屏在 `1024×576` 下零滚动聚合 6 项高频功能：流程救援（尝试复活/立即返回基地 + 伤害对账日志入口）、声音（总/音乐音量、试听与界面音效开关）、性能三档预设快切、打击伤害数字五模式快切、镜头缩放行内缩略预览与倍率滑杆，以及底部单行作弊码输入。
+  完整作弊指令由 [cheat-codes.md](web/help/cheat-codes.md) 维护，并通过只复制、不自动执行的模态帮助展示，一键命令包装仍留给修改器迁移。高级表达式与 raw 命令一律按 save 处理；AS2 调用前置脏，部分写后异常返回 `command_ambiguous + requiresReconcile`。音量 preview 在首个 setter 前挂恢复租约，半应用或半恢复保留首次基线并允许重试。
   非 preview 写的 timeout、`DeliveryUnknown` 或 malformed success 均建立 reconcile latch；它跨 owner close、同名 rebind 与 pending cleanup 保留，只由锁存后发出、格式有效且成功的 Flash snapshot 清除，早期迟到 snapshot 不得解锁。
   latch 存在时后续写 fail-closed；Web 不显示“确定未执行”也不自动重放。cancel 半恢复保持面板与首次基线，先以权威 snapshot 对账再允许继续写。<br>36 键双列同屏，标签紧邻控件，键名/键值至少 12px。新“药剂组切换键”默认为 `6`；携键表的 snapshot/apply 精确使用 `keySchemaVersion:2`，旧 `6` 自定义绑定保留并为新动作确定分配空闲键。
   药剂存档 feature 现为 `drugLoadout.version=3`：精确 8 槽 affinity 记录同名药剂最近耗尽位置。任务/商店/拾取、Character Build、DrugIcon 与 Loot v2 共享“最近耗尽原槽→现有同名最低槽→背包同名→背包空槽”规划；从未绑定的新药剂仍进背包。v2 读档迁移到 v3，future v4 原样保留并 fail closed，详见[双药剂组 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。
   Host 打开设置时将已有 16:9 Flash 进入帧按原裁切像素、JPEG 90 编成实例内静态图；上限 `4096×2304 / 8 MiB`，拒绝均匀近黑，不降采样至 `512×288`。Flash SA 为 DPI Unaware 且显示器 DPI 更高时，输出保持 `GetClientRect` 物理尺寸，GDI 源按 `windowDpi/monitorDpi` 换算并 `StretchBlt`；其他 awareness 1:1。日志同时记录 source/output，`BitBlt/StretchBlt` false 必须显式失败。
-  镜头倍率使用全屏二级模拟器，入口基线按 16:9 填满舞台并保留自然像素；动态镜头关闭时仍按基础倍率预览。点歌器规则与 Web 主题集中在“本机与 Web”。Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
-  打击伤害数字属于 Host `UserPrefs`，不再进入 AS2 的游戏设置 snapshot/save；五状态模式、世界行上限和暂停态 Web 对账日志统一以[生产路径](#打击伤害数字生产路径)为准。偏好逐项即时保存，失败恢复控件和内存权威值；旧 `_root.是否打击数字特效`、`_root.同屏打击数字特效上限` 与 Flash MovieClip renderer 均不再是运行时 fallback。
+  镜头倍率支持常用页严格 16:9 行内缩略预览与全屏二级模拟器。AS2 快照附带只读 `cameraPreview`（活动 `HorizontalScroller` 坐标/朝向/背景边界/实际入口倍率），Web 以同源公式复现角色偏置、底部 64px 状态栏扣除、边界钳制、小图左上角贴齐与动态镜头三档战斗倍率试看；未激活镜头场景平滑退回中心近似。
+  点歌器规则与磷光主题、物品栏网格密度批量开关集中在“界面与音频”；Andy Law 对话立绘风格对比直读 `assets/dialogue-portraits/manifest.json` 真实 WebP。
+  Agent Runtime 仅允许 exact `settings` 与 `settings_camera_preview`；后者固定映射到 `settings + initialView:"camera_preview"`。闭环先用 Flash metadata-only grant + `window.list` 等待 surface 稳定，再用 fresh WebOverlay WGC 验证；它不授予 Flash pixels/input，也不应用或保存设置。
+  打击伤害数字属于 Host `UserPrefs`，不再进入 AS2 的游戏设置 snapshot/save；五状态模式、世界行上限、暂停态 Web 对账日志及“画面与战斗”页实时弹幕沙盒统一以[生产路径](#打击伤害数字生产路径)为准。偏好逐项即时保存，失败恢复控件和内存权威值；旧 Flash renderer 均不再是运行时 fallback。
+  实时弹幕沙盒由独立虚拟主机 `https://cf7-hitpreview.local/frame` 承载（[HitNumberPreviewWebResources](src/Guardian/HitNumbers/HitNumberPreviewWebResources.cs) / [HitNumberPreviewSandbox](src/Guardian/HitNumbers/HitNumberPreviewSandbox.cs) / [HitNumberPreviewPresets](src/Guardian/HitNumbers/HitNumberPreviewPresets.cs)）。
+  沙盒与真实战斗 `HitNumberRuntime`/`LedgerStore` 彻底隔离，严格校验当前活动 `panelInstanceId`、白名单预设/模式/行数上限，纯只读返回透明 PNG 帧，并在设置面板关闭或重绑时立即回收 GDI 资源。
 - AS2/Host/Web 三层迁移、数据权威与旧 Flash UI 退役边界以 [迁移护栏](../agentsDoc/as2-web-panel-migration.md)为准。
 - 合成配方的默认完整密度、10 列紧凑网格、跨容器持有量、0–99 件存档标记、任务物资高亮、等高材料卡与 exact NPC 头像/摩托车或越野车商店路由以 [P1–P4 ADR](../docs/合成工作台-持有量标记采购联动-P1-P4-ADR-2026-08-17.md)为准。采购 demand 由 AS2 分别投影装备栏/战备箱计数及来源强化上限，材料行以“合成前需要从战备箱取出”或“合成前需要卸下装备”明确表达前置条件，项目浮层说明不会自动移动装备，Web 不猜位置也不把指引伪装成执行按钮。配方直达消费最新权威 preview 并由 Host/AS2 复证，不依赖材料档案 session；装备前置物同样合法。
 - 嵌套合成来源使用 28px 扳手方块：同分类在当前 snapshot 原地精确定位；跨分类复用只读 snapshot，并校验 exact producer tuple 后在同一 panel instance 内切换。多来源不得静默选首项。

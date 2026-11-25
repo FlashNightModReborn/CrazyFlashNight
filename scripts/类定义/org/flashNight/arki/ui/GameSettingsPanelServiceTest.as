@@ -29,6 +29,7 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         testRawCheatsConservativelyMarkDirty();
         testPartiallyAppliedSaveCheatRequiresReconcile();
         testForceControls();
+        testCameraPreviewProjection();
         testOpenPanelEnvelope();
         testResponseEnvelope();
         testReturnBaseWireEnvelope();
@@ -617,6 +618,62 @@ class org.flashNight.arki.ui.GameSettingsPanelServiceTest {
         hero.removeMovieClip();
         if (previousReviveCoin == undefined) delete materialDict["复活币"];
         else materialDict["复活币"] = previousReviveCoin;
+    }
+
+    private static function testCameraPreviewProjection():Void {
+        resetState();
+        _root.默认键值设定 = buildDefaults();
+        _root.键值设定 = KeyManager.copyKeySettings(_root.默认键值设定);
+        _root.按键设定表 = [[0, 0, 0, 0]];
+        _root.刷新键值设定 = function():Void {
+            KeyManager.refreshKeySettings(_root.键值设定, null, _root.按键设定表[0]);
+        };
+        _root.帧计时器 = {性能等级上限:1, 当前帧数:1, offsetTolerance:0};
+        _root.cameraZoomToggle = false;
+        _root.basicZoomScale = 1;
+        _root.启用后景 = false;
+
+        var detached:Object = GameSettingsPanelService.execute("snapshot", {v:1});
+        check(detached.success && detached.cameraPreview != undefined
+            && detached.cameraPreview.available === false
+            && detached.cameraPreview.stageWidth > 0 && detached.cameraPreview.stageHeight > 0,
+            "detached camera projects unavailable cameraPreview without breaking snapshot");
+
+        var oldWorld:MovieClip = _root.gameworld;
+        var oldTarget:String = _root.控制目标;
+        var oldSky:MovieClip = _root.天空盒;
+        var w:MovieClip = _root.createEmptyMovieClip("__settingsCamWorld", _root.getNextHighestDepth());
+        var sky:MovieClip = _root.createEmptyMovieClip("__settingsCamSky", _root.getNextHighestDepth());
+        var hero:MovieClip = w.createEmptyMovieClip("hero", 1);
+        hero._x = 511;
+        hero._y = 326;
+        hero._xscale = 100;
+        var id:Object = {};
+        w.__stageReturnWorldIdentity = id;
+        w.__stageReturnToken = "cam_preview_tok";
+        w.背景长 = 1024;
+        w.背景高 = 512;
+        _root.gameworld = w;
+        _root.控制目标 = "hero";
+        _root.天空盒 = sky;
+
+        org.flashNight.arki.camera.HorizontalScroller.onSceneChanged(w, "cam_preview_tok", id);
+        org.flashNight.arki.camera.HorizontalScroller.update();
+        var scope:Object = org.flashNight.arki.camera.HorizontalScroller.sceneScope(w, id);
+        var activeSnap:Object = GameSettingsPanelService.execute("snapshot", {v:1});
+        var cam:Object = activeSnap.cameraPreview;
+        check(activeSnap.success && cam != undefined && cam.available === true
+            && cam.bgWidth == 1024 && cam.bgHeight == 512
+            && cam.entryScale == 1 && cam.targetX == 511 && cam.targetY == 326
+            && cam.facingRight === true && cam.viewport == null,
+            "active HorizontalScroller projects exact cameraPreview geometry in settings snapshot");
+
+        org.flashNight.arki.camera.HorizontalScroller.releaseScene(w, id, scope);
+        w.removeMovieClip();
+        sky.removeMovieClip();
+        _root.gameworld = oldWorld;
+        _root.控制目标 = oldTarget;
+        _root.天空盒 = oldSky;
     }
 
     private static function testOpenPanelEnvelope():Void {

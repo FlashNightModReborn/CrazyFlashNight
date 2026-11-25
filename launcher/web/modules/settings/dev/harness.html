@@ -9,9 +9,10 @@
   <link rel="stylesheet" href="/launcher/web/css/settings-panel.css">
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050807;color:#eaf4ee}
-    #harness-tools{position:fixed;z-index:1000;right:8px;top:8px;display:flex;gap:5px;padding:6px;border:1px solid #48685a;border-radius:6px;background:#09120fee;font:11px/1.2 "Microsoft YaHei UI",sans-serif}
+    #harness-tools{position:fixed;z-index:1000;right:14px;bottom:68px;display:flex;gap:5px;padding:6px;border:1px solid #48685a;border-radius:6px;background:#09120fee;font:11px/1.2 "Microsoft YaHei UI",sans-serif}
     #harness-tools button{padding:5px 8px;border:1px solid #527864;border-radius:4px;color:#dff4e8;background:#173326;cursor:pointer}
-    #harness-log{position:fixed;z-index:999;right:8px;bottom:8px;width:420px;max-height:120px;overflow:auto;margin:0;padding:7px;border:1px solid #354d42;border-radius:5px;background:#050b09e8;color:#8fb8a1;font:10px/1.3 Consolas,monospace;white-space:pre-wrap;pointer-events:none}
+    #harness-log{position:fixed;z-index:999;right:14px;bottom:108px;width:420px;max-height:110px;overflow:auto;margin:0;padding:7px;border:1px solid #354d42;border-radius:5px;background:#050b09e8;color:#8fb8a1;font:10px/1.3 Consolas,monospace;white-space:pre-wrap;pointer-events:none}
+    body.harness-clean #harness-tools,body.harness-clean #harness-log{display:none}
   </style>
 </head>
 <body>
@@ -49,6 +50,8 @@
   var dropNextResponseFor='',failNextSnapshot=false,holdNextSnapshotForReconcile=false;
   var failNextPerformanceSave=false,malformNextPerformanceResponse=false;
   var holdNextHostResponse=false,heldHostResponse=null;
+  var enableHitPreview=true;
+
   function buildEntryPreview(){
     var canvas=document.createElement('canvas');canvas.width=1024;canvas.height=576;
     var ctx=canvas.getContext('2d');ctx.scale(2,2);
@@ -64,6 +67,59 @@
     return{v:1,source:'entry_flash_snapshot',width:1024,height:576,dataUrl:canvas.toDataURL('image/jpeg',.9)}
   }
   var flashPreview=buildEntryPreview();
+  var hitNumberPreviewCapability={
+    v:1,
+    origin:'https://cf7-hitpreview.local',
+    width:512,
+    height:288,
+    presets:[
+      {id:'light',label:'常规连射',description:'单发与 4 段联弹混伤，含暴击、属性、护盾与吸血',durationMs:3600,representativeTimeMs:1450},
+      {id:'barrage',label:'高密弹幕',description:'持续 60 段/秒高频爆发，最直观对比模式聚合与行数上限',durationMs:4000,representativeTimeMs:1850},
+      {id:'crowd',label:'多目标混战',description:'近邻多目标交叉受击，对照目标归属与指向标记',durationMs:3600,representativeTimeMs:1700},
+      {id:'healing',label:'伤害与治疗',description:'持续治疗窗口、敌方回血与同屏伤害混流',durationMs:4400,representativeTimeMs:1800}
+    ]
+  };
+
+  function renderMockHitPreviewFrame(canvas, opts){
+    var ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(!opts || opts.mode==='off')return{rows:0,omitted:0};
+    var phase=(opts.timeMs||0)/1000;
+    var targets=opts.presetId==='crowd'?[{x:188,y:202},{x:268,y:216},{x:338,y:190}]
+      :opts.presetId==='healing'?[{x:170,y:200,ally:true},{x:256,y:214,ally:true},{x:342,y:200,ally:false}]
+      :opts.presetId==='barrage'?[{x:235,y:210},{x:372,y:188}]:[{x:256,y:202}];
+    targets.forEach(function(t){
+      ctx.fillStyle=t.ally?'rgba(120,188,115,0.22)':'rgba(61,213,255,0.18)';
+      ctx.strokeStyle=t.ally?'rgba(120,188,115,0.7)':'rgba(61,213,255,0.72)';
+      ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.ellipse(t.x,t.y+8,14,5,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillRect(t.x-7,t.y-24,14,26);ctx.strokeRect(t.x-7,t.y-24,14,26);
+    });
+    var naturalRows=opts.presetId==='barrage'?18:opts.presetId==='crowd'?10:6;
+    var cap=opts.limit>0?Math.min(naturalRows,opts.limit):naturalRows;
+    var omitted=Math.max(0,naturalRows-cap);
+    var samples=opts.mode==='total'?['Σ 4820 火','Σ 2190 冰']
+      :opts.mode==='classic'?['312','488 雷','195 毒','724 ✦','260']
+      :opts.mode==='detail'?['184 火  202 火  219 吸','312 雷 ✦  168 冰','95 毒  144 盾']
+      :['842 火 ×4','1460 雷 ✦','368 冰'];
+    ctx.font='700 17px Consolas, "Microsoft YaHei", sans-serif';
+    ctx.textAlign='center';
+    for(var i=0;i<Math.min(samples.length,cap);i++){
+      var anchor=targets[i%targets.length];
+      var y=anchor.y-38-i*24-((phase*28)%16);
+      var x=anchor.x+(opts.mode==='classic'?((i%2?-1:1)*26):0);
+      ctx.lineWidth=3;ctx.strokeStyle='#05070a';ctx.strokeText(samples[i],x,y);
+      ctx.fillStyle=i===1?'#ffcc00':i===2?'#28adff':'#ff5a52';
+      ctx.fillText(samples[i],x,y);
+    }
+    if(opts.presetId==='healing'){
+      ctx.font='700 14px Consolas, sans-serif';
+      ctx.strokeText('+353',170,152);ctx.fillStyle='#78bc73';ctx.fillText('+353',170,152);
+      ctx.strokeText('+2837',342,148);ctx.fillStyle='#ff8e8e';ctx.fillText('+2837',342,148);
+    }
+    return{rows:cap,omitted:omitted};
+  }
+
   var model={
     revision:7,
     challengeMode:false,
@@ -76,7 +132,7 @@
       jukeboxTrueRandom:false,jukeboxPlayMode:'albumLoop'
     },
     keys:ids.map(function(id,index){return{id:id,label:index===0?'undefined':id,keyCode:codes[index],keyName:keyNames[codes[index]]||String(codes[index])}}),
-    hostPrefs:{casEnabled:true,motionFeedbackEnabled:false,introEnabled:true,sfxEnabled:true,ambientEnabled:true,tutorialsAutoOpen:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24,
+    hostPrefs:{casEnabled:true,motionFeedbackEnabled:false,introEnabled:true,sfxEnabled:true,ambientEnabled:true,tutorialsAutoOpen:true,reducedPresentation:false,hudMotionMode:'full',uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24,
       performance:{v:1,current:{preset:'balanced',mode:'auto',maxRenderHeight:0},previous:null}}
   };
   function clone(value){return JSON.parse(JSON.stringify(value))}
@@ -105,7 +161,12 @@
     challengeMode:model.challengeMode,modeLabel:model.challengeMode?'挑战':'困难',
     cheatHelp:help(),forceControls:{returnBaseAvailable:true,
       tryReviveAvailable:model.reviveAvailable,resurrectionRestricted:false},
-    previewActive:previewBaseline!==null,migrationPending:false,keyMigrationNotice:''
+    previewActive:previewBaseline!==null,migrationPending:false,keyMigrationNotice:'',
+    cameraPreview:{
+      available:true,stageWidth:1024,stageHeight:576,viewWidth:1024,viewHeight:512,
+      bgWidth:1024,bgHeight:512,entryX:0,entryY:0,entryScale:1,
+      targetX:511,targetY:326,facingRight:true,biasX:0,biasY:0,minZoom:0,viewport:null
+    }
   }}
   function log(message){
     var text=typeof message==='string'?message:JSON.stringify(message);
@@ -113,6 +174,7 @@
     output.textContent=(text+'\n'+output.textContent).slice(0,7000)
   }
   var v2Mode=new URLSearchParams(location.search).get('authority')==='2';
+  if(new URLSearchParams(location.search).get('clean')==='1')document.body.classList.add('harness-clean');
   var authorityReconcile=false,metadataBlocked=false,rootOperation=null,currentDurable=false,saveOrdinal=0;
   function authorityEnvelope(message,response){
     if(message.cmd==='apply' && response.applied===true){rootOperation='op.harness.'+model.revision;saveOrdinal++;currentDurable=response.durable===true;}
@@ -145,8 +207,13 @@
     if(message.cmd==='host_set'&&holdNextHostResponse){holdNextHostResponse=false;heldHostResponse=data;return}
     setTimeout(function(){(handlers.panel_resp||[]).slice().forEach(function(handler){handler(data)})},35)
   }
-  window.__SETTINGS_CONFIG__={requestTimeoutMs:1200,sessionNonce:'settings.harness',
-    cheatHelpUrl:'/launcher/web/help/cheat-codes.md'};
+  window.__SETTINGS_CONFIG__={
+    requestTimeoutMs:1200,
+    sessionNonce:'settings.harness',
+    cheatHelpUrl:'/launcher/web/help/cheat-codes.md',
+    dialoguePortraitBaseUrl:'/launcher/web/assets/dialogue-portraits/',
+    renderMockHitPreviewFrame:renderMockHitPreviewFrame
+  };
   window.Bridge={
     on:function(type,handler){(handlers[type]||(handlers[type]=[])).push(handler)},
     off:function(type,handler){var list=handlers[type]||[],index=list.indexOf(handler);if(index>=0)list.splice(index,1)},
@@ -223,7 +290,11 @@
     return{
       register:function(id,spec){specs[id]=spec},
       open:function(id){
-        var initData={panelInstanceId:'settings.harness.'+Date.now(),flashPreview:clone(flashPreview)};
+        var initData={
+          panelInstanceId:'settings.harness.'+Date.now(),
+          flashPreview:clone(flashPreview),
+          hitNumberPreview:enableHitPreview?clone(hitNumberPreviewCapability):null
+        };
         if(active===id){if(specs[id].onRebind)specs[id].onRebind(document.getElementById('panel-content'),initData);return}
         if(active&&specs[active]&&specs[active].onClose)specs[active].onClose();
         active=id;var host=document.getElementById('panel-content');host.innerHTML='';host.appendChild(specs[id].create());
@@ -235,8 +306,13 @@
     }
   })();
   window.__settingsHarness={model:model,sent:sent,reopen:function(){Panels.open('settings')},
+    setChallengeMode:function(value){model.challengeMode=value===true;Panels.open('settings')},
     setDurable:function(value){durable=value===true},
     setMetadataBlocked:function(value){metadataBlocked=value===true},
+    setHitPreviewEnabled:function(value){
+      enableHitPreview=value===true;
+      window.__SETTINGS_CONFIG__.renderMockHitPreviewFrame=enableHitPreview?renderMockHitPreviewFrame:null;
+    },
     dropNextResponse:function(cmd){dropNextResponseFor=String(cmd||'')},
     failNextSnapshot:function(){failNextSnapshot=true},
     holdNextSnapshotForReconcile:function(){holdNextSnapshotForReconcile=true},

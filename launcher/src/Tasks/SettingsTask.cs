@@ -48,6 +48,7 @@ namespace CF7Launcher.Tasks
         private Action<Action> _invokeOnUI;
         private Action<string, JToken> _hostPreferenceApplied;
         private Func<int, int, JObject> _hitNumberLedgerProvider;
+        private Action _panelLifecycleEnded;
         private string _panelInstanceId;
         private string _lastClosedPanelInstanceId;
         private bool _nonPreviewWritePending;
@@ -98,6 +99,11 @@ namespace CF7Launcher.Tasks
             _hitNumberLedgerProvider = provider;
         }
 
+        public void SetPanelLifecycleEnded(Action callback)
+        {
+            _panelLifecycleEnded = callback;
+        }
+
         public bool BindPanelInstance(string panelInstanceId)
         {
             if (!IsOpaque(panelInstanceId)) return false;
@@ -112,8 +118,11 @@ namespace CF7Launcher.Tasks
                 _lastClosedPanelInstanceId = null;
                 _nonPreviewWritePending = false;
             }
-            if (IsOpaque(previousInstance) && _pendingCalls.IsReady())
-                SendPanelClosedToFlash();
+            if (IsOpaque(previousInstance))
+            {
+                NotifyPanelLifecycleEnded();
+                if (_pendingCalls.IsReady()) SendPanelClosedToFlash();
+            }
             return true;
         }
 
@@ -134,8 +143,21 @@ namespace CF7Launcher.Tasks
                 _nonPreviewWritePending = false;
                 shouldRestorePreview = true;
             }
-            if (shouldRestorePreview && _pendingCalls.IsReady()) SendPanelClosedToFlash();
+            if (shouldRestorePreview)
+            {
+                NotifyPanelLifecycleEnded();
+                if (_pendingCalls.IsReady()) SendPanelClosedToFlash();
+            }
             return true;
+        }
+
+        private void NotifyPanelLifecycleEnded()
+        {
+            try { _panelLifecycleEnded?.Invoke(); }
+            catch (Exception error)
+            {
+                LogManager.Log("[SettingsTask] panel lifecycle cleanup failed: " + error.Message);
+            }
         }
 
         public void HandleWebRequest(string cmd, JObject parsed)
@@ -934,6 +956,7 @@ namespace CF7Launcher.Tasks
                 && IsCleanString(msg["modeLabel"], 24)
                 && IsValidCheatHelp(msg["cheatHelp"] as JArray)
                 && IsValidForceControls(msg["forceControls"] as JObject)
+                && IsValidOptionalCameraPreview(msg["cameraPreview"])
                 && IsBoolean(msg["previewActive"])
                 && IsBoolean(msg["migrationPending"])
                 && IsBoundedString(
@@ -1016,6 +1039,55 @@ namespace CF7Launcher.Tasks
                 && IsBoolean(value["returnBaseAvailable"])
                 && IsBoolean(value["tryReviveAvailable"])
                 && IsBoolean(value["resurrectionRestricted"]);
+        }
+
+        internal static bool IsValidOptionalCameraPreview(JToken token)
+        {
+            if (token == null || token.Type == JTokenType.Null) return true;
+            JObject value = token as JObject;
+            if (value == null || !IsBoolean(value["available"])) return false;
+            double stageW, stageH;
+            if (!TryFiniteNumber(value["stageWidth"], out stageW) || stageW < 64 || stageW > 8192
+                || !TryFiniteNumber(value["stageHeight"], out stageH) || stageH < 64 || stageH > 8192)
+                return false;
+            if (!value.Value<bool>("available"))
+                return HasExactProperties(value, "available", "stageWidth", "stageHeight");
+
+            double viewW, viewH, bgW, bgH, entryX, entryY, entryScale, targetX, targetY, biasX, biasY, minZoom;
+            if (!HasExactProperties(
+                    value,
+                    "available", "stageWidth", "stageHeight",
+                    "viewWidth", "viewHeight", "bgWidth", "bgHeight",
+                    "entryX", "entryY", "entryScale",
+                    "targetX", "targetY", "facingRight",
+                    "biasX", "biasY", "minZoom", "viewport")
+                || !TryFiniteNumber(value["viewWidth"], out viewW) || viewW <= 0 || viewW > 8192
+                || !TryFiniteNumber(value["viewHeight"], out viewH) || viewH <= 0 || viewH > 8192
+                || !TryFiniteNumber(value["bgWidth"], out bgW) || bgW <= 0 || bgW > 1000000
+                || !TryFiniteNumber(value["bgHeight"], out bgH) || bgH <= 0 || bgH > 1000000
+                || !TryFiniteNumber(value["entryX"], out entryX) || Math.Abs(entryX) > 1000000
+                || !TryFiniteNumber(value["entryY"], out entryY) || Math.Abs(entryY) > 1000000
+                || !TryFiniteNumber(value["entryScale"], out entryScale) || entryScale < 0.05 || entryScale > 20
+                || !TryFiniteNumber(value["targetX"], out targetX) || Math.Abs(targetX) > 1000000
+                || !TryFiniteNumber(value["targetY"], out targetY) || Math.Abs(targetY) > 1000000
+                || !IsBoolean(value["facingRight"])
+                || !TryFiniteNumber(value["biasX"], out biasX) || Math.Abs(biasX) > 1000000
+                || !TryFiniteNumber(value["biasY"], out biasY) || Math.Abs(biasY) > 1000000
+                || !TryFiniteNumber(value["minZoom"], out minZoom) || minZoom < 0 || minZoom > 20)
+                return false;
+
+            JToken vpToken = value["viewport"];
+            if (vpToken == null || vpToken.Type == JTokenType.Null) return true;
+            JObject vp = vpToken as JObject;
+            double vx, vy, vminX, vminY, vmaxX, vmaxY;
+            return vp != null
+                && HasExactProperties(vp, "x", "y", "minX", "minY", "maxX", "maxY")
+                && TryFiniteNumber(vp["x"], out vx) && vx >= 0 && vx <= 1
+                && TryFiniteNumber(vp["y"], out vy) && vy >= 0 && vy <= 1
+                && TryFiniteNumber(vp["minX"], out vminX) && vminX >= -1000000 && vminX <= 0
+                && TryFiniteNumber(vp["minY"], out vminY) && vminY >= -1000000 && vminY <= 0
+                && TryFiniteNumber(vp["maxX"], out vmaxX) && vmaxX >= vminX && vmaxX <= 0
+                && TryFiniteNumber(vp["maxY"], out vmaxY) && vmaxY >= vminY && vmaxY <= 0;
         }
 
         private static bool IsEffectScope(string value)

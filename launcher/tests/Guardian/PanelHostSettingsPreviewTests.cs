@@ -86,5 +86,19 @@ namespace CF7Launcher.Tests.Guardian
                 "settings", "{\"flashPreview\":{\"source\":\"caller_spoof\"}}", null, 0, 0));
             Assert.Null(stripped["flashPreview"]);
         }
+
+        [Fact]
+        public void HitNumberPreviewCapability_IsAttachedOnlyToSettingsAndStripsSpoof()
+        {
+            const string untouched = "{\"existing\":true}";
+            Assert.Equal(untouched, PanelHostController.AttachSettingsHitNumberPreview("workbench", untouched));
+
+            JObject attached = JObject.Parse(PanelHostController.AttachSettingsHitNumberPreview(
+                "settings", "{\"existing\":true,\"hitNumberPreview\":{\"origin\":\"https://evil.invalid\"}}"));
+            Assert.True(attached.Value<bool>("existing"));
+            Assert.Equal(1, attached["hitNumberPreview"].Value<int>("v"));
+            Assert.Equal("https://cf7-hitpreview.local", attached["hitNumberPreview"].Value<string>("origin"));
+            Assert.Equal(4, ((JArray)attached["hitNumberPreview"]["presets"]).Count);
+        }
     }
 }

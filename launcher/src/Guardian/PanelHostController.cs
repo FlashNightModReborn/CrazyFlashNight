@@ -2528,6 +2528,29 @@ namespace CF7Launcher.Guardian
             return initData.ToString(Formatting.None);
         }
 
+        internal static string AttachSettingsHitNumberPreview(
+            string panelName,
+            string initDataJson)
+        {
+            if (!string.Equals(panelName, "settings", StringComparison.Ordinal)) return initDataJson;
+            JObject initData;
+            try
+            {
+                initData = string.IsNullOrEmpty(initDataJson)
+                    ? new JObject()
+                    : JObject.Parse(initDataJson);
+            }
+            catch (JsonException)
+            {
+                initData = new JObject();
+            }
+            // 实时伤害数字预览能力只允许 Host 声明，先清除任何调用方伪造字段。
+            initData.Remove("hitNumberPreview");
+            initData["hitNumberPreview"] =
+                CF7Launcher.Guardian.HitNumbers.HitNumberPreviewWebResources.BuildCapability();
+            return initData.ToString(Formatting.None);
+        }
+
         private void ClearActiveSettingsPreview()
         {
             _activeSettingsPreviewDataUrl = null;
@@ -2776,6 +2799,9 @@ namespace CF7Launcher.Guardian
                     _activeSettingsPreviewDataUrl,
                     _activeSettingsPreviewWidth,
                     _activeSettingsPreviewHeight);
+                initDataJson = AttachSettingsHitNumberPreview(
+                    name,
+                    initDataJson);
                 string payload = BuildPanelOpenPayload(
                     name,
                     initDataJson,
@@ -2924,6 +2950,9 @@ namespace CF7Launcher.Guardian
                 _activeSettingsPreviewDataUrl,
                 _activeSettingsPreviewWidth,
                 _activeSettingsPreviewHeight);
+            initDataJson = AttachSettingsHitNumberPreview(
+                name,
+                initDataJson);
             string payload = BuildPanelOpenPayload(name, initDataJson, instanceId);
             bool delivered = false;
             try { delivered = TryPostToPanelSurface(payload); }

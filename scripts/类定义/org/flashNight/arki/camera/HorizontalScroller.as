@@ -404,6 +404,74 @@ class org.flashNight.arki.camera.HorizontalScroller {
             + " menuVisible=" + _root.修改工具界面._visible);
         c.driverMissing = missing; c.lastDriverCount = c.invokeCount;
     }
+    private static function inRange(v:Number, lo:Number, hi:Number):Boolean {
+        return typeof v == "number" && (v - v) == 0 && v >= lo && v <= hi;
+    }
+    /** 只读导出设置镜头预览所需的稳态卷屏几何，避免跨类直探内部字段。 */
+    public static function buildPreviewSnapshot():Object {
+        var stageW:Number = Number(Stage.width);
+        var stageH:Number = Number(Stage.height);
+        if (!inRange(stageW, 64, 8192) || !inRange(stageH, 64, 8192)) {
+            stageW = 1024; stageH = 576;
+        }
+        var c:HorizontalScroller = instance;
+        if (c == undefined || c.state !== "ACTIVE" || !currentWorld(c.gameWorld, c.worldIdentity)
+                || c.scrollObj == undefined) {
+            return {available:false, stageWidth:stageW, stageHeight:stageH};
+        }
+        var gw:MovieClip = c.gameWorld;
+        var target:MovieClip = c.scrollObj;
+        var viewW:Number = Number(c.stageWidth);
+        var viewH:Number = Number(c.stageHeight);
+        var bgW:Number = Number(c.bgWidth);
+        var bgH:Number = Number(c.bgHeight);
+        var entryX:Number = Number(gw._x);
+        var entryY:Number = Number(gw._y);
+        var entryScale:Number = Number(gw._xscale) * 0.01;
+        if (!inRange(entryScale, 0.05, 20)) entryScale = Number(c.currentScale);
+        var targetX:Number = Number(target._x);
+        var targetY:Number = Number(target._y);
+        if (!inRange(viewW, 1, 8192) || !inRange(viewH, 1, 8192)
+                || !inRange(bgW, 1, 1000000) || !inRange(bgH, 1, 1000000)
+                || !inRange(entryX, -1000000, 1000000) || !inRange(entryY, -1000000, 1000000)
+                || !inRange(entryScale, 0.05, 20)
+                || !inRange(targetX, -1000000, 1000000) || !inRange(targetY, -1000000, 1000000)) {
+            return {available:false, stageWidth:stageW, stageHeight:stageH};
+        }
+        var biasX:Number = 0; var biasY:Number = 0; var minZoom:Number = 0;
+        var viewport:Object = null;
+        var focus:Object = c.currentFocus;
+        if (focus != undefined) {
+            var rawBiasX:Number = Number(focus.biasX);
+            var rawBiasY:Number = Number(focus.biasY);
+            var rawMinZoom:Number = Number(focus.minZoom);
+            if (inRange(rawBiasX, -1000000, 1000000)) biasX = rawBiasX;
+            if (inRange(rawBiasY, -1000000, 1000000)) biasY = rawBiasY;
+            if (inRange(rawMinZoom, 0, 20)) minZoom = rawMinZoom;
+            if (focus.viewport != undefined) {
+                var vp:Object = focus.viewport;
+                var vx:Number = Number(vp.x); var vy:Number = Number(vp.y);
+                var vminX:Number = Number(vp.minX); var vminY:Number = Number(vp.minY);
+                var vmaxX:Number = Number(vp.maxX); var vmaxY:Number = Number(vp.maxY);
+                if (inRange(vx, 0, 1) && inRange(vy, 0, 1)
+                        && inRange(vminX, -1000000, 0) && inRange(vminY, -1000000, 0)
+                        && inRange(vmaxX, vminX, 0) && inRange(vmaxY, vminY, 0)) {
+                    viewport = {x:Math.round(vx * 10000) / 10000, y:Math.round(vy * 10000) / 10000,
+                        minX:vminX, minY:vminY, maxX:vmaxX, maxY:vmaxY};
+                }
+            }
+        }
+        return {
+            available:true, stageWidth:stageW, stageHeight:stageH,
+            viewWidth:viewW, viewHeight:viewH, bgWidth:bgW, bgHeight:bgH,
+            entryX:Math.round(entryX * 100) / 100, entryY:Math.round(entryY * 100) / 100,
+            entryScale:Math.round(entryScale * 1000) / 1000,
+            targetX:Math.round(targetX * 100) / 100, targetY:Math.round(targetY * 100) / 100,
+            facingRight:Number(target._xscale) > 0,
+            biasX:Math.round(biasX * 100) / 100, biasY:Math.round(biasY * 100) / 100,
+            minZoom:Math.round(minZoom * 1000) / 1000, viewport:viewport
+        };
+    }
     public function getDebugInfo():Object {
         return {hasScrollObj:scrollObj != undefined, enableParallax:enableParallax,
             bgDimensions:{width:bgWidth,height:bgHeight}, stageDimensions:{width:stageWidth,height:stageHeight},

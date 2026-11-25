@@ -1,7 +1,6 @@
-/* 设置面板 —— Launcher 黑铁终端语言。
-   共享组件真源: css/terminal.css (terminal-shell 的铭牌/kicker/分隔线/角标/卡片/按钮族);
-   色值真源: css/workbench/tokens.css (本文件不新增硬编码色值, 灰阶/表面层一律消费 --term-*)。
-   本文件只保留: 布局、组件旋钮覆盖、控件外观与页面特异状态。 */
+/* 设置面板 —— 深钛黑铁终端语言（向启动器前门视觉品质对齐）。
+   共享组件真源: css/terminal.css；色值真源: css/workbench/tokens.css。
+   本文件不新增未登记的业务硬编码色值，灰阶/表面/强调色一律消费 --term-* / --dls-* / --launcher-* / --wb-*。 */
 
 .settings-scale-shell {
     position: absolute;
@@ -12,9 +11,7 @@
     color: var(--launcher-copy);
 }
 
-/* 设置面板明确复用 Launcher 启动页的“黑铁终端”语言，不属于双栏 Workbench 家族。 */
 .settings-terminal-shell {
-    /* 本地语义别名: 全部指向 tokens.css 真源 */
     --settings-dls: var(--dls-crystal);
     --settings-dls-deep: var(--dls-crystal-deep);
     --settings-dls-dim: var(--dls-crystal-dim);
@@ -23,156 +20,176 @@
     --settings-rust-dim: var(--launcher-rust-dim);
     --settings-bone: var(--launcher-bone);
     --settings-dust: var(--launcher-dust);
-    /* 派生角色 (color-mix 自既有色板) */
-    --settings-on-accent: color-mix(in srgb, var(--launcher-bg-0) 78%, var(--dls-crystal-dim));
-    --settings-line-dim: color-mix(in srgb, var(--launcher-copy) 22%, transparent);
-    --settings-surface-scrim: color-mix(in srgb, var(--launcher-bg-0) 86%, transparent);
+    --settings-on-accent: color-mix(in srgb, var(--launcher-bg-0) 82%, var(--dls-crystal-dim));
+    --settings-line-dim: color-mix(in srgb, var(--launcher-copy) 18%, transparent);
+    --settings-line-soft: color-mix(in srgb, var(--launcher-copy) 10%, transparent);
+    --settings-surface-scrim: color-mix(in srgb, var(--launcher-bg-0) 84%, transparent);
+    --settings-surface-card: linear-gradient(168deg,
+        color-mix(in srgb, var(--appearance-surface-raised) 84%, var(--launcher-bg-1)),
+        color-mix(in srgb, var(--launcher-bg-1) 92%, var(--launcher-bg-0)));
+    --settings-surface-well: color-mix(in srgb, var(--launcher-bg-0) 58%, transparent);
     --settings-surface-modal: linear-gradient(165deg,
-        color-mix(in srgb, var(--launcher-bg-1) 97%, transparent),
-        color-mix(in srgb, var(--launcher-bg-0) 98%, transparent));
-    /* 字号阶梯: 代号/注脚 8 · 辅助 9 · 控件 10 · 标签 11 · 正文 12 · 区块题 14 · 面板题 20 */
-    --settings-fs-micro: 8px;
-    --settings-fs-note: 9px;
-    --settings-fs-ui: 10px;
-    --settings-fs-label: 11px;
-    --settings-fs-body: 12px;
+        var(--appearance-surface-raised),
+        var(--launcher-bg-1));
+    /* 点歌器磷光屏样片专用色（与 jukebox-panel.js PALETTES 同源） */
+    --settings-jb-green: var(--wb-grade-core-low);
+    --settings-jb-amber: var(--dls-energetic);
+    /* 清晰可读字阶 */
+    --settings-fs-micro: 9px;
+    --settings-fs-note: 10.5px;
+    --settings-fs-ui: 11.5px;
+    --settings-fs-label: 12px;
+    --settings-fs-body: 13px;
     --settings-fs-h2: 14px;
-    --settings-fs-h1: 20px;
-    /* 间距阶梯 */
+    --settings-fs-h1: 19px;
+    --settings-radius: 3px;
     --settings-sp-1: 4px;
     --settings-sp-2: 6px;
     --settings-sp-3: 8px;
     --settings-sp-4: 10px;
     --settings-sp-5: 12px;
     --settings-sp-6: 16px;
-    --settings-sp-7: 20px;
+
     position: absolute;
     inset: 0;
     display: grid;
-    grid-template-rows: 62px minmax(0, 1fr) 76px;
+    grid-template-rows: 58px minmax(0, 1fr) 62px;
     overflow: hidden;
     box-sizing: border-box;
     color: var(--launcher-copy);
-    border-left: 1px solid var(--settings-dls-dim);
-    border-right: 1px solid var(--settings-rust-dim);
+    border: 1px solid rgba(var(--dls-crystal-rgb), .2);
     background:
-        radial-gradient(ellipse at 50% 110%, rgba(var(--dls-crystal-rgb), .1), transparent 48%),
-        radial-gradient(ellipse at 50% -10%, rgba(var(--launcher-rust-rgb), .07), transparent 56%),
-        linear-gradient(90deg, rgba(var(--dls-crystal-rgb), .018) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(var(--dls-crystal-rgb), .014) 1px, transparent 1px),
-        var(--launcher-bg-0);
-    background-size: auto, auto, 28px 28px, 28px 28px, auto;
+        radial-gradient(ellipse at 18% 0%, rgba(var(--dls-crystal-rgb), .085), transparent 46%),
+        radial-gradient(ellipse at 86% 105%, rgba(var(--launcher-rust-rgb), .07), transparent 48%),
+        linear-gradient(180deg, var(--launcher-bg-1) 0%, var(--launcher-bg-0) 100%);
     font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
     animation: termBoot var(--wb-motion-structural) var(--wb-ease-emphasized);
 }
-/* 扫描线 (共享 .term-scanlines 的伪元素形态) */
 .settings-terminal-shell::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: .1;
+    opacity: .06;
     background-image: repeating-linear-gradient(0deg,
-        rgba(var(--dls-crystal-rgb), .12) 0, rgba(var(--dls-crystal-rgb), .12) 1px,
-        transparent 1px, transparent 3px);
-}
-/* 左右内框导轨 */
-.settings-terminal-shell::after {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    top: 16px;
-    bottom: 16px;
-    left: 12px;
-    right: 12px;
-    pointer-events: none;
-    border-left: 1px solid rgba(var(--dls-crystal-rgb), .24);
-    border-right: 1px solid rgba(var(--launcher-rust-rgb), .22);
+        rgba(var(--dls-crystal-rgb), .14) 0, rgba(var(--dls-crystal-rgb), .14) 1px,
+        transparent 1px, transparent 4px);
 }
 .settings-terminal-shell > * { position: relative; z-index: 1; min-width: 0; }
 
 /* ── 顶栏 ── */
 .settings-terminal-header {
-    --term-rule-seg-left: 18px;
-    --term-rule-seg-w: 94px;
+    --term-rule-seg-left: 16px;
+    --term-rule-seg-w: 88px;
     display: flex;
     align-items: center;
-    gap: var(--settings-sp-3);
-    padding: 7px 13px 7px 18px;
+    gap: 10px;
+    padding: 6px 14px 6px 16px;
     box-sizing: border-box;
     background: linear-gradient(180deg,
-        color-mix(in srgb, var(--launcher-bg-0) 93%, transparent),
-        var(--term-surface-veil));
+        color-mix(in srgb, var(--launcher-bg-0) 92%, transparent),
+        color-mix(in srgb, var(--launcher-bg-1) 76%, transparent));
 }
-/* 铭牌/kicker 结构与配色由 terminal.css 承载, 默认旋钮即设置面板规格 */
-.settings-heading { flex: 1 1 176px; min-width: 150px; max-width: 220px; }
+.settings-heading { flex: 0 0 auto; min-width: 112px; }
 .settings-title {
-    display: inline-block;
-    margin: 2px 10px 0 0;
+    display: block;
+    margin: 2px 0 0;
     color: var(--term-ink-hi);
     font-size: var(--settings-fs-h1);
-    line-height: 1;
-    letter-spacing: 1px;
-    text-shadow: 0 0 12px rgba(var(--dls-crystal-rgb), .2);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: .8px;
 }
 
-/* 状态灯牌: 语义态颜色 (ready=晶体青 / loading=骨金 / warning=琥珀 / error=语义红) */
+.settings-tabs {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: stretch;
+    align-self: stretch;
+    gap: 3px;
+    margin: 0 0 0 6px;
+}
+.settings-tab {
+    position: relative;
+    min-width: 72px;
+    padding: 0 13px;
+    color: var(--appearance-muted);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: var(--settings-radius) var(--settings-radius) 0 0;
+    background: transparent;
+    font: 600 var(--settings-fs-label)/1 "Microsoft YaHei", "Segoe UI", sans-serif;
+    letter-spacing: .5px;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.settings-tab:hover,
+.settings-tab:focus-visible {
+    color: var(--term-ink-hi);
+    outline: none;
+    background: rgba(var(--dls-crystal-rgb), .06);
+}
+.settings-tab.active {
+    color: var(--settings-dls);
+    border-bottom-color: var(--settings-dls);
+    background: linear-gradient(180deg, rgba(var(--dls-crystal-rgb), .12), rgba(var(--dls-crystal-rgb), .04));
+    text-shadow: 0 0 8px rgba(var(--dls-crystal-rgb), .32);
+}
+
 .settings-status {
     position: relative;
-    max-width: 212px;
-    min-width: 176px;
+    max-width: 230px;
+    min-width: 150px;
     overflow: hidden;
     margin: 0 0 0 auto;
-    padding: 7px 11px 7px 24px;
+    padding: 6px 10px 6px 22px;
     box-sizing: border-box;
     color: var(--term-ink-md);
     border: 1px solid var(--settings-line-dim);
-    background: var(--term-surface-veil);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
     font: var(--settings-fs-note)/1.25 "Microsoft YaHei", "Segoe UI", sans-serif;
     text-align: right;
     text-overflow: ellipsis;
     white-space: nowrap;
-    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
-        border-color var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-status::before {
     content: "";
     position: absolute;
     top: 50%;
-    left: 11px;
-    width: 5px;
-    height: 5px;
+    left: 9px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--settings-dust);
     transform: translateY(-50%);
 }
-.settings-status[data-state="ready"] { color: var(--settings-dls); border-color: var(--settings-dls-dim); }
+.settings-status[data-state="ready"] { color: var(--settings-dls); border-color: rgba(var(--dls-crystal-rgb), .32); }
 .settings-status[data-state="ready"]::before { background: var(--settings-dls); box-shadow: 0 0 6px var(--settings-dls); }
 .settings-status[data-state="loading"] { color: var(--settings-bone); }
 .settings-status[data-state="loading"]::before { background: var(--settings-bone); }
-.settings-status[data-state="warning"] { color: var(--wb-semantic-warning); border-color: rgba(var(--launcher-bone-rgb), .36); }
+.settings-status[data-state="warning"] { color: var(--wb-semantic-warning); border-color: rgba(var(--launcher-bone-rgb), .42); }
 .settings-status[data-state="warning"]::before { background: var(--wb-semantic-warning); }
-.settings-status[data-state="error"] { color: var(--wb-semantic-danger); border-color: rgba(var(--launcher-rust-rgb), .48); }
+.settings-status[data-state="error"] { color: var(--wb-semantic-danger); border-color: rgba(var(--launcher-rust-rgb), .52); }
 .settings-status[data-state="error"]::before { background: var(--wb-semantic-danger); box-shadow: 0 0 6px var(--wb-semantic-danger); }
 
-/* 关闭钮: 锈红幽灵态, hover 实心反白 */
 .settings-terminal-close {
-    flex: 0 0 37px;
-    width: 37px;
-    height: 34px;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 32px;
     padding: 0;
     color: var(--settings-rust);
-    border: 1px solid rgba(var(--launcher-rust-rgb), .38);
-    border-radius: 0;
-    background: transparent;
-    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
-    font: 20px/1 Consolas, monospace;
+    border: 1px solid rgba(var(--launcher-rust-rgb), .42);
+    border-radius: var(--settings-radius);
+    background: rgba(var(--launcher-rust-rgb), .08);
+    font: 19px/1 Consolas, monospace;
     cursor: pointer;
     transition: color var(--wb-motion-micro) var(--wb-ease-standard),
         background var(--wb-motion-micro) var(--wb-ease-standard),
-        border-color var(--wb-motion-micro) var(--wb-ease-standard),
-        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
+        border-color var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-terminal-close:hover,
 .settings-terminal-close:focus-visible {
@@ -180,54 +197,13 @@
     border-color: var(--settings-rust);
     outline: none;
     background: var(--settings-rust);
-    box-shadow: 0 0 10px rgba(var(--launcher-rust-rgb), .38);
 }
 
-/* 页签: 无底盒, 下划线指示; active = 青字 + 青线辉光 */
-.settings-tabs {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: stretch;
-    align-self: stretch;
-    gap: 2px;
-    margin: 0;
-    padding: 0;
-}
-.settings-tab {
-    position: relative;
-    min-width: 78px;
-    padding: 0 14px;
-    color: var(--settings-dust);
-    border: 0;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-    font: 600 var(--settings-fs-label)/1 "Microsoft YaHei", "Segoe UI", sans-serif;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
-        background var(--wb-motion-micro) var(--wb-ease-standard),
-        border-color var(--wb-motion-micro) var(--wb-ease-standard),
-        text-shadow var(--wb-motion-micro) var(--wb-ease-standard);
-}
-.settings-tab:hover,
-.settings-tab:focus-visible {
-    color: var(--term-ink-hi);
-    outline: none;
-    background: rgba(var(--dls-crystal-rgb), .05);
-}
-.settings-tab.active {
-    color: var(--settings-dls);
-    border-bottom-color: var(--settings-dls);
-    background: rgba(var(--dls-crystal-rgb), .06);
-    text-shadow: 0 0 6px rgba(var(--dls-crystal-rgb), .42);
-    box-shadow: 0 1px 7px -2px rgba(var(--dls-crystal-rgb), .55);
-}
-
-/* ── 内容区 ── */
+/* ── 内容视口 ── */
 .settings-content {
     min-height: 0;
     overflow: auto;
-    padding: var(--settings-sp-3) 18px var(--settings-sp-5);
+    padding: 10px 16px 14px;
     box-sizing: border-box;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
@@ -235,45 +211,98 @@
 }
 .settings-content::-webkit-scrollbar { width: 6px; }
 .settings-content::-webkit-scrollbar-track { background: var(--wb-scrollbar-track); }
-.settings-content::-webkit-scrollbar-thumb { background: var(--wb-scrollbar-thumb); }
+.settings-content::-webkit-scrollbar-thumb { background: var(--wb-scrollbar-thumb); border-radius: 3px; }
 .settings-content::-webkit-scrollbar-thumb:hover { background: var(--wb-scrollbar-thumb-hover); }
-.settings-content[data-active-tab="keys"] { overflow: hidden; padding-bottom: 0; }
+.settings-content[data-active-tab="common"] { overflow: hidden; padding: 8px 16px; }
+.settings-content[data-active-tab="keys"] { overflow: hidden; padding: 8px 16px 0; }
 
-/* ── 区块卡 (term-card: 锈红左边条 + dls 细边 + 右下切角 + term-corner-tick) ── */
+/* ── 卡片与区块头 ── */
 .settings-section {
-    margin: 0 0 var(--settings-sp-4);
-    padding: var(--settings-sp-4) 14px var(--settings-sp-5);
+    margin: 0 0 10px;
+    padding: 10px 14px 12px;
+    border: 1px solid var(--settings-line-dim);
+    border-left: 2px solid rgba(var(--dls-crystal-rgb), .45);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-card);
+    box-shadow: inset 0 1px 0 var(--appearance-sheen);
+    clip-path: none;
 }
+.settings-section:last-child { margin-bottom: 0; }
 .settings-section-heading {
     --term-rule-seg-left: 0;
+    --term-rule-seg-w: 44px;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    margin-bottom: var(--settings-sp-3);
-    padding-bottom: var(--settings-sp-2);
+    gap: 10px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
 }
 .settings-section-identity { min-width: 0; }
 .settings-section-code {
     display: block;
     color: var(--settings-rust);
-    font: var(--settings-fs-micro)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
-    letter-spacing: 1.8px;
+    font: 700 var(--settings-fs-micro)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    letter-spacing: 1.5px;
+}
+.settings-section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
 }
 .settings-section-heading h2 {
-    margin: 3px 0 0;
+    margin: 0;
     color: var(--term-ink-hi);
     font-size: var(--settings-fs-h2);
-    line-height: 1.1;
-    letter-spacing: .4px;
+    font-weight: 700;
+    line-height: 1.15;
 }
-.settings-section-heading h2::before {
-    content: "◇";
-    margin-right: 7px;
+.settings-section-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+}
+.settings-scope-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font: 600 9.5px/1.1 "Microsoft YaHei", sans-serif;
+    letter-spacing: .3px;
+}
+.settings-scope-pill[data-scope="local"] {
     color: var(--settings-dls);
-    font: var(--settings-fs-ui)/1 Consolas, monospace;
-    text-shadow: 0 0 5px var(--settings-dls);
+    border: 1px solid rgba(var(--dls-crystal-rgb), .32);
+    background: rgba(var(--dls-crystal-rgb), .09);
 }
+.settings-scope-pill[data-scope="save"] {
+    color: var(--settings-bone);
+    border: 1px solid rgba(var(--launcher-bone-rgb), .34);
+    background: rgba(var(--launcher-bone-rgb), .08);
+}
+
+.settings-link-btn {
+    padding: 3px 8px;
+    color: var(--settings-dls);
+    border: 1px solid rgba(var(--dls-crystal-rgb), .26);
+    border-radius: var(--settings-radius);
+    background: rgba(var(--dls-crystal-rgb), .07);
+    font: 600 var(--settings-fs-note)/1.2 "Microsoft YaHei", sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.settings-link-btn:hover,
+.settings-link-btn:focus-visible {
+    outline: none;
+    border-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .16);
+}
+.settings-link-btn:disabled { opacity: .45; cursor: not-allowed; }
+
 .settings-hint-trigger {
     display: grid;
     width: 22px;
@@ -281,530 +310,742 @@
     flex: 0 0 22px;
     place-items: center;
     padding: 0;
-    color: var(--settings-dust);
-    border: 1px solid rgba(var(--dls-crystal-rgb), .26);
-    border-radius: 0;
-    background: var(--term-surface-inset);
+    color: var(--appearance-muted);
+    border: 1px solid var(--settings-line-dim);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
     font: 700 var(--settings-fs-label)/1 Consolas, monospace;
     cursor: help;
-    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
-        border-color var(--wb-motion-micro) var(--wb-ease-standard),
-        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-hint-trigger:hover,
 .settings-hint-trigger:focus-visible {
     color: var(--settings-dls);
     border-color: var(--settings-dls);
     outline: none;
-    background: rgba(var(--dls-crystal-rgb), .08);
-    box-shadow: 0 0 8px rgba(var(--dls-crystal-rgb), .24);
 }
 .settings-simple-tooltip {
-    max-width: 300px;
+    max-width: 310px;
     color: var(--launcher-copy);
     font: var(--settings-fs-label)/1.5 "Microsoft YaHei", "Segoe UI", sans-serif;
     overflow-wrap: anywhere;
 }
 
-/* ── 字段行与控件 ── */
-.settings-grid { display: grid; gap: var(--settings-sp-2) var(--settings-sp-3); }
+/* ── 按钮覆盖（平滑深钛边框，继承 term-btn 语义色） ── */
+.settings-button {
+    border-radius: var(--settings-radius);
+    clip-path: none !important;
+    min-height: 30px;
+    padding: 5px 12px;
+    font: 600 var(--settings-fs-ui)/1.15 "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+.settings-button.is-arming {
+    border-color: var(--wb-semantic-warning) !important;
+    background: rgba(var(--launcher-bone-rgb), .22) !important;
+    color: var(--term-ink-hi) !important;
+}
+.settings-inline-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+
+/* ── 通用字段行 / Toggle Switch / 分段选钮 / 下拉 / 滑杆 ── */
+.settings-grid { display: grid; gap: 6px 10px; }
 .settings-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .settings-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
 .settings-field {
-    min-height: 34px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--settings-sp-4);
-    padding: var(--settings-sp-1) var(--settings-sp-3) var(--settings-sp-1) var(--settings-sp-4);
+    gap: 10px;
+    padding: 5px 10px;
     box-sizing: border-box;
-    border-left: 2px solid var(--settings-dls-dim);
-    background: var(--term-surface-inset);
+    border: 1px solid var(--settings-line-soft);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
     transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
         background var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-field:hover {
-    border-left-color: var(--settings-dls);
-    background: rgba(var(--dls-crystal-rgb), .04);
+    border-color: rgba(var(--dls-crystal-rgb), .32);
+    background: rgba(var(--dls-crystal-rgb), .045);
+}
+.settings-field.is-disabled { opacity: .52; }
+.settings-field-subordinate {
+    margin-left: 14px;
+    border-left: 2px solid var(--settings-line-dim);
 }
 .settings-field-copy { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
 .settings-field-copy b { color: var(--term-ink-hi); font-size: var(--settings-fs-label); font-weight: 600; }
 .settings-field-copy small {
-    max-width: 390px;
-    overflow: hidden;
-    color: var(--term-ink-faint);
-    font: var(--settings-fs-note)/1.2 Consolas, "Microsoft YaHei", monospace;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    color: var(--appearance-muted);
+    font-size: var(--settings-fs-note);
+    line-height: 1.3;
 }
 
-/* 复选框: 自绘方块 + 对勾, 状态切换走 micro 过渡 */
-.settings-field input[type="checkbox"] {
+/* 现代 Toggle Switch */
+.settings-switch-input {
     appearance: none;
     position: relative;
-    width: 16px;
-    height: 16px;
-    flex: 0 0 16px;
+    width: 36px;
+    height: 20px;
+    flex: 0 0 auto;
     margin: 0;
-    border: 1px solid var(--settings-dust);
-    background: var(--term-surface-inset);
+    border: 1px solid var(--appearance-line);
+    border-radius: 10px;
+    background: var(--appearance-control-inset);
     cursor: pointer;
-    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
-        background var(--wb-motion-micro) var(--wb-ease-standard),
+    transition: background var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
         box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.settings-field input[type="checkbox"]:hover { border-color: var(--settings-dls-deep); }
-.settings-field input[type="checkbox"]:checked {
-    border-color: var(--settings-dls);
-    background: var(--settings-dls);
-    box-shadow: 0 0 7px rgba(var(--dls-crystal-rgb), .44);
-}
-.settings-field input[type="checkbox"]:checked::after {
+.settings-switch-input::after {
     content: "";
     position: absolute;
-    left: 3px;
-    top: 4px;
-    width: 8px;
-    height: 4px;
-    border-left: 2px solid var(--launcher-bg-0);
-    border-bottom: 2px solid var(--launcher-bg-0);
-    transform: rotate(-45deg);
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--appearance-muted);
+    transition: transform var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard);
 }
-.settings-field input[type="checkbox"]:focus-visible {
+.settings-switch-input:checked {
+    border-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .26);
+    box-shadow: 0 0 8px rgba(var(--dls-crystal-rgb), .24);
+}
+.settings-switch-input:checked::after {
+    transform: translateX(16px);
+    background: var(--settings-dls);
+}
+.settings-switch-input:focus-visible {
     outline: none;
-    border-color: var(--dls-crystal-bright);
-    box-shadow: 0 0 0 1px var(--dls-crystal-bright), 0 0 8px rgba(var(--dls-crystal-rgb), .3);
+    box-shadow: 0 0 0 2px var(--wb-role-focus);
 }
+.settings-switch-input:disabled { cursor: not-allowed; opacity: .5; }
 
-/* 下拉: 自绘 chevron, 统一控件高度 */
+/* 分段按钮族 */
+.settings-segmented {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid var(--settings-line-dim);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
+}
+.settings-seg-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.settings-seg-four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.settings-seg-five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.settings-seg-compact { flex: 0 0 auto; min-width: 112px; padding: 2px; }
+.settings-seg-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    min-height: 28px;
+    padding: 4px 6px;
+    color: var(--appearance-secondary-text);
+    border: 1px solid transparent;
+    border-radius: 2px;
+    background: transparent;
+    font: 600 var(--settings-fs-ui)/1.15 "Microsoft YaHei", sans-serif;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.settings-seg-compact .settings-seg-btn { min-height: 24px; padding: 2px 8px; font-size: var(--settings-fs-note); }
+.settings-seg-btn:hover:not(:disabled) {
+    color: var(--term-ink-hi);
+    background: rgba(var(--dls-crystal-rgb), .07);
+}
+.settings-seg-btn.active {
+    color: var(--term-ink-hi);
+    border-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .17);
+    box-shadow: inset 0 0 10px rgba(var(--dls-crystal-rgb), .12);
+}
+.settings-seg-btn:focus-visible { outline: none; box-shadow: 0 0 0 1px var(--wb-role-focus); }
+.settings-seg-btn:disabled { opacity: .48; cursor: not-allowed; }
+.settings-seg-title { white-space: nowrap; }
+.settings-seg-sub {
+    color: var(--appearance-muted);
+    font-size: 9.5px;
+    font-weight: 400;
+    line-height: 1.1;
+}
+.settings-seg-btn.active .settings-seg-sub { color: var(--dls-crystal-bright); }
+
+/* 下拉与文本输入 */
 .settings-select,
-.settings-cheat-form input {
-    min-width: 136px;
-    min-height: var(--term-control-h);
-    padding: 5px 9px;
+.settings-cheat-form input,
+.settings-key-search {
+    min-width: 124px;
+    min-height: 30px;
+    padding: 4px 9px;
     box-sizing: border-box;
-    color: var(--launcher-copy);
-    border: 1px solid var(--settings-dls-dim);
-    border-radius: 0;
-    background: var(--term-surface-inset);
-    font: var(--settings-fs-ui)/1.2 Consolas, "Microsoft YaHei", monospace;
-    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
-        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
+    color: var(--term-ink-hi);
+    border: 1px solid var(--settings-line-dim);
+    border-radius: var(--settings-radius);
+    background: var(--appearance-control-inset);
+    font: var(--settings-fs-ui)/1.25 "Microsoft YaHei", Consolas, sans-serif;
 }
 .settings-select {
     appearance: none;
     padding-right: 24px;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0,0 L10,0 L5,6 Z' fill='%233dd5ff'/></svg>");
     background-repeat: no-repeat;
-    background-position: calc(100% - 9px) center;
+    background-position: calc(100% - 8px) center;
     cursor: pointer;
 }
 .settings-select:hover { border-color: var(--settings-dls-deep); }
 .settings-select:focus-visible,
-.settings-cheat-form input:focus-visible {
+.settings-cheat-form input:focus-visible,
+.settings-key-search:focus-visible {
     border-color: var(--settings-dls);
     outline: none;
-    box-shadow: 0 0 0 1px var(--settings-dls), 0 0 8px rgba(var(--dls-crystal-rgb), .26);
+    box-shadow: 0 0 0 1px var(--settings-dls);
 }
 .settings-select option { color: var(--launcher-copy); background: var(--launcher-bg-1); }
 
-/* 滑杆: 自绘轨道与切角滑块, 读数等宽数字靠右 */
+/* 滑杆 */
 .settings-range-wrap {
     display: grid;
-    grid-template-columns: minmax(100px, 1fr) 44px;
+    grid-template-columns: minmax(90px, 1fr) 44px;
     align-items: center;
-    gap: var(--settings-sp-3);
-    min-width: 185px;
+    gap: 8px;
+    min-width: 156px;
 }
 .settings-range-wrap input[type="range"] {
     appearance: none;
     width: 100%;
-    height: 16px;
+    height: 18px;
     margin: 0;
     background: transparent;
     cursor: pointer;
 }
 .settings-range-wrap input[type="range"]::-webkit-slider-runnable-track {
     height: 4px;
-    background: var(--term-surface-inset);
-    border: 1px solid rgba(var(--dls-crystal-rgb), .22);
+    border-radius: 2px;
+    background: var(--appearance-line-soft);
+    border: 1px solid rgba(var(--dls-crystal-rgb), .24);
 }
 .settings-range-wrap input[type="range"]::-webkit-slider-thumb {
     appearance: none;
-    width: 10px;
-    height: 12px;
-    margin-top: -5px;
+    width: 12px;
+    height: 14px;
+    margin-top: -6px;
+    border-radius: 2px;
     background: var(--settings-dls);
-    clip-path: polygon(2px 0, 100% 0, calc(100% - 2px) 100%, 0 100%);
-    box-shadow: 0 0 6px rgba(var(--dls-crystal-rgb), .5);
+    box-shadow: 0 0 6px rgba(var(--dls-crystal-rgb), .52);
 }
 .settings-range-wrap input[type="range"]:focus-visible { outline: none; }
 .settings-range-wrap input[type="range"]:focus-visible::-webkit-slider-thumb {
     background: var(--dls-crystal-bright);
-    box-shadow: 0 0 10px rgba(var(--dls-crystal-rgb), .7);
+    box-shadow: 0 0 0 2px var(--launcher-bg-0), 0 0 0 3px var(--dls-crystal-bright);
 }
 .settings-range-wrap output {
     color: var(--settings-dls);
-    font: var(--settings-fs-label)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    font: 700 var(--settings-fs-label)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
     font-variant-numeric: tabular-nums;
     text-align: right;
 }
 
-/* ── 按钮: 结构与变体色由 terminal.css .term-btn 承载, 这里只留页面度量 ── */
-.settings-button.audition { margin: 0; }
-.settings-inline-actions { display: flex; align-items: center; justify-content: flex-end; }
-
-.settings-performance-fields .settings-field {
-    align-items: stretch;
-    flex-direction: column;
-    gap: var(--settings-sp-2);
-    padding: var(--settings-sp-3) var(--settings-sp-4);
-}
-.settings-performance-fields .settings-select { width: 100%; min-width: 0; }
-.settings-performance-saved,
-.settings-performance-message {
-    margin: var(--settings-sp-3) 0 0;
-    color: var(--term-ink-md);
-    font-size: var(--settings-fs-label);
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
-.settings-performance-saved { color: var(--settings-bone); }
-.settings-performance-actions { gap: var(--settings-sp-3); margin-top: var(--settings-sp-3); }
-.settings-performance-message { min-height: 17px; }
-.settings-performance-message[data-state="error"] { color: var(--wb-semantic-danger); }
-
-/* ── 游戏 tab: 常用设置聚合卡 ── */
-.settings-game-common { padding: var(--settings-sp-3) var(--settings-sp-5) var(--settings-sp-4); }
-.settings-game-common > .settings-section-heading { margin-bottom: 2px; padding-bottom: 5px; }
-.settings-game-band {
+/* ══════════════════════════════════════════════════════════════
+   页签 1：常用驾驶舱（1024×576 零滚动）
+   ══════════════════════════════════════════════════════════════ */
+.settings-home-layout {
     display: grid;
-    grid-template-columns: 92px minmax(0, 1fr);
-    align-items: start;
-    gap: var(--settings-sp-4);
-    padding: var(--settings-sp-2) 0;
-    border-top: 1px solid rgba(var(--dls-crystal-rgb), .08);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 8px;
+    height: 100%;
+    min-height: 0;
 }
-.settings-game-band:first-of-type { border-top: 0; padding-top: 0; }
-.settings-game-band-label {
-    padding: 1px 0 0 var(--settings-sp-3);
-    border-left: 2px solid var(--settings-rust-dim);
-}
-.settings-game-band-label span {
-    display: block;
-    color: var(--settings-rust);
-    font: var(--settings-fs-micro)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
-    letter-spacing: 1.6px;
-}
-.settings-game-band-label h3 {
-    margin: 3px 0 0;
-    color: var(--settings-bone);
-    font-size: var(--settings-fs-label);
-    line-height: 1.15;
-}
-.settings-game-common .settings-field { min-height: 34px; }
-.settings-game-common .settings-select { min-width: 120px; }
-.settings-audio-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) 136px;
-    gap: var(--settings-sp-3);
-    align-items: stretch;
-}
-.settings-audition-tile { min-height: 34px; white-space: nowrap; }
-.settings-common-display-grid { gap: var(--settings-sp-2); }
-.settings-home-cheat {
-    grid-template-columns: minmax(0, 1fr) 88px 112px;
-    gap: var(--settings-sp-2);
-}
-.settings-home-cheat input { min-width: 0; }
-.settings-home-cheat .settings-button { min-height: 30px; white-space: nowrap; }
 
-/* 流程救援: 主行动(复活=青) / 逃离行动(返回基地=锈红) 两级动作层级 */
-.settings-rescue-strip { border-left: 2px solid var(--settings-rust); }
-.settings-rescue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--settings-sp-3); }
-.settings-rescue-card {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--settings-sp-4);
-    min-height: 42px;
-    padding: 5px var(--settings-sp-2) 5px var(--settings-sp-5);
-    border-left: 2px solid var(--settings-rust-dim);
-    background: linear-gradient(90deg, rgba(var(--launcher-rust-rgb), .06), var(--term-surface-inset));
-    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard);
-}
-.settings-rescue-card:hover { border-left-color: var(--settings-rust); }
-.settings-rescue-card h3 { margin: 0; color: var(--settings-bone); font-size: var(--settings-fs-label); }
-.settings-rescue-card .settings-button { min-width: 92px; }
-
-/* ── 镜头缩放入口卡 ── */
-.settings-camera-entry { margin-bottom: 0; }
-.settings-camera-entry .settings-section-heading { margin-bottom: 5px; padding-bottom: 5px; }
-.settings-camera-entry-row {
+.settings-rescue-strip {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--settings-sp-5);
-    min-height: 40px;
+    gap: 10px;
+    padding: 6px 12px;
+    border: 1px solid rgba(var(--launcher-rust-rgb), .36);
+    border-left: 3px solid var(--settings-rust);
+    border-radius: var(--settings-radius);
+    background: linear-gradient(90deg, rgba(var(--launcher-rust-rgb), .12), var(--settings-surface-well) 52%);
+    clip-path: none;
 }
-.settings-camera-entry-copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
-.settings-camera-entry-copy strong {
-    align-self: flex-start;
-    padding: 2px 8px;
-    color: var(--settings-dls);
-    border: 1px solid var(--settings-dls-dim);
-    background: rgba(var(--dls-crystal-rgb), .06);
-    font: var(--settings-fs-label)/1.2 Consolas, var(--cf7-font-web-overlay-mono), monospace;
-    letter-spacing: .5px;
+.settings-rescue-left,
+.settings-rescue-right { display: flex; align-items: center; gap: 8px; }
+.settings-rescue-tag {
+    display: flex;
+    flex-direction: column;
+    padding-right: 10px;
+    border-right: 1px solid var(--settings-line-dim);
 }
-.settings-camera-entry-copy span { color: var(--term-ink-lo); font-size: var(--settings-fs-note); line-height: 1.3; }
-.settings-camera-open { flex: 0 0 auto; min-width: 142px; }
+.settings-rescue-tag strong { color: var(--settings-bone); font-size: var(--settings-fs-label); line-height: 1.2; }
 
-/* ── 镜头预览模态 ── */
-.settings-camera-preview {
-    position: relative;
+.settings-cockpit-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+    gap: 10px;
+    min-height: 0;
+}
+.settings-cockpit-left {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 8px;
+    min-height: 0;
+}
+.settings-cockpit-card {
     margin: 0;
-    padding: var(--settings-sp-2);
-    border: 1px solid var(--settings-dls-dim);
-    background: var(--term-surface-inset);
-    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    padding: 8px 12px 9px;
 }
-.settings-camera-preview::before {
-    content: "ENTRY FRAME";
-    position: absolute;
-    z-index: 2;
-    top: 9px;
-    left: 11px;
-    padding: 2px 5px;
-    color: var(--settings-rust);
-    background: var(--settings-surface-scrim);
-    font: var(--settings-fs-micro)/1 Consolas, monospace;
-    letter-spacing: 2px;
+.settings-cockpit-card > .settings-section-heading {
+    margin-bottom: 6px;
+    padding-bottom: 5px;
 }
-.settings-camera-viewport {
+
+.settings-inline-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 6px;
+    color: var(--appearance-secondary-text);
+    font-size: var(--settings-fs-note);
+    cursor: pointer;
+}
+.settings-inline-switch .settings-switch-input { width: 30px; height: 16px; flex: 0 0 30px; }
+.settings-inline-switch .settings-switch-input::after { width: 10px; height: 10px; }
+.settings-inline-switch .settings-switch-input:checked::after { transform: translateX(14px); }
+
+.settings-audio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+.settings-audio-grid .settings-field { min-height: 36px; padding: 4px 9px; }
+.settings-audio-grid .settings-range-wrap { min-width: 0; flex: 1 1 auto; }
+.settings-audition-tile { min-height: 26px; padding: 3px 9px; font-size: var(--settings-fs-note); }
+
+.settings-card-footnote {
+    margin: 6px 0 0;
+    color: var(--appearance-muted);
+    font-size: var(--settings-fs-note);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.settings-hit-mode-desc { color: var(--appearance-secondary-text); }
+.settings-perf-preset-seg .settings-seg-btn { min-height: 36px; padding: 4px 6px; }
+
+/* 右栏镜头缩放卡片 */
+.settings-camera-entry {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.settings-camera-open { min-height: 26px; padding: 3px 10px; font-size: var(--settings-fs-note); }
+.settings-camera-inline-viewport {
     position: relative;
     display: grid;
     place-items: center;
-    width: 304px;
-    height: 171px;
+    width: min(100%, 330px);
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
+    border: 1px solid rgba(var(--dls-crystal-rgb), .26);
+    border-radius: var(--settings-radius);
     background:
-        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .06) 25%, transparent 25%, transparent 75%, rgba(var(--dls-crystal-rgb), .06) 75%),
-        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .06) 25%, var(--launcher-bg-0) 25%, var(--launcher-bg-0) 75%, rgba(var(--dls-crystal-rgb), .06) 75%);
-    background-position: 0 0, 7px 7px;
-    background-size: 14px 14px;
-    box-shadow: inset 0 0 0 1px rgba(var(--launcher-bg-0-rgb, 5, 7, 10), .78);
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .08) 25%, transparent 25%, transparent 75%, rgba(var(--dls-crystal-rgb), .08) 75%),
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .08) 25%, var(--launcher-bg-0) 25%, var(--launcher-bg-0) 75%, rgba(var(--dls-crystal-rgb), .08) 75%);
+    background-position: 0 0, 8px 8px;
+    background-size: 16px 16px;
 }
-.settings-camera-viewport::after {
-    content: "";
-    position: absolute;
-    inset: 50% auto auto 50%;
-    width: 14px;
-    height: 14px;
-    border-left: 1px solid rgba(var(--dls-crystal-rgb), .72);
-    border-top: 1px solid rgba(var(--dls-crystal-rgb), .72);
-    transform: translate(-50%, -50%) rotate(45deg);
-    pointer-events: none;
-}
-.settings-camera-viewport img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform-origin: 50% 50%;
-    transition: transform 90ms linear;
-    user-select: none;
-}
-.settings-camera-unavailable { margin: 0; color: var(--term-ink-faint); font: var(--settings-fs-note)/1.3 Consolas, "Microsoft YaHei", monospace; }
-.settings-camera-preview figcaption { margin-top: 5px; color: var(--term-ink-faint); font-size: var(--settings-fs-micro); text-align: center; }
-
-.settings-modal-layer {
+.settings-camera-inline-viewport img {
     position: absolute;
     inset: 0;
-    z-index: 60;
-    display: grid;
-    place-items: center;
-    padding: 26px;
-    box-sizing: border-box;
-    background: var(--settings-surface-scrim);
-    animation: settingsLayerIn var(--wb-motion-standard) var(--wb-ease-standard);
-}
-@keyframes settingsLayerIn { from { opacity: 0; } to { opacity: 1; } }
-.settings-modal-layer.settings-camera-modal-layer { z-index: 70; padding: 10px; }
-.settings-camera-modal {
-    display: grid;
-    grid-template-rows: 49px minmax(0, 1fr) 38px;
     width: 100%;
     height: 100%;
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
-    color: var(--launcher-copy);
-    border: 1px solid var(--settings-dls-dim);
-    background:
-        radial-gradient(ellipse at 38% 45%, rgba(var(--dls-crystal-rgb), .07), transparent 55%),
-        var(--settings-surface-modal);
-    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
-    box-shadow: 0 20px 72px rgba(0, 0, 0, .8), 0 0 28px rgba(var(--dls-crystal-rgb), .09);
-    animation: termBoot var(--wb-motion-structural) var(--wb-ease-emphasized);
-}
-.settings-camera-modal-header {
-    display: flex;
-    align-items: center;
-    gap: var(--settings-sp-5);
-    padding: 6px 11px 6px 17px;
-    box-sizing: border-box;
-    border-bottom: 1px solid var(--settings-rust-dim);
-    background: linear-gradient(90deg, rgba(var(--launcher-rust-rgb), .1), rgba(var(--dls-crystal-rgb), .025));
-}
-.settings-camera-modal-identity { flex: 1 1 auto; min-width: 0; }
-.settings-camera-modal-identity h2 { margin: 2px 0 0; color: var(--term-ink-hi); font-size: 17px; line-height: 1; }
-.settings-camera-simulator-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 252px;
-    gap: var(--settings-sp-4);
-    min-height: 0;
-    padding: var(--settings-sp-4);
-    box-sizing: border-box;
-}
-.settings-camera-simulator-stage {
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    place-items: center;
-    min-width: 0;
-    min-height: 0;
-    height: 100%;
-    padding: var(--settings-sp-3);
-    box-sizing: border-box;
-}
-.settings-camera-simulator-stage::before {
-    content: "ENTRY FRAME / RELATIVE SCALE";
-    color: var(--settings-dust);
-    font: var(--settings-fs-micro)/1 Consolas, monospace;
-    letter-spacing: 2px;
-}
-.settings-camera-simulator-viewport {
-    width: 100%;
-    max-width: none;
-    height: auto;
-    max-height: 100%;
-    aspect-ratio: 16/9;
-    place-self: center;
-    background:
-        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .11) 25%, transparent 25%, transparent 75%, rgba(var(--dls-crystal-rgb), .11) 75%),
-        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .11) 25%, var(--launcher-bg-0) 25%, var(--launcher-bg-0) 75%, rgba(var(--dls-crystal-rgb), .11) 75%);
-    background-position: 0 0, 10px 10px;
-    background-size: 20px 20px;
-    box-shadow: inset 0 0 0 1px rgba(var(--dls-crystal-rgb), .2), 0 0 24px rgba(0, 0, 0, .48);
-}
-.settings-camera-simulator-viewport img {
-    width: 100%;
-    height: 100%;
-    max-width: none;
     object-fit: cover;
-    image-rendering: auto;
+    transform-origin: 0 0;
+    transition: transform 80ms linear;
+    user-select: none;
     will-change: transform;
 }
-.settings-camera-hud-scale {
+.settings-camera-inline-hud {
     position: absolute;
     z-index: 3;
-    top: 12px;
-    right: 12px;
-    padding: 5px 8px;
+    top: 7px;
+    right: 7px;
+    padding: 3px 7px;
+    border-radius: 2px;
     color: var(--settings-on-accent);
-    border: 1px solid var(--settings-dls);
     background: var(--settings-dls);
-    font: 700 13px/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
-    box-shadow: 0 0 12px rgba(var(--dls-crystal-rgb), .3);
+    font: 700 var(--settings-fs-ui)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
 }
-.settings-camera-safe-frame {
-    position: absolute;
-    z-index: 2;
-    inset: 8%;
-    pointer-events: none;
-    border: 1px solid rgba(var(--dls-crystal-rgb), .28);
-    box-shadow: inset 0 0 18px rgba(var(--dls-crystal-rgb), .035);
+.settings-camera-inline-controls {
+    display: grid;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 8px;
 }
-.settings-camera-safe-frame::before,
-.settings-camera-safe-frame::after {
-    content: "";
-    position: absolute;
-    background: rgba(var(--dls-crystal-rgb), .24);
+.settings-camera-zoom-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
+    align-items: stretch;
 }
-.settings-camera-safe-frame::before { top: 50%; left: 0; right: 0; height: 1px; }
-.settings-camera-safe-frame::after { top: 0; bottom: 0; left: 50%; width: 1px; }
-.settings-camera-simulator-stage figcaption { margin-top: 7px; color: var(--term-ink-lo); font-size: var(--settings-fs-note); line-height: 1.3; }
-.settings-camera-controls {
+.settings-camera-zoom-row .settings-field { min-height: 34px; padding: 3px 8px; }
+.settings-camera-zoom-row .settings-range-wrap { min-width: 0; flex: 1 1 auto; }
+.settings-camera-reset-inline { min-height: 34px; padding: 0 9px; font-family: Consolas, monospace; }
+
+/* 底部单行作弊码命令条 */
+.settings-home-cheat-bar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border: 1px solid var(--settings-line-dim);
+    border-left: 3px solid var(--settings-bone);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-card);
+    clip-path: none;
+}
+.settings-cheat-bar-tag {
     display: flex;
-    min-height: 0;
     flex-direction: column;
-    gap: var(--settings-sp-3);
-    padding: var(--settings-sp-4);
-    box-sizing: border-box;
-    border-left: 2px solid var(--settings-rust-dim);
-    background: var(--term-surface-inset);
+    padding-right: 10px;
+    border-right: 1px solid var(--settings-line-dim);
 }
-.settings-camera-control-field {
-    position: relative;
-    min-height: 58px;
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--settings-sp-2);
-    padding: var(--settings-sp-3) var(--settings-sp-4);
+.settings-cheat-bar-tag strong { color: var(--term-ink-hi); font-size: var(--settings-fs-label); line-height: 1.2; }
+.settings-cheat-form { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px; }
+.settings-cheat-form input { min-width: 0; }
+.settings-cheat-exec { min-width: 96px; }
+
+/* ══════════════════════════════════════════════════════════════
+   页签 2：画面与战斗（实时弹幕沙盒 + 性能/画质 + Andy Law 双立绘 + HUD 动效）
+   ══════════════════════════════════════════════════════════════ */
+.settings-hit-sandbox-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    gap: 12px;
+    align-items: start;
 }
-.settings-camera-control-field .settings-field-copy { width: 100%; }
-.settings-camera-control-field .settings-field-copy b { font-size: var(--settings-fs-body); }
-.settings-camera-control-field .settings-field-copy small { max-width: none; font-size: var(--settings-fs-note); white-space: normal; }
-.settings-camera-control-field .settings-range-wrap { width: 100%; min-width: 0; }
-.settings-camera-control-field input[type="checkbox"] { position: absolute; right: 10px; top: 10px; }
-.settings-camera-mode-hud {
+.settings-hit-sandbox-controls { display: grid; gap: 9px; min-width: 0; }
+.settings-control-group { display: grid; gap: 5px; }
+.settings-control-label {
+    color: var(--term-ink-hi);
+    font-size: var(--settings-fs-label);
+    font-weight: 600;
+}
+.settings-control-desc {
     margin: 0;
-    padding: 7px 9px;
-    color: var(--settings-bone);
-    border-left: 2px solid var(--settings-rust);
-    background: rgba(var(--launcher-rust-rgb), .07);
+    color: var(--appearance-muted);
     font-size: var(--settings-fs-note);
     line-height: 1.35;
 }
-.settings-camera-mode-hud[data-dynamic="on"] {
-    color: var(--settings-dls);
-    border-left-color: var(--settings-dls);
-    background: rgba(var(--dls-crystal-rgb), .05);
-}
-.settings-camera-control-actions { display: flex; justify-content: flex-end; margin-top: auto; }
-.settings-camera-modal-footer {
+.settings-limit-header {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: var(--settings-sp-5);
-    padding: 5px 11px 5px 16px;
-    box-sizing: border-box;
-    border-top: 1px solid var(--settings-rust-dim);
-    background: var(--term-surface-inset);
+    justify-content: space-between;
+    gap: 8px;
 }
-.settings-camera-done { min-width: 104px; }
+.settings-limit-chips { display: flex; gap: 4px; margin-left: auto; }
+.settings-chip-btn {
+    min-width: 36px;
+    height: 26px;
+    padding: 0 7px;
+    color: var(--appearance-secondary-text);
+    border: 1px solid var(--settings-line-dim);
+    border-radius: 2px;
+    background: var(--settings-surface-well);
+    font: 600 var(--settings-fs-note)/1 Consolas, "Microsoft YaHei", monospace;
+    cursor: pointer;
+}
+.settings-chip-btn:hover { border-color: var(--settings-dls-deep); color: var(--term-ink-hi); }
+.settings-chip-btn.active {
+    color: var(--term-ink-hi);
+    border-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .18);
+}
+.settings-limit-input {
+    width: 74px;
+    min-width: 74px;
+    min-height: 26px;
+    padding: 2px 7px;
+    text-align: right;
+    background-image: none;
+    font-family: Consolas, monospace;
+}
+.settings-hit-playback-row { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 2px; }
+.settings-hit-playback-row .settings-button { min-height: 28px; padding: 4px 10px; font-size: var(--settings-fs-note); }
 
-/* ── 键位 tab: 36 键两列分组一次呈现, 组内再按 2/3 列压缩 ── */
-.settings-key-summary {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--settings-sp-5);
-    min-height: 40px;
-    margin-bottom: 3px;
-    padding-top: 3px;
-    padding-bottom: 3px;
+.settings-hit-stage-wrap { min-width: 0; }
+.settings-hit-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid rgba(var(--dls-crystal-rgb), .3);
+    border-radius: var(--settings-radius);
+    background:
+        radial-gradient(ellipse at 50% 62%, rgba(var(--dls-crystal-rgb), .08), transparent 62%),
+        linear-gradient(90deg, rgba(var(--dls-crystal-rgb), .04) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(var(--dls-crystal-rgb), .04) 1px, transparent 1px),
+        var(--launcher-bg-0);
+    background-size: auto, 24px 24px, 24px 24px, auto;
 }
-.settings-key-summary .settings-section-heading { margin: 0; padding: 0; border-bottom: 0; }
-.settings-key-summary .settings-section-heading::after { display: none; }
-.settings-key-summary .settings-section-heading p { max-width: 600px; }
+.settings-hit-stage-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    filter: brightness(.42) saturate(.8);
+    transition: opacity var(--wb-motion-micro) var(--wb-ease-standard);
+    pointer-events: none;
+}
+.settings-hit-stage.use-game-bg .settings-hit-stage-bg { opacity: 1; }
+.settings-hit-preview-canvas {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.settings-hit-fallback {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-content: center;
+    gap: 6px;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.settings-hit-fallback strong { color: var(--settings-bone); font-size: var(--settings-fs-body); }
+.settings-hit-fallback p { margin: 0; color: var(--appearance-muted); font-size: var(--settings-fs-note); line-height: 1.45; }
+.settings-hit-telemetry {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 4px 10px;
+    color: var(--term-ink-md);
+    border-top: 1px solid var(--settings-line-soft);
+    background: color-mix(in srgb, var(--launcher-bg-0) 82%, transparent);
+    font: var(--settings-fs-note)/1.3 Consolas, "Microsoft YaHei", monospace;
+    text-align: center;
+}
+
+/* 性能方案与画面增强 */
+.settings-performance-fields .settings-field {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px 10px;
+}
+.settings-performance-fields .settings-select { width: 100%; min-width: 0; }
+.settings-performance-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+.settings-performance-saved {
+    margin: 0;
+    color: var(--settings-bone);
+    font-size: var(--settings-fs-label);
+    font-weight: 600;
+}
+.settings-performance-message {
+    margin: 6px 0 0;
+    min-height: 17px;
+    color: var(--appearance-muted);
+    font-size: var(--settings-fs-note);
+    line-height: 1.4;
+}
+.settings-performance-message[data-state="error"] { color: var(--wb-semantic-danger); }
+
+.settings-subband {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--settings-line-soft);
+}
+.settings-subband-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+}
+.settings-subband-title {
+    margin: 0 0 6px;
+    color: var(--settings-bone);
+    font-size: var(--settings-fs-label);
+    font-weight: 600;
+}
+.settings-subband-head .settings-subband-title { margin: 0; }
+
+/* 世界画面开关 + Andy Law 对话立绘双图对比 */
+.settings-world-portrait-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 12px;
+    align-items: start;
+}
+.settings-world-toggles { display: grid; gap: 6px; }
+.settings-portrait-picker {
+    display: grid;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--settings-line-soft);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
+}
+.settings-portrait-head { display: flex; flex-direction: column; gap: 2px; }
+.settings-portrait-head strong { color: var(--term-ink-hi); font-size: var(--settings-fs-label); }
+.settings-portrait-head span { color: var(--appearance-muted); font-size: var(--settings-fs-note); }
+.settings-portrait-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.settings-portrait-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    padding: 5px;
+    color: var(--appearance-secondary-text);
+    border: 1px solid var(--settings-line-dim);
+    border-radius: var(--settings-radius);
+    background: var(--appearance-surface);
+    cursor: pointer;
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        box-shadow var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.settings-portrait-card:hover { border-color: var(--settings-dls-deep); color: var(--term-ink-hi); }
+.settings-portrait-card.active {
+    color: var(--term-ink-hi);
+    border-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .12);
+    box-shadow: 0 0 10px rgba(var(--dls-crystal-rgb), .2);
+}
+.settings-portrait-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    overflow: hidden;
+    border-radius: 2px;
+    background: radial-gradient(circle at 50% 35%, rgba(var(--dls-crystal-rgb), .12), var(--launcher-bg-0));
+}
+.settings-portrait-canvas { display: block; width: 100%; height: 100%; object-fit: cover; }
+.settings-portrait-fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--appearance-muted);
+    font-size: var(--settings-fs-label);
+}
+.settings-portrait-fallback[hidden] { display: none; }
+.settings-portrait-label { font-size: var(--settings-fs-note); font-weight: 600; text-align: center; }
+
+/* HUD 动效示意条 */
+.settings-hud-motion-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 12px;
+    align-items: center;
+}
+.settings-hud-motion-left { display: grid; gap: 6px; }
+.settings-hud-demo {
+    display: grid;
+    gap: 6px;
+    padding: 9px 11px;
+    border: 1px solid var(--settings-line-soft);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
+}
+.settings-hud-demo-label { color: var(--appearance-muted); font-size: var(--settings-fs-note); }
+.settings-hud-demo-bar {
+    position: relative;
+    height: 12px;
+    overflow: hidden;
+    border: 1px solid var(--appearance-line);
+    border-radius: 2px;
+    background: var(--launcher-bg-0);
+}
+.settings-hud-demo-trail,
+.settings-hud-demo-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+.settings-hud-demo-trail { width: 84%; background: var(--launcher-bone); opacity: .78; }
+.settings-hud-demo-fill { width: 58%; background: var(--wb-semantic-danger); }
+.settings-hud-demo[data-motion="full"] .settings-hud-demo-trail {
+    animation: settingsHudTrailFull 2.2s ease-out infinite;
+}
+.settings-hud-demo[data-motion="full"] .settings-hud-demo-fill {
+    animation: settingsHudPulseFull 2.2s ease-in-out infinite;
+}
+.settings-hud-demo[data-motion="reduced"] .settings-hud-demo-trail {
+    animation: settingsHudTrailReduced 2.2s linear infinite;
+}
+.settings-hud-demo[data-motion="static"] .settings-hud-demo-trail { width: 58%; opacity: 0; }
+@keyframes settingsHudTrailFull {
+    0%, 20% { width: 86%; }
+    62%, 100% { width: 58%; }
+}
+@keyframes settingsHudPulseFull {
+    0%, 100% { filter: brightness(1); }
+    24% { filter: brightness(1.38); }
+}
+@keyframes settingsHudTrailReduced {
+    0%, 15% { width: 80%; }
+    30%, 100% { width: 58%; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   页签 3：36 项权威键位（1024×576 零滚动 + 搜索高亮）
+   ══════════════════════════════════════════════════════════════ */
+.settings-key-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 36px;
+    margin-bottom: 5px;
+    padding: 4px 10px;
+}
+.settings-key-summary > .settings-section-heading {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-bottom: 0;
+}
+.settings-key-summary > .settings-section-heading::after { display: none; }
+.settings-key-search { width: 220px; min-width: 180px; min-height: 26px; padding: 3px 8px; font-size: var(--settings-fs-note); }
+.settings-key-conflict-pill {
+    padding: 3px 7px;
+    border-radius: 2px;
+    color: var(--term-ink-hi);
+    background: var(--settings-rust);
+    font: 700 var(--settings-fs-note)/1.1 "Microsoft YaHei", sans-serif;
+}
 .settings-key-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; align-items: start; }
-.settings-key-column { display: grid; gap: var(--settings-sp-1); align-content: start; min-width: 0; }
-.settings-key-section { margin: 0; padding: 5px var(--settings-sp-2) var(--settings-sp-2); --term-rule-seg-w: 42px; }
-.settings-key-section .settings-section-heading { margin-bottom: var(--settings-sp-1); padding-bottom: 3px; }
-.settings-key-section .settings-section-code { font-size: var(--settings-fs-micro); letter-spacing: 1.4px; }
-.settings-key-section .settings-section-heading h2 { margin-top: 1px; font-size: 13px; }
-.settings-key-section .settings-section-heading h2::before { margin-right: 5px; font-size: var(--settings-fs-note); }
+.settings-key-column { display: grid; gap: 5px; align-content: start; min-width: 0; }
+.settings-key-section { margin: 0; padding: 5px 8px 6px; }
+.settings-key-section .settings-section-heading { margin-bottom: 4px; padding-bottom: 3px; }
+.settings-key-section .settings-section-heading h2 { font-size: 13px; }
 .settings-key-grid { display: grid; gap: 3px; }
 .settings-key-section[data-key-columns="2"] .settings-key-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .settings-key-section[data-key-columns="3"] .settings-key-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -815,21 +1056,24 @@
     align-items: center;
     gap: 3px;
     min-height: 24px;
-    padding: 1px 2px 1px var(--settings-sp-1);
+    padding: 1px 2px 1px 4px;
     box-sizing: border-box;
-    border-left: 1px solid var(--settings-dls-dim);
-    background: var(--term-surface-inset);
-    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
-        background var(--wb-motion-micro) var(--wb-ease-standard);
+    border-left: 2px solid var(--settings-dls-dim);
+    border-radius: 2px;
+    background: var(--settings-surface-well);
+    transition: opacity var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard);
 }
 .settings-key-section[data-key-columns="3"] .settings-key-row { grid-template-columns: max-content 68px; }
 .settings-key-row:hover { border-left-color: var(--settings-dls); }
-.settings-key-row.invalid { border-left-color: var(--settings-rust); background: rgba(var(--launcher-rust-rgb), .12); }
-.settings-key-row.invalid .settings-key-label { color: color-mix(in srgb, var(--launcher-rust) 48%, var(--term-ink-hi)); }
+.settings-key-row.is-match { border-left-color: var(--settings-dls); background: rgba(var(--dls-crystal-rgb), .12); }
+.settings-key-row.is-dimmed { opacity: .32; }
+.settings-key-row.invalid { border-left-color: var(--settings-rust); background: rgba(var(--launcher-rust-rgb), .16); }
+.settings-key-row.invalid .settings-key-label { color: var(--wb-semantic-danger); }
 .settings-key-label {
     overflow: hidden;
     color: var(--launcher-copy);
-    font-size: var(--settings-fs-body);
+    font-size: var(--settings-fs-label);
     line-height: 1;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -841,7 +1085,9 @@
     padding: 3px 5px;
     color: var(--settings-bone);
     border-color: rgba(var(--launcher-bone-rgb), .34);
-    font: var(--settings-fs-body)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+    border-radius: 2px;
+    clip-path: none !important;
+    font: var(--settings-fs-label)/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -853,12 +1099,308 @@
     text-shadow: none;
 }
 
-/* ── 本机与 Web tab ── */
-.settings-local-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--settings-sp-2) var(--settings-sp-3); }
-.settings-cheat-form { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 7px; }
-.settings-cheat-form input { min-width: 0; }
+/* ══════════════════════════════════════════════════════════════
+   页签 4：界面与音频（点歌器合并 + 习惯偏好 + 批量物品密度）
+   ══════════════════════════════════════════════════════════════ */
+.settings-jukebox-themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.settings-theme-card {
+    display: grid;
+    grid-template-columns: 124px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    text-align: left;
+    color: var(--appearance-secondary-text);
+    border: 1px solid var(--settings-line-dim);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
+    cursor: pointer;
+    transition: border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.settings-theme-card:hover { border-color: var(--settings-dls-deep); color: var(--term-ink-hi); }
+.settings-theme-card.active {
+    color: var(--term-ink-hi);
+    border-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .12);
+}
+.settings-theme-crt {
+    display: grid;
+    place-items: center;
+    height: 36px;
+    padding: 4px 6px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    border: 1px solid var(--settings-line-dim);
+    background: var(--launcher-bg-0);
+}
+.settings-theme-crt svg { width: 100%; height: 100%; }
+.settings-theme-card[data-theme-value="green"] .settings-theme-crt {
+    color: var(--settings-jb-green);
+    box-shadow: inset 0 0 12px color-mix(in srgb, var(--settings-jb-green) 22%, transparent);
+}
+.settings-theme-card[data-theme-value="amber"] .settings-theme-crt {
+    color: var(--settings-jb-amber);
+    box-shadow: inset 0 0 12px color-mix(in srgb, var(--settings-jb-amber) 22%, transparent);
+}
+.settings-theme-copy { display: flex; flex-direction: column; gap: 2px; }
+.settings-theme-copy b { font-size: var(--settings-fs-label); }
+.settings-theme-copy small { color: var(--appearance-muted); font-size: var(--settings-fs-note); }
 
-/* ── 作弊码帮助模态 ── */
+.settings-density-specimen {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.settings-density-sample {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 10px;
+    border: 1px solid var(--settings-line-soft);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
+}
+.settings-density-tag { color: var(--settings-bone); font-size: var(--settings-fs-note); font-weight: 600; white-space: nowrap; }
+.settings-density-mock { display: flex; align-items: center; gap: 5px; }
+.settings-density-mock .mock-card {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 6px;
+    border: 1px solid var(--settings-line-dim);
+    border-radius: 2px;
+    background: var(--appearance-surface);
+}
+.settings-density-mock .mock-ico {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(var(--dls-crystal-rgb), .38);
+    border-radius: 2px;
+    background: rgba(var(--dls-crystal-rgb), .14);
+}
+.settings-density-mock .mock-lines { display: flex; flex-direction: column; gap: 3px; width: 42px; }
+.settings-density-mock .mock-lines b { height: 4px; width: 100%; border-radius: 1px; background: var(--appearance-secondary-text); }
+.settings-density-mock .mock-lines em { height: 3px; width: 65%; border-radius: 1px; background: var(--appearance-muted); }
+
+/* ══════════════════════════════════════════════════════════════
+   模态层：全屏镜头模拟 / 作弊码帮助 / 伤害对账日志 / 自定义关闭确认
+   ══════════════════════════════════════════════════════════════ */
+.settings-modal-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: var(--settings-surface-scrim);
+    animation: settingsLayerIn var(--wb-motion-standard) var(--wb-ease-standard);
+}
+@keyframes settingsLayerIn { from { opacity: 0; } to { opacity: 1; } }
+.settings-modal-layer.settings-camera-modal-layer { z-index: 70; padding: 10px; }
+.settings-modal-layer.settings-damage-ledger-layer { z-index: 74; padding: 12px; }
+.settings-modal-layer.settings-confirm-layer { z-index: 80; }
+
+/* 镜头预览全屏模态 */
+.settings-camera-preview {
+    position: relative;
+    margin: 0;
+    padding: 8px;
+    border: 1px solid var(--settings-dls-dim);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-well);
+}
+.settings-camera-viewport {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    overflow: hidden;
+    background:
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .08) 25%, transparent 25%, transparent 75%, rgba(var(--dls-crystal-rgb), .08) 75%),
+        linear-gradient(45deg, rgba(var(--dls-crystal-rgb), .08) 25%, var(--launcher-bg-0) 25%, var(--launcher-bg-0) 75%, rgba(var(--dls-crystal-rgb), .08) 75%);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+}
+.settings-camera-viewport img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: 0 0;
+    transition: transform 90ms linear;
+    user-select: none;
+}
+.settings-camera-unavailable { margin: 0; color: var(--appearance-muted); font-size: var(--settings-fs-note); }
+.settings-camera-preview figcaption { margin-top: 4px; color: var(--appearance-muted); font-size: var(--settings-fs-note); text-align: center; }
+
+.settings-camera-modal {
+    display: grid;
+    grid-template-rows: 46px minmax(0, 1fr) 42px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    color: var(--launcher-copy);
+    border: 1px solid var(--settings-dls-dim);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-modal);
+    box-shadow: 0 20px 64px rgba(0, 0, 0, .78);
+}
+.settings-camera-modal-header,
+.settings-cheat-modal-header,
+.settings-damage-ledger-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 12px 7px 16px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--settings-line-dim);
+    background: var(--settings-surface-well);
+}
+.settings-camera-modal-identity,
+.settings-cheat-modal-identity,
+.settings-damage-ledger-identity { flex: 1 1 auto; min-width: 0; }
+.settings-modal-kicker {
+    display: block;
+    color: var(--settings-rust);
+    font: 700 var(--settings-fs-micro)/1 Consolas, monospace;
+    letter-spacing: 1.8px;
+}
+.settings-camera-modal-identity h2,
+.settings-cheat-modal-header h2,
+.settings-damage-ledger-identity h2 { margin: 2px 0 0; color: var(--term-ink-hi); font-size: 16px; line-height: 1.1; }
+.settings-camera-simulator-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 264px;
+    gap: 10px;
+    min-height: 0;
+    padding: 8px 10px;
+    box-sizing: border-box;
+}
+.settings-camera-simulator-stage {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    place-items: center;
+    padding: 6px;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    box-sizing: border-box;
+}
+.settings-camera-simulator-viewport {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    aspect-ratio: 16 / 9;
+    place-self: center;
+    box-shadow: inset 0 0 0 1px rgba(var(--dls-crystal-rgb), .2);
+}
+.settings-camera-simulator-viewport img { width: 100%; height: 100%; max-width: none; object-fit: cover; transform-origin: 0 0; will-change: transform; }
+.settings-camera-hud-scale {
+    position: absolute;
+    z-index: 3;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 2px;
+    color: var(--settings-on-accent);
+    background: var(--settings-dls);
+    font: 700 13px/1 Consolas, var(--cf7-font-web-overlay-mono), monospace;
+}
+.settings-camera-safe-frame {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 11.111%;
+    pointer-events: none;
+    border-bottom: 1px dashed rgba(var(--dls-crystal-rgb), .34);
+}
+.settings-camera-hud-band {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 11.111%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background: rgba(var(--launcher-bg-0-rgb, 8, 12, 16), .48);
+    color: rgba(var(--dls-crystal-rgb), .62);
+    font: 600 var(--settings-fs-micro)/1 "Microsoft YaHei", Consolas, monospace;
+    letter-spacing: 0.8px;
+}
+.settings-camera-dynamic-samples {
+    display: grid;
+    gap: 5px;
+    padding: 7px 8px;
+    border: 1px solid var(--settings-line-soft);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-card);
+}
+.settings-camera-dynamic-samples .settings-seg-btn {
+    min-height: 28px;
+    padding: 3px 4px;
+    font-size: var(--settings-fs-note);
+}
+.settings-camera-controls {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-left: 1px solid var(--settings-line-dim);
+    background: var(--settings-surface-well);
+}
+.settings-camera-control-field {
+    min-height: 44px;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+}
+.settings-camera-control-field.is-stacked {
+    min-height: 56px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+}
+.settings-camera-control-field .settings-range-wrap { width: 100%; min-width: 0; }
+.settings-camera-mode-hud {
+    margin: 0;
+    padding: 7px 9px;
+    color: var(--settings-bone);
+    border-left: 2px solid var(--settings-rust);
+    border-radius: 2px;
+    background: rgba(var(--launcher-rust-rgb), .08);
+    font-size: var(--settings-fs-note);
+}
+.settings-camera-mode-hud[data-dynamic="on"] {
+    color: var(--settings-dls);
+    border-left-color: var(--settings-dls);
+    background: rgba(var(--dls-crystal-rgb), .08);
+}
+.settings-camera-control-actions { display: flex; justify-content: flex-end; margin-top: auto; }
+.settings-camera-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 6px 14px;
+    border-top: 1px solid var(--settings-line-dim);
+    background: var(--settings-surface-well);
+}
+
+/* 作弊码帮助模态 */
 .settings-cheat-modal {
     display: grid;
     grid-template-rows: 50px minmax(0, 1fr) 34px;
@@ -867,54 +1409,38 @@
     overflow: hidden;
     color: var(--launcher-copy);
     border: 1px solid var(--settings-dls-dim);
+    border-radius: var(--settings-radius);
     background: var(--settings-surface-modal);
-    clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
-    box-shadow: 0 18px 64px rgba(0, 0, 0, .76), 0 0 26px rgba(var(--dls-crystal-rgb), .08);
-    animation: termBoot var(--wb-motion-structural) var(--wb-ease-emphasized);
+    box-shadow: 0 18px 64px rgba(0, 0, 0, .76);
 }
-.settings-cheat-modal-header {
-    display: flex;
-    align-items: center;
-    gap: var(--settings-sp-5);
-    padding: 7px 10px 7px 17px;
-    border-bottom: 1px solid var(--settings-rust-dim);
-    background: linear-gradient(90deg, rgba(var(--launcher-rust-rgb), .08), rgba(var(--dls-crystal-rgb), .035));
-}
-.settings-cheat-modal-identity { flex: 1 1 auto; min-width: 0; }
-.settings-modal-kicker {
-    display: block;
-    color: var(--settings-rust);
-    font: var(--settings-fs-micro)/1 Consolas, monospace;
-    letter-spacing: 2px;
-}
-.settings-cheat-modal-header h2 { margin: 2px 0 0; color: var(--term-ink-hi); font-size: 16px; }
 .settings-cheat-doc {
     overflow: auto;
-    padding: 13px 18px 21px;
+    padding: 13px 18px 20px;
     scrollbar-width: thin;
     scrollbar-color: var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
 }
-.settings-cheat-doc h1 { margin: 0 0 6px; color: var(--term-ink-hi); font-size: 19px; }
+.settings-cheat-doc h1 { margin: 0 0 6px; color: var(--term-ink-hi); font-size: 18px; }
 .settings-cheat-doc h2 {
-    margin: 17px 0 7px;
+    margin: 16px 0 7px;
     padding-bottom: 5px;
     color: var(--settings-bone);
-    border-bottom: 1px solid var(--settings-rust-dim);
+    border-bottom: 1px solid var(--settings-line-dim);
     font-size: var(--settings-fs-body);
 }
-.settings-cheat-doc p { color: var(--term-ink-lo); font-size: var(--settings-fs-note); line-height: 1.55; }
+.settings-cheat-doc p { color: var(--appearance-muted); font-size: var(--settings-fs-note); line-height: 1.55; }
 .settings-cheat-doc ul { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .settings-cheat-doc li {
     display: grid;
-    grid-template-columns: minmax(250px, .75fr) minmax(0, 1.25fr) 56px;
+    grid-template-columns: minmax(250px, .75fr) minmax(0, 1.25fr) 58px;
     align-items: center;
-    gap: var(--settings-sp-4);
-    min-height: 33px;
-    padding: 4px 6px 4px var(--settings-sp-4);
+    gap: 10px;
+    min-height: 34px;
+    padding: 4px 8px 4px 10px;
     box-sizing: border-box;
-    color: var(--term-ink-lo);
+    color: var(--appearance-secondary-text);
     border-left: 2px solid var(--settings-dls-dim);
-    background: var(--term-surface-inset);
+    border-radius: 2px;
+    background: var(--settings-surface-well);
     font-size: var(--settings-fs-note);
 }
 .settings-cheat-doc code {
@@ -922,55 +1448,40 @@
     font: var(--settings-fs-note)/1.35 Consolas, "Microsoft YaHei", monospace;
     overflow-wrap: anywhere;
 }
-.settings-copy-command { min-width: 52px; min-height: 24px; padding: 4px 7px; --term-btn-fs: var(--settings-fs-note); }
+.settings-copy-command { min-width: 54px; min-height: 24px; padding: 3px 7px; border-radius: 2px; clip-path: none !important; }
 .settings-help-loading,
-.settings-help-error { display: grid; place-items: center; min-height: 240px; text-align: center; }
-.settings-help-error { color: var(--settings-rust) !important; }
-.settings-cheat-fallback-list li span { color: var(--term-ink-lo); }
+.settings-help-error { display: grid; place-items: center; min-height: 220px; text-align: center; }
+.settings-help-error { color: var(--wb-semantic-danger) !important; }
 .settings-cheat-modal-footnote {
     margin: 0;
     padding: 8px 14px;
-    color: var(--term-ink-faint);
-    border-top: 1px solid var(--settings-dls-dim);
-    background: var(--term-surface-inset);
-    font-size: var(--settings-fs-micro);
+    color: var(--appearance-muted);
+    border-top: 1px solid var(--settings-line-dim);
+    background: var(--settings-surface-well);
+    font-size: var(--settings-fs-note);
 }
 
-/* ── 伤害对账日志：暂停态、分页、精确逐段 ── */
-.settings-hit-number-actions { margin-top: 8px; }
-.settings-damage-ledger-layer { z-index: 74; padding: 12px; }
+/* 伤害对账日志模态 */
 .settings-damage-ledger-modal {
     display: grid;
     grid-template-rows: auto auto minmax(0, 1fr) auto;
-    width: min(910px, calc(100% - 18px));
-    height: min(530px, calc(100% - 18px));
-    box-sizing: border-box;
+    width: min(910px, calc(100% - 16px));
+    height: min(526px, calc(100% - 16px));
     overflow: hidden;
     color: var(--term-ink-hi);
     border: 1px solid var(--settings-dls);
-    background: color-mix(in srgb, var(--launcher-bg-0) 96%, transparent);
-    box-shadow: 0 16px 46px rgba(0, 0, 0, .72), inset 0 0 38px rgba(35, 161, 157, .06);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-modal);
+    box-shadow: 0 16px 46px rgba(0, 0, 0, .72);
 }
-.settings-damage-ledger-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 50px;
-    padding: 8px 12px;
-    box-sizing: border-box;
-    border-bottom: 1px solid var(--settings-dls-dim);
-    background: var(--term-surface-inset);
-}
-.settings-damage-ledger-identity { flex: 1 1 auto; min-width: 0; }
-.settings-damage-ledger-identity h2 { margin: 2px 0 0; color: var(--term-ink-hi); font-size: 17px; }
 .settings-damage-ledger-summary {
     margin: 0;
     padding: 7px 14px;
     color: var(--settings-dls);
-    border-bottom: 1px solid var(--term-line-soft);
+    border-bottom: 1px solid var(--settings-line-soft);
     font: var(--settings-fs-note)/1.4 Consolas, "Microsoft YaHei", monospace;
 }
-.settings-damage-ledger-summary[data-truncated="true"] { color: var(--settings-rust); }
+.settings-damage-ledger-summary[data-truncated="true"] { color: var(--wb-semantic-warning); }
 .settings-damage-ledger-body {
     display: grid;
     align-content: start;
@@ -982,87 +1493,116 @@
 }
 .settings-damage-ledger-burst {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
     gap: 4px;
-    padding: 7px 9px;
+    padding: 7px 10px;
     border-left: 2px solid var(--settings-dls);
-    background: var(--term-surface-inset);
+    border-radius: 2px;
+    background: var(--settings-surface-well);
 }
 .settings-damage-ledger-burst-header {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    color: var(--term-ink-lo);
+    color: var(--appearance-muted);
     font-size: var(--settings-fs-note);
 }
 .settings-damage-ledger-burst-header strong { color: var(--term-ink-hi); overflow-wrap: anywhere; }
-.settings-damage-ledger-burst-id {
-    color: var(--term-ink-faint);
-    font: var(--settings-fs-micro)/1.25 Consolas, monospace;
-    overflow-wrap: anywhere;
-}
+.settings-damage-ledger-burst-id { color: var(--appearance-muted); font: var(--settings-fs-micro)/1.25 Consolas, monospace; }
 .settings-damage-ledger-segments { display: flex; flex-wrap: wrap; gap: 4px; }
 .settings-damage-ledger-segment {
     min-width: 24px;
-    padding: 2px 5px;
-    box-sizing: border-box;
+    padding: 2px 6px;
     border: 1px solid currentColor;
-    background: rgba(0, 0, 0, .48);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--launcher-bg-0) 76%, transparent);
     font: var(--settings-fs-note)/1.25 Consolas, "Microsoft YaHei", monospace;
 }
 .settings-damage-ledger-footer {
     display: flex;
     justify-content: center;
-    gap: 7px;
-    padding: 7px 12px;
-    border-top: 1px solid var(--settings-dls-dim);
-    background: var(--term-surface-inset);
+    gap: 8px;
+    padding: 8px 12px;
+    border-top: 1px solid var(--settings-line-dim);
+    background: var(--settings-surface-well);
 }
-.settings-damage-ledger-footer .settings-button { min-width: 98px; }
 
-/* ── 空态 / 页脚 ── */
+/* 自定义关闭确认模态 */
+.settings-confirm-modal {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: min(470px, 100%);
+    overflow: hidden;
+    border: 1px solid rgba(var(--launcher-bone-rgb), .42);
+    border-radius: var(--settings-radius);
+    background: var(--settings-surface-modal);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .82);
+}
+.settings-confirm-header {
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--settings-line-dim);
+    background: var(--settings-surface-well);
+}
+.settings-confirm-header h2 { margin: 3px 0 0; color: var(--term-ink-hi); font-size: 16px; }
+.settings-confirm-body { display: grid; gap: 7px; padding: 14px 16px; }
+.settings-confirm-body p { margin: 0; color: var(--launcher-copy); font-size: var(--settings-fs-label); line-height: 1.5; }
+.settings-confirm-note { color: var(--appearance-muted) !important; font-size: var(--settings-fs-note) !important; }
+.settings-confirm-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--settings-line-dim);
+    background: var(--settings-surface-well);
+}
+
+/* ── 空态与页脚 ── */
 .settings-empty {
     display: grid;
     place-items: center;
-    min-height: 290px;
+    min-height: 300px;
     align-content: center;
-    gap: var(--settings-sp-4);
-    color: var(--term-ink-lo);
+    gap: 10px;
+    color: var(--appearance-muted);
     text-align: center;
 }
 .settings-empty h2,
 .settings-empty p { margin: 0; }
+.settings-empty h2 { color: var(--term-ink-hi); font-size: 16px; }
+
 .settings-footer {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: 4px;
-    padding: 7px 15px 7px 18px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 16px;
     box-sizing: border-box;
-    border-top: 1px solid var(--settings-rust-dim);
+    border-top: 1px solid var(--settings-line-dim);
     background: linear-gradient(0deg,
         color-mix(in srgb, var(--launcher-bg-0) 96%, transparent),
-        color-mix(in srgb, var(--launcher-bg-0) 90%, transparent));
+        color-mix(in srgb, var(--launcher-bg-1) 86%, transparent));
 }
-.settings-footer::before {
-    content: "DLS LINK  /  CONFIG BUFFER";
-    position: absolute;
-    top: 5px;
-    left: 18px;
-    color: var(--settings-rust);
-    font: var(--settings-fs-micro)/1 Consolas, monospace;
-    letter-spacing: 2px;
+.settings-footer-meta { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.settings-dirty-badge {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    border-radius: 2px;
+    color: var(--wb-semantic-warning);
+    border: 1px solid rgba(var(--launcher-bone-rgb), .44);
+    background: rgba(var(--launcher-bone-rgb), .12);
+    font: 700 var(--settings-fs-note)/1.1 "Microsoft YaHei", sans-serif;
+    white-space: nowrap;
 }
-.settings-footer-actions { display: flex; gap: 7px; }
 .settings-persistence-status {
-    color: var(--launcher-copy);
+    color: var(--appearance-secondary-text);
     font-size: var(--settings-fs-label);
-    line-height: 18px;
-    max-width: 100%;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.settings-footer-actions .settings-button { min-height: 32px; padding: 6px 16px; }
-.settings-footer-actions .settings-button.primary { min-width: 132px; --term-btn-fs: var(--settings-fs-body); }
+.settings-footer-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.settings-footer-actions .settings-button { min-height: 34px; padding: 6px 15px; }
+.settings-footer-actions .settings-button.primary { min-width: 126px; font-size: var(--settings-fs-body); }
 
 /* ── reduced-motion: 面板范围内关停全部动画/过渡 ── */
 @media (prefers-reduced-motion: reduce) {

@@ -298,7 +298,7 @@ test("central Web preferences reuse shipped storage keys and reject unknown valu
 test("panel keeps cheat bridge internal and exposes only agreed rescue controls", () => {
   const panel = fs.readFileSync(path.join(root, "launcher/web/modules/settings-panel.js"), "utf8");
   assert(panel.includes("function onOpen(el, initData)"));
-  assert(panel.includes("onRebind:onRebind"));
+  assert(panel.includes("onRebind: onRebind"));
   assert(!panel.includes("/console"));
   assert(panel.includes("try_revive"));
   assert(panel.includes("return_base"));
@@ -314,7 +314,7 @@ test("panel keeps cheat bridge internal and exposes only agreed rescue controls"
   assert(panel.includes("打开镜头预览"));
   assert(panel.includes("作弊码帮助"));
   assert(panel.includes("settings-copy-command"));
-  assert(panel.includes("sendTool('return_base',{v:1},true)"));
+  assert(panel.includes("sendTool('return_base', {v: 1}, true)"));
   assert(!panel.includes("confirmThen('return_base'"));
   assert(!panel.includes("Panels.close()"));
   assert(panel.includes("正在等待 Host 确认关闭"));
@@ -340,68 +340,181 @@ test("panel keeps cheat bridge internal and exposes only agreed rescue controls"
   assert(/object-fit\s*:\s*cover/.test(settingsCss));
 });
 
-test("three setting pages share the launcher header and annotations use PanelTooltip", () => {
+test("four player-centric tabs share the launcher header, use PanelTooltip, and drop native confirm", () => {
   const panel = fs.readFileSync(path.join(root, "launcher/web/modules/settings-panel.js"), "utf8");
   const css = fs.readFileSync(path.join(root, "launcher/web/css/settings-panel.css"), "utf8");
-  const build = panel.slice(panel.indexOf("function buildDOM()"), panel.indexOf("function requestSnapshot()"));
-  assert(build.includes("[['game','游戏'],['keys','键位'],['local','本机与 Web']]"));
+  const build = panel.slice(panel.indexOf("function buildDOM()"), panel.indexOf("function requestSnapshot("));
+  assert(panel.includes("['common', '常用']") && panel.includes("['visual', '画面与战斗']")
+    && panel.includes("['keys', '键位']") && panel.includes("['prefs', '界面与音频']"));
+  assert(!panel.includes("window.confirm("));
+  assert(panel.includes("function openCloseConfirm("));
+  assert(panel.includes("function hideTooltips()"));
   assert(!build.includes("'tools'"));
   assert(/header\.appendChild\(tabs\)[\s\S]*header\.appendChild\(_status\)/.test(build));
   assert(!build.includes("_root.appendChild(tabs)"));
-  assert(/grid-template-rows\s*:\s*62px\s+minmax\(0\s*,\s*1fr\)\s+76px/.test(css));
-  assert(panel.includes("PanelTooltip.createScope('settings', {profile:'simple-tooltip'})"));
+  assert(/grid-template-rows\s*:\s*58px\s+minmax\(0\s*,\s*1fr\)\s+62px/.test(css));
+  assert(panel.includes("PanelTooltip.createScope('settings', {profile: 'simple-tooltip'})"));
   assert(panel.includes("_tooltipScope.bindAsync"));
   assert(panel.includes("target.removeAttribute('title')"));
   assert(css.includes(".settings-simple-tooltip"));
 });
 
-test("local settings expose five damage modes and a keyless exact reconciliation log", () => {
+test("visual and prefs pages expose five damage modes, live sandbox, and keyless reconciliation log", () => {
   const panel = fs.readFileSync(path.join(root, "launcher/web/modules/settings-panel.js"), "utf8");
-  const game = panel.slice(panel.indexOf("function renderGame()"), panel.indexOf("function volumeField"));
-  const local = panel.slice(panel.indexOf("function renderLocal()"), panel.indexOf("function hostBoolean"));
-  assert(game.indexOf("renderRescueControls()") >= 0);
-  assert(game.indexOf("renderRescueControls()") < game.indexOf("声音试听"));
-  assert(!game.includes("点歌器运行规则"));
-  assert(local.includes("点歌器运行规则"));
-  assert(local.includes("打击伤害数字"));
-  assert(local.includes("hitNumberMode"));
-  assert(local.includes("hitNumberWorldRowLimit"));
+  const common = panel.slice(panel.indexOf("function renderCommon()"), panel.indexOf("function renderVisual()"));
+  const visual = panel.slice(panel.indexOf("function renderVisual()"), panel.indexOf("function renderKeys()"));
+  const prefs = panel.slice(panel.indexOf("function renderPrefs()"), panel.indexOf("function performanceLabel("));
+  assert(common.includes("settings-rescue-strip"));
+  assert(common.includes("settings-audio-grid"));
+  assert(common.includes("settings-quick-perf"));
+  assert(common.includes("settings-quick-hit"));
+  assert(common.includes("settings-camera-inline-viewport"));
+  assert(!common.includes("点歌器设置"));
+  assert(!common.includes("mapDisplayPreference"));
+  assert(!common.includes("reducedPresentation"));
+  assert(!common.includes("tutorialsAutoOpen"));
+  assert(prefs.includes("点歌器设置"));
+  assert(prefs.includes("cf7-jukebox-theme"));
+  assert(prefs.includes("applyBatchDensity"));
+  assert(visual.includes("打击伤害数字 · 实时弹幕预览"));
+  assert(visual.includes("Andy Law 对话立绘风格"));
+  assert(visual.includes("hitNumberMode"));
+  assert(visual.includes("hitNumberWorldRowLimit"));
   ['off','balanced','total','classic','detail'].forEach(mode =>
-    assert(local.includes("['" + mode + "'"), "missing damage mode " + mode));
-  assert(local.includes("打开伤害对账日志"));
-  assert(local.includes("不占用任何战斗键"));
-  assert(!local.includes("Alt"));
+    assert(panel.includes("value: '" + mode + "'"), "missing damage mode " + mode));
+  assert(visual.includes("打开伤害对账日志"));
+  assert(visual.includes("不占用任何战斗键"));
+  assert(!visual.includes("Alt"));
   assert(panel.includes("_mux.request('hit_number_ledger'"));
   assert(panel.includes("oldestBurstMayBePartial") || panel.includes("droppedSegments"));
   assert(panel.includes("settings-damage-ledger-modal"));
-  assert(panel.includes("input.value.trim() === ''"));
+  assert(panel.includes("limitInput.value.trim() === ''"));
   assert(panel.includes("value < 0 || value > 1000"));
-  assert(!game.includes("是否打击数字特效"));
+  assert(!common.includes("是否打击数字特效"));
   const foundation = fs.readFileSync(path.join(root, "launcher/web/css/panels/foundation-rest.css"), "utf8");
   assert(foundation.includes('#panel-container[data-panel="settings"] #panel-content'));
 });
 
-test("frequent cheat entry is available on the game home without taking modifier shortcuts", () => {
+test("hitNumberPreview capability normalization validates origin, dimensions, and presets", () => {
+  const valid = {
+    v: 1,
+    origin: "https://cf7-hitpreview.local",
+    width: 512,
+    height: 288,
+    presets: [
+      {id: "barrage", label: "高密弹幕", description: "测试描述", durationMs: 4000, representativeTimeMs: 1850}
+    ]
+  };
+  assert.deepStrictEqual(runtime.normalizeHitNumberPreview(valid), valid);
+  assert.strictEqual(runtime.normalizeHitNumberPreview(Object.assign({}, valid, {origin: "http://evil.local"})), null);
+  assert.strictEqual(runtime.normalizeHitNumberPreview(Object.assign({}, valid, {width: 900})), null);
+  assert.strictEqual(runtime.normalizeHitNumberPreview(Object.assign({}, valid, {presets: []})), null);
+});
+
+test("frequent cheat entry is available on the home cockpit without taking modifier shortcuts", () => {
   const panel = fs.readFileSync(path.join(root, "launcher/web/modules/settings-panel.js"), "utf8");
-  const game = panel.slice(panel.indexOf("function renderGame()"), panel.indexOf("function volumeField"));
-  const form = panel.slice(panel.indexOf("function cheatCommandForm"), panel.indexOf("function rescueCard"));
-  assert(game.includes("cheatCommandForm()"));
-  assert(game.includes("gameBand('作弊码', 'COMMAND LINK'"));
+  const common = panel.slice(panel.indexOf("function renderCommon()"), panel.indexOf("function renderVisual()"));
+  const form = panel.slice(panel.indexOf("function cheatCommandForm"), panel.indexOf("function cameraPreviewStage"));
+  assert(common.includes("cheatCommandForm()"));
+  assert(common.includes("作弊码"));
   assert(form.includes("settings-home-cheat"));
   assert(form.includes("再次点击确认执行命令"));
   assert(form.includes("作弊码帮助"));
-  assert(!game.includes("一键回血") && !game.includes("一键无敌") && !game.includes("一键升级"));
+  assert(!common.includes("一键回血") && !common.includes("一键无敌") && !common.includes("一键升级"));
 });
 
-test("camera simulator applies fixed basic scale even when dynamic camera adjustment is off", () => {
+test("camera simulator applies AS2 HorizontalScroller parity framing in fixed and dynamic modes", () => {
   const panel = fs.readFileSync(path.join(root, "launcher/web/modules/settings-panel.js"), "utf8");
-  const update = panel.slice(panel.indexOf("function updateCameraPreview()"), panel.indexOf("function volumeField"));
-  const simulator = panel.slice(panel.indexOf("function openCameraSimulator"), panel.indexOf("function openCheatHelp"));
-  assert(update.includes("var relativeScale = scale / baseline"));
+  const update = panel.slice(panel.indexOf("function updateCameraPreview()"), panel.indexOf("function openCameraSimulator("));
+  const simulator = panel.slice(panel.indexOf("function openCameraSimulator("), panel.indexOf("function closeCameraSimulator("));
+  assert(update.includes("SettingsRuntime.computeCameraPreviewTransform"));
   assert(!update.includes("cameraZoomToggle === true\n            ? Number"));
   assert(update.includes("固定基础倍率"));
   assert(simulator.includes("动态镜头调节"));
   assert(simulator.includes("关闭时仍使用固定基础倍率"));
+
+  // Exact dorm-room parity against HorizontalScroller.as (bg 1024x512, stage 1024x576, viewH 512, hero 511,326 facing right).
+  const dormCam = {
+    available: true, stageWidth: 1024, stageHeight: 576, viewWidth: 1024, viewHeight: 512,
+    bgWidth: 1024, bgHeight: 512, entryX: 0, entryY: 0, entryScale: 1,
+    targetX: 511, targetY: 326, facingRight: true, biasX: 0, biasY: 0, minZoom: 0, viewport: null
+  };
+  const at1 = runtime.computeCameraPreviewTransform({camera: dormCam, basicZoomScale: 1, cameraZoomToggle: false});
+  assert.strictEqual(at1.mode, "as2_exact");
+  assert.strictEqual(at1.relativeScale, 1);
+  assert.strictEqual(at1.targetWorldX, 0);
+  assert.strictEqual(at1.targetWorldY, 0);
+  assert.strictEqual(at1.translateXPct, 0);
+  assert.strictEqual(at1.translateYPct, 0);
+
+  // 3.0x in dorm room: tx = 512 - 100/1.5 = 445.333, rawX = 445.333 - 511*3 = -1087.667 -> -1088; ty = 412, rawY = 412 - 326*3 = -566.
+  const at3 = runtime.computeCameraPreviewTransform({camera: dormCam, basicZoomScale: 3, cameraZoomToggle: false});
+  assert.strictEqual(at3.targetWorldX, -1088);
+  assert.strictEqual(at3.targetWorldY, -566);
+  assert.strictEqual(at3.relativeScale, 3);
+  assert(Math.abs(at3.translateXPct - (-1088 / 1024 * 100)) < 1e-6);
+  assert(Math.abs(at3.translateYPct - (-566 / 576 * 100)) < 1e-6);
+
+  // Zoom-out (< 1.0x) in dorm room pins to top-left (0, 0) instead of centering.
+  const atHalf = runtime.computeCameraPreviewTransform({camera: dormCam, basicZoomScale: 0.5, cameraZoomToggle: false});
+  assert.strictEqual(atHalf.pinnedX, true);
+  assert.strictEqual(atHalf.pinnedY, true);
+  assert.strictEqual(atHalf.targetWorldX, 0);
+  assert.strictEqual(atHalf.targetWorldY, 0);
+  assert.strictEqual(atHalf.translateXPct, 0);
+  assert.strictEqual(atHalf.translateYPct, 0);
+
+  // Facing left reverses directionOffset (+66.67 instead of -66.67 at 3.0x).
+  const leftCam = Object.assign({}, dormCam, {facingRight: false});
+  const at3Left = runtime.computeCameraPreviewTransform({camera: leftCam, basicZoomScale: 3, cameraZoomToggle: false});
+  assert.strictEqual(at3Left.targetWorldX, -954);
+
+  // Wide map boundary clamping + non-unit entryScale (entered while dynamic zoom was 1.6x).
+  const wideCam = {
+    available: true, stageWidth: 1024, stageHeight: 576, viewWidth: 1024, viewHeight: 512,
+    bgWidth: 1812, bgHeight: 547, entryX: -1875, entryY: -363, entryScale: 1.6,
+    targetX: 1650, targetY: 460, facingRight: true, biasX: 0, biasY: 0, minZoom: 0, viewport: null
+  };
+  const backTo1 = runtime.computeCameraPreviewTransform({camera: wideCam, basicZoomScale: 1, cameraZoomToggle: false});
+  assert.strictEqual(backTo1.relativeScale, 1 / 1.6);
+  assert.strictEqual(backTo1.targetWorldX, 1024 - 1812); // clamped to right map boundary -788
+  assert.strictEqual(backTo1.targetWorldY, 512 - 547);   // clamped to bottom map boundary -35
+  assert.strictEqual(backTo1.clampedX, true);
+  assert.strictEqual(backTo1.clampedY, true);
+
+  // Dynamic zoom multiplier and minZoom apply only when cameraZoomToggle is enabled.
+  const dynCam = Object.assign({}, dormCam, {minZoom: 1.8});
+  const fixedWithMin = runtime.computeCameraPreviewTransform({
+    camera: dynCam, basicZoomScale: 1.2, cameraZoomToggle: false, dynamicMultiplier: 2
+  });
+  assert.strictEqual(fixedWithMin.effectiveScale, 1.2);
+  const dynWithMin = runtime.computeCameraPreviewTransform({
+    camera: dynCam, basicZoomScale: 1.2, cameraZoomToggle: true, dynamicMultiplier: 1
+  });
+  assert.strictEqual(dynWithMin.effectiveScale, 1.8);
+  const dynDouble = runtime.computeCameraPreviewTransform({
+    camera: dynCam, basicZoomScale: 1.2, cameraZoomToggle: true, dynamicMultiplier: 2
+  });
+  assert(Math.abs(dynDouble.effectiveScale - 2.4) < 1e-9);
+
+  // Authored focus viewport overrides target screen anchor and bounds scaling.
+  const authoredCam = Object.assign({}, dormCam, {
+    bgWidth: 2400, bgHeight: 800, targetX: 500, targetY: 450,
+    viewport: {x: 0.25, y: 0.8, minX: -550, minY: -100, maxX: 0, maxY: 0}
+  });
+  const at2Authored = runtime.computeCameraPreviewTransform({camera: authoredCam, basicZoomScale: 2, cameraZoomToggle: false});
+  assert.strictEqual(at2Authored.targetWorldX, -744); // 256 - 1000 = -744, inside [-1100, 0]
+  assert.strictEqual(at2Authored.targetWorldY, -200); // 409.6 - 900 = -490.4, clamped to minY = -200
+
+  // Fallback when camera telemetry is absent or detached.
+  const fallback = runtime.computeCameraPreviewTransform({
+    camera: {available: false, stageWidth: 1024, stageHeight: 576},
+    basicZoomScale: 2, cameraZoomToggle: false, fallbackEntryScale: 1
+  });
+  assert.strictEqual(fallback.mode, "fallback");
+  assert.strictEqual(fallback.relativeScale, 2);
+  assert.strictEqual(fallback.translateXPct, -50);
+  assert.strictEqual(fallback.translateYPct, -50);
 });
 
 test("maintained cheat help covers every implemented command and challenge disclosure boundary", () => {
@@ -433,7 +546,7 @@ test("aggregated preferences are re-read by long-lived panels on reopen", () => 
   const gobang = fs.readFileSync(path.join(root, "launcher/web/modules/minigames/gobang/gobang-panel.js"), "utf8");
   assert(/function beginOpen\(initData\)[\s\S]*?_loadoutConfirmationMode = readLoadoutConfirmationMode\(\)/.test(skills));
   assert(/function onOpen\(el, initData\)[\s\S]*?localStorage\.getItem\('cf7\.dialogueMode'\)/.test(tasks));
-  assert(/function onOpen\(\)[\s\S]*?applyTheme\(loadTheme\(\)\)/.test(jukebox));
+  assert(/function onOpen\([^)]*\)[\s\S]*?applyTheme\(loadTheme\(\)\)/.test(jukebox));
   assert(/function onOpen\(el, initData\)[\s\S]*?ItemGrid\.getLayoutMode\('arena'/.test(arena));
   assert(/function onOpen\(el, initData\)[\s\S]*?reloadPreference\(\)/.test(gobang));
 });

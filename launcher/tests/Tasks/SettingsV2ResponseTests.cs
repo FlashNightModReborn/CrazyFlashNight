@@ -65,5 +65,33 @@ namespace CF7Launcher.Tests.Tasks
             response["operation"]="reconcile";
             Assert.True(SettingsV2Response.TryParse(response,"reconcile",out _));
         }
+        [Fact] public void OptionalCameraPreviewValidatesBoundedGeometryAndRejectsMalformedPayloads()
+        {
+            Assert.True(SettingsTask.IsValidOptionalCameraPreview(null));
+            Assert.True(SettingsTask.IsValidOptionalCameraPreview(JValue.CreateNull()));
+            Assert.True(SettingsTask.IsValidOptionalCameraPreview(new JObject {
+                ["available"]=false,["stageWidth"]=1024,["stageHeight"]=576
+            }));
+            var active=new JObject {
+                ["available"]=true,["stageWidth"]=1024,["stageHeight"]=576,
+                ["viewWidth"]=1024,["viewHeight"]=512,["bgWidth"]=1024,["bgHeight"]=512,
+                ["entryX"]=0,["entryY"]=0,["entryScale"]=1.0,
+                ["targetX"]=511,["targetY"]=326,["facingRight"]=true,
+                ["biasX"]=0,["biasY"]=0,["minZoom"]=0,["viewport"]=JValue.CreateNull()
+            };
+            Assert.True(SettingsTask.IsValidOptionalCameraPreview(active));
+            var withViewport=(JObject)active.DeepClone();
+            withViewport["viewport"]=new JObject {
+                ["x"]=0.25,["y"]=0.8,["minX"]=-1200,["minY"]=-300,["maxX"]=0,["maxY"]=0
+            };
+            Assert.True(SettingsTask.IsValidOptionalCameraPreview(withViewport));
+
+            var badScale=(JObject)active.DeepClone(); badScale["entryScale"]=0;
+            Assert.False(SettingsTask.IsValidOptionalCameraPreview(badScale));
+            var extraField=(JObject)active.DeepClone(); extraField["spoof"]=1;
+            Assert.False(SettingsTask.IsValidOptionalCameraPreview(extraField));
+            var badViewport=(JObject)withViewport.DeepClone(); badViewport["viewport"]["maxX"]=50;
+            Assert.False(SettingsTask.IsValidOptionalCameraPreview(badViewport));
+        }
     }
 }
