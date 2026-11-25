@@ -393,10 +393,10 @@ $directAuthorityContracts = @(
         FirstWrite='bag.addValue(String(source.slot), -count);'; Catch=$null; DirtyExact=1 },
     @{ Name='drug-slot'; Path=$drugPath; Start='public static function updateSlot';
         End='public static function selectDirectUseLane'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
-        FirstWrite='if (root && root.使用药剂)'; Catch='useError'; DirtyExact=1 },
+        FirstWrite='applyDrugEffect(root, itemName, physicalSlot);'; Catch='useError'; DirtyExact=1 },
     @{ Name='drug-direct'; Path=$drugPath; Start='public static function consumeBackpackItem';
         End='private static function recordDepletionAffinity'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
-        FirstWrite='if (root.使用药剂)'; Catch='useError'; DirtyExact=1 },
+        FirstWrite='applyDrugEffect(root, itemName, -1);'; Catch='useError'; DirtyExact=1 },
     @{ Name='npc-buy'; Path=$npcShopPath; Start='NPC商店WebView.executeBuy = function';
         End='NPC商店WebView.validateCollectionSource = function'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='ItemUtil.singleAcquire('; Catch='buyAssetError'; DirtyExact=1 },
@@ -490,6 +490,15 @@ if ($directAuthorityContracts.Count -ne 25) {
 }
 if ($auditedDirectDirtyCount -ne 25) {
     throw "direct-authority central dirty 调用清单漂移: $auditedDirectDirtyCount/25"
+}
+$drugSource = Get-Content -LiteralPath $drugPath -Raw -Encoding UTF8
+$drugEffectHelper = Get-PlayerAssetRegion -Path $drugPath `
+    -StartToken 'private static function applyDrugEffect(' `
+    -EndToken 'public static function installRootBridge('
+if (-not $drugEffectHelper.Contains('if (root.使用药剂) root.使用药剂(itemName, physicalSlot);') `
+        -or ([regex]::Matches($drugSource, 'applyDrugEffect\s*\(')).Count -ne 3 `
+        -or ([regex]::Matches($drugSource, '使用药剂')).Count -ne 2) {
+    throw 'DrugInputService applyDrugEffect 委托闭包或调用点数量漂移'
 }
 
 # Quest 已迁到 durable reward candidate。入口只能委托，不能再次开启 legacy frame。
@@ -695,7 +704,7 @@ $focusedRun = @{
         '(?m)^PlayerAssetTransactionTest Tests Passed: 108\r?$'
         '(?m)^PlayerAssetTransactionTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'PlayerAssetTransaction core 108/108; Quest durable finality follows in RewardStash 137/137'
+    SuccessSummary = 'PlayerAssetTransaction core 108/108; Quest durable finality follows in RewardStash 188/188'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
