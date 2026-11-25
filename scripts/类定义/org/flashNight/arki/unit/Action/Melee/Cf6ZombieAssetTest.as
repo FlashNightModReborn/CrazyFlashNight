@@ -8,7 +8,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
     private static var library:MovieClip, driver:MovieClip;
     private static var loader:MovieClipLoader, listener:Object;
     private static var passed:Number, failed:Number, ticks:Number, ready:Boolean, finished:Boolean;
-    private static var cases:Array, staticUnits:Array;
+    private static var cases:Array, staticUnits:Array, randomDeathUnits:Array;
     private static var links:Array = ["敌人-CF6普通男僵尸", "敌人-CF6女僵尸"];
 
     private static function check(ok:Boolean, name:String):Void {
@@ -21,6 +21,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
         ready = finished = false;
         cases = [];
         staticUnits = [];
+        randomDeathUnits = [];
         library = _root.createEmptyMovieClip("__cf6ZombieLibrary", _root.getNextHighestDepth());
         driver = _root.createEmptyMovieClip("__cf6ZombieDriver", _root.getNextHighestDepth());
         library._visible = false;
@@ -148,6 +149,11 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
                 }
             }
         }
+        for (var rd:Number = 0; rd < 36; rd++) {
+            var randUnit:MovieClip = library.attachMovie(links[1], "cf6FemaleRandDeath_" + rd, library.getNextHighestDepth(), {fixtureCase: -1});
+            check(randUnit != null, "attach female random death probe " + rd);
+            randomDeathUnits.push(randUnit);
+        }
         ready = true;
         ticks = 0;
     }
@@ -257,6 +263,13 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
                     actor.man.gotoAndPlay("a" + c.move.substr(5));
                 }
             }
+            for (var rdLaunch:Number = 0; rdLaunch < randomDeathUnits.length; rdLaunch++) {
+                var ruLaunch:MovieClip = randomDeathUnits[rdLaunch];
+                ruLaunch.fixtureDone = 0;
+                ruLaunch.fixtureDeaths = 0;
+                ruLaunch.方向改变("右");
+                ruLaunch.状态改变("血腥死");
+            }
         }
         if (ticks == 4) {
             for (var sj:Number = 0; sj < staticUnits.length; sj++) {
@@ -269,6 +282,18 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
                     check(uCheck.fixtureAirborne === true, links[spCheck.variant] + " knockdown onLoad callback");
                 }
             }
+            var hitA0:Number = 0;
+            var hitA1:Number = 0;
+            var hitA2:Number = 0;
+            for (var rdFrame:Number = 0; rdFrame < randomDeathUnits.length; rdFrame++) {
+                var ruFrame:MovieClip = randomDeathUnits[rdFrame];
+                var cf:Number = ruFrame.man._currentframe;
+                check(cf >= 1 && cf <= 191, "female natural death frame in range " + rdFrame + " (" + cf + ")");
+                if (cf <= 79) hitA0++;
+                else if (cf <= 148) hitA1++;
+                else hitA2++;
+            }
+            check(hitA0 > 0 && hitA1 > 0 && hitA2 > 0, "female natural onLoad hits all branches a0=" + hitA0 + " a1=" + hitA1 + " a2=" + hitA2);
         }
         if (ticks == 105) {
             for (var k:Number = 0; k < cases.length; k++) {
@@ -289,6 +314,11 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
                     check(act.fixtureDeaths == 1, "death terminal callback " + k + " " + item.move + " = " + act.fixtureDeaths);
                 }
                 check(act.man._width > 0 && act.man._height > 0, "body persists through terminal frame " + k + " " + item.move);
+            }
+            for (var rdEnd:Number = 0; rdEnd < randomDeathUnits.length; rdEnd++) {
+                var ruEnd:MovieClip = randomDeathUnits[rdEnd];
+                check(ruEnd.fixtureDeaths == 1, "female natural death terminal callback " + rdEnd + " = " + ruEnd.fixtureDeaths);
+                check(ruEnd.man._width > 0 && ruEnd.man._height > 0, "female natural death body persists " + rdEnd);
             }
             finish();
         }
