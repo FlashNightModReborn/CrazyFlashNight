@@ -36,6 +36,10 @@
   var fontPackProgressBox = document.getElementById('welcome-fontpack-progress');
   var fontPackBarFill = document.getElementById('welcome-fontpack-bar-fill');
   var fontPackBytesEl = document.getElementById('welcome-fontpack-bytes');
+  var storageAlertEl = document.getElementById('welcome-storage-alert');
+  var storageAlertTitleEl = document.getElementById('welcome-storage-title');
+  var storageAlertDetailEl = document.getElementById('welcome-storage-detail');
+  var storageAlertFixBtn = document.getElementById('welcome-storage-fix');
 
   // ── Phase D Step D12: launch-in-flight 本地状态 ──
   var _launchInFlight = false;
@@ -84,34 +88,8 @@
   var _prefsIntroEnabled = false;
   var _prefsSfxEnabled = true;
   var _prefsAmbientEnabled = false;
-  var _prefsUiFontScale = 1.35;
+  var FIXED_UI_FONT_SCALE = 1.35; // 1024×576 固定画布已由 PanelScale 等比缩放，前门字号锁定校准基线
   var _prefsReceived = false;     // 首个 list_resp 到达前不做任何 config_set (避免 init 时被 onchange 回写 false 覆盖)
-
-  // 字号缩放: 4 档预设 + clamp 范围 (与 C# UserPrefs.ClampFontScale 一致)
-  // 基准 1.35 (用户在测试机上反馈旧 1.0 偏小, 1.35 刚好), 预设向上偏移
-  var FONT_SCALE_MIN = 0.7;
-  var FONT_SCALE_MAX = 1.9;
-  var FONT_SCALE_PRESETS = [
-    { value: 1.15, label: '紧凑' },  // 紧凑 (大屏/密集布局)
-    { value: 1.35, label: '标准' },  // 标准 (默认)
-    { value: 1.55, label: '大' },        // 大 (轻松阅读)
-    { value: 1.75, label: '超大' }   // 超大 (GPD 掌机 / 高 DPI)
-  ];
-
-  function clampFontScale(v) {
-    if (typeof v !== 'number' || isNaN(v) || !isFinite(v)) return 1.35;
-    if (v < FONT_SCALE_MIN) return FONT_SCALE_MIN;
-    if (v > FONT_SCALE_MAX) return FONT_SCALE_MAX;
-    return v;
-  }
-
-  function applyFontScale(v) {
-    v = clampFontScale(v);
-    _prefsUiFontScale = v;
-    // 写到 :root 上；bootstrap.css 直接以用户选择作为 --fs-scale。
-    document.documentElement.style.setProperty('--user-fs-scale', String(v));
-
-  }
 
   // config_set 的"服务端权威对齐"机制 (Plan A+).
   // 每次 sendConfigSet(key, value, applyFn) 生成独立 requestId, applyFn 按 id 登记、按 id 消费.
@@ -294,9 +272,13 @@
   } catch (e) {}
 
   var currentView = viewWelcome;
-  stage.addEventListener('animationend', function(event) {
-    if (event.animationName === 'viewEnter') event.target.classList.remove('view-enter');
-  });
+  function clearViewEnter(event) {
+    if (event.animationName === 'viewEnter' || event.animationName === 'viewEnterBack') {
+      event.target.classList.remove('view-enter');
+    }
+  }
+  stage.addEventListener('animationend', clearViewEnter);
+  stage.addEventListener('animationcancel', clearViewEnter);
   var homeOpener = null;
   var createOrigin = null;
   var createOpener = null;
@@ -311,6 +293,7 @@
       }
       if (window.Factions && typeof window.Factions.cycleNext === 'function') {
         window.Factions.cycleNext(window.__factionIds || { dividerId: 'rune-divider', activeBrandId: 'welcome-hud' });
+        if (Audio && Audio.playRadioTune) Audio.playRadioTune();
         if (!_reducedMotion) {
           pulseLoadingNode(document.getElementById('rune-divider'), 'is-channel-swap');
           pulseLoadingNode(document.getElementById('hud-faction'), 'is-channel-swap');
@@ -327,10 +310,15 @@
       source.hidden = true;
       source.classList.remove('view-enter');
     }
+    var dir = (source === viewSlots && target === viewWelcome)
+      || (source === viewCharacterCreate && (target === viewWelcome || target === viewSlots))
+      ? 'back' : 'forward';
     currentView = target;
     document.body.dataset.fdView = target === viewWelcome ? 'welcome' : target === viewSlots ? 'slots' : 'create';
+    target.dataset.enterDir = dir;
     target.hidden = false;
-    if (target !== source && !_reducedMotion) target.classList.add('view-enter');
+    // 建角视图在 preparation 期间处于 visibility:hidden，改由揭幕接力 cc-just-revealed 负责入场，避免动画在幕后空跑。
+    if (target !== source && !_reducedMotion && target !== viewCharacterCreate) target.classList.add('view-enter');
   }
 
   function activeView() { return currentView; }
@@ -423,6 +411,8 @@
     }
   }
 
+  var _lastWelcomeSigSlot = '';
+
   function updateDecor() {
     var decor = window.PM19Decor;
     if (!decor || !decor.ready) return;
@@ -432,7 +422,15 @@
         + ' · 中心 ' + decor.orbit.center.toLocaleString('zh-CN');
     }
     var badge = document.getElementById('welcome-slot-sig');
-    window.BootstrapSaveManager.paintSignature(badge, _welcomeSlot && _welcomeSlot.slot);
+    var slotKey = (_welcomeSlot && _welcomeSlot.slot) || '';
+    var slotChanged = !!slotKey && slotKey !== _lastWelcomeSigSlot && _lastWelcomeSigSlot !== '';
+    window.BootstrapSaveManager.paintSignature(badge, slotKey);
+    if (slotKey) _lastWelcomeSigSlot = slotKey;
+    if (badge && slotChanged && !_reducedMotion) {
+      badge.classList.remove('is-sig-relock');
+      void badge.offsetWidth;
+      badge.classList.add('is-sig-relock');
+    }
     if (lastLaunchSlotKey) paintLoadingSignature(lastLaunchSlotKey);
   }
 
@@ -475,6 +473,7 @@
     btnSwitchSlot.textContent = s && !s.__empty ? '选择其他存档' : '导入或管理存档';
     if (!s) {
       plate.dataset.state = 'none';
+      plate.dataset.slotKey = '';
       kicker.textContent = '存档';
       welcomeSlotNameEl.textContent = '无可用存档';
       if (levelEl) { levelEl.textContent = ''; levelEl.hidden = true; }
@@ -490,6 +489,7 @@
     var mode = effectiveMode(s);
     if (s.__empty) {
       plate.dataset.state = 'empty';
+      plate.dataset.slotKey = '';
       kicker.textContent = '新的开始';
       welcomeSlotNameEl.textContent = hasRecords ? '暂无可继续的角色' : '还没有佣兵档案';
       if (levelEl) { levelEl.textContent = ''; levelEl.hidden = true; }
@@ -505,6 +505,7 @@
     var primary = slotPrimaryName(s);
     welcomeSlotNameEl.textContent = primary;
     plate.dataset.state = mode === 'fresh' ? 'rebuild' : 'live';
+    plate.dataset.slotKey = s.slot || '';
     kicker.textContent = mode === 'fresh' ? '原槽重建' : '继续上次';
     if (avatar) {
       avatar.hidden = false;
@@ -577,17 +578,32 @@
 
   var lastLaunchTitle = '';
   var lastLaunchSlotKey = '';
+  var lastLaunchSlotMeta = null;
   var loadingSlowTimer;
   var loadingIndicator = document.getElementById('loading-indicator');
+  var loadingAvatarEl = document.getElementById('loading-avatar');
   var loadingSigEl = document.getElementById('loading-sig');
   var loadingStages = document.getElementById('loading-stages');
+  var loadingStageLabels = document.getElementById('loading-stage-labels');
   var loadingCancel = document.getElementById('loading-cancel');
   var loadingSlow = document.getElementById('loading-slow');
+  var _ccRevealTimer = null;
+  var _modalEnterTimer = null;
+  var LAUNCH_STAGE_LABELS = ['连接引擎', '载入画面', '同步场景'];
+  var CC_PREP_STAGE_LABELS = ['连接引擎', '读取目录', '生成预览'];
   var launchStages = {
     Spawning:[1, '正在启动游戏'], WaitingConnect:[1, '正在连接游戏'],
     WaitingHandshake:[1, '正在连接游戏'], Embedding:[2, '正在载入游戏画面'],
     WaitingGameReady:[2, '正在准备游戏场景'], Ready:[3, '正在等待游戏画面']
   };
+
+  function setLoadingStageLabels(labels) {
+    if (!loadingStageLabels || !labels) return;
+    var spans = loadingStageLabels.children;
+    for (var i = 0; i < spans.length && i < labels.length; i++) {
+      spans[i].textContent = labels[i];
+    }
+  }
 
   function pulseLoadingNode(node, cls) {
     if (!node || _reducedMotion) return;
@@ -621,8 +637,19 @@
     var preparing = !!_characterCreatePrepToken;
     var titleEl = loadingIndicator.querySelector('.loading-title');
     titleEl.textContent = preparing ? '建立角色' : lastLaunchTitle || '正在进入游戏';
+    if (loadingAvatarEl) {
+      if (!preparing && lastLaunchSlotMeta && window.BootstrapAppearance) {
+        loadingAvatarEl.hidden = false;
+        window.BootstrapAppearance.bindPortrait(loadingAvatarEl, lastLaunchSlotMeta, slotPrimaryName(lastLaunchSlotMeta));
+      } else {
+        loadingAvatarEl.hidden = true;
+        if (window.BootstrapAppearance) window.BootstrapAppearance.releasePortrait(loadingAvatarEl);
+      }
+    }
     paintLoadingSignature(preparing ? '' : lastLaunchSlotKey);
-    loadingStages.hidden = preparing;
+    loadingStages.hidden = false;
+    setLoadingStageLabels(preparing ? CC_PREP_STAGE_LABELS : LAUNCH_STAGE_LABELS);
+    if (loadingIndicator) loadingIndicator.classList.remove('is-locked');
     setLoadingStage(1, preparing ? '正在准备角色' : '正在启动游戏');
     if (!_reducedMotion) {
       pulseLoadingNode(loadingIndicator, 'is-entering');
@@ -713,6 +740,8 @@
   function beginCharacterCreatePreparation(token) {
     token = String(token || '');
     if (!token) return false;
+    clearTimeout(_ccRevealTimer);
+    document.body.classList.remove('cc-just-revealed');
     _characterCreatePrepToken = token;
     showLoadingOverlay();
     document.body.classList.add('character-create-preparing');
@@ -723,7 +752,15 @@
     return true;
   }
 
-  function finishCharacterCreatePreparation(token) {
+  function updateCharacterCreatePreparationStage(token, stage, label) {
+    token = String(token || '');
+    if (!token || token !== _characterCreatePrepToken) return false;
+    setLoadingStage(stage, label);
+    if (loadingIndicator && stage >= 3) loadingIndicator.classList.add('is-locked');
+    return true;
+  }
+
+  function finishCharacterCreatePreparation(token, degraded, isCancel) {
     token = String(token || '');
     if (!token || token !== _characterCreatePrepToken) return false;
     _characterCreatePrepToken = null;
@@ -731,6 +768,16 @@
     viewCharacterCreate.removeAttribute('inert');
     viewCharacterCreate.removeAttribute('aria-busy');
     hideLaunchOverlay();
+    if (!isCancel && !_reducedMotion) {
+      clearTimeout(_ccRevealTimer);
+      document.body.classList.remove('cc-just-revealed');
+      void viewCharacterCreate.offsetWidth;
+      document.body.classList.add('cc-just-revealed');
+      _ccRevealTimer = setTimeout(function () {
+        document.body.classList.remove('cc-just-revealed');
+        _ccRevealTimer = null;
+      }, 420);
+    }
     return true;
   }
 
@@ -751,6 +798,10 @@
     // 复位 flash-ready 样式 (下一 attempt 全新开始)
     skipBtn.classList.remove('flash-ready');
     skipBtn.textContent = '跳 过 · ESC';
+    if (loadingAvatarEl) {
+      loadingAvatarEl.hidden = true;
+      if (window.BootstrapAppearance) window.BootstrapAppearance.releasePortrait(loadingAvatarEl);
+    }
   }
 
   function launchSlot(slot) {
@@ -759,6 +810,7 @@
     var display = slotDisplayName(slot);
     lastLaunchTitle = character + (display !== character ? ' · ' + display : '');
     lastLaunchSlotKey = slot && slot.slot || '';
+    lastLaunchSlotMeta = slot || null;
     if (chkIntro.checked) { playIntroThenStart(slot); return; }
     showLoadingOverlay();
     setLaunchInFlight(true);
@@ -866,6 +918,17 @@
     Embedding: '正在载入画面', RepairPending: '等待修复存档', WaitingGameReady: '正在连接游戏',
     Ready: '正在准备场景', Error: '启动失败', Resetting: '正在重置'
   };
+  function friendlyErrorSummary(msg) {
+    var raw = String(msg || '').trim();
+    if (!raw) return '可重试或查看日志。';
+    if (/timeout/i.test(raw)) return '游戏响应超时，可重试或查看日志。';
+    if (/handshake/i.test(raw)) return '与游戏连接握手失败，可重试或查看日志。';
+    if (/exit|crash|terminated/i.test(raw)) return '游戏进程意外退出，可重试或查看日志。';
+    if (/not found|missing|enoent/i.test(raw)) return '缺少必要启动组件，请查看日志。';
+    if (/[\u4e00-\u9fa5]/.test(raw)) return raw;
+    return '链路中断（' + raw + '），可重试或查看日志。';
+  }
+
   function applyState(state, msg) {
     var label = launchLabels[state] || state;
     // 失败沿用 lore 的“链路中断”语气，技术原因留在悬停详情里。
@@ -884,8 +947,14 @@
     stateBadge.textContent = label;
     stateBadge.title = msg ? label + ' · ' + msg : label;
     document.body.classList.toggle('launch-error', state === 'Error');
+    var errorSummary = state === 'Error' ? friendlyErrorSummary(msg) : '可重试或查看日志。';
     document.querySelectorAll('.launch-feedback').forEach(function(node) {
       node.hidden = state !== 'Error';
+      var span = node.querySelector('span');
+      if (span) {
+        span.textContent = errorSummary;
+        span.title = msg || errorSummary;
+      }
     });
     stateBadge.className = 'state-badge';
     if (state === 'Ready')       stateBadge.className += ' ready';
@@ -909,6 +978,9 @@
 
     if (state === 'Idle') {
       setLaunchInFlight(false);
+      if (_flashStorageStatus && _flashStorageStatus.canModifyNow === false) {
+        requestFlashStorageStatus();
+      }
       // 只在 loading 相 (start_game 已发 + 正等 reveal) 才 hide overlay —
       // 视频相期间的 Idle 广播 (不会再出现了, 因为并行路径下 prewarm deadline 在 start_game
       // 发出后自动 cancel; 仍保留保险, 万一 launcher 异常回到 Idle 也能退出 overlay).
@@ -998,6 +1070,155 @@
     _fontPackQueried = true;
     if (fontPackIsSuppressed()) { fontPackHide(); return; }
     send({ cmd: 'fontpack_status' });
+  }
+
+  // ── Flash 本地存储配额状态（#local\settings.sol + #SharedObjects\*\localhost）──
+  var _flashStorageStatus = null;
+  var _flashStorageBusy = false;
+  var _flashStorageLastError = null;
+  var _flashStorageNextReqId = 1;
+  var _flashStorageInFlightReqId = null;
+  var _flashStorageListeners = [];
+
+  function fmtStorageSize(bytes) {
+    var b = Number(bytes) || 0;
+    if (b < 1024) return b + ' B';
+    if (b < 1024 * 1024) return (b / 1024).toFixed(b < 10 * 1024 ? 1 : 0) + ' KB';
+    return (b / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function fmtStorageLimit(status) {
+    if (!status) return '未知';
+    if (status.unlimited) return '无限制';
+    var kb = Number(status.limitKb);
+    if (!isFinite(kb) || kb <= 0) return '已禁用 (0 KB)';
+    if (kb >= 1024) return (kb / 1024 === Math.floor(kb / 1024) ? (kb / 1024) : (kb / 1024).toFixed(1)) + ' MB';
+    return Math.round(kb) + ' KB';
+  }
+
+  function formatFlashStorageError(code) {
+    if (!code) return '';
+    if (code === 'not_idle') return '游戏或建角正在运行，请先取消返回首页后再调整。';
+    if (code === 'invalid_limit') return '不支持的存储上限档位。';
+    if (String(code).indexOf('sol_parse_failed') >= 0) return '现有 Flash 配置文件格式异常，为安全起见未覆写。';
+    if (String(code).indexOf('write_failed') >= 0) return '无法写入 Flash 配置文件，请检查磁盘空间与权限。';
+    return '调整失败：' + code;
+  }
+
+  function notifyFlashStorageListeners() {
+    var snap = {
+      status: _flashStorageStatus,
+      busy: _flashStorageBusy,
+      error: _flashStorageLastError
+    };
+    for (var i = 0; i < _flashStorageListeners.length; i++) {
+      try { _flashStorageListeners[i](snap); } catch (e) {}
+    }
+  }
+
+  function renderWelcomeStorageAlert() {
+    if (!storageAlertEl) return;
+    var st = _flashStorageStatus;
+    if (!st || !st.needsAttention) {
+      storageAlertEl.hidden = true;
+      return;
+    }
+    var tone = (st.status === 'exceeded' || st.status === 'blocked') ? 'danger' : 'warn';
+    storageAlertEl.dataset.tone = tone;
+    var usedStr = fmtStorageSize(st.usedBytes);
+    var limitStr = fmtStorageLimit(st);
+    if (storageAlertTitleEl) {
+      storageAlertTitleEl.textContent = st.status === 'blocked'
+        ? 'Flash 本地存储已禁用'
+        : (st.status === 'exceeded' ? 'Flash 本地存储已满' : 'Flash 本地存储上限偏低');
+    }
+    if (storageAlertDetailEl) {
+      if (_flashStorageLastError) {
+        storageAlertDetailEl.textContent = formatFlashStorageError(_flashStorageLastError);
+      } else if (st.status === 'blocked') {
+        storageAlertDetailEl.textContent = '当前上限 0 KB，将无法创建角色或保存进度。';
+      } else if (st.status === 'exceeded') {
+        storageAlertDetailEl.textContent = '已用 ' + usedStr + ' / 上限 ' + limitStr + '，继续游戏将无法建角或存盘。';
+      } else {
+        storageAlertDetailEl.textContent = '已用 ' + usedStr + ' / 上限 ' + limitStr + '，建议设为无限制避免存盘失败。';
+      }
+    }
+    if (storageAlertFixBtn) {
+      var blockedByRun = st.canModifyNow === false;
+      storageAlertFixBtn.disabled = _flashStorageBusy || blockedByRun;
+      storageAlertFixBtn.textContent = _flashStorageBusy
+        ? '正在设置…'
+        : (blockedByRun ? '退出游戏后可设' : '设为无限制');
+    }
+    storageAlertEl.hidden = false;
+  }
+
+  function requestFlashStorageStatus() {
+    send({ cmd: 'flash_storage_status' });
+  }
+
+  function setFlashStorageLimit(limitKb) {
+    if (_flashStorageBusy) return false;
+    var reqId = _flashStorageNextReqId++;
+    _flashStorageBusy = true;
+    _flashStorageInFlightReqId = reqId;
+    _flashStorageLastError = null;
+    renderWelcomeStorageAlert();
+    notifyFlashStorageListeners();
+    if (!send({ cmd: 'flash_storage_set', limitKb: limitKb, requestId: reqId })) {
+      _flashStorageBusy = false;
+      _flashStorageInFlightReqId = null;
+      _flashStorageLastError = 'send_failed';
+      renderWelcomeStorageAlert();
+      notifyFlashStorageListeners();
+      return false;
+    }
+    return true;
+  }
+
+  function applyFlashStorageResponse(msg, isSet) {
+    if (!msg) return;
+    if (isSet) {
+      var reqId = typeof msg.requestId === 'number' ? msg.requestId : null;
+      if (_flashStorageInFlightReqId != null && reqId != null && reqId !== _flashStorageInFlightReqId) {
+        return; // 丢弃乱序/过时回包
+      }
+      _flashStorageBusy = false;
+      _flashStorageInFlightReqId = null;
+      if (msg.ok === true) {
+        _flashStorageLastError = null;
+        playUiCue('playConfirm');
+        channelEvent('Flash 存储上限 · ' + fmtStorageLimit(msg));
+      } else {
+        _flashStorageLastError = msg.error || 'write_failed';
+        playUiCue('playError');
+      }
+    }
+    if (typeof msg.limitKb === 'number') {
+      _flashStorageStatus = {
+        ok: msg.ok === true,
+        limitKb: msg.limitKb,
+        unlimited: msg.unlimited === true,
+        limitBytes: typeof msg.limitBytes === 'number' ? msg.limitBytes : null,
+        usedBytes: Number(msg.usedBytes) || 0,
+        usedFiles: Number(msg.usedFiles) || 0,
+        source: msg.source || 'flash_default',
+        status: msg.status || 'ok',
+        needsAttention: msg.needsAttention === true,
+        canModifyNow: msg.canModifyNow !== false,
+        error: msg.error || null
+      };
+    } else if (_flashStorageStatus && typeof msg.canModifyNow === 'boolean') {
+      _flashStorageStatus.canModifyNow = msg.canModifyNow;
+    }
+    renderWelcomeStorageAlert();
+    notifyFlashStorageListeners();
+  }
+
+  if (storageAlertFixBtn) {
+    storageAlertFixBtn.onclick = function() {
+      setFlashStorageLimit(-2);
+    };
   }
 
   function applyFontPackStatus(msg) {
@@ -1204,7 +1425,6 @@
       if (typeof msg.introEnabled === 'boolean')  _prefsIntroEnabled   = msg.introEnabled;
       if (typeof msg.sfxEnabled === 'boolean')    _prefsSfxEnabled     = msg.sfxEnabled;
       if (typeof msg.ambientEnabled === 'boolean') _prefsAmbientEnabled = msg.ambientEnabled;
-      if (typeof msg.uiFontScale === 'number')    applyFontScale(msg.uiFontScale);
       _prefsReceived = true;
       chkIntro.checked = _prefsIntroEnabled;
       if (Audio) {
@@ -1216,6 +1436,8 @@
       renderWelcomeSlot();
       // 首次 list_resp 拿到 prefs 后查一次字体扩展状态（幂等：requestFontPackStatus 内部去重）
       requestFontPackStatus();
+      // 同步探测本机 Flash 本地存储配额（只读、零副作用）
+      if (!_flashStorageStatus) requestFlashStorageStatus();
     }
     else if (msg.cmd === 'config_set_resp') {
       // 按 requestId 取 applyFn (每个请求独立槽位, 连点/乱序都互不覆盖).
@@ -1333,6 +1555,8 @@
         playUiCue('playError');
       }
     }
+    else if (msg.cmd === 'flash_storage_status_resp') applyFlashStorageResponse(msg, false);
+    else if (msg.cmd === 'flash_storage_set_resp')    applyFlashStorageResponse(msg, true);
     else if (msg.cmd === 'import_target') handleImportTarget(msg);
     else if (msg.cmd === 'repair_required') {
       // C2-β: launcher 决议 saveDecision="repairable" 时主动推; 立即打开修复卡片让用户处理.
@@ -1472,6 +1696,16 @@
       content.setAttribute('aria-label', '启动器对话框');
     }
     host.style.display = '';
+    if (!_reducedMotion) {
+      clearTimeout(_modalEnterTimer);
+      host.classList.remove('modal-entering');
+      void host.offsetWidth;
+      host.classList.add('modal-entering');
+      _modalEnterTimer = setTimeout(function () {
+        host.classList.remove('modal-entering');
+        _modalEnterTimer = null;
+      }, 240);
+    }
     content.scrollTop = 0;
     focusModalStart();
     setModalBackgroundInert(true);
@@ -1485,6 +1719,8 @@
     var returnFocus = _modalReturnFocus;
     if (_currentModule && _currentModule.unmount) _currentModule.unmount();
     var host = document.getElementById('modal-host');
+    clearTimeout(_modalEnterTimer);
+    host.classList.remove('modal-entering');
     host.style.display = 'none';
     var archiveView = document.getElementById('archive-modal-view');
     if (!archiveView.hidden) {
@@ -1575,23 +1811,30 @@
     // 带持久化失败回退的 config_set 发送: revertFn 在 config_set_resp.ok===false 时被调,
     // 用来把前端 UI / 音效引擎等可见状态回滚到请求前, 保持与 C# 端回滚后的内存一致.
     sendConfigSet: function(key, value, revertFn) { sendConfigSet(key, value, revertFn); },
-    // 字号缩放 API: 模块 (about.js) 用来读当前值 + 切换预设
-    getUiFontScale: function() { return _prefsUiFontScale; },
-    getUiFontScalePresets: function() { return FONT_SCALE_PRESETS.slice(); },
-    setUiFontScale: function(v) {
-      var clamped = clampFontScale(v);
-      if (!_prefsReceived) {
-        // 首次 list_resp 前不发 config_set; 直接本地应用, 不登记 applyFn
-        applyFontScale(clamped);
-        return;
-      }
-      // Optimistic UI: 立刻应用期望值, 让切档手感即时
-      applyFontScale(clamped);
-      // applyFn 按服务端 currentValue 对齐 — success 下与 clamped 一致 (no-op),
-      // failure 下由服务端 rollback 值 (磁盘真实值) 覆盖, 纠正漂移
-      sendConfigSet('uiFontScale', clamped, function(authoritative) {
-        if (typeof authoritative === 'number') applyFontScale(authoritative);
-      });
+    // 前门字号已锁定 1024×576 单一校准基线，保留只读/空操作兼容壳供旧调用点平稳过渡
+    getUiFontScale: function() { return FIXED_UI_FONT_SCALE; },
+    getUiFontScalePresets: function() { return []; },
+    setUiFontScale: function() {},
+    // Flash 本地存储配额 API（供 display.js 等模块消费）
+    getFlashStorageState: function() {
+      return {
+        status: _flashStorageStatus,
+        busy: _flashStorageBusy,
+        error: _flashStorageLastError
+      };
+    },
+    refreshFlashStorageStatus: requestFlashStorageStatus,
+    setFlashStorageLimit: setFlashStorageLimit,
+    formatFlashStorageSize: fmtStorageSize,
+    formatFlashStorageLimit: fmtStorageLimit,
+    formatFlashStorageError: formatFlashStorageError,
+    onFlashStorageChange: function(fn) {
+      if (typeof fn !== 'function') return function() {};
+      _flashStorageListeners.push(fn);
+      return function unsubscribe() {
+        var idx = _flashStorageListeners.indexOf(fn);
+        if (idx >= 0) _flashStorageListeners.splice(idx, 1);
+      };
     }
   };
 
@@ -1605,9 +1848,10 @@
       send: send,
       onShow: showCharacterCreate,
       onPrepare: beginCharacterCreatePreparation,
+      onPrepareProgress: updateCharacterCreatePreparationStage,
       onReady: finishCharacterCreatePreparation,
       onCancel: function(token) {
-        finishCharacterCreatePreparation(token);
+        finishCharacterCreatePreparation(token, false, true);
         if (createOrigin === viewWelcome) showWelcome();
         else showSlots();
         if (createOpener && createOpener.isConnected && activeView().contains(createOpener)) {
@@ -1619,6 +1863,7 @@
         var entry = window.BootstrapApp.getSlotMeta(slotKey);
         lastLaunchTitle = entry ? slotPrimaryName(entry) : '正在载入新角色';
         lastLaunchSlotKey = slotKey || '';
+        lastLaunchSlotMeta = entry || null;
         showLoadingOverlay();
         setLaunchInFlight(true);
         if (send({cmd:'retry'})) return true;
@@ -1726,21 +1971,29 @@
     document.addEventListener('pointerdown', onFirstInteraction, true);
     document.addEventListener('keydown', onFirstInteraction, true);
 
-    // 操作与存档列表行都是原生按钮，悬停音效由 audio.js 去抖。
+    // 操作与存档列表行都是原生按钮；按按钮引用去重，跨子节点移动不重复触发悬停音。
+    var _lastHoverBtn = null;
     document.addEventListener('mouseover', function (e) {
       var t = e.target;
-      if (!t || !t.closest) return;
-      var btn = t.closest('button');
+      var btn = (t && t.closest) ? t.closest('button') : null;
+      if (btn === _lastHoverBtn) return;
+      _lastHoverBtn = btn;
       if (btn && !btn.disabled) Audio.playHover();
+    });
+    document.addEventListener('mouseout', function (e) {
+      if (!_lastHoverBtn) return;
+      var rel = e.relatedTarget;
+      if (!rel || !_lastHoverBtn.contains(rel)) _lastHoverBtn = null;
     });
 
     // Click 分类: primary (btn-go) → confirm; back/cancel/close → cancel;
-    //   slot select (start/rebuild/btn-new) → select; 其他 button → click.
+    //   slot select (start/rebuild/btn-new) → select; hud-toggle 走专属电台音效; 其他 button → click.
     document.addEventListener('click', function (e) {
       var t = e.target;
       if (!t || !t.closest) return;
       var btn = t.closest('button');
       if (btn && !btn.disabled) {
+        if (btn.id === 'hud-toggle') return;
         if (btn.matches('.btn-go')) { Audio.playConfirm(); return; }
         if (btn.matches('.btn-back, .modal-close, #btn-cancel-launch, .intro-skip')) { Audio.playCancel(); return; }
         if (btn.matches('.btn-start, .btn-rebuild, #btn-new, #btn-switch-slot')) { Audio.playSelect(); return; }
@@ -1762,7 +2015,7 @@
     TT.bind(document.getElementById('welcome-slot-sig'), function () {
       return ['存档指纹', document.getElementById('welcome-slot-sig').dataset.lineLabel].filter(Boolean).join(' · ');
     });
-    TT.bind(document.getElementById('btn-display'), '设置：界面字号、片头动画与字体扩展');
+    TT.bind(document.getElementById('btn-display'), '设置：音频、背景动态、Flash 本地存储与启动选项');
     TT.bind(document.getElementById('btn-fullscreen'), '全屏：切换窗口全屏');
     TT.bind(document.getElementById('btn-about'), '关于与帮助：项目说明、作者与致谢、版本记录、音频与诊断日志');
     TT.bind(retryBtn, '重试：按上次参数重新启动');

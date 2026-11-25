@@ -72,6 +72,13 @@
           </div>
 
           <div class="launch-feedback" role="alert" hidden><strong>启动未完成</strong><span>可重试或查看日志。</span><button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>
+          <div class="storage-alert" id="welcome-storage-alert" role="alert" hidden>
+            <div class="storage-alert-copy">
+              <strong id="welcome-storage-title">Flash 本地存储受限</strong>
+              <span id="welcome-storage-detail">空间不足可能导致建角或存盘失败。</span>
+            </div>
+            <button type="button" class="storage-alert-btn" id="welcome-storage-fix">设为无限制</button>
+          </div>
 
           <div class="welcome-controls">
             <button class="btn-go front-primary" id="btn-confirm-start">继续游戏</button>
@@ -158,9 +165,19 @@
                 <p id="save-history"></p>
               </div>
             </div>
-            <div class="save-detail-gear" id="save-equipment" role="group" aria-label="已穿戴装备" hidden></div>
-            <p id="save-character-meta" hidden></p>
-            <details id="save-technical"><summary>技术信息</summary><div>槽位 <code id="save-key"></code></div><div>本地副本 <span id="save-size"></span></div></details>
+            <div class="save-detail-sig-row" id="save-detail-sig-row" hidden>
+              <span class="save-detail-sig-kicker">存档指纹</span>
+              <span class="slot-sig" id="save-detail-sig" aria-hidden="true"></span>
+              <span class="save-detail-sig-line" id="save-detail-sig-line"></span>
+            </div>
+            <div class="save-detail-scroll">
+              <div class="save-detail-gear-wrap">
+                <div class="save-detail-section-label">携行装备</div>
+                <div class="save-detail-gear" id="save-equipment" role="group" aria-label="已穿戴装备" hidden></div>
+              </div>
+              <p id="save-character-meta" hidden></p>
+              <details id="save-technical"><summary>技术信息</summary><div>槽位 <code id="save-key"></code></div><div>本地副本 <span id="save-size"></span></div></details>
+            </div>
             <div id="save-actions">
               <button type="button" class="term-btn btn-start front-primary" data-action="start">进入游戏</button>
               <button type="button" class="term-btn btn-rebuild front-primary" data-action="rebuild">在原位置新建</button>
@@ -186,11 +203,7 @@
 
 <!-- 底栏 -->
 <div class="bottom">
-  <span class="left">
-    <img src="assets/logos/steam.svg" class="steam-ico" alt="">
-    AVAILABLE ON <span class="steam">STEAM</span>
-  </span>
-  <span>CF7:FLASHNIGHT LAUNCHER &middot; &theta;-FLOOD SURVIVOR BUILD</span>
+  <span class="left">CF7:FLASHNIGHT &middot; &theta;-FLOOD SURVIVOR BUILD</span>
   <img src="assets/logos/andylaw.png" class="andylaw-mark" alt="ANDYLAW.GAMES">
 </div>
 
@@ -240,28 +253,23 @@
           <stop offset="82%" stop-color="#3dd5ff" stop-opacity=".36"/>
           <stop offset="100%" stop-color="#3dd5ff" stop-opacity="0"/>
         </linearGradient>
-        <linearGradient id="lr-diag" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#3dd5ff" stop-opacity="0"/>
-          <stop offset="50%" stop-color="#ebd5a2" stop-opacity=".26"/>
-          <stop offset="100%" stop-color="#3dd5ff" stop-opacity="0"/>
-        </linearGradient>
       </defs>
-      <line x1="6" y1="106" x2="144" y2="106" stroke="url(#lr-h)" stroke-width=".75"/>
-      <line x1="316" y1="106" x2="454" y2="106" stroke="url(#lr-h)" stroke-width=".75"/>
-      <circle cx="144" cy="106" r="1.4" fill="#3dd5ff" opacity=".56"/>
-      <circle cx="316" cy="106" r="1.4" fill="#3dd5ff" opacity=".56"/>
-      <line x1="168" y1="44" x2="292" y2="168" stroke="url(#lr-diag)" stroke-width=".7"/>
-      <line x1="292" y1="44" x2="168" y2="168" stroke="url(#lr-diag)" stroke-width=".7"/>
-      <polygon class="lr-diamond" points="230,42 294,106 230,170 166,106" fill="none" stroke="rgba(235,213,162,.16)" stroke-width=".8"/>
-      <polygon class="lr-diamond-inner" points="230,57 279,106 230,155 181,106" fill="none" stroke="rgba(61,213,255,.12)" stroke-width=".6"/>
+      <line x1="6" y1="110" x2="62" y2="110" stroke="url(#lr-h)" stroke-width=".75"/>
+      <line x1="398" y1="110" x2="454" y2="110" stroke="url(#lr-h)" stroke-width=".75"/>
+      <circle cx="62" cy="110" r="1.4" fill="#3dd5ff" opacity=".52"/>
+      <circle cx="398" cy="110" r="1.4" fill="#3dd5ff" opacity=".52"/>
+      <path class="lr-diamond" d="M 218 10 L 230 2 L 242 10 M 218 210 L 230 218 L 242 210" fill="none" stroke="rgba(235,213,162,.24)" stroke-width=".9"/>
+      <path class="lr-diamond-inner" d="M 26 96 L 18 110 L 26 124 M 434 96 L 442 110 L 434 124" fill="none" stroke="rgba(61,213,255,.18)" stroke-width=".75"/>
       <g class="lr-brackets" fill="none" stroke="rgba(61,213,255,.46)" stroke-width="1">
-        <path d="M16,24 L16,10 L34,10"/>
-        <path d="M444,24 L444,10 L426,10"/>
-        <path d="M16,196 L16,210 L34,210"/>
-        <path d="M444,196 L444,210 L426,210"/>
+        <path d="M16,26 L16,10 L36,10"/>
+        <path d="M444,26 L444,10 L424,10"/>
+        <path d="M16,194 L16,210 L36,210"/>
+        <path d="M444,194 L444,210 L424,210"/>
       </g>
-      <line x1="46" y1="10" x2="414" y2="10" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
-      <line x1="46" y1="210" x2="414" y2="210" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
+      <line x1="48" y1="10" x2="210" y2="10" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
+      <line x1="250" y1="10" x2="412" y2="10" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
+      <line x1="48" y1="210" x2="210" y2="210" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
+      <line x1="250" y1="210" x2="412" y2="210" stroke="url(#lr-h)" stroke-width=".6" opacity=".62"/>
       <g class="lr-pips" fill="#ebd5a2" opacity=".72">
         <rect x="14.5" y="8.5" width="3" height="3"/>
         <rect x="442.5" y="8.5" width="3" height="3"/>
@@ -274,11 +282,15 @@
       <span class="slot-sig loading-sig" id="loading-sig"></span>
       <span class="loading-sig-rail"></span>
     </div>
-    <div class="loading-copy" role="status" aria-live="polite" aria-atomic="true">
-      <h2 class="loading-title">正在进入游戏</h2>
-      <div class="loading-text">正在启动游戏</div>
+    <div class="loading-identity">
+      <span class="save-avatar loading-avatar" id="loading-avatar" aria-hidden="true" hidden></span>
+      <div class="loading-copy" role="status" aria-live="polite" aria-atomic="true">
+        <h2 class="loading-title">正在进入游戏</h2>
+        <div class="loading-text">正在启动游戏</div>
+      </div>
     </div>
     <div id="loading-stages" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="loading-stage-labels" id="loading-stage-labels" aria-hidden="true"><span>连接引擎</span><span>载入画面</span><span>同步场景</span></div>
     <div class="loading-actions">
       <button type="button" class="loading-hint" id="loading-cancel">取消 <kbd>Esc</kbd></button>
       <div id="loading-slow" hidden><span class="loading-slow-note">响应较慢</span><button type="button" class="feedback-link" data-open-logs>诊断日志</button></div>

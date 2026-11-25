@@ -31,6 +31,7 @@ const footprints = [];
 let footprintCursor = 0;
 const pulses = [];
 let orbitLockFired = false, primeLockFired = false;
+let hoverSlotKey = '';
 const unsubs = [], observers = [], disposers = [], motionListeners = new Set();
 const state = { kind: 'quiet', progress: 0, still: false, footprints: [], loadingAge: 0, slotLine: null, pulses: [] };
 
@@ -113,6 +114,11 @@ function activeLaunchSlotLine() {
   const sig = signature(key);
   return sig ? sig.line : null;
 }
+function hoverPreviewSlotLine() {
+  if (!hoverSlotKey || !seedValues || loading() || hostState === 'Error') return null;
+  const sig = signature(hoverSlotKey);
+  return sig ? sig.line : null;
+}
 
 function setTelemetryText(el, text, lockState) {
   if (!el) return;
@@ -123,6 +129,9 @@ function setTelemetryText(el, text, lockState) {
 function pushPulse(kind) {
   pulses.push({ at: time, kind });
   if (pulses.length > 6) pulses.shift();
+  if (!isStatic() && window.BootstrapAudio && typeof window.BootstrapAudio.playLockPing === 'function') {
+    try { window.BootstrapAudio.playLockPing(kind); } catch (_) {}
+  }
 }
 
 function updateLoadingTelemetry(loadingAge, still) {
@@ -211,7 +220,8 @@ function paint() {
   state.footprints = loading() ? footprints.map(fp => ({ row: fp.row, age: Math.max(0, time - fp.at) })) : [];
   state.magicSum = orbitMagicSum;
   state.loadingAge = loading() && loadingStartedAt >= 0 ? Math.max(0, time - loadingStartedAt) : 0;
-  state.slotLine = loading() ? activeLaunchSlotLine() : null;
+  state.slotLine = loading() ? activeLaunchSlotLine() : hoverPreviewSlotLine();
+  state.slotLineSubtle = !loading();
   updateLoadingTelemetry(state.loadingAge, state.still);
   while (pulses.length && time - pulses[0].at > 950) pulses.shift();
   state.pulses = loading() ? pulses.map(p => ({ kind: p.kind, age: Math.max(0, time - p.at) })) : [];
@@ -618,7 +628,21 @@ async function main() {
     safePaint();
     // Original handler continues immediately, including video/loading coverage.
   }
-  listen(document.getElementById('btn-confirm-start'), 'click', armLaunchIntent, true);
+  const confirmBtn = document.getElementById('btn-confirm-start');
+  listen(confirmBtn, 'click', armLaunchIntent, true);
+  function setHoverPreview(active) {
+    if (retired || blocked) return;
+    const plate = document.getElementById('welcome-slot');
+    const next = active && plate && plate.dataset.state === 'live' ? (plate.dataset.slotKey || '') : '';
+    if (next === hoverSlotKey) return;
+    hoverSlotKey = next;
+    paintDirty = true;
+    if (!blocked) safePaint();
+  }
+  listen(confirmBtn, 'pointerenter', () => setHoverPreview(true));
+  listen(confirmBtn, 'pointerleave', () => setHoverPreview(false));
+  listen(confirmBtn, 'focus', () => setHoverPreview(true));
+  listen(confirmBtn, 'blur', () => setHoverPreview(false));
   listen(document.querySelector('[data-action="start"]'), 'click', armLaunchIntent, true);
   listen(document.getElementById('btn-retry'), 'click', armLaunchIntent, true);
   // PM19 V3: 详情区的“选用存档”按钮；

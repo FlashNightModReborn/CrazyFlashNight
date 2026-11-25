@@ -89,7 +89,18 @@
         '“玩弄认知能像塑造物质一样精确地塑造现实。”',
         '“掌握蓝图，就等于掌握通往所有造物的后门。”'
       ],
-      rune: '<span class="univ-divider" aria-hidden="true"></span>'
+      rune: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 24" preserveAspectRatio="none" style="width:100%;height:100%">
+        <g stroke="#cbba93" stroke-width=".85" fill="none">
+          <path d="M 0 12 L 214 12 M 286 12 L 500 12" opacity=".88"/>
+          <path d="M 250 3 L 260 20 M 250 3 L 240 20"/>
+          <path d="M 243 15 A 9 9 0 0 0 257 15" stroke-width=".75"/>
+          <circle cx="250" cy="3.5" r="1.4" fill="#3dd5ff" stroke="none"/>
+          <g stroke-width=".55" opacity=".75">
+            <path d="M 222 9 L 222 15 M 228 10.5 L 228 13.5 M 234 9 L 234 15"/>
+            <path d="M 266 9 L 266 15 M 272 10.5 L 272 13.5 M 278 9 L 278 15"/>
+          </g>
+        </g>
+      </svg>`
     },
 
     mercenary: {
@@ -207,6 +218,10 @@
       hud.style.setProperty('--faction-color', f.color);
       hud.dataset.faction = key;
       hud.dataset.logStyle = f.isLog ? '1' : '0';
+    }
+    const welcome = document.getElementById('view-welcome');
+    if (welcome) {
+      welcome.style.setProperty('--welcome-faction-glow', 'color-mix(in srgb, ' + f.color + ' 10%, transparent)');
     }
     if (nameEl) nameEl.textContent = f.name;
     if (summary) summary.textContent = quote;

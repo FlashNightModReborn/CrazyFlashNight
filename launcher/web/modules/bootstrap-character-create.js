@@ -56,6 +56,18 @@
         {key:'footwearIdentifier', catalog:'footwear', label:'鞋子'}
     ];
 
+    var RANDOM_CODENAMES = [
+        '林渊', '赤鸦', '铁隼', '陈默', '沈霜', '陆沉', '苍狼', '苏岚',
+        '冷锋', '夜隼', '断刃', '唐枭', '白鸦', '黑羽', '顾衡', '零号行者'
+    ];
+
+    function difficultyTagsFor(row) {
+        var name = row && row.name || '';
+        if (name.indexOf('平衡') >= 0) return ['推荐新玩家', '标准成长', '均衡伤害'];
+        if (name.indexOf('逆天') >= 0) return ['原版数值', '经典高爆', '怀旧体验'];
+        return ['高压对抗', '高额赏金', '硬核试炼'];
+    }
+
     function byId(id) { return rootEl ? rootEl.querySelector('#' + id) : null; }
     function cue(name) { if (config && config.playUiCue) config.playUiCue(name); }
     function emit(message) {
@@ -118,9 +130,9 @@
             + Controls.heightMarkup('cc', true, 'cc-step-title-1') + '</div>'
             + '   <dl class="cc-preview-meta"><div><dt>性别</dt><dd id="cc-preview-gender">—</dd></div>'
             + '    <div><dt>发型</dt><dd id="cc-preview-hair">—</dd></div></dl>'
-            + '   <div class="cc-tt-anchor" aria-hidden="true"></div>'
             + '  </aside>'
             + '  <form id="cc-form" class="cc-workflow" novalidate>'
+            + '   <div class="cc-tt-anchor" aria-hidden="true"></div>'
             + '   <div id="cc-loading" class="cc-loading" role="status">正在准备角色创建...</div>'
             + '   <section class="cc-step-panel" data-cc-panel="0" aria-labelledby="cc-step-title-0">'
             + '    <h2 id="cc-step-title-0">身份登记</h2>'
@@ -172,6 +184,15 @@
         if (nameInput) {
             nameInput.placeholder = '输入佣兵代号（1–15 字符）';
             var labelSpan = nameInput.previousElementSibling;
+            if (labelSpan && !byId('cc-random-name')) {
+                var rollBtn = document.createElement('button');
+                rollBtn.type = 'button';
+                rollBtn.id = 'cc-random-name';
+                rollBtn.className = 'cc-random-name';
+                rollBtn.textContent = '随机代号';
+                rollBtn.title = '填入一个随机佣兵代号';
+                labelSpan.appendChild(rollBtn);
+            }
             if (labelSpan && !byId('cc-name-counter')) {
                 var counter = document.createElement('span');
                 counter.className = 'cc-name-counter';
@@ -228,6 +249,22 @@
             });
         });
         byId('cc-cancel').addEventListener('click', cancel);
+        var randomNameBtn = byId('cc-random-name');
+        if (randomNameBtn) {
+            randomNameBtn.addEventListener('click', function () {
+                if (phase !== 'starting' && isDraftLocked()) return;
+                var input = byId('cc-character-name');
+                if (!input) return;
+                var current = input.value.trim();
+                var pool = RANDOM_CODENAMES.filter(function (n) { return n !== current; });
+                input.value = pool[Math.floor(Math.random() * pool.length)] || RANDOM_CODENAMES[0];
+                syncNames('character');
+                pulseRoll(randomNameBtn);
+                pulseRoll(byId('cc-nameplate'));
+                cue('playSelect');
+                input.focus();
+            });
+        }
         byId('cc-random-look').addEventListener('click', function () {
             if (!snapshot || !model || isDraftLocked()) return;
             EQUIPMENT_PICKERS.forEach(function (picker) {
@@ -249,7 +286,7 @@
             var baseline = snapshot.defaults[model.draft.gender].height;
             model.draft.height = Math.min(Number(height.max), Math.max(Number(height.min), baseline + Math.round((Math.random() - 0.5) * 24)));
             previewChoice = null;
-            rebuildAppearance(); refreshUi(); renderPreview();
+            rebuildAppearance(); refreshUi(); renderPreview(); flashPreviewSwap(); pulseRoll(byId('cc-random-look')); cue('playSelect');
         });
         byId('cc-hair-search').addEventListener('input', fillHair);
         byId('cc-hair-filter').addEventListener('click', function (event) {
@@ -285,12 +322,18 @@
             try { global.localStorage.setItem(APPEARANCE_DENSITY_KEY, JSON.stringify(appearanceDensity)); } catch (e) {}
             applyHairDensity();
         });
+        var lastHeightTickMs = 0;
         Controls.bindHeight(byId('cc-height'), function(value) {
             if (!model || isDraftLocked()) return;
             model.draft.height = value;
             refreshPreviewMeta();
             renderPreview();
             refreshReview();
+            var now = Date.now();
+            if (now - lastHeightTickMs > 70) {
+                lastHeightTickMs = now;
+                cue('playHover');
+            }
         });
     }
 
@@ -786,6 +829,23 @@
         return span;
     }
 
+    function difficultyTierFor(row) {
+        if (!row) return 'balanced';
+        if (row.recommended || (row.name && row.name.indexOf('平衡') >= 0)) return 'balanced';
+        if (row.name && row.name.indexOf('逆天') >= 0) return 'classic';
+        return 'challenge';
+    }
+
+    function selectedDifficultyTier() {
+        if (!snapshot || !model || !snapshot.difficulties) return 'balanced';
+        for (var i = 0; i < snapshot.difficulties.length; i++) {
+            if (snapshot.difficulties[i].identifier === model.draft.difficulty) {
+                return difficultyTierFor(snapshot.difficulties[i]);
+            }
+        }
+        return 'balanced';
+    }
+
     function fillDifficulties() {
         var host = byId('cc-difficulties');
         ensureAppearanceTooltipScope();
@@ -795,9 +855,7 @@
             var button = document.createElement('button');
             button.type = 'button';
             button.className = 'cc-difficulty';
-            button.dataset.tier = (row.recommended || (row.name && row.name.indexOf('平衡') >= 0))
-                ? 'balanced'
-                : (row.name && row.name.indexOf('逆天') >= 0 ? 'classic' : 'challenge');
+            button.dataset.tier = difficultyTierFor(row);
             button.setAttribute('role', 'radio');
             button.setAttribute('data-index', String(index));
             var selected = row.identifier === model.draft.difficulty;
@@ -819,6 +877,16 @@
             description.className = 'cc-difficulty-description';
             description.textContent = selected ? row.description : difficultySummary(row.description);
             button.appendChild(description);
+            var tagRow = document.createElement('span');
+            tagRow.className = 'cc-difficulty-tags';
+            tagRow.setAttribute('aria-hidden', 'true');
+            difficultyTagsFor(row).forEach(function(tagLabel) {
+                var pill = document.createElement('span');
+                pill.className = 'cc-difficulty-tag';
+                pill.textContent = tagLabel;
+                tagRow.appendChild(pill);
+            });
+            button.appendChild(tagRow);
             button.addEventListener('click', function() { chooseDifficulty(index, true); });
             button.addEventListener('keydown', onDifficultyKeydown);
             host.appendChild(button);
@@ -849,6 +917,8 @@
         });
         if (focus && radios[index]) radios[index].focus();
         clearFieldError('difficulty');
+        var shell = rootEl && rootEl.querySelector('.cc-shell');
+        if (shell) shell.dataset.difficulty = difficultyTierFor(snapshot.difficulties[index]);
         refreshPreviewMeta();
         refreshReview();
     }
@@ -932,8 +1002,10 @@
             return false;
         }
         clearErrors();
+        if (global.PanelTooltip && typeof global.PanelTooltip.hide === 'function') global.PanelTooltip.hide();
         submitSent = true;
         phase = 'submitting';
+        flashPreviewSwap();
         refreshUi();
         var payload = {
             cmd:'character_create_submit',
@@ -1030,7 +1102,42 @@
         return true;
     }
 
-    function setAlert(message) { setText('cc-form-alert', message || ''); }
+    var STATE_ERROR_MESSAGES = {
+        save_failed:'存档写入失败（可能是 Flash 存储已满），可取消回首页在「设置」设为无限制。',
+        settings_recovery_required:'检测到未完成的设置恢复，请先完成恢复后再建立角色。',
+        reward_commit_pending:'当前有尚未确认的奖励写入，请稍后重试。',
+        transition_unavailable:'游戏场景正在切换中，请稍后重试。',
+        stage_busy:'游戏场景正忙，请稍后重试。',
+        initialization_failed:'角色初始化失败，请取消后重新开始。',
+        snapshot_response_timeout:'等待角色资料超时，请取消后重试。',
+        definitive_response_timeout:'等待存档确认超时，请暂勿重复创建，可返回后核对存档列表。',
+        snapshot_projection_invalid:'角色资料校验未通过，请取消后重试。',
+        snapshot_rejected:'无法读取角色资料，请取消后重试。',
+        create_rejected:'角色创建请求未通过，请重试或取消。',
+        character_create_stage_rejected:'角色已保存，但进入场景失败，请返回存档列表直接启动。'
+    };
+
+    function formatStateAlert(raw) {
+        if (!raw) return '';
+        var key = String(raw).replace(/^\s+|\s+$/g, '');
+        return Object.prototype.hasOwnProperty.call(STATE_ERROR_MESSAGES, key)
+            ? STATE_ERROR_MESSAGES[key] : key;
+    }
+
+    function pulseRoll(node) {
+        if (!node) return;
+        var reduced = global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) return;
+        node.classList.remove('is-rolling');
+        void node.offsetWidth;
+        node.classList.add('is-rolling');
+        node.addEventListener('animationend', function handler() {
+            node.removeEventListener('animationend', handler);
+            node.classList.remove('is-rolling');
+        });
+    }
+
+    function setAlert(message) { setText('cc-form-alert', formatStateAlert(message)); }
     function clearFieldError(key) {
         var error = byId('cc-error-' + key);
         if (error) error.textContent = '';
@@ -1105,24 +1212,38 @@
             var panelStep = Number(panel.getAttribute('data-cc-panel'));
             var visible = panelStep === step && !(!snapshot && panelStep !== 0);
             panel.hidden = !visible;
-            if (visible && panelStep !== lastPanelStep) {
+            if (!visible) {
+                panel.classList.remove('cc-panel-enter');
+                return;
+            }
+            if (panelStep !== lastPanelStep) {
                 lastPanelStep = panelStep;
                 var reduced = global.matchMedia
                     && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                if (!reduced) {
+                if (!reduced && phase === 'editing') {
                     panel.classList.remove('cc-panel-enter');
                     void panel.offsetWidth;
                     panel.classList.add('cc-panel-enter');
-                    panel.addEventListener('animationend', function handler() {
-                        panel.removeEventListener('animationend', handler);
+                    var finishEnter = function(event) {
+                        if (event && event.target !== panel) return;
+                        panel.removeEventListener('animationend', finishEnter);
+                        panel.removeEventListener('animationcancel', finishEnter);
                         panel.classList.remove('cc-panel-enter');
-                    });
+                    };
+                    panel.addEventListener('animationend', finishEnter);
+                    panel.addEventListener('animationcancel', finishEnter);
                 }
             }
         });
         if (snapshot && !isDraftLocked()) visitedSteps[step] = true;
         refreshProgress();
-        rootEl.querySelector('.cc-pad').classList.toggle('is-committing', phase === 'submitting' || phase === 'durable');
+        var shell = rootEl.querySelector('.cc-shell');
+        if (shell) {
+            shell.dataset.activeStep = String(step);
+            shell.dataset.difficulty = selectedDifficultyTier();
+            shell.dataset.phase = phase;
+        }
+        rootEl.querySelector('.cc-pad').classList.toggle('is-committing', phase === 'submitting' || phase === 'durable' || phase === 'scene_ready');
         rootEl.querySelectorAll('[data-cc-step]').forEach(function(item) {
             var itemStep = Number(item.getAttribute('data-cc-step'));
             var active = itemStep === step;
@@ -1140,7 +1261,9 @@
         byId('cc-next').disabled = durableRecovery ? recoverySent : locked;
         byId('cc-next').textContent = durableRecovery
             ? (recoverySent ? '正在载入…' : '载入已创建存档')
-            : (isRetryOnly() ? '重试保存' : (step === 2 ? '建立角色' : '下一步'));
+            : (phase === 'submitting' ? '正在保存档案…'
+                : ((phase === 'durable' || phase === 'scene_ready') ? '正在进入废土…'
+                    : (isRetryOnly() ? '重试保存' : (step === 2 ? '建立角色' : '下一步'))));
         byId('cc-form').setAttribute('aria-busy', phase === 'starting' || phase === 'preparing'
             || phase === 'submitting' || phase === 'durable' ? 'true' : 'false');
         rootEl.querySelectorAll('input, .cc-equipped-slot, .cc-choice-card, .cc-appearance-tab, .cc-density-option, .cc-difficulty').forEach(function(control) {
@@ -1148,6 +1271,8 @@
         });
         byId('cc-display-reset').disabled = draftLocked;
         byId('cc-random-look').disabled = draftLocked;
+        var randomNameBtn = byId('cc-random-name');
+        if (randomNameBtn) randomNameBtn.disabled = draftLocked;
         rootEl.querySelectorAll('#cc-hair-filter button').forEach(function(button) { button.disabled = draftLocked; });
         var heightControl = byId('cc-preview-height-control');
         if (heightControl) heightControl.hidden = !snapshot || step !== 1;
@@ -1434,6 +1559,9 @@
         if (phase !== 'preparing' || generation !== previewGeneration
                 || token !== activeOpenRequestId) return false;
         clearPreparationTimer();
+        if (config && typeof config.onPrepareProgress === 'function') {
+            config.onPrepareProgress(token, 3, '角色整备就绪');
+        }
         requestFrame(function() {
             requestFrame(function() {
                 if (phase !== 'preparing' || generation !== previewGeneration
@@ -1441,6 +1569,7 @@
                 phase = 'editing';
                 refreshUi();
                 if (config && typeof config.onReady === 'function') config.onReady(token, degraded === true);
+                if (!degraded) flashPreviewSwap();
                 focusStep();
             });
         });
@@ -1565,6 +1694,9 @@
         model.displayName = stagedNames.displayNameCustomized
             ? stagedNames.displayName : stagedNames.characterName;
         phase = 'preparing';
+        if (config && typeof config.onPrepareProgress === 'function') {
+            config.onPrepareProgress(activeOpenRequestId, 2, '正在生成角色预览');
+        }
         step = 0;
         submitSent = false;
         submittedPayload = null;

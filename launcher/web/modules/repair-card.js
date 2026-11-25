@@ -114,12 +114,12 @@
     if (!summary) return '<p>检测到存档「' + esc(_slot) + '」存在数据异常。</p>';
     var total = summary.totalFffd || 0;
     var byLayer = summary.byLayer || {};
-    return '<p>检测到存档「' + esc(_slot) + '」存在 <b>' + total + '</b> 处数据异常。</p>' +
+    return '<p>检测到存档「' + esc(_slot) + '」存在 <b>' + total + '</b> 处异常字符或字段损坏，可按以下分组逐项修复。</p>' +
       '<ul class="rc-bylayer">' +
-        '<li>L0 角色名 / 时间戳: <b>' + (byLayer.L0 || 0) + '</b> 项 (人工)</li>' +
-        '<li>L1 装备 / 模组: <b>' + (byLayer.L1 || 0) + '</b> 项 (字典对齐)</li>' +
-        '<li>L2 任务 / 技能 / 统计: <b>' + (byLayer.L2 || 0) + '</b> 项 (字典对齐 / 丢弃)</li>' +
-        '<li>L3 发现表 / 设置: <b>' + (byLayer.L3 || 0) + '</b> 项 (静默丢弃)</li>' +
+        '<li>基础信息（角色名 / 时间戳 · L0）：<b>' + (byLayer.L0 || 0) + '</b> 项 · 需人工确认</li>' +
+        '<li>装备与模组（L1）：<b>' + (byLayer.L1 || 0) + '</b> 项 · 自动匹配名称</li>' +
+        '<li>任务、技能与统计（L2）：<b>' + (byLayer.L2 || 0) + '</b> 项 · 自动对齐或清理</li>' +
+        '<li>图鉴与杂项设置（L3）：<b>' + (byLayer.L3 || 0) + '</b> 项 · 可安全忽略</li>' +
       '</ul>';
   }
 
@@ -156,10 +156,10 @@
 
     var html = '';
     var layerLabel = {
-      'L0': 'L0 — 阻塞项 (角色名 / 时间戳)',
-      'L1': 'L1 — 装备 / 模组 (字典对齐)',
-      'L2': 'L2 — 技能 / 任务 / 统计',
-      'L3': 'L3 — 发现表 / 设置'
+      'L0': '基础信息 · 需手动确认（角色名 / 时间戳 · L0）',
+      'L1': '装备与模组 · 自动匹配（L1）',
+      'L2': '任务、技能与统计（L2）',
+      'L3': '图鉴与杂项设置（L3）'
     };
     var order = ['L0', 'L1', 'L2', 'L3'];
     for (var li = 0; li < order.length; li++) {
@@ -226,9 +226,9 @@
     if (d.action === 'FixValue' || d.action === 'RenameKey') {
       html += '采纳: <code>' + esc(v) + '</code>' + src;
     } else if (d.action === 'ClearValue') {
-      html += '设为空字符串以保留 tuple 形状';
+      html += '清空异常值以保持数据结构完整';
     } else if (d.action === 'DropValue' || d.action === 'DropKey') {
-      html += '从父容器中移除该条目';
+      html += '移除该损坏条目';
     }
     html += ' <label class="rc-checkbox-label"><input type="checkbox" class="rc-skip" checked> 应用此项</label>';
     html += '</div>';

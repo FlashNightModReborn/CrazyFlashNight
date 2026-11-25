@@ -322,8 +322,8 @@
           '<p>5. 加入我们的 QQ 群：<span class="qq">562130873</span><span class="b">（将满）</span>、<span class="qq">149188029</span><span class="b">（将满）</span>、<span class="qq">307710279</span> 参与讨论，关注 B 站账号 <span class="qq">黑月雾人</span> / <span class="qq">无名的低谷</span> / <span class="qq">crazyfs</span> 获取最新信息。</p>' +
           '<h3>音频与动态</h3>' +
           '<div class="audio-toggles">' +
-            '<label class="audio-toggle"><input type="checkbox" id="about-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 音效 · hover / click / confirm / error</span></label>' +
-            '<label class="audio-toggle"><input type="checkbox" id="about-ambient"' + (ambOn ? ' checked' : '') + '> <span>环境 hum · θ-FLOOD 背景低频</span></label>' +
+            '<label class="audio-toggle"><input type="checkbox" id="about-sfx"' + (sfxOn ? ' checked' : '') + '> <span>UI 交互音效 · 按钮悬停、点击与状态提示</span></label>' +
+            '<label class="audio-toggle"><input type="checkbox" id="about-ambient"' + (ambOn ? ' checked' : '') + '> <span>环境低频 · θ-FLOOD 空间底噪</span></label>' +
           '</div>' +
           '<h3>诊断日志</h3>' +
           '<div class="about-diagnostics">' +

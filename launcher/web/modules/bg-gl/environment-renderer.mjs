@@ -281,12 +281,13 @@ export class EnvironmentRenderer {
     }
   }
 
-  drawSlotLine(ctx, line, time, still, error) {
+  drawSlotLine(ctx, line, time, still, error, subtle) {
     if (!(line >= 0 && line < 2 * N + 2)) return;
     ctx.save();
-    const pulse = still ? .22 : .16 + .08 * Math.sin(time * TAU / 3.6);
+    const base = subtle ? .19 : .22;
+    const pulse = still ? base : (subtle ? .15 + .07 * Math.sin(time * TAU / 3.0) : .16 + .08 * Math.sin(time * TAU / 3.6));
     ctx.strokeStyle = error ? `rgba(224,104,82,${pulse})` : `rgba(61,213,255,${pulse})`;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = subtle ? 1.15 : 1;
     ctx.beginPath();
     for (let i = 0; i < N; i++) {
       let r, c;
@@ -469,9 +470,9 @@ export class EnvironmentRenderer {
     if (error) this.drawFault(time, still);
     ctx.globalAlpha = 1;
 
-    // Player save slot's real magic line filament during loading
-    if ((loading || state.kind === 'sync') && state.slotLine != null) {
-      this.drawSlotLine(ctx, state.slotLine, time, still, error);
+    // Player save slot's real magic line filament during loading OR Welcome CTA hover preview
+    if (state.slotLine != null && (loading || state.kind === 'sync' || state.slotLineSubtle)) {
+      this.drawSlotLine(ctx, state.slotLine, time, still, error, !!state.slotLineSubtle);
     }
 
     const phase = error ? .5 : loading ? (time % 3.2) / 3.2 : bright ? p : (time % 8) / 8;
@@ -525,6 +526,12 @@ export class EnvironmentRenderer {
     }
 
     this.eraseForeground(ctx);
+    // Final convergence veil right before native BootstrapRevealCurtain hands off to Flash
+    if (state.kind === 'sync' && !still && p > .78) {
+      const dim = clamp01((p - .78) / .22) * .72;
+      ctx.fillStyle = `rgba(6,9,12,${dim.toFixed(3)})`;
+      ctx.fillRect(0, 0, w, h);
+    }
     ctx.globalAlpha = 1;
     this.renders++;
   }
@@ -643,12 +650,26 @@ export class EnvironmentRenderer {
       const radius = .24 + ((phase + k * .5) % 1) * .42;
       ctx.beginPath(); ctx.ellipse(w / 2, h / 2, w * radius, h * radius, 0, 0, TAU); ctx.stroke();
     }
-    const top = h * .18, bottom = h * .82, sweep = top + (bottom - top) * phase;
-    ctx.beginPath(); ctx.moveTo(8, top); ctx.lineTo(8, bottom);
-    ctx.moveTo(w - 8, top); ctx.lineTo(w - 8, bottom); ctx.stroke();
+    // Architectural corner warning brackets + subtle edge telemetry ticks (replaces scrollbar-like blocks)
+    const tickInset = 14, arm = 22;
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(232,110,88,.72)';
+    ctx.beginPath();
+    ctx.moveTo(tickInset, tickInset + arm); ctx.lineTo(tickInset, tickInset); ctx.lineTo(tickInset + arm, tickInset);
+    ctx.moveTo(w - tickInset - arm, tickInset); ctx.lineTo(w - tickInset, tickInset); ctx.lineTo(w - tickInset, tickInset + arm);
+    ctx.moveTo(tickInset, h - tickInset - arm); ctx.lineTo(tickInset, h - tickInset); ctx.lineTo(tickInset + arm, h - tickInset);
+    ctx.moveTo(w - tickInset - arm, h - tickInset); ctx.lineTo(w - tickInset, h - tickInset); ctx.lineTo(w - tickInset, h - tickInset - arm);
+    ctx.stroke();
+    const top = h * .24, bottom = h * .76, sweep = top + (bottom - top) * phase;
+    ctx.strokeStyle = 'rgba(224,93,70,.36)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(14, top); ctx.lineTo(14, bottom);
+    ctx.moveTo(w - 14, top); ctx.lineTo(w - 14, bottom);
+    ctx.stroke();
     ctx.fillStyle = '#ed785e';
-    ctx.fillRect(5, sweep - 12, 6, 24);
-    ctx.fillRect(w - 11, h - sweep - 12, 6, 24);
+    ctx.fillRect(10, sweep - 1, 8, 2);
+    ctx.fillRect(w - 18, h - sweep - 1, 8, 2);
   }
 
   dispose() {

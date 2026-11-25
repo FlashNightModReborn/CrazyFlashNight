@@ -87,12 +87,12 @@
       '<div id="ed-banner"></div>' +
       '<div id="ed-panel" aria-busy="true"></div>' +
       '<footer class="archive-editor-actions">' +
-        '<button type="button" class="term-btn" id="ed-search-toggle" title="搜索字段或内容">搜索</button>' +
+        '<button type="button" class="term-btn" id="ed-search-toggle" title="搜索字段或内容" disabled>搜索</button>' +
         '<button type="button" class="term-btn" id="ed-diag-export" title="导出当前存档、日志与配置">导出诊断包</button>' +
         '<span id="ed-diag-status" class="topbar-status"></span>' +
         '<span id="ed-status" class="ed-status" role="status">正在读取…</span>' +
         '<button type="button" class="term-btn" id="ed-cancel">取消</button>' +
-        '<button type="button" class="term-btn archive-primary" id="ed-save" disabled>保存</button>' +
+        '<button type="button" class="term-btn front-primary archive-primary" id="ed-save" disabled>保存</button>' +
       '</footer>';
 
     _diagBtn = document.getElementById('ed-diag-export');

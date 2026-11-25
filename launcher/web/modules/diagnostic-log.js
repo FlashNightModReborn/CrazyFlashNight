@@ -8,31 +8,35 @@
   var _unsubs = [];
   var _autoTimer = null;
   var _lines = 200;
+  var _rawLines = [];
 
   function mount(containerEl, initData) {
     _container = containerEl;
     _autoTimer = null;
+    _rawLines = [];
 
     _container.innerHTML =
       '<div class="modal-header term-heading-rule">' +
         '<h2>诊断日志</h2>' +
-        '<button class="modal-close" id="diag-close">×</button>' +
+        '<button class="modal-close" id="diag-close" aria-label="关闭">×</button>' +
       '</div>' +
       '<div class="diag-log-toolbar">' +
-        '<button id="diag-refresh">刷新</button>' +
-        '<label><input type="checkbox" id="diag-auto"> 自动刷新 (5s)</label>' +
-        '<label>行数: <select id="diag-lines">' +
+        '<button type="button" id="diag-refresh">刷新</button>' +
+        '<button type="button" id="diag-copy">复制日志</button>' +
+        '<label class="diag-toggle"><input type="checkbox" id="diag-auto"> <span>自动刷新 (5s)</span></label>' +
+        '<label>行数 <select id="diag-lines">' +
           '<option value="100">100</option>' +
           '<option value="200" selected>200</option>' +
           '<option value="500">500</option>' +
           '<option value="2000">2000</option>' +
         '</select></label>' +
-        '<span id="diag-total" style="color:#666;font-size:11px;margin-left:auto"></span>' +
+        '<span id="diag-total" class="diag-total"></span>' +
       '</div>' +
       '<pre class="diag-log-pre" id="diag-pre">加载中...</pre>';
 
     document.getElementById('diag-close').onclick = function() { window.BootstrapApp.tryCloseModal(); };
     document.getElementById('diag-refresh').onclick = function() { fetchLogs(); };
+    document.getElementById('diag-copy').onclick = copyLogs;
     document.getElementById('diag-auto').onchange = function() {
       if (this.checked) {
         startAutoRefresh();
@@ -55,11 +59,48 @@
     stopAutoRefresh();
     for (var i = 0; i < _unsubs.length; i++) _unsubs[i]();
     _unsubs = [];
+    _rawLines = [];
     _container = null;
   }
 
   function fetchLogs() {
     window.BootstrapApp.send({ cmd: 'logs', lines: _lines });
+  }
+
+  function copyLogs() {
+    var btn = document.getElementById('diag-copy');
+    var text = _rawLines.join('\n');
+    if (!text) return;
+    function flash(label) {
+      if (!btn) return;
+      btn.textContent = label;
+      setTimeout(function() { if (btn && btn.isConnected) btn.textContent = '复制日志'; }, 1400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
+        flash('已复制 ✓');
+      }, function() {
+        fallbackCopy(text, flash);
+      });
+    } else {
+      fallbackCopy(text, flash);
+    }
+  }
+
+  function fallbackCopy(text, flash) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      flash('已复制 ✓');
+    } catch (e) {
+      flash('复制失败');
+    }
   }
 
   function onLogsResp(msg) {
@@ -69,6 +110,7 @@
 
     var lines = msg.lines || [];
     var total = msg.total || 0;
+    _rawLines = lines.slice();
 
     totalSpan.textContent = '显示 ' + lines.length + ' / ' + total + ' 行';
 

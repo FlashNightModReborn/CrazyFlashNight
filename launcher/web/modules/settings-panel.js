@@ -663,7 +663,6 @@
             '开启后跳过漫画运镜与界面结构淡入等装饰性演出；开箱与配给结果始终同帧完整呈现，不影响任何操作耗时。'));
         hgrid.appendChild(hostSelect('mapDisplayPreference', '地图显示',
             [['auto','自动'],['off','关闭'],['compact','紧凑'],['expanded','展开']]));
-        hgrid.appendChild(hostRange());
         host.appendChild(hgrid); _content.appendChild(host);
 
         var hudMotion = section('战斗信息动效', '只调整界面反馈强度；生命、护盾、冷却和按键提示始终实时更新。');
@@ -880,16 +879,6 @@
         });
         return field(label, input, hint);
     }
-    function hostRange() {
-        var wrap = node('div', 'settings-range-wrap');
-        var range = document.createElement('input'); range.type='range'; range.min='0.7'; range.max='1.9'; range.step='0.05';
-        range.value=String(_snapshot.hostPrefs.uiFontScale); range.setAttribute('data-host-key','uiFontScale');
-        var output=node('output','',Number(range.value).toFixed(2)+'×');
-        range.addEventListener('input',function(){ output.textContent=Number(range.value).toFixed(2)+'×'; });
-        range.addEventListener('change',function(){ setHostPreference('uiFontScale',Number(range.value),range); });
-        wrap.appendChild(range); wrap.appendChild(output);
-        return field('启动页字号倍率',wrap,'下次启动完整生效');
-    }
     function setHostPreference(key, value, control) {
         if (_requiresReconcile) {
             applyHostControlValue(control, key, _snapshot.hostPrefs[key]);
@@ -931,9 +920,6 @@
     function applyHostControlValue(control, key, value) {
         if (control.type === 'checkbox') control.checked = value === true;
         else control.value = String(value);
-        var output = control.parentNode && control.parentNode.querySelector
-            ? control.parentNode.querySelector('output') : null;
-        if (output && key === 'uiFontScale') output.textContent = Number(value).toFixed(2) + '×';
     }
 
     function cheatCommandForm() {

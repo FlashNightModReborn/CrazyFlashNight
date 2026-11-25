@@ -183,9 +183,25 @@ namespace CF7Launcher.Guardian.Handlers
                 case "save":          outCmd = "save_resp";   break;
                 case "delete":        outCmd = "delete_resp"; break;
                 case "reset":         outCmd = "reset_resp";  break;
-                case "import_start":  outCmd = "import_resp"; break;
-                case "import_commit": outCmd = "import_resp"; break;
-                default:              outCmd = "error";       break;
+                case "import_start":      outCmd = "import_resp"; break;
+                case "import_commit":     outCmd = "import_resp"; break;
+                case "flash_storage_set": outCmd = "flash_storage_set_resp"; break;
+                default:                  outCmd = "error";       break;
+            }
+            if (outCmd == "flash_storage_set_resp")
+            {
+                var reply = new JObject
+                {
+                    ["type"] = "bootstrap",
+                    ["cmd"] = outCmd,
+                    ["ok"] = false,
+                    ["error"] = "not_idle",
+                    ["canModifyNow"] = false
+                };
+                if (request?["requestId"]?.Type == JTokenType.Integer)
+                    reply["requestId"] = request["requestId"];
+                bootForm.PostToWeb(reply.ToString(Formatting.None));
+                return;
             }
             if (request != null) PostSlotFailure(bootForm, request, outCmd, "not_idle");
             else PostResp(bootForm, outCmd, false, null, "not_idle");

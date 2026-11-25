@@ -1,43 +1,43 @@
 /* PM19 V2: bootstrap-private overrides. No shared tokens/fonts/business changes. */
-#bg-gl { opacity: .94; }
+#bg-gl { opacity: .96; }
 #bg-gl[hidden] { display: none; }
 .bg-photo { opacity: .1; }
 .bg-tint { background:
-  radial-gradient(ellipse at 12% 46%,rgba(31,94,107,.1),transparent 56%),
-  radial-gradient(ellipse at 92% 88%,rgba(135,92,49,.08),transparent 47%),
-  linear-gradient(180deg,rgba(4,9,12,.1),rgba(3,7,10,.18)); }
+  radial-gradient(ellipse at 12% 46%,rgba(31,94,107,.08),transparent 56%),
+  radial-gradient(ellipse at 92% 88%,rgba(135,92,49,.07),transparent 47%),
+  linear-gradient(180deg,rgba(4,9,12,.08),rgba(3,7,10,.15)); }
 /* Static depth survives missing seeds/context. These are non-numeric materials,
    never a substitute fabricated magic square or a claim of host readiness. */
-.bg-rune { opacity: .3; background-image:
-  radial-gradient(ellipse at 50% 50%,transparent 51%,rgba(59,111,123,.19) 51.15%,transparent 51.35%,transparent 69%,rgba(154,124,81,.18) 69.15%,transparent 69.35%),
-  linear-gradient(90deg,rgba(67,104,109,.10) 1px,transparent 1px),
-  linear-gradient(rgba(67,104,109,.08) 1px,transparent 1px);
+.bg-rune { opacity: .20; background-image:
+  radial-gradient(ellipse at 50% 50%,transparent 51%,rgba(59,111,123,.18) 51.15%,transparent 51.35%,transparent 69%,rgba(154,124,81,.16) 69.15%,transparent 69.35%),
+  linear-gradient(90deg,rgba(67,104,109,.08) 1px,transparent 1px),
+  linear-gradient(rgba(67,104,109,.06) 1px,transparent 1px);
   background-size:100% 100%,84px 84px,84px 84px;
-  mask-image:radial-gradient(ellipse,transparent 22%,#000 76%); }
+  mask-image:radial-gradient(ellipse,transparent 24%,#000 78%); }
 .bg-scan { opacity: 0; } /* Replace low-res scan moiré with the actual 19×19 lattice. */
-.bg-grain { opacity: .025; }
-.bg-crack { opacity: .28; }
+.bg-grain { opacity: .022; }
+.bg-crack { opacity: .24; }
 .launch-feedback { display:flex;flex-wrap:wrap;gap:4px 12px;padding:8px 12px;margin:8px 0;
   border-left:3px solid var(--rust);background:#211010;color:#e2bab1;font-size:var(--fs-sm);line-height:1.5; }
 .launch-feedback[hidden] { display:none; }
 .launch-feedback strong { color:#ffa994; }
 .launch-error .slot-plate { border-color:rgba(223,102,91,.52); }
 .topbar .state-badge { min-width:0;max-width:210px;overflow:hidden;text-overflow:ellipsis; }
-#pm19-motion { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--dls-dim); }
+#pm19-motion { margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(61,213,255,.16); }
 #pm19-motion .audio-toggle { display:flex;align-items:center;gap:8px;cursor:pointer; }
 #pm19-motion p { margin:6px 0 0;font-size:var(--fs-xs);color:#a4afb4; }
 #pm19-motion input { accent-color:var(--dls); }
 
 /* PM19 V4.3 lore: loading 相无框光学播报带；顶部羽化 + 严格定高上限，永不侵入中心仪器区。 */
-#bg-gl-log{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:102;
-  width:min(510px,84%);max-height:92px;box-sizing:border-box;padding:8px 20px 6px;overflow:hidden;
+#bg-gl-log{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:102;
+  width:min(548px,86%);max-height:92px;box-sizing:border-box;padding:8px 22px 6px;overflow:hidden;
   pointer-events:none;user-select:none;
-  background:linear-gradient(90deg,transparent 0%,rgba(4,9,13,.66) 10%,rgba(4,9,13,.76) 50%,rgba(4,9,13,.66) 90%,transparent 100%);
+  background:linear-gradient(90deg,transparent 0%,rgba(4,9,13,.72) 10%,rgba(4,9,13,.84) 50%,rgba(4,9,13,.72) 90%,transparent 100%);
   border:0;border-top:1px solid transparent;
   border-image:linear-gradient(90deg,transparent 4%,rgba(61,213,255,.26) 24%,rgba(220,198,148,.24) 50%,rgba(61,213,255,.26) 76%,transparent 96%) 1;
   -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.42) 0%,#000 32%,#000 100%);
           mask-image:linear-gradient(180deg,rgba(0,0,0,.42) 0%,#000 32%,#000 100%);
-  font:11px/1.7 "Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:.04em;color:rgba(220,234,240,.92)}
+  font:11px/1.7 var(--fd-font-body);letter-spacing:.04em;color:rgba(220,234,240,.92)}
 #bg-gl-log.visible{display:flex;flex-direction:column;justify-content:flex-end}
 /* lore 流只属于加载相；失败后回到首页/存档库时，由读数条与失败提示承接叙事，避免与前景控件叠字。
    隐藏后不产生遮罩矩形（measure 跳过无 client rect 的节点）。 */
@@ -52,7 +52,7 @@ body:not(.intro-playing) #bg-gl-log.visible{display:none}
 #bg-gl-log .ln.err:not(.is-retiring):last-child::before{background:#f08876;box-shadow:0 0 7px rgba(240,136,118,.85)}
 #bg-gl-log .ln .ts{flex:none;color:rgba(134,160,172,.66);font:10px/1 "JetBrains Mono",Consolas,monospace;font-variant-numeric:tabular-nums}
 #bg-gl-log .ln .msg{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#bg-gl-log .ln .dim{margin-left:auto;padding-left:12px;opacity:.62;font:10px/1 "JetBrains Mono",Consolas,monospace;color:#8cb0bf;flex:none;white-space:nowrap}
+#bg-gl-log .ln .dim{margin-left:auto;padding-left:12px;opacity:.48;font:9.5px/1 var(--fd-font-mono);color:#7ea0b0;flex:none;white-space:nowrap}
 #bg-gl-log .ln.ok{color:#ead5a2}
 #bg-gl-log .ln.err{color:#f08876}
 @keyframes bgGlLogIn{from{opacity:0;filter:blur(2px);transform:translateY(3px)}to{opacity:1;filter:blur(0);transform:none}}

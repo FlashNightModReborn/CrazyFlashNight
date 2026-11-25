@@ -143,6 +143,14 @@ namespace CF7Launcher.Guardian
                     ConfigCommandHandler.HandleConfigSet(msg, bootForm, userPrefs);
                     return;
 
+                // ─────── Flash local storage quota ───────
+                case "flash_storage_status":
+                    FlashStorageCommandHandler.HandleStatus(bootForm, launchFlow);
+                    return;
+                case "flash_storage_set":
+                    FlashStorageCommandHandler.HandleSet(msg, bootForm, launchFlow);
+                    return;
+
                 // ─────── Font pack ───────
                 case "fontpack_status":
                     FontPackCommandHandler.HandleStatus(bootForm, fontPackTask);

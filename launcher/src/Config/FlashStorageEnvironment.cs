@@ -73,6 +73,8 @@ namespace CF7Launcher.Config
                 result["networkPath"] = roaming.StartsWith(@"\\", StringComparison.Ordinal);
                 try { result["storageAvailableBytes"] = new DriveInfo(root).AvailableFreeSpace; }
                 catch (Exception ex) { result["spaceQueryError"] = ex.GetType().Name; }
+                try { result["localStorageQuota"] = FlashLocalStorageSettings.ReadStatus(roaming).ToJson(); }
+                catch (Exception ex) { result["localStorageQuotaError"] = ex.GetType().Name; }
                 lock (Gate) result["preparedFlashTemp"] = lastPreparedTemp;
             }
             catch (Exception ex) { result["pathError"] = ex.GetType().Name; }

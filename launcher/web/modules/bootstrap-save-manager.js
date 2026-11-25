@@ -36,11 +36,13 @@
   function paintSignature(badge, key) {
     var sig = key && window.PM19Decor && window.PM19Decor.signature(key);
     var cacheKey = sig ? key + '/' + sig.seed + '/' + sig.line : '';
-    if (badge.dataset.signature === cacheKey) return;
+    if (badge.dataset.signature === cacheKey) return sig || null;
     badge.dataset.signature = cacheKey;
     badge.replaceChildren();
+    var lineLabel = sig ? sig.lineName + ' · 轨道 #' + (sig.seed + 1) : '';
     if (badge.id === 'welcome-slot-sig') badge.dataset.lineLabel = sig ? sig.lineName + ' · Σ ' + sig.magicSum : '';
-    if (!sig) return;
+    else if (sig) badge.title = '存档指纹 · ' + lineLabel;
+    if (!sig) return null;
     var lo = Math.min.apply(null, sig.values), hi = Math.max.apply(null, sig.values);
     var bars = document.createDocumentFragment();
     sig.values.forEach(function(_, i) {
@@ -52,6 +54,7 @@
       bars.appendChild(bar);
     });
     badge.appendChild(bars);
+    return sig;
   }
 
   function create(actions) {
@@ -75,6 +78,24 @@
       });
     }, {root:list, rootMargin:'42px 0px'});
 
+    var detailSigRow = document.getElementById('save-detail-sig-row');
+    var detailSig = document.getElementById('save-detail-sig');
+    var detailSigLine = document.getElementById('save-detail-sig-line');
+
+    function updateDetailSignature(slot) {
+      if (!detailSigRow || !detailSig) return;
+      var show = !!(slot && !isDeleted(slot) && !slot.corrupt && window.PM19Decor && window.PM19Decor.ready);
+      detailSigRow.hidden = !show;
+      if (!show) {
+        detailSig.dataset.signature = '';
+        detailSig.replaceChildren();
+        if (detailSigLine) detailSigLine.textContent = '';
+        return;
+      }
+      var sig = paintSignature(detailSig, slot.slot);
+      if (detailSigLine) detailSigLine.textContent = sig ? (sig.lineName + ' · #' + (sig.seed + 1)) : '';
+    }
+
     function updateSignatures() {
       sigObserver.disconnect();
       var visible = !deleted && !!window.PM19Decor?.ready && rows.some(s => !s.corrupt);
@@ -82,6 +103,7 @@
       if (visible) list.querySelectorAll('.save-row[data-state="live"]').forEach(row => {
         if (row.querySelector('.slot-sig:empty')) sigObserver.observe(row);
       });
+      updateDetailSignature(selected());
     }
     window.addEventListener('pm19-decor-ready', updateSignatures);
     var createTools = document.getElementById('save-create-tools');
@@ -170,9 +192,19 @@
       }
       if (!slot) {
         window.BootstrapAppearance.releasePortrait(portrait);
+        updateDetailSignature(null);
         technical.open = false;
+        detail.dataset.renderedSlot = '';
         return;
       }
+      var switchedSlot = !!detail.dataset.renderedSlot && detail.dataset.renderedSlot !== slot.slot;
+      detail.dataset.renderedSlot = slot.slot;
+      if (switchedSlot && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+        detail.classList.remove('is-switching');
+        void detail.offsetWidth;
+        detail.classList.add('is-switching');
+      }
+      updateDetailSignature(slot);
       var protectedSlot = isDeleted(slot);
       var busy = slot.slot === pendingDelete;
       setText('save-title', catalogName(slot));

@@ -115,22 +115,51 @@
 
   // ── 交互音 ──
 
-  // 光标 hover: 轻微高频 tick. 去抖 45ms 防 spam.
+  // 光标 hover: 轻阻尼微触继电器 tick, 柔和不刺耳. 去抖 45ms 防 spam.
   function playHover() {
     if (!_sfxEnabled || !initCtx()) return;
     resumeIfSuspended();
     var nowMs = Date.now();
     if (nowMs - _lastHoverMs < HOVER_DEBOUNCE_MS) return;
     _lastHoverMs = nowMs;
-    tonePulse(1200, 'sine', 0.004, 0.07, 0.03, 1400);
+    tonePulse(920, 'sine', 0.003, 0.048, 0.022, 1080);
+    noisePulse(0.001, 0.018, 0.014, 'bandpass', 3400, 2800, 3.2);
   }
 
-  // 按钮点击: sine body + noise click
+  // 按钮点击: 阻尼战术轻键 + 短促机械噪声瞬态
   function playClick() {
     if (!_sfxEnabled || !initCtx()) return;
     resumeIfSuspended();
-    tonePulse(600, 'sine', 0.003, 0.12, 0.10, 420);
-    noisePulse(0.002, 0.04, 0.06, 'bandpass', 2800, 2200, 2.5);
+    tonePulse(520, 'sine', 0.002, 0.085, 0.085, 340);
+    noisePulse(0.001, 0.032, 0.052, 'bandpass', 2600, 1900, 2.6);
+  }
+
+  // 阵营无线电切台: 短促频段静电扫过 + 温润锁定 blip
+  function playRadioTune() {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    noisePulse(0.003, 0.065, 0.045, 'bandpass', 1400, 3200, 3.5);
+    setTimeout(function () {
+      if (!_sfxEnabled || !ctx) return;
+      tonePulse(740, 'sine', 0.004, 0.09, 0.042, 880);
+    }, 32);
+  }
+
+  // PM19 光学仪器锁定共鸣: orbit / prime / sigma 三档轻灵谐波 ping
+  function playLockPing(kind) {
+    if (!_sfxEnabled || !initCtx()) return;
+    resumeIfSuspended();
+    if (kind === 'orbit') {
+      tonePulse(528, 'sine', 0.005, 0.16, 0.034, 540);
+    } else if (kind === 'prime') {
+      tonePulse(660, 'sine', 0.006, 0.24, 0.042);
+      setTimeout(function () {
+        if (!_sfxEnabled || !ctx) return;
+        tonePulse(990, 'sine', 0.006, 0.22, 0.028);
+      }, 36);
+    } else {
+      tonePulse(792, 'sine', 0.004, 0.14, 0.030);
+    }
   }
 
   // 选中 / 切换: 两音 chime (基频 + 完全五度), 微错开
@@ -441,6 +470,8 @@
     resume: resumeIfSuspended,
     playHover: playHover,
     playClick: playClick,
+    playRadioTune: playRadioTune,
+    playLockPing: playLockPing,
     playSelect: playSelect,
     playConfirm: playConfirm,
     playCancel: playCancel,
