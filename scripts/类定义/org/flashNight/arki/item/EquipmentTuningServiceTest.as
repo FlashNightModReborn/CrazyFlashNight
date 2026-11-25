@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
 import org.flashNight.arki.item.PlayerAssetTransaction;
+import org.flashNight.arki.achievement.AchievementMetrics;
 
 import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.arki.item.itemCollection.EquipmentInventory;
@@ -43,6 +44,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testSameLevelConvertNoOp();
         testStaleMaterialAndFailureRollback();
         testBagMaterialFailureCompensation();
+        testBagProofRollbackAndObserverFaults();
         testRequestCalculationReuse();
         testCandidateAvailabilityRequiresOwnedMaterial();
         testWebCommitOperationMatrix();
@@ -892,14 +894,48 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             "确定性失败注入发生于任何装备/材料写之前");
     }
 
+    private static function installBagPublishProbe(suffix:String):Object {
+        var probe:Object = {bagPublishes:0, materialPublishes:0};
+        var bagHolder:MovieClip = _root.createEmptyMovieClip(
+            "__tuningBagProbe_" + suffix, _root.getNextHighestDepth());
+        var materialHolder:MovieClip = _root.createEmptyMovieClip(
+            "__tuningBagMatProbe_" + suffix, _root.getNextHighestDepth());
+        probe.bagHolder = bagHolder;
+        probe.materialHolder = materialHolder;
+        var bagDispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(bagHolder);
+        var materialDispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(materialHolder);
+        var countBag:Function = function():Void { probe.bagPublishes++; };
+        var countMat:Function = function():Void { probe.materialPublishes++; };
+        bagDispatcher.subscribe("ItemAdded", countBag);
+        bagDispatcher.subscribe("ItemRemoved", countBag);
+        bagDispatcher.subscribe("ItemValueChanged", countBag);
+        materialDispatcher.subscribe("ItemAdded", countMat);
+        materialDispatcher.subscribe("ItemRemoved", countMat);
+        materialDispatcher.subscribe("ItemValueChanged", countMat);
+        _root.物品栏.背包.setDispatcher(bagDispatcher);
+        _root.收集品栏.材料.setDispatcher(materialDispatcher);
+        return probe;
+    }
+
+    private static function removeBagPublishProbe(probe:Object):Void {
+        _root.物品栏.背包.setDispatcher(null);
+        _root.收集品栏.材料.setDispatcher(null);
+        probe.bagHolder.removeMovieClip();
+        probe.materialHolder.removeMovieClip();
+    }
+
     private static function testBagMaterialFailureCompensation():Void {
         for (var scenario:Number = 0; scenario < 3; scenario++) {
             resetFixture();
+            EventBus.getInstance().forceResetDispatchDepth();
             var item:BaseItem = equipment("测试手枪A", 1, []);
             var bag:Object = _root.物品栏.背包;
             var materials:Object = _root.收集品栏.材料;
             bag.add(0, item);
             materials.add("强化石",10);
+            var probe:Object = installBagPublishProbe("bag_mat_" + scenario);
             var previewParams:Object = params("bag-material-" + scenario);
             previewParams.operation = "enhance";
             previewParams.source = sourceRef(inventorySnapshot(),0);
@@ -926,6 +962,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             } finally {
                 materials.transactionApplyDeltas = originalMaterialCommit;
                 bag.rollbackValueTransaction = originalRollback;
+                removeBagPublishProbe(probe);
             }
             var replay:Object = EquipmentTuningService.execute("commit",commitParams);
             var readableParams:Object = params("bag-material-" + scenario);
@@ -933,6 +970,9 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
             var readable:Object = EquipmentTuningService.execute("snapshot",readableParams);
             assertTrue(preview.success && failed != null && !failed.success
                     && failed.error == (scenario == 0 ? "commit_failed" : "needs_reconcile")
+                    && failed.writeEpoch == 0
+                    && probe.bagPublishes == 0 && probe.materialPublishes == 0
+                    && _root._saveExt.成就.cnt["装备强化次数"] == undefined
                     && replay.error == "token_invalid" && readable.success
                     && materials.getValue("强化石") == 10
                     && materials.getMutationRevision() == beforeMaterialRevision
@@ -944,6 +984,337 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                             && bag.getMutationRevision() == beforeBagRevision),
                 "背包材料失败补偿：0=完整回滚，1=抛异常保留未知，2=拒绝补偿不覆盖现状；场景 " + scenario);
         }
+    }
+
+    private static function testBagProofRollbackAndObserverFaults():Void {
+        // 1. 背包写后序列化失败：双容器完整回滚，零副作用，已暴露临时 lease 强制 needs_reconcile，
+        // 旧 lease 失效且重新取证后可正常完成下一次调制。
+        resetFixture();
+        EventBus.getInstance().forceResetDispatchDepth();
+        var item:BaseItem = equipment("测试手枪A", 1, []);
+        var bag:Object = _root.物品栏.背包;
+        var materials:Object = _root.收集品栏.材料;
+        bag.add(0, item);
+        materials.add("强化石", 10);
+        var beforeValue:Object = item.value;
+        var beforeTime:Number = item.lastUpdate;
+        var beforeBagRev:Number = bag.getMutationRevision();
+        var beforeMatRev:Number = materials.getMutationRevision();
+        var lease:Object = sourceRef(inventorySnapshot(), 0);
+        var previewParams:Object = params("bag-proof-ser");
+        previewParams.operation = "enhance";
+        previewParams.source = lease;
+        previewParams.targetLevel = 2;
+        var preview:Object = EquipmentTuningService.execute("preview", previewParams);
+        var serProbe:Object = installBagPublishProbe("bag_ser_fail");
+        EquipmentTuningService.testOnlyFailNextSerialization();
+        var commitParams:Object = params("bag-proof-ser");
+        commitParams.expectedTuningToken = preview.tuningToken;
+        var serFailed:Object = null;
+        try {
+            serFailed = EquipmentTuningService.execute("commit", commitParams);
+        } finally {
+            removeBagPublishProbe(serProbe);
+        }
+        var serReplay:Object = EquipmentTuningService.execute("commit", commitParams);
+        var staleSnap:Object = EquipmentTuningService.execute("snapshot", {
+            v:1, panelInstanceId:"test.panel", viewSessionId:"bag-proof-ser", source:lease
+        });
+        var freshAfterSer:Object = webCommit("bag-proof-ser-next", "enhance", 0, -1, "", 2, "");
+        assertTrue(!serFailed.success && serFailed.error == "needs_reconcile"
+                && serFailed.writeEpoch == 0
+                && serProbe.bagPublishes == 0 && serProbe.materialPublishes == 0
+                && serReplay.error == "token_invalid"
+                && !staleSnap.success && staleSnap.error == "stale_state"
+                && freshAfterSer.commit.success && item.value.level == 2
+                && materials.getValue("强化石") == 9
+                && bag.getMutationRevision() == beforeBagRev + 1
+                && materials.getMutationRevision() == beforeMatRev + 1
+                && item.value !== beforeValue && item.lastUpdate != beforeTime,
+            "背包写后序列化失败先回滚双容器且零副作用，暴露旧 lease 要求 fresh 对账后再成功");
+
+        // 2. 背包写后 external snapshot 构造返回 null：双容器完整回滚、零副作用、_busy 不泄漏。
+        resetFixture();
+        item = equipment("测试手枪A", 1, []);
+        bag = _root.物品栏.背包;
+        materials = _root.收集品栏.材料;
+        bag.add(0, item);
+        materials.add("强化石", 10);
+        beforeValue = item.value;
+        beforeTime = item.lastUpdate;
+        beforeBagRev = bag.getMutationRevision();
+        beforeMatRev = materials.getMutationRevision();
+        lease = sourceRef(inventorySnapshot(), 0);
+        previewParams = params("bag-proof-snap-null");
+        previewParams.operation = "enhance";
+        previewParams.source = lease;
+        previewParams.targetLevel = 2;
+        preview = EquipmentTuningService.execute("preview", previewParams);
+        var snapProbe:Object = installBagPublishProbe("bag_snap_null");
+        var inventoryAuthority:Object = InventoryPanelService;
+        var originalBuildExternalSnapshot:Function = inventoryAuthority.buildExternalSnapshot;
+        inventoryAuthority.buildExternalSnapshot = function():Object { return null; };
+        commitParams = params("bag-proof-snap-null");
+        commitParams.expectedTuningToken = preview.tuningToken;
+        var snapFailed:Object = null;
+        try {
+            snapFailed = EquipmentTuningService.execute("commit", commitParams);
+        } finally {
+            inventoryAuthority.buildExternalSnapshot = originalBuildExternalSnapshot;
+            removeBagPublishProbe(snapProbe);
+        }
+        var snapReplay:Object = EquipmentTuningService.execute("commit", commitParams);
+        var snapRecovery:Object = EquipmentTuningService.execute("snapshot", {
+            v:1, panelInstanceId:"test.panel", viewSessionId:"bag-proof-snap-null",
+            source:sourceRef(inventorySnapshot(), 0)
+        });
+        assertTrue(!snapFailed.success && snapFailed.error == "needs_reconcile"
+                && snapFailed.writeEpoch == 0
+                && snapProbe.bagPublishes == 0 && snapProbe.materialPublishes == 0
+                && _root.存档系统.dirtyMark == false
+                && _root._saveExt.成就.cnt["装备强化次数"] == undefined
+                && item.value === beforeValue && item.lastUpdate == beforeTime
+                && bag.getMutationRevision() == beforeBagRev
+                && materials.getValue("强化石") == 10
+                && materials.getMutationRevision() == beforeMatRev
+                && snapReplay.error == "token_invalid"
+                && snapRecovery.success,
+            "写后 external snapshot 缺失触发双回滚与 needs_reconcile，零副作用且不泄漏 _busy");
+
+        // 3. 写后证明阶段材料 rollback 失败：各自独立 try/catch 仍先恢复背包，保留材料现状与 needs_reconcile，零副作用。
+        resetFixture();
+        item = equipment("测试手枪A", 1, []);
+        bag = _root.物品栏.背包;
+        materials = _root.收集品栏.材料;
+        bag.add(0, item);
+        materials.add("强化石", 10);
+        beforeValue = item.value;
+        beforeTime = item.lastUpdate;
+        beforeBagRev = bag.getMutationRevision();
+        beforeMatRev = materials.getMutationRevision();
+        lease = sourceRef(inventorySnapshot(), 0);
+        previewParams = params("bag-proof-mat-rb-fail");
+        previewParams.operation = "enhance";
+        previewParams.source = lease;
+        previewParams.targetLevel = 2;
+        preview = EquipmentTuningService.execute("preview", previewParams);
+        var matRbProbe:Object = installBagPublishProbe("bag_mat_rb_fail");
+        var originalMatRollback:Function = materials.rollbackTransactionDeltas;
+        materials.rollbackTransactionDeltas = function(receipt:Object):Boolean { return false; };
+        EquipmentTuningService.testOnlyFailNextSerialization();
+        commitParams = params("bag-proof-mat-rb-fail");
+        commitParams.expectedTuningToken = preview.tuningToken;
+        var matRbFailed:Object = null;
+        try {
+            matRbFailed = EquipmentTuningService.execute("commit", commitParams);
+        } finally {
+            materials.rollbackTransactionDeltas = originalMatRollback;
+            removeBagPublishProbe(matRbProbe);
+        }
+        var matRbReplay:Object = EquipmentTuningService.execute("commit", commitParams);
+        var matRbSnap:Object = EquipmentTuningService.execute("snapshot", {
+            v:1, panelInstanceId:"test.panel", viewSessionId:"bag-proof-mat-rb-fail",
+            source:sourceRef(inventorySnapshot(), 0)
+        });
+        assertTrue(!matRbFailed.success && matRbFailed.error == "needs_reconcile"
+                && matRbFailed.writeEpoch == 0
+                && matRbProbe.bagPublishes == 0 && matRbProbe.materialPublishes == 0
+                && _root.存档系统.dirtyMark == false
+                && _root._saveExt.成就.cnt["装备强化次数"] == undefined
+                && item.value === beforeValue && item.lastUpdate == beforeTime
+                && bag.getMutationRevision() == beforeBagRev
+                && materials.getValue("强化石") == 9
+                && materials.getMutationRevision() == beforeMatRev + 1
+                && matRbReplay.error == "token_invalid"
+                && matRbSnap.success,
+            "写后证明回滚中材料补偿被拒仍先恢复背包，保留材料现状与 needs_reconcile 且零副作用");
+
+        // 4. 背包侧写入自身失败区分干净回滚（commit_failed）与异常未确认（needs_reconcile）。
+        for (var bagFailMode:Number = 0; bagFailMode < 2; bagFailMode++) {
+            resetFixture();
+            item = equipment("测试手枪A", 1, []);
+            bag = _root.物品栏.背包;
+            materials = _root.收集品栏.材料;
+            bag.add(0, item);
+            materials.add("强化石", 10);
+            beforeValue = item.value;
+            beforeBagRev = bag.getMutationRevision();
+            beforeMatRev = materials.getMutationRevision();
+            lease = sourceRef(inventorySnapshot(), 0);
+            previewParams = params("bag-commit-mode-" + bagFailMode);
+            previewParams.operation = "enhance";
+            previewParams.source = lease;
+            previewParams.targetLevel = 2;
+            preview = EquipmentTuningService.execute("preview", previewParams);
+            var modeProbe:Object = installBagPublishProbe("bag_mode_" + bagFailMode);
+            var originalBagApply:Function = bag.transactionApplyValueChangesWithReceipt;
+            if (bagFailMode == 0) {
+                bag.transactionApplyValueChangesWithReceipt = function():Object {
+                    return {success:false, rollbackComplete:true};
+                };
+            } else {
+                bag.transactionApplyValueChangesWithReceipt = function():Object {
+                    throw new Error("injected bag apply throw");
+                    return null;
+                };
+            }
+            commitParams = params("bag-commit-mode-" + bagFailMode);
+            commitParams.expectedTuningToken = preview.tuningToken;
+            var bagFailRes:Object = null;
+            try {
+                bagFailRes = EquipmentTuningService.execute("commit", commitParams);
+            } finally {
+                bag.transactionApplyValueChangesWithReceipt = originalBagApply;
+                removeBagPublishProbe(modeProbe);
+            }
+            var modeReplay:Object = EquipmentTuningService.execute("commit", commitParams);
+            assertTrue(!bagFailRes.success
+                    && bagFailRes.error == (bagFailMode == 0 ? "commit_failed" : "needs_reconcile")
+                    && bagFailRes.writeEpoch == 0
+                    && modeReplay.error == "token_invalid"
+                    && item.value === beforeValue
+                    && bag.getMutationRevision() == beforeBagRev
+                    && materials.getValue("强化石") == 10
+                    && materials.getMutationRevision() == beforeMatRev
+                    && _root.存档系统.dirtyMark == false
+                    && modeProbe.bagPublishes == 0 && modeProbe.materialPublishes == 0,
+                "背包写自身失败语义区分干净拒写与异常未知，零写零副作用且不可重放：" + bagFailMode);
+        }
+
+        // 5. 提交证明完成后，观察者（成就/事务投影/失效通知/背包监听器）全部抛错时仍成功返回完整快照与新 lease，
+        // 清理 EventBus 派发深度与事务栈，且下一次操作可衔接。
+        resetFixture();
+        EventBus.getInstance().forceResetDispatchDepth();
+        item = equipment("测试手枪A", 1, []);
+        bag = _root.物品栏.背包;
+        materials = _root.收集品栏.材料;
+        bag.add(0, item);
+        materials.add("强化石", 10);
+        lease = sourceRef(inventorySnapshot(), 0);
+        previewParams = params("bag-observer-faults");
+        previewParams.operation = "enhance";
+        previewParams.source = lease;
+        previewParams.targetLevel = 2;
+        preview = EquipmentTuningService.execute("preview", previewParams);
+        var obsHolder:MovieClip = _root.createEmptyMovieClip(
+            "__tuningBagObserverFault", _root.getNextHighestDepth());
+        var obsDispatcher:LifecycleEventDispatcher =
+            new LifecycleEventDispatcher(obsHolder);
+        var bagDispatchSeen:Number = 0;
+        obsDispatcher.subscribe("ItemValueChanged", function():Void {
+            bagDispatchSeen++;
+            throw "injected_bag_listener_fault";
+        });
+        bag.setDispatcher(obsDispatcher);
+        var metricsClass:Object = AchievementMetrics;
+        var originalRecordMetric:Function = metricsClass.record;
+        metricsClass.record = function():Void {
+            throw new Error("injected_achievement_fault");
+        };
+        inventoryAuthority = InventoryPanelService;
+        var originalInvalidate:Function = inventoryAuthority.invalidateExternalSlot;
+        inventoryAuthority.invalidateExternalSlot = function():Void {
+            throw new Error("injected_invalidation_fault");
+        };
+        PlayerAssetTransaction.setTestSink(function():Void {
+            throw new Error("injected_asset_sink_fault");
+        });
+        commitParams = params("bag-observer-faults");
+        commitParams.expectedTuningToken = preview.tuningToken;
+        var obsCommit:Object = null;
+        try {
+            obsCommit = EquipmentTuningService.execute("commit", commitParams);
+        } finally {
+            metricsClass.record = originalRecordMetric;
+            inventoryAuthority.invalidateExternalSlot = originalInvalidate;
+            PlayerAssetTransaction.setTestSink(null);
+            bag.setDispatcher(null);
+            obsHolder.removeMovieClip();
+        }
+        var obsCommittedLevel:Number = item.value.level;
+        var obsCommittedStone:Number = materials.getValue("强化石");
+        var obsCommittedDirty:Boolean = (_root.存档系统.dirtyMark == true);
+        var obsCommittedDepth:Number = Number(EventBus.getInstance()["_dispatchDepth"]);
+        var obsReplay:Object = EquipmentTuningService.execute("commit", commitParams);
+        var nextPreviewParams:Object = params("bag-observer-follow");
+        nextPreviewParams.operation = "enhance";
+        nextPreviewParams.source = obsCommit.snapshot.source;
+        nextPreviewParams.targetLevel = 3;
+        var nextPreview:Object = EquipmentTuningService.execute("preview", nextPreviewParams);
+        var nextCommitParams:Object = params("bag-observer-follow");
+        nextCommitParams.expectedTuningToken = nextPreview.tuningToken;
+        var nextCommit:Object = EquipmentTuningService.execute("commit", nextCommitParams);
+        assertTrue(obsCommit.success && obsCommittedLevel == 2
+                && obsCommittedStone == 9
+                && obsCommit.writeEpoch == 1 && obsCommittedDirty
+                && obsCommit.snapshot != null && obsCommit.snapshot.source.expectedLease != undefined
+                && obsCommit.snapshot.source.expectedLease != lease.expectedLease
+                && bagDispatchSeen == 1
+                && obsCommittedDepth == 0
+                && obsReplay.error == "token_invalid"
+                && nextPreview.success && nextCommit.success
+                && item.value.level == 3 && materials.getValue("强化石") == 7
+                && _root.存档系统.dirtyMark == true
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "写后证明通过后多个可选观察者连续抛错不阻断提交、新 lease 生效且不泄漏 _busy/EventBus");
+        EventBus.getInstance().forceResetDispatchDepth();
+
+        // 6. 背包双槽强化转换（convert）在写后序列化失败时，双槽装备与 revision 均回滚并要求对账。
+        resetFixture();
+        var srcItem:BaseItem = equipment("测试手枪A", 1, []);
+        var dstItem:BaseItem = equipment("测试手枪B", 5, []);
+        bag = _root.物品栏.背包;
+        bag.add(0, srcItem);
+        bag.add(1, dstItem);
+        var srcBeforeValue:Object = srcItem.value;
+        var dstBeforeValue:Object = dstItem.value;
+        var srcBeforeTime:Number = srcItem.lastUpdate;
+        var dstBeforeTime:Number = dstItem.lastUpdate;
+        beforeBagRev = bag.getMutationRevision();
+        var convertInv:Object = inventorySnapshot();
+        var srcLease:Object = sourceRef(convertInv, 0);
+        var dstLease:Object = sourceRef(convertInv, 1);
+        var convertPreviewParams:Object = params("bag-convert-ser");
+        convertPreviewParams.operation = "convert";
+        convertPreviewParams.source = srcLease;
+        convertPreviewParams.target = dstLease;
+        var convertPreview:Object = EquipmentTuningService.execute("preview", convertPreviewParams);
+        var convProbe:Object = installBagPublishProbe("bag_conv_ser");
+        EquipmentTuningService.testOnlyFailNextSerialization();
+        var convertCommitParams:Object = params("bag-convert-ser");
+        convertCommitParams.expectedTuningToken = convertPreview.tuningToken;
+        var convertFailed:Object = null;
+        try {
+            convertFailed = EquipmentTuningService.execute("commit", convertCommitParams);
+        } finally {
+            removeBagPublishProbe(convProbe);
+        }
+        var dirtyAfterConvertFail:Boolean = (_root.存档系统.dirtyMark == true);
+        var revAfterConvertFail:Number = bag.getMutationRevision();
+        var srcLevelAfterFail:Number = srcItem.value.level;
+        var dstLevelAfterFail:Number = dstItem.value.level;
+        var srcRefRestored:Boolean = (srcItem.value === srcBeforeValue && dstItem.value === dstBeforeValue);
+        var convertReplay:Object = EquipmentTuningService.execute("commit", convertCommitParams);
+        var convertStale:Object = EquipmentTuningService.execute("snapshot", {
+            v:1, panelInstanceId:"test.panel", viewSessionId:"bag-convert-ser", source:srcLease
+        });
+        var convertNext:Object = webCommit("bag-convert-ser-next", "convert", 0, 1, "", undefined, "");
+        assertTrue(!convertFailed.success && convertFailed.error == "needs_reconcile"
+                && convertFailed.writeEpoch == 0
+                && convProbe.bagPublishes == 0
+                && !dirtyAfterConvertFail
+                && revAfterConvertFail == beforeBagRev
+                && srcLevelAfterFail == 1 && dstLevelAfterFail == 5
+                && srcRefRestored
+                && convertReplay.error == "token_invalid"
+                && !convertStale.success && convertStale.error == "stale_state"
+                && convertNext.commit.success
+                && _root.存档系统.dirtyMark == true
+                && srcItem.value.level == 5 && dstItem.value.level == 1
+                && bag.getMutationRevision() == beforeBagRev + 1
+                && srcBeforeValue.level == 1 && dstBeforeValue.level == 5
+                && srcBeforeTime != srcItem.lastUpdate && dstBeforeTime != dstItem.lastUpdate,
+            "背包双槽 convert 写后序列化失败完整回滚双槽、零副作用，fresh 对账后再次转换成功");
     }
 
     private static function testRequestCalculationReuse():Void {

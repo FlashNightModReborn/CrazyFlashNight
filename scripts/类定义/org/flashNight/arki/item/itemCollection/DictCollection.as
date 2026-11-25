@@ -108,7 +108,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
      */
     public function transactionApplyDeltas(deltas:Object):Object {
         if (rejectsExitWrite()) return {success:false, rollbackComplete:true};
-        if (!canApplyTransactionDeltas(deltas)) return {success: false};
+        if (!canApplyTransactionDeltas(deltas)) return {success:false, rollbackComplete:true};
         var changes:Array = [];
         var beforeRevision:Number = getMutationRevision();
         for (var key:String in deltas) {

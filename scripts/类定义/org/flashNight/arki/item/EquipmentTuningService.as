@@ -175,24 +175,30 @@ class org.flashNight.arki.item.EquipmentTuningService {
         }
 
         _busy = true;
-        var source:Object = revalidateSlot(plan.source);
-        if (!source.success) {
+        var commitResult:Object = null;
+        try {
+            commitResult = executeCommitBody(plan, token, transactionId);
+        } finally {
             _busy = false;
-            return commitFail("stale_state", transactionId);
         }
+        return commitResult;
+    }
+
+    private static function executeCommitBody(
+        plan:Object,
+        token:String,
+        transactionId:String):Object {
+        var source:Object = revalidateSlot(plan.source);
+        if (!source.success) return commitFail("stale_state", transactionId);
         var target:Object = null;
         if (plan.target != null) {
             target = revalidateSlot(plan.target);
-            if (!target.success) {
-                _busy = false;
-                return commitFail("stale_state", transactionId);
-            }
+            if (!target.success) return commitFail("stale_state", transactionId);
         }
 
         var fresh:Object = buildPlan(plan.operation, source, target, plan.candidateName,
                                      plan.replaceCandidateName, plan.targetLevel);
         if (!fresh.success || !plansEqual(plan, fresh)) {
-            _busy = false;
             return commitFail("stale_state", transactionId);
         }
         fresh.tuningToken = token;
@@ -203,7 +209,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
             var noOpInventory:Object = source.sourceKind == "inventory"
                 ? InventoryPanelService.buildExternalSnapshot("背包", 0, 50)
                 : null;
-            _busy = false;
             return {
                 success:true, transactionId:transactionId, tuningToken:token,
                 canCommit:false, operation:fresh.operation, noOp:true,
@@ -217,7 +222,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
 
         var materials:Object = getMaterialCollection();
         if (materials == null || !materials.canApplyTransactionDeltas(fresh.materialDeltas)) {
-            _busy = false;
             return commitFail("stale_state", transactionId);
         }
 
@@ -236,21 +240,41 @@ class org.flashNight.arki.item.EquipmentTuningService {
         }
 
         if (source.sourceKind == "loadout") {
-            var wornResult:Object = commitWornPlan(
+            return commitWornPlan(
                 fresh, source, valueChanges, materials,
                 timestamp, token, transactionId);
-            _busy = false;
-            return wornResult;
         }
+        return commitBagPlan(
+            fresh, source, valueChanges, materials,
+            timestamp, token, transactionId);
+    }
 
+    /**
+     * 背包容器跨资源调制提交。装备值与材料先以可回滚 receipt 写入，
+     * 再构造写后完整快照并校验可序列化，最后才推进写 epoch、dirty 与事件/统计。
+     */
+    private static function commitBagPlan(
+        fresh:Object,
+        source:Object,
+        valueChanges:Array,
+        materials:Object,
+        timestamp:Number,
+        token:String,
+        transactionId:String):Object {
         var bag:ArrayInventory = ArrayInventory(source.inventory);
+        if (bag == null
+                || typeof bag.canApplyValueTransaction != "function"
+                || typeof bag.transactionApplyValueChangesWithReceipt != "function"
+                || typeof bag.rollbackValueTransaction != "function"
+                || typeof bag.publishTransactionChange != "function"
+                || typeof materials.rollbackTransactionDeltas != "function") {
+            return commitFail("service_not_ready", transactionId);
+        }
         if (!bag.canApplyValueTransaction(valueChanges)) {
-            _busy = false;
             return commitFail("stale_state", transactionId);
         }
         if (_testFailNext) {
             _testFailNext = false;
-            _busy = false;
             return commitFail("commit_failed", transactionId);
         }
 
@@ -259,11 +283,13 @@ class org.flashNight.arki.item.EquipmentTuningService {
         try {
             bagCommit = bag.transactionApplyValueChangesWithReceipt(valueChanges);
         } catch (bagCommitError) {
-            bagCommit = null;
+            bagCommit = {success:false, rollbackComplete:false};
         }
         if (bagCommit == null || bagCommit.success !== true) {
-            _busy = false;
-            return commitFail("needs_reconcile", transactionId);
+            return commitFail(
+                bagCommit != null && bagCommit.rollbackComplete === true
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
         }
         var materialCommit:Object = null;
         try {
@@ -274,7 +300,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
                 materialCommit = materials.transactionApplyDeltas(fresh.materialDeltas);
             }
         } catch (materialCommitError) {
-            materialCommit = null;
+            materialCommit = {success:false, rollbackComplete:false};
         }
         if (materialCommit == null || materialCommit.success !== true) {
             var bagRestored:Boolean = false;
@@ -283,16 +309,86 @@ class org.flashNight.arki.item.EquipmentTuningService {
             } catch (bagRollbackError) {
                 bagRestored = false;
             }
-            _busy = false;
-            return commitFail(bagRestored && materialCommit != null
-                && materialCommit.rollbackComplete === true
-                    ? "commit_failed" : "needs_reconcile", transactionId);
+            return commitFail(
+                bagRestored && materialCommit != null
+                    && materialCommit.rollbackComplete === true
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
+        }
+
+        // 写后证明先失效受影响旧槽位缓存再重签 lease；一旦触及外部 lease，
+        // 哪怕后续完整回滚 raw 容器，也必须以 needs_reconcile 要求 Web 重新取证。
+        var leaseExposed:Boolean = false;
+        var i:Number;
+        for (i = 0; i < fresh.affectedSlots.length; i++) {
+            try {
+                leaseExposed = true;
+                InventoryPanelService.invalidateExternalSlot(
+                    "背包", Number(fresh.affectedSlots[i]));
+            } catch (bagInvalidationError) {
+                // 失效异常只记录；revision 已轮换，不阻断后续完整证明。
+                trace("[EquipmentTuningService] post-commit invalidation failed: "
+                    + bagInvalidationError);
+            }
+        }
+
+        var inventorySnapshot:Object = null;
+        var newSourceRef:Object = null;
+        var committedSnapshot:Object = null;
+        var committedAfter:Object = null;
+        var response:Object = null;
+        try {
+            leaseExposed = true;
+            inventorySnapshot =
+                InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
+            newSourceRef = refFromInventorySnapshot(inventorySnapshot, source.slot);
+            committedSnapshot = buildTuningSnapshot(
+                source, newSourceRef, fresh.materials);
+            committedAfter = buildCommittedAfter(fresh, timestamp, inventorySnapshot);
+            response = {
+                success:true, transactionId:transactionId, tuningToken:token,
+                canCommit:false, operation:fresh.operation, noOp:false,
+                before:fresh.before, after:committedAfter,
+                materials:buildCommittedMaterials(fresh.materials),
+                removedMods:fresh.removedMods,
+                snapshot:committedSnapshot,
+                inventorySnapshots:inventorySnapshot == null ? [] : [inventorySnapshot]
+            };
+        } catch (bagProjectionError) {
+            response = null;
+        }
+        var targetProofOk:Boolean = fresh.target == null
+            || (committedAfter != null && committedAfter.target != null
+                && hasValidInventoryRef(committedAfter.target.source));
+        if (response == null || inventorySnapshot == null
+                || !hasValidInventoryRef(newSourceRef)
+                || committedSnapshot == null
+                || committedAfter == null || committedAfter.source == null
+                || !hasValidInventoryRef(committedAfter.source.source)
+                || !targetProofOk
+                || !commitProjectionSerializable(response)) {
+            var bagProofRollback:Boolean = rollbackBagRawCommit(
+                bag, bagCommit, materials, materialCommit);
+            invalidateBagSlotsBestEffort(fresh.affectedSlots);
+            return commitFail(
+                !leaseExposed && bagProofRollback
+                    ? "commit_failed" : "needs_reconcile",
+                transactionId);
         }
 
         _writeEpoch++;
-        markDirty();
-        publishCommittedMaterialEffects(
-            fresh, materialCommit, transactionId);
+        try {
+            markDirty();
+        } catch (bagDirtyError) {
+            trace("[EquipmentTuningService] post-commit dirty failed: " + bagDirtyError);
+        }
+        try {
+            publishCommittedMaterialEffects(
+                fresh, materialCommit, transactionId);
+        } catch (bagEffectProjectionError) {
+            trace("[EquipmentTuningService] post-commit material effect projection failed: "
+                + bagEffectProjectionError);
+        }
         try {
             if (fresh.achievementMetric != "") {
                 AchievementMetrics.record(fresh.achievementMetric, 1);
@@ -301,16 +397,6 @@ class org.flashNight.arki.item.EquipmentTuningService {
             // 装备/材料权威与 receipt 已提交；可选统计失败不得阻断失效广播和回包。
             trace("[EquipmentTuningService] post-commit achievement metric failed: "
                 + achievementMetricError);
-        }
-        for (i = 0; i < fresh.affectedSlots.length; i++) {
-            try {
-                InventoryPanelService.invalidateExternalSlot(
-                    "背包", Number(fresh.affectedSlots[i]));
-            } catch (bagInvalidationError) {
-                // 领域提交和 receipt 均已闭合；可选失效通知失败不阻断其余观察者与回包。
-                trace("[EquipmentTuningService] post-commit invalidation failed: "
-                    + bagInvalidationError);
-            }
         }
         var recoverMaterialDispatch:Function = null;
         try {
@@ -322,34 +408,19 @@ class org.flashNight.arki.item.EquipmentTuningService {
             trace("[EquipmentTuningService] post-commit material publish failed: "
                 + materialPublishError);
         }
-        for (i = 0; i < fresh.affectedSlots.length; i++) {
+        for (var j:Number = 0; j < fresh.affectedSlots.length; j++) {
             var recoverBagDispatch:Function = null;
             try {
                 recoverBagDispatch =
                     EventBus.getInstance().createDispatchRecoveryToken();
-                bag.publishTransactionChange(Number(fresh.affectedSlots[i]), "value");
+                bag.publishTransactionChange(Number(fresh.affectedSlots[j]), "value");
             } catch (bagPublishError) {
                 recoverCommittedDispatch(recoverBagDispatch);
                 trace("[EquipmentTuningService] post-commit bag publish failed: "
                     + bagPublishError);
             }
         }
-
-        var inventorySnapshot:Object = InventoryPanelService.buildExternalSnapshot("背包", 0, 50);
-        var newSourceRef:Object = refFromInventorySnapshot(inventorySnapshot, source.slot);
-        var committedSnapshot:Object = buildTuningSnapshot(
-            source, newSourceRef, fresh.materials);
-        var committedAfter:Object = buildCommittedAfter(fresh, timestamp, inventorySnapshot);
-        _busy = false;
-        return {
-            success:true, transactionId:transactionId, tuningToken:token,
-            canCommit:false, operation:fresh.operation, noOp:false,
-            before:fresh.before, after:committedAfter,
-            materials:buildCommittedMaterials(fresh.materials),
-            removedMods:fresh.removedMods,
-            snapshot:committedSnapshot,
-            inventorySnapshots:inventorySnapshot == null ? [] : [inventorySnapshot]
-        };
+        return response;
     }
 
     /**
@@ -784,8 +855,13 @@ class org.flashNight.arki.item.EquipmentTuningService {
         } catch (dirtyError) {
             // authority 已提交；dirty 写异常只允许由后续 reconcile/保存策略收敛。
         }
-        publishCommittedMaterialEffects(
-            plan, materialCommit, transactionId);
+        try {
+            publishCommittedMaterialEffects(
+                plan, materialCommit, transactionId);
+        } catch (wornEffectProjectionError) {
+            trace("[EquipmentTuningService] worn post-commit material effect projection failed: "
+                + wornEffectProjectionError);
+        }
         try {
             if (plan.achievementMetric != "") {
                 AchievementMetrics.record(
@@ -882,6 +958,49 @@ class org.flashNight.arki.item.EquipmentTuningService {
             equipmentRestored = false;
         }
         return materialRestored && equipmentRestored;
+    }
+
+    private static function rollbackBagRawCommit(
+        bag:ArrayInventory,
+        bagCommit:Object,
+        materials:Object,
+        materialCommit:Object):Boolean {
+        var materialRestored:Boolean = false;
+        var bagRestored:Boolean = false;
+        try {
+            materialRestored =
+                materials.rollbackTransactionDeltas(
+                    materialCommit) === true;
+        } catch (materialRollbackError) {
+            materialRestored = false;
+        }
+        try {
+            bagRestored =
+                bag.rollbackValueTransaction(bagCommit) === true;
+        } catch (bagRollbackError) {
+            bagRestored = false;
+        }
+        return materialRestored && bagRestored;
+    }
+
+    private static function hasValidInventoryRef(ref:Object):Boolean {
+        if (ref == null || ref.sourceKind != "inventory") return false;
+        if (typeof ref.expectedLease != "string") return false;
+        var lease:String = String(ref.expectedLease);
+        return lease.length > 0 && lease != "undefined";
+    }
+
+    private static function invalidateBagSlotsBestEffort(
+        affectedSlots:Array):Void {
+        if (!(affectedSlots instanceof Array)) return;
+        for (var i:Number = 0; i < affectedSlots.length; i++) {
+            try {
+                InventoryPanelService.invalidateExternalSlot(
+                    "背包", Number(affectedSlots[i]));
+            } catch (invalidationError) {
+                // 回滚兜底清 lease 只尽最大努力，不掩盖原始 needs_reconcile。
+            }
+        }
     }
 
     private static function commitProjectionSerializable(
