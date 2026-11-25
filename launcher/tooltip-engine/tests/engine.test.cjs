@@ -201,6 +201,26 @@ test('drug effects are projected normalized records, with consumer-specific buff
     assert.ok(!docText(native.document).includes('hidden'));
 });
 
+test('purify effect tooltips distinguish self and group targets', () => {
+    const c = catalog();
+    const selfDrug = E.buildProjection(input(c, 'drug', {
+        projection: { drugEffects: [{ type: 'purify', value: 50, scaleWithAlchemy: true }] }
+    }), c);
+    assert.ok(selfDrug.introHTML.includes('净化度：50'));
+    assert.ok(!selfDrug.introHTML.includes('群体净化度'));
+
+    const groupMedkit = E.buildProjection(input(c, 'drug', {
+        projection: {
+            drugEffects: [
+                { type: 'heal', hp: 1500, mp: 0, target: 'group', scaleWithAlchemy: true },
+                { type: 'purify', value: 15, target: 'group', scaleWithAlchemy: true }
+            ]
+        }
+    }), c);
+    assert.ok(groupMedkit.introHTML.includes('群体净化度：15'));
+    assert.equal((groupMedkit.introHTML.match(/全体友方有效/g) || []).length, 1);
+});
+
 test('authored restoreToughness effects retain their full-restoration line in both consumers', () => {
     const c = catalog();
     for (const presentation of ['inventory','web']) {

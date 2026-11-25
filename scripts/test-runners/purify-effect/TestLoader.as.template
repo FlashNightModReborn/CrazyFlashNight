@@ -1,0 +1,4 @@
+﻿// Issue #281 净化机制与 Buff 极性 focused runner；BOM 必须保留。
+trace("FocusedTestRunId purify-effect Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.drug.PurifyEffectTest.runAllTests();
+trace("FocusedTestRunId purify-effect Complete: __FOCUSED_RUN_ID__");

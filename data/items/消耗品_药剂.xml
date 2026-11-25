@@ -304,10 +304,11 @@
     <use>药剂</use>
     <price>5000</price>
     <description>A兵团配发的战队医疗箱,存有大量急救药品。
-    似乎是高等级医学知识和重化工业的结晶,利用末日后仅有的生产力让战队伤员&lt;font color="#00ff00"&gt;快速恢复&lt;/font&gt;。</description>
+    似乎是高等级医学知识和重化工业的结晶,利用末日后仅有的生产力让战队伤员&lt;font color="#00ff00"&gt;快速恢复&lt;/font&gt;,并附带一定的群体净化效果。</description>
     <data>
       <effects>
         <effect type="heal" hp="1500" mp="0" target="group" scaleWithAlchemy="true" />
+        <effect type="purify" value="15" target="group" scaleWithAlchemy="true" />
       </effects>
     </data>
     <balance>
@@ -317,15 +318,16 @@
       <authorityStatus>workbook-registration-pending</authorityStatus>
       <sourceLevel>30</sourceLevel>
       <domain>medical</domain>
-      <balanceMode>formula</balanceMode>
+      <balanceMode>exception</balanceMode>
       <status>proposed</status>
-      <currentValue>3000</currentValue>
+      <currentValue>3900</currentValue>
       <valueCap>3100</valueCap>
-      <formulaPrice>5100</formulaPrice>
+      <formulaPrice>6900</formulaPrice>
       <marketPrice>5000</marketPrice>
-      <inputDigest>fnv1a32:6254a5f7</inputDigest>
-      <sourceDigest>sha256:5d2e5acd8b7a5a6c0a97cfbd83794030398d218acc311f486ddcb1bb82786db2</sourceDigest>
+      <inputDigest>fnv1a32:48898a6a</inputDigest>
+      <sourceDigest>sha256:795ccf420f81573be1c060e1eb837dc5768d4c08431d427a0ca39e31dbe87b0f</sourceDigest>
       <auditRef>potion:战队药箱</auditRef>
+      <exceptionCode>group-medkit-purify</exceptionCode>
     </balance>
   </item>
   <item>

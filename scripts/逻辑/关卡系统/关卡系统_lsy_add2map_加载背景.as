@@ -216,6 +216,7 @@ _root.配置场景环境信息 = function(){
 		天气系统.visualCondition = "光照";
 		天气系统.maxLight = 9;
 		天气系统.minLight = 0;
+		天气系统.resetTerrainDamageFactor(1);
 		SceneManager.getInstance().addBodyLayers(2880, 1000);
 		// 无环境信息时用 EnvironmentConfig 默认值标定
 		DepthManager.instance.calibrate(330, 600);
@@ -240,6 +241,8 @@ _root.加载场景背景 = function (动画名){
 	if(环境配置) {
 		WeatherSystem.getInstance().configureEnvironment(环境配置);
 		背景层.已更新环境配置 = true;
+	}else{
+		WeatherSystem.getInstance().resetTerrainDamageFactor(1);
 	}
 	游戏世界.场景背景url = org.flashNight.arki.ui.SceneTransitionService.resolveBackgroundUrl(动画名);
 	_global.ASSetPropFlags(游戏世界, ["场景背景url"], 1, false);

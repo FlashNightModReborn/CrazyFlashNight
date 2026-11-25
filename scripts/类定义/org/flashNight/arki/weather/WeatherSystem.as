@@ -154,6 +154,8 @@ class org.flashNight.arki.weather.WeatherSystem {
         this.spaceCondition = "室外";
         this.visualCondition = "光照";
 
+        // ---- 地形伤害系数默认值 ----
+        this.resetTerrainDamageFactor(1);
     }
 
     // ==================== 初始化 ====================
@@ -341,6 +343,26 @@ class org.flashNight.arki.weather.WeatherSystem {
     }
 
     /**
+     * 初始化/重置全局地形伤害系数（默认值 1）。
+     *
+     * @param initialValue 初始地形伤害系数；非正数或 NaN 时回退为 1
+     */
+    public function resetTerrainDamageFactor(initialValue:Number):Void {
+        var v:Number = Number(initialValue);
+        if (isNaN(v) || !(v > 0)) v = 1;
+        _root.地形伤害系数 = v;
+    }
+
+    /**
+     * 获取当前全局地形伤害系数；未初始化或非法时返回默认 1。
+     */
+    public function getTerrainDamageFactor():Number {
+        var v:Number = Number(_root.地形伤害系数);
+        if (isNaN(v) || !(v > 0)) return 1;
+        return v;
+    }
+
+    /**
      * 配置当前环境（场景加载时调用）。
      * @param envInfo 环境信息对象
      */
@@ -349,6 +371,9 @@ class org.flashNight.arki.weather.WeatherSystem {
         if (override != null) {
             envInfo = override;
         }
+        var initTerrainCoeff:Number = (envInfo != null && envInfo.地形伤害系数 != undefined)
+            ? Number(envInfo.地形伤害系数) : 1;
+        this.resetTerrainDamageFactor(initTerrainCoeff);
         if (envInfo.天气情况) this.weatherCondition = envInfo.天气情况;
         if (envInfo.空间情况) this.spaceCondition = envInfo.空间情况;
         if (envInfo.视觉情况) this.visualCondition = envInfo.视觉情况;

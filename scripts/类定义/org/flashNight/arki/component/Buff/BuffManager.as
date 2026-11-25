@@ -1780,6 +1780,103 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
 
     /**
+     * 按净化强度减轻或清除负面 Buff（debuff）
+     *
+     * - 命中规则：外部 ID 匹配指定前缀之一，或（启用极性匹配时）MetaBuff.hudInfo.polarity == "harm"
+     * - 有限时 MetaBuff：按净化值缩短剩余帧数；残余 <= 15 帧（约 0.5 秒）或归零时加入待移除队列
+     * - 无计时器的常驻 MetaBuff 或匹配前缀的独立 PodBuff：value >= dispelThreshold（<= 0 时不设门槛）直接清除
+     *
+     * 注意：遵循 [Phase A / P1-3] 契约，不在此方法内部调用 update(0)，避免重入风险；
+     * 若调用方在 update() 外部需要立即触发属性与回调生效，请在返回 removed > 0 后自行调用 update(0)。
+     *
+     * @param value             净化强度（必须 > 0）
+     * @param prefixes          可匹配的外部 ID 前缀数组（如 ["debuff_"]）
+     * @param matchHarmPolarity 是否同时匹配 hudInfo.polarity == "harm" 的负面 Buff
+     * @param dispelThreshold   无计时器常驻 debuff 的直接驱散阈值（默认 50）
+     * @return Object           {removed: Number, reduced: Number, affected: Number}
+     */
+    public function purifyDebuffs(value:Number, prefixes:Array, matchHarmPolarity:Boolean, dispelThreshold:Number):Object {
+        if (isNaN(value) || !(value > 0)) {
+            return {removed: 0, reduced: 0, affected: 0};
+        }
+        if (isNaN(dispelThreshold)) dispelThreshold = 50;
+
+        var hasPrefixes:Boolean = (prefixes != null && prefixes.length > 0);
+        var useHarm:Boolean = (matchHarmPolarity === true);
+        if (!hasPrefixes && !useHarm) {
+            return {removed: 0, reduced: 0, affected: 0};
+        }
+
+        var toRemove:Array = [];
+        var reduced:Number = 0;
+
+        // [Phase B] 只遍历 _byExternalId，避免触碰 MetaBuff 注入的内部子 PodBuff
+        for (var id:String in this._byExternalId) {
+            var buff:IBuff = this._byExternalId[id];
+            if (!buff || !buff.isActive()) continue;
+
+            var matched:Boolean = false;
+            if (hasPrefixes) {
+                for (var p:Number = 0; p < prefixes.length; p++) {
+                    var prefix:String = prefixes[p];
+                    if (prefix && prefix.length > 0 && id.indexOf(prefix) == 0) {
+                        matched = true;
+                        break;
+                    }
+                }
+            }
+            if (!matched && useHarm && !buff.isPod()) {
+                var hudInfo:Object = MetaBuff(buff).hudInfo;
+                if (hudInfo != null && hudInfo.polarity == "harm") {
+                    matched = true;
+                }
+            }
+            if (!matched) continue;
+
+            if (!buff.isPod()) {
+                var meta:MetaBuff = MetaBuff(buff);
+                var timer:TimeLimitComponent = meta.getPrimaryTimer();
+                if (timer != null) {
+                    var remain:Number = timer.getRemaining();
+                    if (!(remain > 0)) {
+                        toRemove.push(id);
+                    } else {
+                        var cutByRatio:Number = Math.ceil(remain * value / (value + 25));
+                        var cutByFlat:Number = Math.floor(value * 6);
+                        var cutFrames:Number = (cutByRatio > cutByFlat) ? cutByRatio : cutByFlat;
+                        var newRemain:Number = remain - cutFrames;
+                        if (!(newRemain > 15)) {
+                            toRemove.push(id);
+                        } else {
+                            timer.setRemaining(newRemain);
+                            reduced++;
+                        }
+                    }
+                    continue;
+                }
+            }
+
+            // 无计时器的常驻 MetaBuff 或匹配前缀的独立 PodBuff
+            if (!(dispelThreshold > 0) || value >= dispelThreshold) {
+                toRemove.push(id);
+            }
+        }
+
+        var removed:Number = 0;
+        for (var i:Number = 0; i < toRemove.length; i++) {
+            if (this.removeBuff(toRemove[i])) {
+                removed++;
+            }
+        }
+
+        if (removed > 0 || reduced > 0) {
+            this._markDirty();
+        }
+
+        return {removed: removed, reduced: reduced, affected: removed + reduced};
+    }
+
+    /**
      * 根据ID前缀批量获取Buff
      *
      * [Phase B] 只遍历_byExternalId，用户不应使用内部ID前缀

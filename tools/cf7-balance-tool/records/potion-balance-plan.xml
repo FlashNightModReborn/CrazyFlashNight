@@ -20,7 +20,7 @@
     <record itemName="肾上腺素" sourceFile="消耗品_药剂.xml" sourceLevel="5" domain="medical" balanceMode="formula" status="proposed" note="历史名称保留，现行为MP即时恢复" />
     <record itemName="加强抗生素药剂" sourceFile="消耗品_药剂.xml" sourceLevel="10" domain="medical" balanceMode="formula" status="proposed" />
     <record itemName="加强mp药剂" sourceFile="消耗品_药剂.xml" sourceLevel="10" domain="medical" balanceMode="formula" status="proposed" />
-    <record itemName="战队药箱" sourceFile="消耗品_药剂.xml" sourceLevel="30" domain="medical" balanceMode="formula" status="proposed" />
+    <record itemName="战队药箱" sourceFile="消耗品_药剂.xml" sourceLevel="30" domain="medical" balanceMode="exception" status="proposed" exceptionCode="group-medkit-purify" note="Issue #281 补充群体净化(15)，保留1500群体治疗不削弱" />
     <record itemName="大HP药剂" sourceFile="消耗品_药剂.xml" sourceLevel="15" domain="medical" balanceMode="formula" status="proposed" />
     <record itemName="大MP药剂" sourceFile="消耗品_药剂.xml" sourceLevel="15" domain="medical" balanceMode="formula" status="proposed" />
     <record itemName="净化药剂" sourceFile="消耗品_药剂.xml" sourceLevel="30" domain="medical" balanceMode="formula" status="proposed" />

@@ -2311,10 +2311,14 @@ var TooltipEngine;
         function build(ctx, effectData) {
             var result = [];
             var value = TooltipEngine.as2Number(effectData.value);
+            var target = effectData.target || "self";
             var scaleWithAlchemy = effectData.scaleWithAlchemy !== false;
             if (TooltipEngine.as2IsNaN(value) || TooltipEngine.as2LessEqual(value, 0))
                 return result;
-            result.push(TooltipEngine.TooltipConstants.LBL_CLEAN + "：" + value);
+            var label = TooltipEngine.as2Equal(target, "group")
+                ? (TooltipEngine.TooltipConstants.TXT_GROUP + TooltipEngine.TooltipConstants.LBL_CLEAN)
+                : TooltipEngine.TooltipConstants.LBL_CLEAN;
+            result.push(label + "：" + value);
             result.push(TooltipEngine.DrugTooltipUtil.alchemyTag(ctx, scaleWithAlchemy));
             result.push(TooltipEngine.DrugTooltipUtil.br(ctx));
             return result;
