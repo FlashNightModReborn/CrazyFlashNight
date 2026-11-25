@@ -3856,7 +3856,8 @@ class org.flashNight.neur.Server.SaveManager {
             {op:"shadow", slot:_root.savePath, data:dataJson}, null,
             function(resp:Object):Void {
                 sm.sendServerMessage("[SaveManager] shadow confirm: " + (resp.success == true));
-            }
+            },
+            undefined, true
         );
     }
 

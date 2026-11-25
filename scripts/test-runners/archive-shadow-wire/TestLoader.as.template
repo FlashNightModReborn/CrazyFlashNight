@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId archive-shadow-wire Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.Server.test.ArchiveShadowWireTest.runAllTests();
+trace("FocusedTestRunId archive-shadow-wire Complete: __FOCUSED_RUN_ID__");

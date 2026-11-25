@@ -120,7 +120,7 @@ try {
         'map-loot' { @{LootContainerServiceTest=198;LootMaterializationPlannerTest=12;StageRunSessionTest=920} }
         'lee-trial' { @{LeeAssaultRulesTest=39;LeeTrialTelemetryTest=5;SceneTransitionGuardHandoffTest=20} }
         'warlord-action-encounter' { @{ActionEncounterRunnerTest=97} }
-        'bookshelf' { @{BookRunRulesTest=59;BookshelfPanelServiceTest=109;BookIterationTest=22;BookComicServiceTest=40} }
+        'bookshelf' { @{BookRunRulesTest=224;BookshelfPanelServiceTest=128;BookIterationTest=22;BookComicServiceTest=48} }
     }
     foreach ($test in $counts.Keys) {
         if ([regex]::Matches($trace,('(?m)^'+$test+' Tests Passed: '+$counts[$test]+'\r?$')).Count -ne 1) { throw ('Native suite assertion count differs: '+$test) }

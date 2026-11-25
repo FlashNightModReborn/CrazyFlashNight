@@ -51,27 +51,42 @@ class org.flashNight.arki.scene.BookIterationTest {
             _root.兵种库[spec.Type] = {兵种名:"fixture",是否为敌人:true};
         }
         setupBoss(plan); frames(180);
-        check(_root.__bookSpawns.length == 0, "healthy boss does not frontload reinforcements");
-        _root.gameworld[plan.instanceName].hp = 70; frames(1);
-        check(_root.__bookSpawns.length == 1, "first HP threshold releases only one enemy");
-        frames(150);
-        check(_root.__bookSpawns.length == 1, "no simultaneous arrival during interval");
-        frames(1); frames(200);
-        check(_root.__bookSpawns.length == 2, "two live reinforcements block a third");
-        defeated(_root.__bookSpawns[0]); frames(1);
-        check(_root.__bookSpawns.length == 3, "defeated reinforcement frees a slot without reissuing it");
-        _root.gameworld[plan.instanceName].hp = 20; frames(200);
-        check(_root.__bookSpawns.length == 3, "crossing later phases queues rather than bursts");
-        _root.暂停 = true; defeated(_root.__bookSpawns[1]); frames(300);
-        check(_root.__bookSpawns.length == 3, "pause prevents scheduled reinforcement");
-        _root.暂停 = false; _root.gameworld.hero.hp = 0; frames(300);
-        check(_root.__bookSpawns.length == 3, "death pauses reinforcement before explicit revival");
+        var boss:MovieClip = _root.gameworld[plan.instanceName];
+        var spawns:Array = _root.__bookSpawns;
+        var firstRanged:String = plan.groups[0].enemies[0].InstanceName;
+        var nextRanged:String = plan.groups[0].enemies[1].InstanceName;
+        var firstMelee:String = plan.groups[1].enemies[1].InstanceName;
+        var nextMelee:String = plan.groups[2].enemies[0].InstanceName;
+        check(spawns.length == 0, "healthy boss does not frontload reinforcements");
+        boss.hp = 70; frames(1);
+        check(spawns.length == 1 && spawns[0] == firstRanged, "first HP threshold releases only one enemy");
+
+        // 75% 组全是远程，50% 组才有首名近战。让它在冷却期间入队。
+        boss.hp = 45; frames(plan.intervalFrames);
+        check(spawns.length == 1, "no eligible reinforcement arrives during the interval");
+        frames(1);
+        // 25% 组再加入可出场的近战，冷却结束后才能独立检验并存上限。
+        boss.hp = 20; frames(1);
+        check(spawns.length == 2 && spawns[1] == firstMelee,
+            "later phases queue without bursting and the second slot obeys the ranged cap");
+        frames(plan.intervalFrames);
+        check(spawns.length == 2 && _root.gameworld[firstRanged].hp > 0 && _root.gameworld[firstMelee].hp > 0,
+            "two live reinforcements block an eligible third after the cooldown");
+        defeated(firstRanged); frames(1);
+        check(spawns.length == 3 && spawns[2] == nextRanged,
+            "defeated reinforcement frees a slot for the next queued enemy without reissuing it");
+
+        frames(plan.intervalFrames);
+        _root.暂停 = true; defeated(firstMelee); frames(2 * plan.intervalFrames);
+        check(spawns.length == 3, "pause prevents scheduled reinforcement");
+        _root.暂停 = false; _root.gameworld.hero.hp = 0; frames(2 * plan.intervalFrames);
+        check(spawns.length == 3, "death pauses reinforcement before explicit revival");
         _root.gameworld.hero.hp = 100; frames(1);
-        check(_root.__bookSpawns.length == 4, "revival resumes the same finite queue");
-        var active:String = _root.__bookSpawns[2];
+        check(spawns.length == 4 && spawns[3] == nextMelee, "revival resumes the same finite queue");
         defeated(plan.instanceName); frames(500);
+        _root.gameworld.dispatcher.publish("UnitDeath", plan.instanceName);
         check(_root.__bookClears == 1 && _root.__bookCloses == 1, "boss death finishes once and closes spawning");
-        check(_root.gameworld[active] == undefined && _root.__bookSpawns.length == 4,
+        check(_root.gameworld[nextRanged] == undefined && _root.gameworld[nextMelee] == undefined && spawns.length == 4,
             "live adds retire and queued later phases are cancelled");
         setupBoss(plan); _root.__bookDelayed = true;
         _root.gameworld[plan.instanceName].hp = 70; frames(1);

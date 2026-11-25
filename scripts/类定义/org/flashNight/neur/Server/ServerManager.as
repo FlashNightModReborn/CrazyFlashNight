@@ -1173,7 +1173,8 @@ class org.flashNight.neur.Server.ServerManager {
      * {success:false,error:"send failed"}，不留幽灵回调。
      */
     public function sendTaskWithCallback(taskType:String, payload:Object, extra:Object,
-                                          callback:Function, callbackTimeoutMs:Number):Void {
+                                          callback:Function, callbackTimeoutMs:Number,
+                                          trustedArchiveShadow:Boolean):Void {
         var callId:Number = _callIdCounter++;
         var message:Object = new Object();
         message.task = taskType;
@@ -1183,7 +1184,9 @@ class org.flashNight.neur.Server.ServerManager {
             message.extra = extra;
         }
 
-        var messageString:String = jsonParser.stringify(message);
+        var messageString:String = trustedArchiveShadow === true
+            ? org.flashNight.neur.Server.ArchiveShadowWire.stringify(jsonParser, message)
+            : jsonParser.stringify(message);
         if (messageString == null) {
             callback({success: false, error: "stringify failed"});
             return;

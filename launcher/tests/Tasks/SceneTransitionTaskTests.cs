@@ -251,6 +251,23 @@ namespace CF7Launcher.Tests.Tasks
         [Fact] public void LostShowStillAcceptsTombstone() {
             var r=new Rig();r.Task.Handle(Snapshot("hide",2));r.Task.Handle(Snapshot(revision:3));Assert.Null(r.Task.Current);
         }
+        [Fact] public void RepeatedTerminalHideRetiresOnceAndRecoversAfterReconnect() {
+            var r = new Rig();
+            r.Task.Handle(Snapshot());
+            r.Task.HandleTransportDisconnected();
+            var terminal = Snapshot("hide", 5);
+            for (int i = 0; i < 38; i++) r.Task.Handle(terminal);
+            Assert.True(r.Task.Connected);
+            Assert.Null(r.Task.Current);
+            Assert.Equal(1, r.Hidden);
+
+            r.Task.Handle(Snapshot(rid: "tr:2"));
+            r.Task.Handle(terminal);
+            Assert.Equal("tr:2", r.Task.Current.Value<string>("requestId"));
+            Assert.Equal(1, r.Hidden);
+            r.Task.Handle(Snapshot("hide", 2, "tr:2"));
+            Assert.Equal(2, r.Hidden);
+        }
         [Fact] public void SourceCannotRegressRevealedOrErrorPhase() {
             var r=new Rig();r.Task.Handle(Snapshot("reveal"));r.Task.Handle(Snapshot("loading",2));
             Assert.Equal("reveal",r.Task.Current.Value<string>("phase"));

@@ -26,6 +26,7 @@ org.flashNight.arki.scene.StageReturnFlow;
 org.flashNight.arki.scene.StageReturnSelection;
 LiteJSON;
 org.flashNight.arki.map.MapDomainBridge;
+org.flashNight.neur.Server.ArchiveShadowWire;
 org.flashNight.neur.Server.ServerManager;
 FastJSON;
 org.flashNight.neur.Server.Issue205SourceProbe;
