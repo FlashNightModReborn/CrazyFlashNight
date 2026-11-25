@@ -26,7 +26,7 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle ItemPage = new Rectangle(428, 379, 40, 22);
         internal static readonly Rectangle ItemPageLabel = new Rectangle(378, 381, 48, 20);
         internal static readonly Rectangle ItemPageTotal = new Rectangle(470, 381, 80, 20);
-        internal static readonly Rectangle ItemQuery = new Rectangle(433, 318, 92, 24);
+        internal static readonly Rectangle ItemQuery = new Rectangle(433, 313, 92, 24);
         internal static readonly Rectangle ItemQuantity = new Rectangle(461, 243, 75, 24);
         internal static readonly Rectangle ItemMinus = new Rectangle(547, 241, 24, 24);
         internal static readonly Rectangle ItemPlus = new Rectangle(592, 241, 24, 24);
@@ -55,8 +55,8 @@ namespace CF7Launcher.Guardian
         internal static readonly Rectangle UnitJump = new Rectangle(424, 375, 108, 30);
         internal static readonly Rectangle UnitGrid = new Rectangle(183, 139, 171, 225);
         internal static readonly Rectangle UnitFrame = new Rectangle(382, 138, 231, 138);
-        internal static readonly Rectangle UnitLevel = new Rectangle(444, 326, 35, 22);
-        internal static readonly Rectangle UnitCount = new Rectangle(444, 347, 35, 22);
+        internal static readonly Rectangle UnitLevel = new Rectangle(452, 324, 36, 22);
+        internal static readonly Rectangle UnitCount = new Rectangle(452, 348, 36, 22);
         internal static readonly Rectangle UnitLevelMinus = new Rectangle(431, 325, 20, 20);
         internal static readonly Rectangle UnitLevelPlus = new Rectangle(496, 327, 20, 20);
         internal static readonly Rectangle UnitCountMinus = new Rectangle(431, 346, 20, 20);

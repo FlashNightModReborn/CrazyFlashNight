@@ -141,6 +141,9 @@ namespace Launcher.Tests.Guardian
             Assert.True(ModifierNativeLayout.UnitJump.Right <= ModifierNativeLayout.UnitMerc.Left - 8);
             Assert.True(ModifierNativeLayout.UnitLevelPlus.Right <= ModifierNativeLayout.UnitSpawn.Left);
             Assert.Equal(ModifierNativeLayout.UnitLevel.Left, ModifierNativeLayout.UnitCount.Left);
+            Assert.True(ModifierNativeLayout.ItemQuery.Bottom <= 339);
+            Assert.True(ModifierNativeLayout.UnitLevel.Bottom < ModifierNativeLayout.UnitCount.Top);
+            Assert.True(ModifierNativeLayout.UnitLevel.Left >= 451 && ModifierNativeLayout.UnitLevel.Right <= 489);
         }
 
         [Fact]

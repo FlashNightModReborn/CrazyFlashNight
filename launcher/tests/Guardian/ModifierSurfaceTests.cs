@@ -274,6 +274,9 @@ namespace Launcher.Tests.Guardian
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
         private static void ExpectForeground(IntPtr handle, bool activate)
         {
             for (int i = 0; i < 20; i++)
@@ -438,6 +441,199 @@ namespace Launcher.Tests.Guardian
                 Assert.True(HasSoftGoldPixels(itemsFrame, new Rectangle(296, 403, 356, 20)));
                 Assert.False(HasSoftGoldPixels(itemsFrame, new Rectangle(656, 403, 120, 20)));
             }
+        }
+
+        [Fact]
+        public void SearchInputShowsPlaceholderOnlyWhenEmptyAndNotComposing()
+        {
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            string webRoot = Path.Combine(repository.FullName, "launcher", "web");
+
+            var sentFrames = new System.Collections.Generic.List<string>();
+            using var owner = new Form();
+            using var task = new ModifierTask(() => true, text => { sentFrames.Add(text); return true; });
+            using var surface = new ModifierNativeSurface(owner, webRoot, "owned", task);
+            surface.PrepareAsync().GetAwaiter().GetResult();
+            surface.ClientSize = new Size(1016, 550);
+            Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
+            Assert.True(surface.TryPost(new JObject
+            {
+                ["type"] = "panel_cmd",
+                ["panel"] = "modifier",
+                ["cmd"] = "open",
+                ["initData"] = new JObject
+                {
+                    ["panelInstanceId"] = "mod.panel.placeholder",
+                    ["token"] = "modifier.placeholder.1"
+                }
+            }.ToString()));
+            typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, new object[] { "items" });
+
+            var query = (ModifierTextBox)typeof(ModifierNativeSurface).GetField(
+                "_itemQuery", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface);
+            Assert.Equal("输入物品名", ModifierNativeSurface.SearchPlaceholder);
+            Assert.Equal("输入物品名", query.HintText);
+            Assert.Equal("", query.Text);
+            Assert.True(query.IsShowingHint);
+
+            query.Text = "药剂";
+            Assert.False(query.IsShowingHint);
+            query.Text = "";
+            Assert.True(query.IsShowingHint);
+
+            IntPtr handle = query.Handle;
+            Assert.NotEqual(IntPtr.Zero, handle);
+            SendMessage(handle, 0x010D, IntPtr.Zero, IntPtr.Zero);
+            Assert.Equal("", query.Text);
+            Assert.False(query.IsShowingHint);
+
+            SendMessage(handle, 0x010E, IntPtr.Zero, IntPtr.Zero);
+            Assert.True(query.IsShowingHint);
+
+            sentFrames.Clear();
+            typeof(ModifierNativeSurface).GetField("_itemLoading", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(surface, false);
+            typeof(ModifierNativeSurface).GetMethod("SearchItems", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(surface, null);
+            Assert.Single(sentFrames);
+            JObject payload = JObject.Parse(sentFrames[0].TrimEnd('\0'));
+            Assert.Equal("modifierItems", payload.Value<string>("action"));
+            Assert.Equal("", payload.Value<string>("query"));
+            surface.SuspendPanel();
+        }
+
+        [Fact]
+        public void AllModifierInputsRenderCrispWhiteOuterBordersWithoutOverlap()
+        {
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            string webRoot = Path.Combine(repository.FullName, "launcher", "web");
+
+            using var owner = new Form();
+            using var task = new ModifierTask(() => true, _ => true);
+            using var surface = new ModifierNativeSurface(owner, webRoot, "owned", task);
+            surface.PrepareAsync().GetAwaiter().GetResult();
+            surface.ClientSize = new Size(1016, 550);
+            Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
+
+            var overlay = (ModifierInputOverlay)typeof(ModifierNativeSurface).GetField(
+                "_inputOverlay", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface);
+            string[] fieldNames = { "_itemQuery", "_itemQuantity", "_itemPageInput", "_taskId", "_unitLevel", "_unitCount", "_unitPageInput" };
+            var allInputs = new ModifierTextBox[fieldNames.Length];
+            for (int i = 0; i < fieldNames.Length; i++)
+            {
+                var input = (ModifierTextBox)typeof(ModifierNativeSurface).GetField(
+                    fieldNames[i], BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface);
+                allInputs[i] = input;
+                Assert.Equal(BorderStyle.None, input.BorderStyle);
+                Assert.True(overlay.TryGetInputFrame(input, out Rectangle frame), $"Missing frame for {fieldNames[i]}");
+                Assert.True(frame.Width >= 4 && frame.Height >= 4);
+                Assert.True(input.Left >= frame.Left + 1 && input.Right <= frame.Right - 1,
+                    $"{fieldNames[i]} X outside white border: input={input.Bounds} frame={frame}");
+                Assert.True(input.Top >= frame.Top + 1 && input.Bottom <= frame.Bottom - 1,
+                    $"{fieldNames[i]} Y outside white border: input={input.Bounds} frame={frame}");
+            }
+
+            static void AssertWhiteBorder(Bitmap bitmap, Rectangle frame, string label)
+            {
+                int midX = frame.X + frame.Width / 2;
+                int midY = frame.Y + frame.Height / 2;
+                Color top = bitmap.GetPixel(midX, frame.Top);
+                Color bottom = bitmap.GetPixel(midX, frame.Bottom - 1);
+                Color left = bitmap.GetPixel(frame.Left, midY);
+                Color right = bitmap.GetPixel(frame.Right - 1, midY);
+                Assert.True(top.A == 255 && top.R == 255 && top.G == 255 && top.B == 255, $"{label} top={top}");
+                Assert.True(bottom.A == 255 && bottom.R == 255 && bottom.G == 255 && bottom.B == 255, $"{label} bottom={bottom}");
+                Assert.True(left.A == 255 && left.R == 255 && left.G == 255 && left.B == 255, $"{label} left={left}");
+                Assert.True(right.A == 255 && right.R == 255 && right.G == 255 && right.B == 255, $"{label} right={right}");
+            }
+
+            static Bitmap RenderOverlayBitmap(ModifierInputOverlay target, Size size)
+            {
+                var bitmap = new Bitmap(size.Width, size.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using (var graphics = Graphics.FromImage(bitmap))
+                {
+                    graphics.Clear(Color.Black);
+                    target.PaintInputFrames(graphics);
+                }
+                return bitmap;
+            }
+
+            MethodInfo setTab = typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo applyItems = typeof(ModifierNativeSurface).GetMethod("ApplyItems", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo applyUnits = typeof(ModifierNativeSurface).GetMethod("ApplyUnits", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            setTab.Invoke(surface, new object[] { "items" });
+            applyItems.Invoke(surface, new object[] { new JObject
+            {
+                ["success"] = true, ["page"] = 1, ["pageSize"] = 64, ["total"] = 1, ["revision"] = 1,
+                ["items"] = new JArray(new JObject
+                {
+                    ["id"] = 1, ["name"] = "普通hp药剂", ["displayName"] = "普通HP药剂",
+                    ["icon"] = "", ["type"] = "", ["use"] = ""
+                })
+            } });
+            using (var itemsSurface = surface.RenderFrame())
+            using (var itemsOverlay = RenderOverlayBitmap(overlay, surface.ClientSize))
+            {
+                SaveModifierFrame(itemsSurface, "modifier-items-inputs.png");
+                for (int i = 0; i < 3; i++)
+                {
+                    Assert.True(overlay.TryGetInputFrame(allInputs[i], out Rectangle frame));
+                    AssertWhiteBorder(itemsSurface, frame, "surface:" + fieldNames[i]);
+                    AssertWhiteBorder(itemsOverlay, frame, "overlay:" + fieldNames[i]);
+                }
+                Assert.True(overlay.TryGetInputFrame(allInputs[0], out Rectangle queryFrame));
+                bool hasHintPixels = false;
+                for (int y = queryFrame.Top + 2; y < queryFrame.Bottom - 2 && !hasHintPixels; y++)
+                    for (int x = queryFrame.Left + 2; x < queryFrame.Right - 2; x++)
+                    {
+                        Color px = itemsSurface.GetPixel(x, y);
+                        if (px.A > 120 && px.R >= 80 && px.G >= 80 && px.B >= 80) { hasHintPixels = true; break; }
+                    }
+                Assert.True(hasHintPixels, "Expected placeholder text pixels inside search box");
+            }
+
+            setTab.Invoke(surface, new object[] { "level" });
+            using (var levelSurface = surface.RenderFrame())
+            using (var levelOverlay = RenderOverlayBitmap(overlay, surface.ClientSize))
+            {
+                SaveModifierFrame(levelSurface, "modifier-level-inputs.png");
+                Assert.True(overlay.TryGetInputFrame(allInputs[3], out Rectangle taskFrame));
+                AssertWhiteBorder(levelSurface, taskFrame, "surface:_taskId");
+                AssertWhiteBorder(levelOverlay, taskFrame, "overlay:_taskId");
+            }
+
+            setTab.Invoke(surface, new object[] { "units" });
+            applyUnits.Invoke(surface, new object[] { new JObject
+            {
+                ["success"] = true, ["page"] = 1, ["pageSize"] = 8, ["total"] = 1, ["revision"] = 1,
+                ["units"] = new JArray(new JObject
+                {
+                    ["id"] = 1, ["name"] = "测试兵种", ["spriteName"] = "", ["key"] = "",
+                    ["level"] = 1, ["hostile"] = false
+                })
+            } });
+            using (var unitsSurface = surface.RenderFrame())
+            using (var unitsOverlay = RenderOverlayBitmap(overlay, surface.ClientSize))
+            {
+                SaveModifierFrame(unitsSurface, "modifier-units-inputs.png");
+                for (int i = 4; i < 7; i++)
+                {
+                    Assert.True(overlay.TryGetInputFrame(allInputs[i], out Rectangle frame));
+                    AssertWhiteBorder(unitsSurface, frame, "surface:" + fieldNames[i]);
+                    AssertWhiteBorder(unitsOverlay, frame, "overlay:" + fieldNames[i]);
+                }
+            }
+            surface.SuspendPanel();
         }
     }
 }

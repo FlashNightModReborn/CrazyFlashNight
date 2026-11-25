@@ -39,6 +39,7 @@ namespace CF7Launcher.Guardian
         }
 
         internal const string PageJumpHint = "输入页码数字后按回车键跳转";
+        internal const string SearchPlaceholder = "输入物品名";
 
         private static readonly Color Gold = Color.FromArgb(255, 204, 0);
         private static readonly Color SoftGold = Color.FromArgb(216, 195, 138);
@@ -74,13 +75,13 @@ namespace CF7Launcher.Guardian
         private readonly ModifierInputOverlay _inputOverlay;
         private readonly Dictionary<string, JObject> _tooltipDocuments = new Dictionary<string, JObject>(StringComparer.Ordinal);
         private readonly HashSet<string> _tooltipRequests = new HashSet<string>(StringComparer.Ordinal);
-        private readonly TextBox _itemQuery;
-        private readonly TextBox _itemQuantity;
-        private readonly TextBox _itemPageInput;
-        private readonly TextBox _taskId;
-        private readonly TextBox _unitLevel;
-        private readonly TextBox _unitCount;
-        private readonly TextBox _unitPageInput;
+        private readonly ModifierTextBox _itemQuery;
+        private readonly ModifierTextBox _itemQuantity;
+        private readonly ModifierTextBox _itemPageInput;
+        private readonly ModifierTextBox _taskId;
+        private readonly ModifierTextBox _unitLevel;
+        private readonly ModifierTextBox _unitCount;
+        private readonly ModifierTextBox _unitPageInput;
         private readonly Timer _armTimer;
         private readonly Timer _animationTimer;
         private readonly SoundPlayer _tabSound;
@@ -193,6 +194,13 @@ namespace CF7Launcher.Guardian
 
             _itemQuery = CreateInput(false);
             _itemQuery.MaxLength = 64;
+            _itemQuery.HintText = SearchPlaceholder;
+            _itemQuery.HorizontalMargin = 4;
+            _itemQuery.Cursor = Cursors.IBeam;
+            _itemQuery.TextChanged += delegate
+            {
+                if (Active && _activeTab == "items" && IsHandleCreated) Invalidate();
+            };
             _itemQuery.KeyDown += OnItemQueryKeyDown;
             _itemQuantity = CreateInput(true);
             _itemQuantity.MaxLength = 9;
@@ -1063,16 +1071,18 @@ namespace CF7Launcher.Guardian
                 _unitPageInput.Text = _unitPage.ToString();
         }
 
-        private TextBox CreateInput(bool numeric)
+        private ModifierTextBox CreateInput(bool numeric)
         {
-            var input = new TextBox
+            var input = new ModifierTextBox
             {
                 BorderStyle = BorderStyle.None,
                 BackColor = Color.Black,
                 ForeColor = Gold,
                 Font = _smallFont,
                 Visible = false,
-                TabStop = false
+                TabStop = false,
+                Cursor = Cursors.IBeam,
+                HorizontalMargin = 4
             };
             if (numeric)
             {
@@ -1086,11 +1096,12 @@ namespace CF7Launcher.Guardian
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) e.Handled = true;
         }
 
-        private void ConfigurePageInput(TextBox input)
+        private void ConfigurePageInput(ModifierTextBox input)
         {
             if (input == null) return;
             input.AutoSize = false;
-            input.BorderStyle = BorderStyle.FixedSingle;
+            input.BorderStyle = BorderStyle.None;
+            input.HorizontalMargin = 0;
             input.Cursor = Cursors.IBeam;
             input.TextAlign = HorizontalAlignment.Center;
             input.GotFocus += delegate { input.SelectAll(); };
@@ -1125,6 +1136,7 @@ namespace CF7Launcher.Guardian
             _unitCount.Visible = units;
             _unitPageInput.Visible = units;
             SyncInputOverlay();
+            if (_inputOverlay != null && _inputOverlay.IsHandleCreated) _inputOverlay.Invalidate();
         }
 
         private void SyncInputOverlay()
@@ -1134,25 +1146,32 @@ namespace CF7Launcher.Guardian
             _inputOverlay.Sync(Active && hasInputs && !_tooltip.Visible, Bounds);
         }
 
+        private void PositionInput(ModifierTextBox input, Rectangle logicalRect, Size client)
+        {
+            Rectangle frame = ModifierNativeLayout.ToClient(logicalRect, client);
+            input.Font = _smallFont;
+            input.AutoSize = true;
+            int preferred = input.PreferredHeight;
+            input.AutoSize = false;
+            int innerHeight = Math.Min(preferred, Math.Max(1, frame.Height - 2));
+            int innerY = frame.Y + 1 + Math.Max(0, (frame.Height - 2 - innerHeight) / 2);
+            input.Bounds = new Rectangle(frame.X + 1, innerY, Math.Max(1, frame.Width - 2), innerHeight);
+            _inputOverlay?.SetInputFrame(input, frame);
+        }
+
         private void UpdateInputLayout()
         {
             if (_itemQuery == null) return;
             Size size = ClientSize;
-            _itemQuery.Bounds = ModifierNativeLayout.ToClient(ModifierNativeLayout.ItemQuery, size);
-            _itemQuantity.Bounds = ModifierNativeLayout.ToClient(ModifierNativeLayout.ItemQuantity, size);
-            _itemPageInput.Bounds = ModifierNativeLayout.ToClient(ModifierNativeLayout.ItemPage, size);
-            _taskId.Bounds = ModifierNativeLayout.ToClient(ModifierNativeLayout.TaskId, size);
-            _unitLevel.Bounds = ModifierNativeLayout.ToClient(ModifierNativeLayout.UnitLevel, size);
-            _unitCount.Bounds = ModifierNativeLayout.ToClient(ModifierNativeLayout.UnitCount, size);
-            _unitPageInput.Bounds = ModifierNativeLayout.ToClient(ModifierNativeLayout.UnitPage, size);
-            _itemQuery.Font = _smallFont;
-            _itemQuantity.Font = _smallFont;
-            _itemPageInput.Font = _smallFont;
-            _taskId.Font = _smallFont;
-            _unitLevel.Font = _smallFont;
-            _unitCount.Font = _smallFont;
-            _unitPageInput.Font = _smallFont;
+            PositionInput(_itemQuery, ModifierNativeLayout.ItemQuery, size);
+            PositionInput(_itemQuantity, ModifierNativeLayout.ItemQuantity, size);
+            PositionInput(_itemPageInput, ModifierNativeLayout.ItemPage, size);
+            PositionInput(_taskId, ModifierNativeLayout.TaskId, size);
+            PositionInput(_unitLevel, ModifierNativeLayout.UnitLevel, size);
+            PositionInput(_unitCount, ModifierNativeLayout.UnitCount, size);
+            PositionInput(_unitPageInput, ModifierNativeLayout.UnitPage, size);
             SyncInputOverlay();
+            if (_inputOverlay != null && _inputOverlay.IsHandleCreated) _inputOverlay.Invalidate();
         }
 
         private static Font CreateFont(float size, FontStyle style)
@@ -1428,8 +1447,68 @@ namespace CF7Launcher.Guardian
             }
             DrawStatus(graphics);
             graphics.Restore(state);
+            DrawInputFramesBackdrop(graphics, client);
             Point origin = IsHandleCreated ? PointToScreen(Point.Empty) : Point.Empty;
             _tooltip.Paint(graphics, DeviceDpi / 96f, origin);
+        }
+
+        private void DrawInputFramesBackdrop(Graphics graphics, Size client)
+        {
+            if (_itemQuery == null || client.Width < 1 || client.Height < 1) return;
+            SmoothingMode previous = graphics.SmoothingMode;
+            graphics.SmoothingMode = SmoothingMode.None;
+            try
+            {
+                using (var pen = new Pen(ModifierInputOverlay.InputBorderColor, 1f))
+                {
+                    if (_activeTab == "items")
+                    {
+                        DrawInputBackdrop(graphics, pen, ModifierNativeLayout.ItemQuery, client, _itemQuery);
+                        DrawInputBackdrop(graphics, pen, ModifierNativeLayout.ItemQuantity, client, _itemQuantity);
+                        DrawInputBackdrop(graphics, pen, ModifierNativeLayout.ItemPage, client, _itemPageInput);
+                    }
+                    else if (_activeTab == "level")
+                    {
+                        DrawInputBackdrop(graphics, pen, ModifierNativeLayout.TaskId, client, _taskId);
+                    }
+                    else if (_activeTab == "units")
+                    {
+                        DrawInputBackdrop(graphics, pen, ModifierNativeLayout.UnitLevel, client, _unitLevel);
+                        DrawInputBackdrop(graphics, pen, ModifierNativeLayout.UnitCount, client, _unitCount);
+                        DrawInputBackdrop(graphics, pen, ModifierNativeLayout.UnitPage, client, _unitPageInput);
+                    }
+                }
+            }
+            finally
+            {
+                graphics.SmoothingMode = previous;
+            }
+        }
+
+        private void DrawInputBackdrop(Graphics graphics, Pen borderPen, Rectangle logicalRect, Size client, ModifierTextBox input)
+        {
+            Rectangle frame = ModifierNativeLayout.ToClient(logicalRect, client);
+            if (frame.Width < 2 || frame.Height < 2) return;
+            graphics.FillRectangle(Brushes.Black, frame);
+            graphics.DrawRectangle(borderPen, frame.X, frame.Y, frame.Width - 1, frame.Height - 1);
+            if (input == _itemQuery && _itemQuery.IsShowingHint)
+            {
+                int leftInset = _itemQuery.HorizontalMargin + 1;
+                var textRect = new RectangleF(
+                    frame.X + leftInset,
+                    frame.Y + 1,
+                    Math.Max(1f, frame.Width - leftInset - _itemQuery.HorizontalMargin - 1),
+                    Math.Max(1f, frame.Height - 2));
+                using (var hintFormat = new StringFormat(StringFormatFlags.NoWrap)
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center,
+                    Trimming = StringTrimming.EllipsisCharacter
+                })
+                {
+                    DrawText(graphics, SearchPlaceholder, textRect, _smallFont, _itemQuery.HintColor, hintFormat);
+                }
+            }
         }
 
         private void DrawTab(Graphics graphics, Rectangle rect, string tab)
