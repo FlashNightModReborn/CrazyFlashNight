@@ -117,7 +117,7 @@ function flattenAllText(node, acc) {
     // encryptedText 是占位符，不算正文字符
   }
   // 走所有可能承载子节点的字段
-  for (const key of ['content', 'blocks', 'fragments', 'items', 'rows', 'columns', 'entries', 'plain', 'reveal', 'note', 'caption', 'title', 'materials', 'steps']) {
+  for (const key of ['content', 'blocks', 'fragments', 'items', 'rows', 'columns', 'entries', 'plain', 'reveal', 'note', 'caption', 'title', 'label', 'time', 'materials', 'steps']) {
     if (node[key] != null) flattenAllText(node[key], acc);
   }
 }
@@ -144,6 +144,11 @@ function pageBlocksOf(h5, pageKey) {
   if (!h5 || !Array.isArray(h5.pages)) return null;
   const p = h5.pages.find(x => String(x.pageKey) === String(pageKey));
   return p ? (p.blocks || []) : null;
+}
+
+// 仅剥离 legacy Flash HTML 格式标签，保留普通叙事文本里的尖括号表达
+function stripLegacyHtml(s) {
+  return String(s || '').replace(/<\/?(?:b|i|u|font|br|p|a|span|li|textformat)(?:\s[^>]*)?>/gi, '');
 }
 
 // 数字符串中"实际可读字符"长度（去空白、占位符）
@@ -236,7 +241,8 @@ function auditItem(dictItem) {
         findings.push({ kind: 'txt-page-missing', severity: 'info', page: pk, message: `legacy txt 缺少 @@@${pk}@@@ 段落（H5 此页可能是新增内容）` });
         continue;
       }
-      const legacyLen = readableLength(legacy);
+      const legacyPlain = stripLegacyHtml(legacy);
+      const legacyLen = readableLength(legacyPlain);
       const h5Len = readableLength(page.plain);
       if (legacyLen >= 20 && h5Len < legacyLen * COVERAGE_RATIO) {
         findings.push({
@@ -247,7 +253,7 @@ function auditItem(dictItem) {
         });
       }
       // 段落首字符种子查询：legacy 按句号/换行拆段，每段前 SEED_WINDOW 字到 H5 全文找
-      const sentences = legacy.split(/[。\n]+/).map(s => s.trim()).filter(s => readableLength(s) >= SEED_WINDOW);
+      const sentences = legacyPlain.split(/[。\n]+/).map(s => s.trim()).filter(s => readableLength(s) >= SEED_WINDOW);
       for (const sent of sentences) {
         const seed = sent.replace(/\$\{PC_NAME\}/g, '').replace(/[\s　]+/g, '').slice(0, SEED_WINDOW);
         if (!seed) continue;
