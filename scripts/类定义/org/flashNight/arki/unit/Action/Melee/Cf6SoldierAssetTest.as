@@ -1642,6 +1642,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                         check(!u.soldierChargeContact({target:target._name,sign:sign,lastChargeX:u._x,age:0}),
                             "edge touching cannot spend the charge contact before damage overlap "+label);
                     }
+                    observeRecoil(c);
                     if(c.mode=="chargeBlocked")u.移动=function():Void {};
                     u.状态改变("长枪攻击");
                 }else if(c.mode.indexOf("evasion")==0){
@@ -1729,6 +1730,17 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     if(ticks==223 && c.side==1)u.硬直中=false;
                 }
             }
+            if((c.mode=="chargeNear" || c.mode=="chargeTurn" || c.mode=="chargeBlocked") && u.soldierAttackOwner.charge){
+                var chargeBody:MovieClip=u.man,gun:MovieClip=chargeBody.枪;
+                if(chargeBody._currentframe>=21 && chargeBody._currentframe<45 && c.chargeGunStamp==null){
+                    c.chargeGunStamp={};gun.fixtureRecoilStamp=c.chargeGunStamp;
+                }
+                if(chargeBody._currentframe==60 && !c.sawClear){
+                    c.sawClear=true;
+                    check(gun.fixtureRecoilStamp===c.chargeGunStamp && gun.filters.length==0 && chargeBody.腰挂.filters.length==0,
+                        "original charge gun and holster clear their authored filters "+label);
+                }
+            }
             if(ticks==214 && c.mode=="retreatBlocked")u.移动=function():Void {};
             if(ticks>190 && rec.done>0 && c.doneTick==undefined)c.doneTick=ticks;
             var active:Object=u.soldierAttackOwner;
@@ -1776,6 +1788,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                         check(c.blurBrakeDelta>25,"charge continues decelerating across blurred f45-59 before stopping at f60 "+label);
                     }
                 }else if(c.mode=="chargeBlocked"){
+                    check(c.sawClear,"wall stop reaches clear frame on original gun "+label);
                     check(u._x==c.x && rec.contacts==0 && u.soldierTacticalStats.blockedMoves==1
                         && c.doneTick<265 && c.blockedClearSeen,"wall blockage ends charge early without phantom contact "+label);
                 }else if(c.mode.indexOf("instructorShield")==0 || c.mode.indexOf("instructorCharge")==0){
@@ -1994,6 +2007,29 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         render(u,(_root.soldierTacticalCapture===true?"r9review-":"r8review-")+row.key+"-"+row.frame);
         reviewIndex++;reviewStage=0;
     }
+    // Observe the real pose driver after both hand intents have been applied.
+    private static function observeRecoil(row:Object):Void {
+        var u:MovieClip=row.actor,apply:Function=u.soldierApplyRecoil;
+        row.pulseMain=row.pulseOff=0;
+        u.soldierApplyRecoil=function(body:MovieClip,now:Number,owner:Object):Void {
+            apply.call(this,body,now,owner);
+            var slots:Array=[this.soldierRecoil.primary,this.soldierRecoil.secondary];
+            for(var i:Number=0;i<2;i++){
+                var slot:Object=slots[i],h:MovieClip=slot.holder;
+                if(h==null || slot.holderToken==null)continue;
+                if(i==0)row.pulseMain++;else row.pulseOff++;
+                var outer:MovieClip=h._parent,x:Number=h._x,y:Number=h._y,gx:Number=outer._x,gy:Number=outer._y;
+                var p:Object={x:slot.baseX,y:slot.baseY},q:Object={x:x,y:y};
+                outer.localToGlobal(p);outer.localToGlobal(q);body.globalToLocal(p);body.globalToLocal(q);
+                Cf6SoldierAssetTest.check(Math.abs(q.x-p.x+2)<=0.11 && Math.abs(q.y-p.y)<=0.11,
+                    "two-pixel recoil in body space "+row.mode+"/"+row.side+"/"+i);
+                apply.call(this,body,now,owner);
+                var expired:Object={};this.soldierClearRecoil(expired);apply.call(this,body,now+10,expired);
+                Cf6SoldierAssetTest.check(h._x==x && h._y==y && outer._x==gx && outer._y==gy,
+                    "repeat apply and stale callback preserve this hand "+row.mode+"/"+row.side+"/"+i);
+            }
+        };
+    }
     private static function createCompletionCases():Void {
         var links:Array=["敌人-CF6特种兵","敌人-CF6持盾特种兵","敌人-CF6特种精英","敌人-CF6持盾特种精英","敌人-CF6特种教官","敌人-CF6持盾特种教官"];
         var guns:Array=["M4A1改","AK74战术版","M4A1战术版","DD MK18战术版"];
@@ -2001,10 +2037,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
             addCompletionCase("default",links[a],guns[g],side);
         }
         var modes:Array=["disabled","interrupt","dead","stale","replaced","lane","close","guard","cooldown","noSub",
-            "reloadLinked","reloadCancel","pistolReload","emptyEvade","blockedEvade","stationary","handoff","slidePass","slideBlocked","slideClose","slideDry","slideStalled","slideBlockedHard","slideTrapped","instructorClose","instructorAmmo","retreatXBlocked"];
+            "reloadLinked","reloadCancel","pistolReload","emptyEvade","blockedEvade","stationary","handoff","slidePass","slideBlocked","slideClose","slideDry","slideStalled","slideBlockedHard","slideTrapped","instructorClose","instructorAmmo","retreatXBlocked","boundary27","boundary28","boundary29","boundary30","boundaryKill","boundaryCancel"];
         for(var m:Number=0;m<modes.length;m++)for(var side2:Number=0;side2<2;side2++){
             var mode:String=modes[m];
-            addCompletionCase(mode,mode=="instructorClose" || mode=="instructorAmmo" || mode=="retreatXBlocked"?"敌人-CF6特种教官":
+            addCompletionCase(mode,mode=="instructorClose" || mode=="instructorAmmo" || mode=="retreatXBlocked" || mode.indexOf("boundary")==0?"敌人-CF6特种教官":
                 mode=="pistolReload" || mode=="emptyEvade" || mode=="blockedEvade" || mode=="stationary" || mode=="handoff" || mode.indexOf("slide")==0?"敌人-CF6特种精英":"敌人-CF6特种兵",
                 mode=="noSub"?"AK47":"M4A1战术版",side2);
         }
@@ -2013,6 +2049,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
         var rec:Object=record();rec.subshots=0;rec.elite=linkage.indexOf("精英")>=0 || linkage.indexOf("教官")>=0;
         var init:Object={fixtureRecord:rec,fixtureCompletion:true,fixtureTacticalModern:true,特种兵烟雾弹:false,
             长枪:gun,手枪:"FR506",手枪2:"FR506"};
+        if(mode.indexOf("boundary")==0)init.特种兵策略="mobile";
+        if(mode.indexOf("slide")==0){init.特种兵策略="mobile";init.特种兵烟雾弹=true;}
         if(mode=="disabled")init.特种兵副武器=false;
         if(mode=="stationary")init.特种兵精英消融="stationary";
         var unit:MovieClip=library.attachMovie(linkage,"completion"+completionCases.length,library.getNextHighestDepth(),init);
@@ -2042,9 +2080,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                 }else if(mode=="handoff"){
                     target._x=u._x+sign*400;check(u.soldierChooseAttack(400,0,0)=="shoot" && u.eliteNextAction=="run","far band starts run "+label);
                 }else if(mode.indexOf("slide")==0){
-                    target._x=u._x+sign*(mode=="slideClose"?40:430);
-                    check(u.soldierCanSlideExit(target),"authored slide remains available at its real entry distance "+label);
-                    u.eliteNextAction="slide";
+                    target._x=u._x+sign*430;
+                    check(u.soldierChooseAttack(430,0,0)=="shoot" && u.eliteNextAction=="slide",
+                        "mobile selector admits the authored slide at its real entry distance "+label);
+                    if(mode=="slideClose")target._x=u._x+sign*40;
                     if(mode=="slideDry")u.长枪.value.shot=u.长枪弹匣容量-1;
                     if(mode=="slideBlocked" || mode=="slideBlockedHard"){
                         u.fixtureOriginalMove=u.移动;
@@ -2070,7 +2109,26 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     check(u.soldierSelectStrategy(180,0)=="mobile","empty rifle prefers mobile strategy "+label);
                     u.长枪.value.shot=0;
                     u.eliteNextAction="line";
+                }else if(mode.indexOf("boundary")==0){
+                    u.fixtureBoundary=c;c.pre=false;
+                    c.stopFrame=mode=="boundary27"?27:mode=="boundary29"?29:mode=="boundary30"?30:28;
+                    target._x=u._x+sign*156;
+                    u.fixtureOriginalMove=u.移动;
+                    u.移动=function(dir:String,speed:Number):Void {
+                        if(this.soldierAttackOwner.logicalFrame>=this.fixtureBoundary.stopFrame)return;
+                        this.fixtureOriginalMove.call(this,dir,speed);
+                    };
+                    if(mode=="boundaryKill" || mode=="boundaryCancel"){
+                        u.dispatcher.subscribe("手枪射击",function():Void {
+                            var row:Object=this.fixtureBoundary;row.pre=true;
+                            if(row.mode=="boundaryKill")row.target.hp=0;
+                            else this.状态改变("被击");
+                        },u);
+                    }
+                    check(u.soldierChooseAttack(156,0,0)=="shoot" && u.eliteNextAction=="retreat",
+                        "real mobile selection opens boundary retreat "+label);
                 }else if(mode=="retreatXBlocked"){
+                    observeRecoil(c);
                     target._x=u._x+sign*180;
                     u.fixtureOriginalMove=u.移动;
                     u.移动=function(direction:String,speed:Number):Void {
@@ -2165,7 +2223,13 @@ class org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest {
                     "fully trapped escape respects collision and spends no full evasion cooldown "+label);
                 else if(mode=="instructorClose")check(rec.stabs==1,"mobile instructor executes native knife "+label);
                 else if(mode=="instructorAmmo")check(rec.shots>0 && rec.sidearmShots==0,"ammo-aware instructor fires loaded rifle "+label);
-                else if(mode=="retreatXBlocked")check(u._x==c.startX && Math.abs(u.Z轴坐标-c.startZ)>24
+                else if(mode.indexOf("boundary")==0){
+                    var cancelled:Boolean=mode=="boundaryKill" || mode=="boundaryCancel";
+                    check(!cancelled || c.pre,"pre-fire callback reached the real ShootCore boundary "+label);
+                    check(rec.shots==(!cancelled && c.stopFrame>=28?1:0)
+                        && rec.sidearmShots==(!cancelled && c.stopFrame>=29?1:0),
+                        "only due, live-owner shots settle on the last retreat frame "+label);
+                }else if(mode=="retreatXBlocked")check(c.pulseMain>0 && c.pulseOff>0 && u._x==c.startX && Math.abs(u.Z轴坐标-c.startZ)>24
                     && rec.shots==4 && rec.sidearmShots==4 && u.soldierAttackOwner==null,
                     "wall-blocked retreat sidesteps Z and fires all 4+4 dual-pistol shots "+label);
                 else check(rec.subshots==0,"secondary rejects invalid or disabled context "+label+" got="+rec.subshots);

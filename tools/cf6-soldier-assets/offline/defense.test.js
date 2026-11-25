@@ -13,7 +13,8 @@ const base = fs.readFileSync(path.join(here, 'SoldierAI.as'), 'utf8');
 vm.runInContext(eraseTypes(base.slice(0, base.indexOf('soldierClearMovement=function'))), context);
 vm.runInContext(eraseTypes(fs.readFileSync(path.join(here, 'SoldierDefense.as'), 'utf8')), context);
 loadFunctions(context, path.join(here, 'SoldierAI.as'), [
-  'soldierCanShieldGuard', 'soldierSetHP', 'soldierClearMovement', 'soldierCancelAttack', '状态改变', 'soldierRemoveShieldBuff'
+  'soldierCanShieldGuard', 'soldierSetHP', 'soldierClearMovement', 'soldierCancelAttack', '状态改变', 'soldierRemoveShieldBuff',
+  'soldierClearRecoil', 'soldierResetRecoilPose', 'soldierRestoreRecoilSlot'
 ]);
 
 function actor(options = {}) {

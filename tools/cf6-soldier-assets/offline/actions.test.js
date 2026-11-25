@@ -192,11 +192,14 @@ test('pause is inert; delayed old callback and excess damage units are denied',(
   while(!f.c.fireMask)tick(f,false);
   assert.equal(rules.cf6RuleCanCommit(f.s,f.p,f.o,1,5),false,'old frame');
   f.o.frame--;
-  assert.equal(rules.cf6RuleCanCommit(f.s,f.p,f.o,1,11),false,'unbudgeted event');
+  const remaining = f.p.budget.scriptedCycleDamageUnits - f.s.damageUnits;
+  assert.equal(rules.cf6RuleCanCommit(f.s,f.p,f.o,1,units(f.p,1)),true,'current weapon fits the cycle budget');
+  assert.equal(rules.cf6RuleCanCommit(f.s,f.p,f.o,1,remaining+1),false,'unbudgeted event');
 });
 
 test('instructor combat signatures remain distinct at the real event level',()=>{
-  const expected={segmented_lane:[3,0,0],landing_watch:[2,0,0],bright_burst:[2,0,0],
+  // The fixture grants weapon readiness every frame of the machine guns' 60-frame firing windows.
+  const expected={segmented_lane:[60,0,0],landing_watch:[2,0,0],bright_burst:[60,0,0],
     relocate_then_flush:[1,0,0],advance_flush:[3,0,1],range_rotation:[3,1,0],
     weapon_handoff:[2,1,0],punish_commit:[2,0,0],reserve_gate:[1,0,0],threshold_flush:[2,0,0]};
   for(const [name,counts]of Object.entries(expected)){

@@ -2,7 +2,7 @@
 // overrides use 特种兵战术_<key>; changing a test case never mutates another unit.
 soldierTacticalStats={wallEscapes:0,slideBlocks:0,slideStalls:0,smokes:0,smokeReloads:0,slideExits:0,chargeContacts:0,chargeHits:0,chargeDamage:0,chargeTurns:0,evasions:0,blockedMoves:0,strategyChanges:0};
 soldierNextEvasionAt=0;soldierNextEvasionAttemptAt=0;soldierPendingEvasion=null;soldierThreatOwned=false;
-soldierSmokeNextAt=0;soldierSlidePermit=null;soldierRecentDamageUntil=0;
+soldierSmokeNextAt=0;soldierRecentDamageUntil=0;
 soldierStrategy="line";soldierStrategyUntil=0;soldierBlockedUntil=0;
 soldierLineVolleys=0;soldierMobileVolleys=0;
 soldierConfigureTactics=function():Void {
@@ -106,8 +106,6 @@ soldierTacticalChoose=function(dx:Number,dz:Number,height:Number):String {
     if(!isFinite(dx) || !isFinite(dz) || !isFinite(height) || dx<0 || dz<0
         || height>tune.maximumTargetHeight || this.soldierClock<this.soldierReadyAt)return "none";
     var strategy:String=this.soldierSelectStrategy(dx,dz);
-    // A committed smoke reload hands directly to the slide; it does not
-    // wait for a new AI decision or borrow the ordinary running prelude.
     // Point-blank instructor defence takes precedence over strategy and bullet evasion.
     if(this.soldierIsInstructor===true && dx<=tune.knifeRange && dz<=tune.laneRange
         && !(this.soldierClock<this.soldierNextMeleeAt)){
@@ -187,20 +185,6 @@ soldierBeginSmokeReload=function(body:MovieClip):Void {
 soldierMoveSmokeReload=function(owner:Object,body:MovieClip):Void {
     // Reload has a planted, concealed pose. Running belongs to its own attack.
     this.standardShotMoving=false;
-};
-soldierCanSlideExit=function(target:MovieClip):Boolean {
-    if(this.soldierPhase!=2 || !(target.hp>0) || target!==_root.gameworld[this.攻击目标]
-        || this.倒地 || this.浮空 || this.soldierClock<this.soldierBlockedUntil)return false;
-    var dx:Number=Math.abs(target._x-this._x),dz:Number=Math.abs(target.Z轴坐标-this.Z轴坐标);
-    return isFinite(dx) && isFinite(dz) && this.eliteMobility && this.跑X速度>0
-        && dx<=this.soldierTuning.shootRange
-        && dz<=this.soldierTuning.laneRange+Math.min(this.soldierTacticalConfig.slideZBudget,60)
-        && this.eliteWeaponReady("长枪") && this.长枪.value.shot<this.长枪弹匣容量;
-};
-soldierCompleteSmokeReload=function(owner:Object):Void {
-    if(!owner.smokeUsed || !owner.active || this.soldierPhase!=2)return;
-    this.soldierTacticalStats.smokeReloads++;
-    this.soldierSlidePermit={target:owner.smokeTarget,expiresAt:this.soldierClock+this.soldierTacticalConfig.slidePermitFrames};
 };
 soldierChargeContact=function(owner:Object):Boolean {
     if(owner.contactCommitted)return false;

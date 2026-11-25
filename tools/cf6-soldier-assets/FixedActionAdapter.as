@@ -114,11 +114,13 @@ cf6FixedBeginAttack=function(body:MovieClip,action:String):Void {
     }
     var owner:Object=this.cf6FixedOwner(body,this.cf6ExpectedPose);
     body.prepareStandardShotPose=function(frame:String):Void {
-        var unit:MovieClip=this._parent,own:Object=unit.soldierAttackOwner;
+        var unit:MovieClip=this._parent;
+        if(unit.soldierAttackOwner!==owner || this.soldierToken!==owner.token)return;
         if(unit.standardShotMoving===true){
-            if(own!=null){own.recoilUntil=own.age+2;own.recoilWeapon="primary";}
+            unit.soldierArmRecoil(this,false,owner.age,owner);
             return;
         }
+        unit.soldierClearRecoil(owner);
         this.gotoAndPlay(frame);
     };
     body.初始化长枪射击函数=_root.主角函数.初始化长枪射击函数;body.初始化长枪射击函数();
@@ -132,8 +134,7 @@ cf6FixedBeginDual=function(body:MovieClip):Void {
     body.初始化混合双枪=_root.主角函数.初始化混合双枪;
     body.初始化长枪射击函数();body.初始化混合双枪();
     body.prepareStandardShotPose=function(frame:String):Void {
-        var owner:Object=this._parent.soldierAttackOwner;
-        owner.recoilUntil=owner.poseAge+2;owner.recoilWeapon=frame=="射击2"?"secondary":"primary";
+        this._parent.soldierArmRecoil(this,frame=="射击2",owner.poseAge,owner);
     };
     body.腰挂.syncHolsters();body.gotoAndStop(28);
 };
@@ -194,10 +195,10 @@ cf6FixedDrivePose=function():Void {
     if(owner.mode=="dual"){
         if(this.standardShotMoving!==true){
             var frame:Number=28;
-            if(body._currentframe!=frame)body.gotoAndStop(frame);
+            if(body._currentframe!=frame){this.soldierResetRecoilPose(owner);body.gotoAndStop(frame);}
         }
         if(body.枪2!=null)body.枪2._visible=true;
-        if(owner.recoilUntil>owner.poseAge)this.eliteApplyRecoil(body);
+        this.soldierApplyRecoil(body,owner.poseAge,owner);
     }
     if(owner.mode=="throw"){
         var throwFrame:Number=Math.min(24,owner.poseAge+1);
@@ -330,18 +331,22 @@ cf6FixedTrack=function(armed:Boolean):Void {
         if(own!=null && own.mode=="dual"){
             if(travelled>.1){
                 this.cf6StrideStep=(this.cf6StrideStep+1)%24;
+                this.soldierResetRecoilPose(own);
                 body.gotoAndStop(28+this.cf6StrideStep);
-                if(own.recoilUntil>own.poseAge)this.eliteApplyRecoil(body);
             }else if(body._currentframe!=28){
+                this.soldierResetRecoilPose(own);
                 body.gotoAndStop(28);
             }
+            this.soldierApplyRecoil(body,own.poseAge,own);
         }else{
             if(travelled>.1){
                 this.cf6StrideStep=(this.cf6StrideStep+1)%21;
+                this.soldierResetRecoilPose(own);
                 body.gotoAndStop(50+this.cf6StrideStep);
-                if(own!=null && own.recoilUntil>own.age && body.枪!=null)body.枪._x-=2;
-            }else if(body._currentframe>=50){
-                body.gotoAndStop("空闲");
+                this.soldierApplyRecoil(body,own.age,own);
+            }else{
+                this.soldierClearRecoil(own);
+                if(body._currentframe>=50)body.gotoAndStop("空闲");
             }
         }
     }

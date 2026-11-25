@@ -173,6 +173,7 @@ cf6FixedReload=function(slot:String):Void {
     if(!this.cf6FixedModeReady("primary"))return;
     var owner:Object=this.soldierAttackOwner;
     this.cf6ReloadRequested="";owner.reloadReceiptCommitted=false;
+    this.soldierClearRecoil(owner);
     this.standardShotMoving=false;
     if(this.man._currentframe>=50)this.man.gotoAndStop("空闲");
     this.cf6Signals.event(this,"reload");
