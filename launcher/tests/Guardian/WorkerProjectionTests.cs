@@ -179,13 +179,15 @@ public class WorkerProjectionTests
         frame.HandleRaw("bad-camera", "", "", "", connectionGeneration: 7, rayVisualPayload: "deliberately not a ray packet");
         Assert.Equal(0, visualFrames); Assert.Equal("unexpected_projection_after_none:ray", Assert.Single(f.Faults));
     }
-    [Fact]
-    public void F6RetainsClockAndEquipmentRowsButRejectsDecorationBeforeDtoParsing()
+    [Theory]
+    [InlineData("s,intentionally malformed")]
+    [InlineData("h,123,7,0,0")]
+    public void F6RetainsClockAndEquipmentRowsButRejectsDecorationBeforeDtoParsing(string decoration)
     {
         using var f = new Fixture(); f.Install();
         Assert.False(f.Projection.ObserveCombatDecorations("1|2|3|0;l,1,1,0,0,1,0,100,20,1,1,1,1", 7));
         Assert.Empty(f.Faults);
-        Assert.True(f.Projection.ObserveCombatDecorations("1|2|3|0;s,intentionally malformed", 7));
+        Assert.True(f.Projection.ObserveCombatDecorations("1|2|3|0;" + decoration, 7));
         Assert.Equal("unexpected_projection_after_none:combatDecoration", Assert.Single(f.Faults));
     }
     [Fact]

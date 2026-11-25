@@ -30,9 +30,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly WorldPresentationCatalog _presentationCatalog;
         private readonly BulletVisualCatalog _bulletCatalog;
         private readonly CombatFxCatalog _combatFxCatalog;
+        private readonly WorldShakeCatalog _shakeCatalog;
         private volatile bool _combatFxResourcesReady, _combatFxCapabilityAdvertised, _worldLightsAdvertised;
         private double _lastCombatFxCapAttemptMs;
-        internal Func<bool,bool,bool> CombatFxCapabilityChanged;
+        internal Func<bool,bool,int,int,int,bool> CombatFxCapabilityChanged;
+        internal WorldShakeCatalog ShakeCatalog => _shakeCatalog;
+        private int _combatFxCapsGeneration;
+        private static readonly WorldShakeGrantSequence ShakeGrants = new();
+        private readonly WorldShakeGrantGate _worldShake;
+        private readonly Func<bool> _isAppActive;
+        private int _lastLoggedShakeGrant = -1;
+        private bool _damageLegacyFallback, _shakePanelBlocked, _shakeRenderFaulted, _shakeProfilesReady = true;
+        private double _shakeRequiredFrameMs;
         internal event Action PresentationShown;
         internal Action PerformanceUnavailable;
         private readonly bool _bulletCandidateEnabled;
@@ -128,6 +137,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void HoldTransitionInput(bool held) {
             if (_transitionInputHeld==held) return;
             _transitionInputHeld=held;
+            lock (_weatherCameraLock) _worldShake.SetModalBlocked(held || _shakePanelBlocked);
             if(held) _surface?.CancelPointer("scene_transition");
         }
         private Task<bool> _retiringInput;
@@ -300,6 +310,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // Socket callbacks arrive off the UI thread; the single failure
             // transition (hide, stop capture, dialog, close) stays owner-bound.
             if (_disposed) return;
+            lock (_weatherCameraLock)
+            {
+                _shakeRenderFaulted = true;
+                _worldShake.ResetCapture();
+            }
             if (_owner.IsDisposed) return;
             if (_owner.InvokeRequired)
             {
@@ -419,7 +434,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
             Action<int> setRenderHeight,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
             BulletVisualCatalog bulletCatalog=null,CombatFxCatalog combatFxCatalog=null,
-            IEnumerable<OverlayBase> overlays=null,bool opaqueHudEnabled=false, WorldLightSettings lightSettings=null)
+            IEnumerable<OverlayBase> overlays=null,bool opaqueHudEnabled=false, WorldLightSettings lightSettings=null,
+            Func<bool> isAppActive=null, WorldShakeCatalog shakeCatalog=null)
         {
             string tempRoot=Path.GetFullPath(Path.Combine(projectRoot,"tmp"))+Path.DirectorySeparatorChar;
             string testCap=Environment.GetEnvironmentVariable("CF7_INPUT_SESSION_TEST_CAP");
@@ -431,11 +447,21 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             _inputEpochLimit=inputEpochLimit;
             _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
+            _isAppActive=isAppActive;
             Rectangle CurrentOutputBounds() => _anchor.RectangleToScreen(_anchor.ClientRectangle);
             ResourcePresentation = new WorldRasterPresentation(CurrentOutputBounds);
             BottomPresentation = new WorldRasterPresentation(CurrentOutputBounds);
             BuffPresentation = new WorldRasterPresentation(CurrentOutputBounds);
             MainHudPresentation = new WorldRasterPresentation(CurrentOutputBounds);
+            bool initialFocused = isAppActive != null
+                ? (isAppActive() || IsGameForeground())
+                : (owner.IsHandleCreated && GetForegroundWindow() == owner.Handle);
+            _worldShake = new WorldShakeGrantGate(ShakeGrants,
+                grant => _native?.SetWorldShakeGrant(grant, clearState:true), PublishCombatFxCapsLocked,
+                (grant, impulses, x, y, scale) => _native?.SubmitWorldShake(grant, impulses, x, y, scale),
+                NowMs, initialFocused,
+                Environment.GetEnvironmentVariable("CF7_WORLD_SHAKE_DISABLE") != "1");
+            DamagePresentation.Changed += UpdateWorldShakeDamageReady;
             DamagePresentation.Faulted += error => EnterRenderFault("shared_raster", error);
             ResourcePresentation.Faulted += error => RejectPlayerHud("resource_raster", error);
             BottomPresentation.Faulted += error => RejectPlayerHud("bottom_raster", error);
@@ -445,6 +471,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _setRenderHeight=setRenderHeight; _focusFlash=focusFlash;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
+            _shakeCatalog=shakeCatalog ?? WorldShakeCatalog.Load(projectRoot, LogManager.Log);
             var sceneCatalog=SceneLightCatalog.Load(projectRoot, LogManager.Log);
             _sceneLights=new SceneLightEngine(sceneCatalog, LogManager.Log);
             lightSettings ??= WorldLightSettings.Load(projectRoot, LogManager.Log);
@@ -463,7 +490,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             LogManager.Log("event=world_presentation_catalog sha256="+_presentationCatalog.Sha256+" path="+visualPath);
             _timer.Tick+=OnTick;
             _owner.LocationChanged+=OnGeometryChanged; _owner.SizeChanged+=OnGeometryChanged;
-            _owner.DpiChanged+=OnDpiChanged; _owner.FormClosed+=OnClosed; _owner.Deactivate+=OnOwnerDeactivated;
+            _owner.DpiChanged+=OnDpiChanged; _owner.FormClosed+=OnClosed;
+            _owner.Activated+=OnOwnerActivated; _owner.Deactivate+=OnOwnerDeactivated;
             _anchor.SizeChanged+=OnGeometryChanged; _anchor.LocationChanged+=OnGeometryChanged;
             _timer.Start();
         }
@@ -473,8 +501,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             bool wasWaiting=_lighting.WaitingForCapture;
             long previousScene=_frame?.Scene ?? 0;
             if (_disposed || !_lighting.Adopt(frame,NowMs())) return;
-            if (!frame.Ready || frame.Scene!=previousScene)
+            if (!frame.Ready || frame.Scene!=previousScene) {
+                ClearWorldShake();
                 _surface?.CancelPointer();
+            }
             if(frame.Scene!=previousScene)_native?.ResetFeedback();
             _frame=frame;
             QueueSceneLights(frame);
@@ -497,6 +527,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_disposed) return;
             RetryBulletRevocation();
             RetryRayRevocation();
+            lock (_weatherCameraLock) _worldShake.RetryRevocation();
             if (_faulted) {
                 if ((!_bulletRevocation.Pending && !_rayRevocation.Pending) || NowMs() >= _faultedRevokeDeadlineMs)
                     _timer.Stop();
@@ -552,6 +583,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     LogManager.Log("event=world_hud_backend opaque="+_opaqueHudEnabled+" layers=damage,bottom,resources,buffs");
                     _bulletStylesReady=false;
                     _combatFxResourcesReady=false;
+                    _shakeProfilesReady=true;
+                    if (_native.WorldShakeAvailable) {
+                        try {
+                            _native.SetWorldShakeProfiles(_shakeCatalog);
+                            LogManager.Log("event=world_shake_profiles_applied sha256="+_shakeCatalog.Sha256
+                                +" profiles="+_shakeCatalog.Profiles.Length+" maxOffset="+_shakeCatalog.MaxTotalOffsetStagePx);
+                        }
+                        catch(Exception error) {
+                            _shakeProfilesReady=false;
+                            LogManager.Log("event=world_shake_profiles_unavailable "+error.Message);
+                        }
+                    }
                     if (_combatFxCatalog!=null) {
                         try { _native.CombatFxAtlas(_combatFxCatalog);_combatFxResourcesReady=true; }
                         catch(Exception error) { LogManager.Log("event=combat_fx_atlas_unavailable "+error.Message); }
@@ -591,6 +634,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     LogManager.Log("event=world_lighting_hold_long scene="+_frame.Scene);
                 }
                 if (show!=_active) {
+                    if (!show) lock (_weatherCameraLock) _worldShake.ResetCapture();
                     _active=show; _native.Active(show); _requiredFrameMs=NowMs();
                     if (!show) _surface.Hide();
                 }
@@ -604,6 +648,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _surface.FlushMove();
                 if (!_transitionInputHeld && !_inputClosed && !_surface.InputRenewing && _targetHeight!=_appliedHeight && !_surface.IsDragging) {
                     _starting=true; _schedulingAllowed=false;
+                    lock (_weatherCameraLock) _worldShake.SetNativeReady(false);
                     var resizingNative=_native; var resizingSource=_flash;
                     double resizeStarted=NowMs();
                     _native.HoldViewport(); _viewportHeld=true;
@@ -651,6 +696,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_read")) stats=_native.Read();
                 if (stats.State==2 || stats.State==3) throw new InvalidOperationException(stats.Message+" HRESULT=0x"+stats.Error.ToString("X8"));
                 if (!Synchronize()) {
+                    lock (_weatherCameraLock) _worldShake.SetNativeReady(false);
                     NoteBulletCaptureNotReady("geometry_unknown");
                     CheckGeometryRecoveryTimeout(NowMs());
                     return;
@@ -658,7 +704,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _geometryWaitStartedMs=double.NaN;
                 bool ready=stats.Received>0 && stats.Width==_crop.Width && stats.Height==_crop.Height && stats.LastFrameQpcMs>=_requiredFrameMs;
                 if (ready) _bulletCaptureNotReadyMs=0;
-                else NoteBulletCaptureNotReady("capture_not_ready");
+                else {
+                    lock (_weatherCameraLock) _worldShake.SetNativeReady(false);
+                    NoteBulletCaptureNotReady("capture_not_ready");
+                }
                 // A0 观测：推进证据用有界窗口而非逐 tick 比较——30FPS 下逐 tick 比
                 // LastFrameQpcMs 会因两时钟错位交替 flap。age<250ms 视为推进中；
                 // 静态/暂停场景源不推进是合法的，不按固定帧龄判死，只分离事实：
@@ -786,17 +835,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     if (!sent) RevokeBulletCapability("cap_send_failed");
                     else LogManager.Log("event=bullet_visual_cap_native");
                 }
-                bool spritesReady = _combatFxResourcesReady && _native.CombatFxReady;
-                if (ready && (!_worldLightsAdvertised || spritesReady != _combatFxCapabilityAdvertised)
-                    && NowMs()-_lastCombatFxCapAttemptMs >= 500 && CombatFxCapabilityChanged != null) {
-                    _lastCombatFxCapAttemptMs=NowMs();
-                    lock (_weatherCameraLock) { _worldLightsAdvertised=true; _combatFxCapabilityAdvertised=spritesReady; }
-                    bool sent=false;
-                    try { sent=CombatFxCapabilityChanged(spritesReady, true); }
-                    catch (Exception error) { LogManager.Log("event=combat_fx_cap_failed " + error.Message); }
-                    if (!sent) RevokeCombatFx("cap_send_failed");
-                    else LogManager.Log("event=combat_fx_cap_native sprites="+spritesReady+" worldLights=true");
-                }
+                UpdateCombatFxCapabilities(ready, projectileReady, stats.LastFrameQpcMs);
                 if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>CaptureRecoveryTimeoutMs) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
                     _lastLogMs=NowMs();
@@ -1207,7 +1246,158 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private void OnClosed(object sender,FormClosedEventArgs e) => Dispose();
         // 宿主失活同样撤销在途指针输入：Host 抬共享代次下界，是投影端 WM_KILLFOCUS
         // 本地下界之外的第二道保险。
-        private void OnOwnerDeactivated(object sender,EventArgs e) => _surface?.CancelPointer("owner_deactivate");
+        private bool IsGameForeground()
+        {
+            if (_owner.IsDisposed || _owner.WindowState == FormWindowState.Minimized
+                || (_owner.IsHandleCreated && IsIconic(_owner.Handle))) return false;
+            IntPtr fg = GetForegroundWindow();
+            if (fg == IntPtr.Zero) return false;
+            GetWindowThreadProcessId(fg, out uint fgPid);
+            if (fgPid == (uint)Environment.ProcessId) return true;
+            IntPtr flash = _getFlash != null ? _getFlash() : IntPtr.Zero;
+            if (flash != IntPtr.Zero)
+            {
+                GetWindowThreadProcessId(flash, out uint flashPid);
+                if (flashPid != 0 && fgPid == flashPid) return true;
+            }
+            return false;
+        }
+
+        internal void SetWorldShakeAppActive(bool active)
+        {
+            bool focused = active || ((_isAppActive == null || _isAppActive()) && IsGameForeground());
+            lock (_weatherCameraLock) _worldShake.SetOwnerFocused(focused);
+        }
+
+        private void OnOwnerActivated(object sender,EventArgs e)
+        {
+            lock (_weatherCameraLock) _worldShake.SetOwnerFocused(true);
+        }
+
+        private void OnOwnerDeactivated(object sender,EventArgs e)
+        {
+            // Sibling owned windows (WebOverlayForm) and the embedded out-of-process Flash
+            // window trigger Form.Deactivate without leaving our game session.
+            bool focused = _isAppActive != null && IsGameForeground();
+            if (!focused) lock (_weatherCameraLock) _worldShake.SetOwnerFocused(false);
+            _surface?.CancelPointer("owner_deactivate");
+        }
+
+        internal void SetWorldShakeEnabled(bool enabled)
+        {
+            lock (_weatherCameraLock) _worldShake.SetFeatureEnabled(enabled);
+        }
+
+        internal void SetWorldShakePanelBlocked(bool blocked)
+        {
+            lock (_weatherCameraLock)
+            {
+                _shakePanelBlocked = blocked;
+                _worldShake.SetModalBlocked(blocked || _transitionInputHeld);
+            }
+        }
+
+        internal void SetDamageLegacyFallback(bool fallback)
+        {
+            lock (_weatherCameraLock)
+            {
+                _damageLegacyFallback = fallback;
+                UpdateWorldShakeDamageReady();
+            }
+        }
+
+        private void UpdateWorldShakeDamageReady()
+        {
+            lock (_weatherCameraLock)
+                _worldShake.SetSharedDamageReady(_opaqueHudEnabled && _damageRasterScene is OpaqueHudRasterScene
+                    && DamagePresentation.IsAvailable && !_damageLegacyFallback);
+        }
+
+        internal void ObserveWorldShakePause(bool paused)
+        {
+            lock (_weatherCameraLock) _worldShake.SetSourcePaused(paused);
+        }
+
+        internal void ClearWorldShake()
+        {
+            lock (_weatherCameraLock)
+            {
+                _shakeRequiredFrameMs = NowMs();
+                _worldShake.SetSceneReady(false);
+            }
+        }
+
+        internal void ObserveWorldShake(CombatFxShakeImpulse[] impulses, float x, float y, float scale)
+        {
+            lock (_weatherCameraLock)
+            {
+                try { _worldShake.Observe(impulses, x, y, scale); }
+                catch (InvalidOperationException error)
+                {
+                    _worldShake.SetNativeReady(false);
+                    LogManager.Log("event=world_shake_submit_failed " + error.Message);
+                }
+            }
+        }
+
+        private bool PublishCombatFxCapsLocked(int grant)
+        {
+            if (_combatFxCapsGeneration <= 0) return false;
+            try
+            {
+                bool sent = CombatFxCapabilityChanged?.Invoke(_combatFxCapabilityAdvertised, _worldLightsAdvertised,
+                    grant > 0 ? 1 : 0, grant, _combatFxCapsGeneration) == true;
+                if (sent && grant != _lastLoggedShakeGrant)
+                {
+                    _lastLoggedShakeGrant = grant;
+                    LogManager.Log("event=world_shake_grant grant=" + grant + " gen=" + _combatFxCapsGeneration);
+                }
+                return sent;
+            }
+            catch (Exception error)
+            {
+                LogManager.Log("event=combat_fx_cap_failed " + error.Message);
+                return false;
+            }
+        }
+
+        private void UpdateCombatFxCapabilities(bool ready, bool sceneReady, double capturedAt)
+        {
+            bool appFocused = _isAppActive == null || IsGameForeground();
+            lock (_weatherCameraLock)
+            {
+                if (_disposed || _shakeRenderFaulted) return;
+                if (_isAppActive != null) _worldShake.SetOwnerFocused(appFocused);
+                _worldShake.SetNativeReady(ready && _shakeProfilesReady && _native?.ReadWorldShake() is { Enabled: 1 });
+                _worldShake.SetSceneReady(sceneReady && capturedAt >= _shakeRequiredFrameMs);
+
+                bool spritesReady = _combatFxResourcesReady && _native.CombatFxReady;
+                if (ready && _combatFxCapsGeneration > 0 && _worldShake.CapsRetryDue
+                    && (!_worldLightsAdvertised || spritesReady != _combatFxCapabilityAdvertised)
+                    && NowMs()-_lastCombatFxCapAttemptMs >= 500 && CombatFxCapabilityChanged != null)
+                {
+                    _lastCombatFxCapAttemptMs = NowMs();
+                    _worldLightsAdvertised = true;
+                    _combatFxCapabilityAdvertised = spritesReady;
+                    if (!_worldShake.PublishCurrentCaps()) RevokeCombatFx("cap_send_failed");
+                    else LogManager.Log("event=combat_fx_cap_native sprites="+spritesReady+" worldLights=true");
+                }
+
+                _worldShake.AdmitIfReady();
+            }
+        }
+
+        internal void CombatFxConnectionReady(int generation)
+        {
+            lock (_weatherCameraLock)
+            {
+                if (_disposed || generation <= 0 || generation == _combatFxCapsGeneration) return;
+                _combatFxCapsGeneration = generation;
+                _lastCombatFxCapAttemptMs = 0;
+                _worldShake.SetConnectionReady(true);
+                PublishCombatFxCapsLocked(0);
+            }
+        }
         private static double NowMs() => Stopwatch.GetTimestamp()*1000.0/Stopwatch.Frequency;
         internal void ObserveCombatFx(CombatFxDrawFrame frame,float x,float y,float scale)
         {
@@ -1231,17 +1421,28 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
         }
         internal void RejectCombatFx() { _combatFxResourcesReady=false;RevokeCombatFx("invalid_or_failed_frame"); }
-        internal void CombatFxConnectionLost() => RevokeCombatFx("socket_disconnected");
+        internal void CombatFxConnectionLost(int generation)
+        {
+            lock (_weatherCameraLock)
+            {
+                if (_combatFxCapsGeneration != generation) return;
+                _combatFxCapsGeneration = 0;
+                _worldShake.SetConnectionReady(false);
+                RevokeCombatFx("socket_disconnected");
+            }
+        }
+
         private void RevokeCombatFx(string reason)
         {
-            bool advertised;
-            lock(_weatherCameraLock) { advertised=_worldLightsAdvertised || _combatFxCapabilityAdvertised; _worldLightsAdvertised=_combatFxCapabilityAdvertised=false; }
-            ClearCombatFx();
-            if(!advertised) return;
-            bool sent=false;
-            try { sent=CombatFxCapabilityChanged?.Invoke(false, false)==true; }
-            catch(Exception error) { LogManager.Log("event=combat_fx_cap_revoke_failed "+error.Message); }
-            LogManager.Log("event=combat_fx_cap_revoke reason="+reason+" sent="+sent);
+            lock (_weatherCameraLock)
+            {
+                bool advertised = _worldLightsAdvertised || _combatFxCapabilityAdvertised;
+                _worldLightsAdvertised = _combatFxCapabilityAdvertised = false;
+                ClearCombatFx();
+                if (!advertised) return;
+                bool sent = _worldShake.PublishCurrentCaps();
+                LogManager.Log("event=combat_fx_cap_revoke reason="+reason+" sent="+sent);
+            }
         }
         private void RejectPlayerHud(string reason,Exception error)
         {
@@ -1261,6 +1462,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private void StopCapture()
         {
+            lock (_weatherCameraLock) _worldShake.ResetCapture();
             _sentSceneLightVersion=-1;
             // Same-socket source loss must return visual ownership to Flash.
             RevokeBulletCapability("capture_stopped",true);
@@ -1319,19 +1521,24 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // Owner teardown ends the game/socket lifetime. Attempt one final
             // synchronous revoke; do not create a detached retry worker.
             if (_disposed) return; _disposed=true; _timer.Stop(); StopCapture(); _timer.Dispose();
+            DamagePresentation.Changed -= UpdateWorldShakeDamageReady;
             DamagePresentation.Dispose();
             ResourcePresentation.Dispose();
             BottomPresentation.Dispose();
             BuffPresentation.Dispose();
             MainHudPresentation.Dispose();
             _owner.LocationChanged-=OnGeometryChanged; _owner.SizeChanged-=OnGeometryChanged;
-            _owner.DpiChanged-=OnDpiChanged; _owner.FormClosed-=OnClosed; _owner.Deactivate-=OnOwnerDeactivated;
+            _owner.DpiChanged-=OnDpiChanged; _owner.FormClosed-=OnClosed;
+            _owner.Activated-=OnOwnerActivated; _owner.Deactivate-=OnOwnerDeactivated;
             _anchor.SizeChanged-=OnGeometryChanged; _anchor.LocationChanged-=OnGeometryChanged;
         }
         [StructLayout(LayoutKind.Sequential)] private struct Rect { public int Left,Top,Right,Bottom; public Rectangle Rectangle=>Rectangle.FromLTRB(Left,Top,Right,Bottom); }
         [DllImport("dwmapi.dll")] private static extern int DwmGetWindowAttribute(IntPtr hwnd,int attribute,out Rect value,int size);
         [DllImport("user32.dll")] private static extern IntPtr GetWindow(IntPtr hwnd,uint command);
+        [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd,out uint processId);
         [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] private static extern bool IsWindow(IntPtr hwnd);
+        [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] private static extern bool IsIconic(IntPtr hwnd);
         [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] private static extern bool SetWindowPos(IntPtr hwnd,IntPtr after,int x,int y,int w,int h,uint flags);
         [DllImport("user32.dll")] private static extern bool GetClientRect(IntPtr hwnd,out Rect rect);
         [DllImport("user32.dll")] private static extern bool ClientToScreen(IntPtr hwnd,ref Point point);

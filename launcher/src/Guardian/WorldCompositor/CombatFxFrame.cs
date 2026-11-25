@@ -6,7 +6,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
 {
     // F section 6: epoch|sequence|gameTick|paused; s/m/i/p births, a acknowledgements, l lights.
     // s/m/i/a are one-shot visual events, not a latest-wins position snapshot.
-    // l records instead carry the complete resident equipment light snapshot.
+    // l records carry the complete resident equipment light snapshot; h records carry shake impulses.
     internal sealed class CombatFxFrame
     {
         internal readonly int Epoch, Sequence, GameTick;
@@ -15,15 +15,19 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal readonly CombatFxAck[] Acks;
         internal readonly CombatFxEquipmentLight[] EquipmentLights;
         internal readonly BloodVisualEvent[] BloodEvents;
-        private CombatFxFrame(int epoch,int sequence,int tick,bool paused,CombatFxSpawn[] spawns,CombatFxAck[] acks,CombatFxEquipmentLight[] lights,BloodVisualEvent[] blood)
-        { Epoch=epoch;Sequence=sequence;GameTick=tick;Paused=paused;Spawns=spawns;Acks=acks;EquipmentLights=lights;BloodEvents=blood; }
+        internal readonly CombatFxShakeImpulse[] Shakes;
+        private CombatFxFrame(int epoch,int sequence,int tick,bool paused,CombatFxSpawn[] spawns,CombatFxAck[] acks,
+            CombatFxEquipmentLight[] lights,BloodVisualEvent[] blood,CombatFxShakeImpulse[] shakes)
+        { Epoch=epoch;Sequence=sequence;GameTick=tick;Paused=paused;Spawns=spawns;Acks=acks;EquipmentLights=lights;BloodEvents=blood;Shakes=shakes; }
 
-        internal static bool TryParse(string payload,CombatFxCatalog catalog,out CombatFxFrame frame)
+        internal static bool TryParse(string payload,CombatFxCatalog catalog,out CombatFxFrame frame,
+            int maxShakeProfile=WorldShakeCatalog.DefaultProfileCount)
         {
             frame=null;
-            if (catalog==null || string.IsNullOrEmpty(payload) || payload.Length>32768) return false;
+            if (catalog==null || string.IsNullOrEmpty(payload) || payload.Length>32768
+                || maxShakeProfile<1 || maxShakeProfile>WorldShakeCatalog.MaxProfiles) return false;
             string[] records=payload.Split(';');
-            if (records.Length>257) return false;
+            if (records.Length>265) return false;
             string[] header=records[0].Split('|');
             if (header.Length!=4 || !Int(header[0],0,1000000000,out int epoch)
                 || !Int(header[1],0,1000000000,out int sequence)
@@ -33,10 +37,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var lights=new List<CombatFxEquipmentLight>();
             var lightIds=new HashSet<int>();
             var blood=new List<BloodVisualEvent>();
+            List<CombatFxShakeImpulse> shakes=null;
             int shooting=0,impacts=0;
             for (int i=1;i<records.Length;i++)
             {
                 string[] f=records[i].Split(',');
+                if (f[0]=="h")
+                {
+                    if (f.Length!=5 || shakes?.Count>=CombatFxShakeImpulse.MaxPerFrame
+                        || !Int(f[1],1,WorldShakeGrantSequence.Maximum,out int grant)
+                        || !Int(f[2],1,maxShakeProfile,out int profile)
+                        || !Double(f[3],-1000000,1000000,out double worldX)
+                        || !Double(f[4],-1000000,1000000,out double worldY)) return false;
+                    (shakes ??= new List<CombatFxShakeImpulse>(CombatFxShakeImpulse.MaxPerFrame)).Add(
+                        new CombatFxShakeImpulse(grant,profile,(float)worldX,(float)worldY));
+                    continue;
+                }
                 if(f[0]=="p")
                 {
                     double gravity=1;
@@ -99,7 +115,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 else if (!Int(f[7],1,int.MaxValue,out seed) || f[8]!="0") return false;
                 spawns.Add(new CombatFxSpawn(style,x,y,sx*.01f,sy*.01f,argument,count,(uint)seed));
             }
-            frame=new CombatFxFrame(epoch,sequence,tick,paused!=0,spawns.ToArray(),acks.ToArray(),lights.ToArray(),blood.ToArray());
+            frame=new CombatFxFrame(epoch,sequence,tick,paused!=0,spawns.ToArray(),acks.ToArray(),lights.ToArray(),blood.ToArray(),
+                shakes?.ToArray() ?? Array.Empty<CombatFxShakeImpulse>());
             return true;
         }
         private static bool Int(string s,int min,int max,out int v) =>
@@ -109,6 +126,21 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private static bool Double(string s,double min,double max,out double v) =>
             double.TryParse(s,NumberStyles.Float,CultureInfo.InvariantCulture,out v) && double.IsFinite(v) && v>=min && v<=max;
         private static bool Unit(float x,float y) { float m=x*x+y*y; return m>=0.99f && m<=1.01f; }
+    }
+
+    internal readonly struct CombatFxShakeImpulse
+    {
+        internal const int MaxPerFrame = 8;
+        internal readonly int Grant, Profile;
+        internal readonly float X, Y;
+
+        internal CombatFxShakeImpulse(int grant, int profile, float x, float y)
+        {
+            Grant = grant;
+            Profile = profile;
+            X = x;
+            Y = y;
+        }
     }
 
     internal readonly struct CombatFxSpawn

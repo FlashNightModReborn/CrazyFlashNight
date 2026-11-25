@@ -29,6 +29,7 @@ int wmain(int argc, wchar_t** argv) {
         {Shader,"VS","vs_4_0"},{Shader,"PS","ps_4_0"},
         {CasSourceShader,"SPS","ps_4_0"},
         {FeedbackShader,"PVS","vs_4_0"},{FeedbackShader,"PPS","ps_4_0"},
+        {WorldShakeShader,"ShakeVS","vs_4_0"},{WorldShakeShader,"ShakePS","ps_4_0"},
         {WeatherShader,"WVS","vs_4_0"},{WeatherShader,"WPS","ps_4_0"},
         {BulletShader,"BVS","vs_4_0"},{BulletShader,"BPS","ps_4_0"},
         {FrameTagDiagnosticShader,"TagPS","ps_4_0"},

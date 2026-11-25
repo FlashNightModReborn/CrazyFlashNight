@@ -566,6 +566,7 @@ namespace CF7Launcher.Bus
                     FrameSections sections = FrameSections.Parse(message);
                     if (!_frameTask.AcceptWorkerFrame(sections, connectionGen)) { Issue205Probe.Current?.Hit(Issue205Counter.WorkerRejected); return; }
                     string uiState = sections.Ui;
+                    _frameTask.ObserveShakePauseUi(uiState, connectionGen);
                     _frameTask.HandleRaw(sections.Camera, sections.HitNumbers, sections.Fps, sections.Input,
                         sections.Bullets, connectionGen, sections.Combat, sections.Rays, sections.Chains, sections.Lights, workerAdmissionChecked:true);
                     // UI 状态段透传到 WebView2（与帧渲染同步）
@@ -708,9 +709,9 @@ namespace CF7Launcher.Bus
                 {
                     PerfTrace.Counter("socket.fastlane.U");
                     // UI 数据快车道：U{type}|{payload...}
-                    // 零解析，整条 payload 转发给 WebView2 层
-                    if (_uiDataHandler != null)
-                        _uiDataHandler(message.Substring(1));
+                    string uiState = message.Substring(1);
+                    _frameTask?.ObserveShakePauseUi(uiState, connectionGen);
+                    _uiDataHandler?.Invoke(uiState);
                     return;
                 }
 

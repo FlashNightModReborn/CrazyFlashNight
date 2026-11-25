@@ -7,7 +7,6 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this._rotation = 0;
-_root.gameworld._y += 5;
 var 获取发射对象 = _root.gameworld[this.发射者名];
 if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {
@@ -35,7 +34,7 @@ if (dm != undefined && dm != null) {
             </DOMFrame>
             <DOMFrame index="3" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y -= 5;
+                <script><![CDATA[
 if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {
 	this.子弹敌我属性值 = this.子弹敌我属性值;
@@ -48,7 +47,7 @@ if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技�
             </DOMFrame>
             <DOMFrame index="7" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y += 3;
+                <script><![CDATA[
 if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {
    this.子弹敌我属性值 = this.子弹敌我属性值;
@@ -66,7 +65,7 @@ if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技�
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y -= 3;
+                <script><![CDATA[
 if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {
    this.子弹威力 *= 0.6 + 获取发射对象.被动技能.轰炸专家.等级 * 0.02;

@@ -298,6 +298,7 @@ _root.notifyGameReset = function() {
 // 任何新增暂停观察者必须走 PauseManager.subscribe；禁止裸 _root.watch("暂停", ...)（会覆盖 PauseManager 的回调）
 org.flashNight.arki.pause.PauseManager.install();
 org.flashNight.arki.pause.PauseManager.subscribe(function(newVal, oldVal, tag):Void {
+    org.flashNight.arki.render.CombatFxBridge.onPauseChanged(newVal, oldVal);
     org.flashNight.arki.render.FrameBroadcaster.pushUiState("p:" + (newVal ? "1" : "0"));
     System.IME.setEnabled(false);
 }, null);

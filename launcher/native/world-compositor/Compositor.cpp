@@ -29,6 +29,9 @@
 #include "CasSourceStage.h"
 #include "NightVisionStage.h"
 #include "FrameSyncSurface.h"
+#define CF7_WORLD_SHAKE_D3D11
+#include "WorldShakeStage.h"
+#undef CF7_WORLD_SHAKE_D3D11
 
 using namespace winrt;
 using namespace winrt::Windows::Graphics::Capture;
@@ -200,7 +203,9 @@ class HudRasterGpu {
     FocusFillGpu focusGpu_;
 public:
     void Draw(ID3D11Device* device,ID3D11DeviceContext* context,
-        const std::array<HudRasterFrame,HudRasterLayerCount>& frames,int outputWidth,int outputHeight,ProbeHudRasterStats& stats,FocusCounts& focusStats) {
+        const std::array<HudRasterFrame,HudRasterLayerCount>& frames,int outputWidth,int outputHeight,
+        ProbeHudRasterStats& stats,FocusCounts& focusStats,int shakeDx,int shakeDy,const D3D11_VIEWPORT& contentViewport,
+        ID3D11RasterizerState* raster,ID3D11RasterizerState* shakeScissorRaster) {
         stats.visibleLayers=0;
         if(!frames[3].focus)focusGpu_.ClearAtlas();
         for(const auto& frame:frames)if(frame.pixels)++stats.visibleLayers;
@@ -253,12 +258,19 @@ public:
                 }
                 layer.version=frame.version;
             }
-            float values[8]{static_cast<float>(frame.x),static_cast<float>(frame.y),
+            const bool shifted=i==0 && (shakeDx!=0 || shakeDy!=0);
+            if(shifted) {
+                const auto clip=WorldShakeStage::ContentPixels(contentViewport,outputWidth,outputHeight);
+                context->RSSetScissorRects(1,&clip);
+                context->RSSetState(shakeScissorRaster);
+            }
+            float values[8]{static_cast<float>(frame.x+(shifted?shakeDx:0)),static_cast<float>(frame.y+(shifted?shakeDy:0)),
                 static_cast<float>(frame.width),static_cast<float>(frame.height),
                 static_cast<float>(outputWidth),static_cast<float>(outputHeight),0,0};
             context->UpdateSubresource(parameters.get(),0,nullptr,values,0,0);
             auto resource=layer.resource.get();context->PSSetShaderResources(0,1,&resource);
             context->Draw(6,0);++stats.draws;
+            if(shifted)context->RSSetState(raster);
             if(i==3 && frame.focus && frame.focus->count) {
                 focusGpu_.Draw(device,context,frame.focus,outputWidth,outputHeight,focusStats);
                 context->VSSetShader(vertex.get(),nullptr,0);context->PSSetShader(pixel.get(),nullptr,0);
@@ -354,7 +366,62 @@ public:
     }
     ~Capture() { stop_ = true; Signal(); if (worker_.joinable()) worker_.join(); }
     void Mode(int mode) { if(mode_!=std::clamp(mode,0,2))++historyEpoch_; mode_ = std::clamp(mode, 0, 2); Signal(); }
-    void Active(bool active) { if(active_!=active){++historyEpoch_;++nightVisionEpoch_;} active_ = active; Signal(); }
+    void Active(bool active) {
+        {
+            std::lock_guard guard(mutex_);
+            if(active_!=active) {
+                ++historyEpoch_;++nightVisionEpoch_;
+                if(!active) {
+                    shakeEngine_.Clear();
+                    shakeResetRequested_=true;
+                }
+                active_=active;
+            }
+        }
+        Signal();
+    }
+    bool SetWorldShakeProfiles(const float* profiles,int32_t count,float maxTotalOffsetStagePx) {
+        if(!WorldShakeEngine::ValidProfileTable(profiles,count,maxTotalOffsetStagePx))return false;
+        bool needsTail;
+        {
+            std::lock_guard guard(mutex_);
+            if(!shakeEngine_.SetProfiles(profiles,count,maxTotalOffsetStagePx))return false;
+            needsTail=shakeEngine_.TailPending();
+        }
+        if(needsTail)Signal();
+        return true;
+    }
+    bool SetWorldShakeGrant(int32_t grant,bool clearState) {
+        if(grant<0 || grant>WorldShakeEngine::kMaxGrant)return false;
+        bool needsTail;
+        {
+            std::lock_guard guard(mutex_);
+            shakeEngine_.SetGrant(grant,clearState);
+            needsTail=(clearState || grant==0) && shakeEngine_.TailPending();
+        }
+        if(needsTail)Signal();
+        return true;
+    }
+    bool SubmitWorldShake(int32_t grant,const float* impulses,int32_t count,float cameraX,float cameraY,float cameraScale) {
+        bool admitted;
+        {
+            std::lock_guard guard(mutex_);
+            if(!WorldShakeEngine::ValidSubmission(impulses,count,cameraX,cameraY,cameraScale,shakeEngine_.ProfileCount()))return false;
+            const bool currentGrant=grant>0 && grant==shakeEngine_.CurrentGrant();
+            if(currentGrant && (!active_ || !shakeHealthy_))return true;
+            admitted=shakeEngine_.Submit(grant,impulses,count,cameraX,cameraY,cameraScale,currentGrant?QpcMs()/1000.0:0.0);
+        }
+        if(admitted)Signal();
+        return true;
+    }
+    void WorldShakeStats(ProbeWorldShakeStats& result) {
+        std::lock_guard guard(mutex_);
+        const auto& counts=shakeEngine_.Counts();
+        result={sizeof(ProbeWorldShakeStats),shakeHealthy_?1u:0u,shakeEngine_.ActiveCount(),
+            static_cast<uint32_t>(shakeEngine_.CurrentGrant()),shakeEngine_.LastX(),shakeEngine_.LastY(),
+            shakeEngine_.TailPending()?1u:0u,0,counts.accepted,counts.rejectedGrant,counts.droppedCapacity,
+            counts.clears,counts.activePasses,counts.tailPasses,shakeRtBytes_};
+    }
     bool Postprocess(int cas,float sharp,int feedback,int stage=0) {
         if((cas!=0 && cas!=1) || (feedback!=0 && feedback!=1)
                 || (stage!=0 && stage!=1) || !std::isfinite(sharp) || sharp<0 || sharp>1)return false;
@@ -950,6 +1017,10 @@ private:
             catch (...) { State(3, E_FAIL, L"Unknown native compositor failure"); }
             uninit_apartment();
         } catch (...) { State(3, E_FAIL, L"WinRT apartment initialization failed"); }
+        std::lock_guard guard(mutex_);
+        if(shakeEngine_.NeedsFrame())shakeEngine_.Clear();
+        shakeEngine_.ForgetPresentation();
+        shakeHealthy_=false;shakeRtBytes_=0;
     }
     void CaptureLoop() {
         State(0,S_OK,L"Creating capture device");
@@ -1199,13 +1270,23 @@ private:
         FeedbackHistory feedbackHistory;
         CasSourceStage casSource;
         NightVisionStage nightVision;
+        WorldShakeStage shakeStage;
+        auto resetShakeStage=[&](bool clearImpulses,bool resized) {
+            shakeStage.Reset();
+            std::lock_guard guard(mutex_);
+            shakeHealthy_=true;shakeRtBytes_=0;
+            if(clearImpulses)shakeEngine_.Clear();
+            if(resized)shakeEngine_.ForgetPresentation();
+        };
         ProbeCasStageStats casStageWork{sizeof(ProbeCasStageStats)};
         uint64_t appliedPostprocess=0;
         ProbePostprocessStats postprocessWork{sizeof(ProbePostprocessStats)};
         State(1, S_OK, L"GPU display path; optional diagnostic readback");
         while (!stop_) {
+            if(shakeResetRequested_.exchange(false))resetShakeStage(false,false);
             if(hudCostSampler.Started())hudCostSampler.Poll(context.get(),recordHudGpuCost);
             if (!active_) {
+                if(shakeResetRequested_.exchange(false))resetShakeStage(false,false);
                 feedbackHistory.Reset(postprocessWork,true);
                 casSource.Reset(casStageWork);
                 previousTimingPresent=0;
@@ -1251,13 +1332,16 @@ private:
             uint64_t observedSceneLightVersion;{std::lock_guard guard(mutex_);observedSceneLightVersion=sceneLightVersion_;}
             // Weather animates per presented frame; keep a 30fps floor even on
             // unpaced probe sessions so motion stays at the worker cadence.
-            uint64_t observedHudVersion;bool hudVisible;
+            uint64_t observedHudVersion;bool hudVisible,shakeNeedsFrame;
             {std::lock_guard guard(mutex_);observedHudVersion=hudVersion_;
-                hudVisible=std::any_of(hudFrames_.begin(),hudFrames_.end(),[](const auto& frame){return static_cast<bool>(frame.pixels);});}
-            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0 || vision[0]==1) ? 30 : 0);
+                hudVisible=std::any_of(hudFrames_.begin(),hudFrames_.end(),[](const auto& frame){return static_cast<bool>(frame.pixels);});
+                if(shakeEngine_.NeedsFrame())shakeEngine_.Expire(QpcMs()/1000.0);
+                shakeNeedsFrame=shakeEngine_.NeedsFrame();}
+            int paceFps = fps_>0 ? fps_ : ((shakeNeedsFrame || weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0 || vision[0]==1) ? 30 : 0);
             // Preserve independent HUD animation responsiveness; static HUD does not force redraw.
             if(hudVisible && observedHudVersion!=appliedHudVersion)paceFps=60;
             if (paceFps>0) {
+                if(shakeNeedsFrame && previousTimingPresent==0)nextPresent=std::chrono::steady_clock::now();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_until(lock,nextPresent,[this] { return stop_.load() || !active_.load() || grabRequested_.load(); });
                 if (stop_) break;
@@ -1273,6 +1357,7 @@ private:
                 // pool-only resize can retain the old non-client capture origin
                 // even though ContentSize already reports the maximized size.
                 // Output swapchain/texture and input HWNDs remain intact.
+                resetShakeStage(true,false);
                 session.Close();session=nullptr;arrived.revoke();pool.Close();
                 size=item.Size();ValidateSize(size.Width,size.Height);
                 pool=Direct3D11CaptureFramePool::CreateFreeThreaded(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
@@ -1281,7 +1366,12 @@ private:
             }
             std::unique_lock presentation(presentationMutex_);
             bool isViewportHeld = false;
-            { std::lock_guard guard(mutex_); isViewportHeld = geometry_.held; }
+            {
+                std::lock_guard guard(mutex_);
+                isViewportHeld=geometry_.held;
+                if(shakeEngine_.NeedsFrame())shakeEngine_.Expire(QpcMs()/1000.0);
+                shakeNeedsFrame=shakeEngine_.NeedsFrame();
+            }
             if (isViewportHeld) {
                 if (grabRequested_.load()) ServiceGrab(device.get(),context.get(),nullptr,0,0);
                 previousTimingPresent=0;
@@ -1319,7 +1409,7 @@ private:
             }
             RECT client{}; GetClientRect(output_, &client);
             bool fresh = static_cast<bool>(frame);
-            if (!frame && (!texture || (appliedPostprocess==postprocessVersion && !feedbackHistory.Pending()
+            if (!frame && (!texture || (!shakeNeedsFrame && appliedPostprocess==postprocessVersion && !feedbackHistory.Pending()
                     && appliedMode == mode_.load() && !proofRequested_ && !grabRequested_
                     && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
                     && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
@@ -1424,6 +1514,7 @@ private:
             ValidateSize(w, h);
             if (outputW != w || outputH != h) {
                 context->OMSetRenderTargets(0, nullptr, nullptr); rtv = nullptr;
+                resetShakeStage(true,true);
                 check_hresult(swap->ResizeBuffers(2, w, h, DXGI_FORMAT_B8G8R8A8_UNORM, 0));
                 com_ptr<ID3D11Texture2D> back;
                 check_hresult(swap->GetBuffer(0, __uuidof(ID3D11Texture2D), back.put_void()));
@@ -1638,9 +1729,27 @@ private:
             auto resource=casSource.Apply(device.get(),context.get(),vs.get(),srv.get(),textureW,textureH,
                 postprocessWork.casEnabled && casStage==1 && imageScale>=1.5f,fresh,adjustedCas,casStageWork);
             if(sourceNeighborhood)casStageWork.appliedStage=2;
-            com_ptr<ID3D11Texture2D> composed;
-            ID3D11RenderTargetView* target=rtv.get();
-            check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),composed.put_void()));
+            int32_t shakeDx=0,shakeDy=0;
+            {
+                std::lock_guard guard(mutex_);
+                if(shakeEngine_.NeedsFrame())shakeEngine_.Sample(QpcMs()/1000.0,stageScale,shakeDx,shakeDy);
+            }
+            bool useShakeStage=false;
+            D3D11_RECT shakeSamples{};
+            if(!proof && (shakeDx!=0 || shakeDy!=0)) {
+                shakeSamples=WorldShakeStage::SamplePixels(contentViewport,viewport,w,h);
+                if(shakeSamples.left<shakeSamples.right && shakeSamples.top<shakeSamples.bottom) {
+                    useShakeStage=shakeStage.EnsureOutputSize(device.get(),w,h);
+                    std::lock_guard guard(mutex_);
+                    shakeHealthy_=useShakeStage;shakeRtBytes_=shakeStage.Bytes();
+                    if(!useShakeStage)shakeEngine_.Clear();
+                }
+            }
+            if(!useShakeStage)shakeDx=shakeDy=0;
+            com_ptr<ID3D11Texture2D> back;
+            if(!useShakeStage)check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),back.put_void()));
+            auto worldTexture=useShakeStage?shakeStage.Texture():back.get();
+            auto target=useShakeStage?shakeStage.Target():rtv.get();
             context->OMSetRenderTargets(1,&target,nullptr);
             const float black[]{0,0,0,1};context->ClearRenderTargetView(target,black);
             context->RSSetViewports(1,&viewport);
@@ -1680,7 +1789,7 @@ private:
             auto lookBuffer=atmosphereStyleConstants.get(); context->PSSetConstantBuffers(3,1,&lookBuffer);
             context->Draw(3,0);
             ID3D11ShaderResourceView* empty = nullptr; context->PSSetShaderResources(0,1,&empty);
-            feedbackHistory.Apply(device.get(),context.get(),composed.get(),target,viewport,
+            feedbackHistory.Apply(device.get(),context.get(),worldTexture,target,viewport,
                 feedbackOn && !proof,fresh,frameQpcMs,QpcMs(),historyEpoch_.load(),postprocessWork);
             // Feedback used b0/t1; restore grade/LUT for the independent native FX.
             context->PSSetConstantBuffers(0,1,&buffer);
@@ -1834,15 +1943,17 @@ private:
                 // supplied by Flash's actual actor art, preserving its alpha/occlusion.
                 auto grade=constants.get();context->PSSetConstantBuffers(0,1,&grade);
                 context->PSSetShaderResources(1,1,&lutResource);context->PSSetSamplers(1,1,&lutSamp);
-                nightVision.Apply(device.get(),context.get(),composed.get(),target,contentViewport,vision,
+                nightVision.Apply(device.get(),context.get(),worldTexture,target,contentViewport,vision,
                     visionVersion,nightVisionEpoch_.load(),QpcMs(),lutActive);
             } else if(!proof) nightVision.Reset();
             context->PSSetShaderResources(1,1,&empty);
+            if(useShakeStage)shakeStage.BlitToBackbuffer(context.get(),rtv.get(),w,h,contentViewport,shakeSamples,shakeDx,shakeDy);
             std::array<HudRasterFrame,HudRasterLayerCount> hudFrames;
             {std::lock_guard guard(mutex_);hudFrames=hudFrames_;appliedHudVersion=hudVersion_;}
             ProbeHudRasterStats hudDraw{sizeof(ProbeHudRasterStats)};
             if(measureHudGpu)hudCostSampler.WorldComplete(context.get());
-            if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,w,h,hudDraw,focusCounts_);
+            if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,w,h,hudDraw,focusCounts_,
+                shakeDx,shakeDy,contentViewport,raster.get(),shakeStage.ScissorRaster());
             if(measureHudGpu)hudCostSampler.Finish(context.get());
             {std::lock_guard guard(mutex_);hudStats_.visibleLayers=hudDraw.visibleLayers;
                 hudStats_.uploads+=hudDraw.uploads;hudStats_.uploadedBytes+=hudDraw.uploadedBytes;hudStats_.draws+=hudDraw.draws;}
@@ -1869,6 +1980,7 @@ private:
                 std::lock_guard guard(mutex_);
                 stats_.received += fresh ? 1 + drained : 0; stats_.superseded += drained;
                 if (present == S_OK) {
+                    shakeEngine_.OnPresented(shakeDx,shakeDy,useShakeStage);
                     ++stats_.presented; presentedOutputW_=w; presentedOutputH_=h;
                     timingSamples_[timingNext_]={previousTimingPresent>0 ? end-previousTimingPresent : -1,
                         submit-start,end-presentStart,fresh ? std::max(0.,start-frameQpcMs) : -1,end};
@@ -2056,6 +2168,10 @@ private:
     ProbePostprocessStats postprocessStats_{sizeof(ProbePostprocessStats)};
     ProbeCasStageStats casStageStats_{sizeof(ProbeCasStageStats)};
     ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
+    WorldShakeEngine shakeEngine_;
+    bool shakeHealthy_=true;
+    uint64_t shakeRtBytes_=0;
+    std::atomic<bool> shakeResetRequested_{false};
     std::array<HudRasterFrame,HudRasterLayerCount> hudFrames_;
     std::shared_ptr<const FocusFillFrame> pendingFocus_;
     std::shared_ptr<const FocusFillAtlas> focusAtlas_;
@@ -2166,6 +2282,21 @@ private:
 }
 
 uint32_t __cdecl ProbeGetAbiVersion() { return 12; }
+int __cdecl ProbeSetWorldShakeProfiles(void* handle,const float* profiles,int32_t count,float maxTotalOffsetStagePx) {
+    return handle && static_cast<Capture*>(handle)->SetWorldShakeProfiles(profiles,count,maxTotalOffsetStagePx)?1:0;
+}
+int __cdecl ProbeSetWorldShakeGrant(void* handle,int32_t grant,int32_t clearState) {
+    return handle && static_cast<Capture*>(handle)->SetWorldShakeGrant(grant,clearState!=0)?1:0;
+}
+int __cdecl ProbeSubmitWorldShake(void* handle,int32_t grant,const float* impulses,int32_t count,
+        float cameraX,float cameraY,float cameraScale) {
+    return handle && static_cast<Capture*>(handle)->SubmitWorldShake(grant,impulses,count,cameraX,cameraY,cameraScale)?1:0;
+}
+int __cdecl ProbeGetWorldShakeStats(void* handle,ProbeWorldShakeStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeWorldShakeStats))return 0;
+    static_cast<Capture*>(handle)->WorldShakeStats(*stats);
+    return 1;
+}
 int __cdecl ProbeGetOutputSize(void* handle, int32_t* width, int32_t* height) {
     return handle && width && height && static_cast<Capture*>(handle)->OutputSize(*width,*height) ? 1 : 0;
 }

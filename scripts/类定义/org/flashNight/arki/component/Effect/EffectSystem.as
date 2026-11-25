@@ -82,6 +82,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
     public static function Effect(effectType:String, x:Number, y:Number, scaleX:Number, forceTrigger:Boolean, nativeImpact:Boolean):MovieClip
     {
         if (!effectType) return null; // 提前过滤空特效
+        org.flashNight.arki.render.CombatFxBridge.tryEffectShake(effectType, x, y);
         // Only callers that discard the MovieClip opt into the native hit channel.
         if (nativeImpact === true && org.flashNight.arki.render.CombatFxBridge.tryImpact(
             effectType, x, y, isFinite(scaleX) ? scaleX : 100, forceTrigger)) return null;

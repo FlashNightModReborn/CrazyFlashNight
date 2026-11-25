@@ -1623,7 +1623,12 @@ class Program
                 +" lighting="+combatFxCatalog.LightingSha256);
         }
         catch(Exception error) { LogManager.Log("event=combat_fx_catalog_unavailable "+error.Message); }
-        frameTask.ConfigureCombatFx(combatFxCatalog ?? CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog.ForResidentLights(worldLightSettings));
+        var worldShakeCatalog = CF7Launcher.Guardian.WorldCompositor.WorldShakeCatalog.Load(projectRoot, LogManager.Log);
+        LogManager.Log("event=world_shake_catalog_loaded sha256="+worldShakeCatalog.Sha256
+            +" profiles="+worldShakeCatalog.Profiles.Length
+            +" bullets="+worldShakeCatalog.BulletBindings.Count
+            +" effects="+worldShakeCatalog.EffectBindings.Count);
+        frameTask.ConfigureCombatFx(combatFxCatalog ?? CF7Launcher.Guardian.WorldCompositor.CombatFxCatalog.ForResidentLights(worldLightSettings), worldShakeCatalog);
         CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog rayLightingCatalog;
         try {
             rayLightingCatalog=CF7Launcher.Guardian.WorldCompositor.RayLightingCatalog.Load(projectRoot, LogManager.Log);
@@ -2203,8 +2208,20 @@ class Program
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
             windowManager.SetFlashRenderHeight, () => { if(gameOwnsInput())windowManager.RestoreFlashInputFocus("world_pointer", () => gameOwnsInput()); },
             bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,lightSettings:worldLightSettings,overlays:worldOverlays,
-            opaqueHudEnabled:workerPolicy==null && playerInfoFixtureCase==null);
+            opaqueHudEnabled:workerPolicy==null && playerInfoFixtureCase==null,
+            isAppActive:() => form.ActivationState.IsAppActive && !form.ActivationState.IsMinimized,
+            shakeCatalog:worldShakeCatalog);
+        form.AppActivationChanged += worldCompositor.SetWorldShakeAppActive;
+        form.FormClosed += delegate { form.AppActivationChanged -= worldCompositor.SetWorldShakeAppActive; };
+        hnOverlay.DamageLegacyFallbackChanged = worldCompositor.SetDamageLegacyFallback;
         hnOverlay.SetSharedPresentation(worldCompositor.DamagePresentation);
+        if (panelHost != null)
+        {
+            void ObserveShakePanel(string panel, string instance) => worldCompositor.SetWorldShakePanelBlocked(panel != null);
+            panelHost.PanelChanged += ObserveShakePanel;
+            worldCompositor.SetWorldShakePanelBlocked(panelHost.IsPanelOpen);
+            form.FormClosed += delegate { panelHost.PanelChanged -= ObserveShakePanel; };
+        }
         if(playerInfoFixtureCase==null)playerHudRuntime?.SetSharedWorld(worldCompositor);
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
         webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
@@ -2314,32 +2331,36 @@ class Program
         frameTask.CombatFxObserved=worldCompositor.ObserveCombatFx;
         frameTask.CombatFxRejected=worldCompositor.RejectCombatFx;
         frameTask.CombatFxCleared=worldCompositor.ClearCombatFx;
+        frameTask.WorldShakeObserved=worldCompositor.ObserveWorldShake;
+        frameTask.WorldShakeCleared=worldCompositor.ClearWorldShake;
+        frameTask.WorldShakePauseObserved=worldCompositor.ObserveWorldShakePause;
         {
-            int fxCapsGeneration=0;
             var fxStyles=new List<object>();
             foreach(var style in combatFxCatalog?.Styles ?? Array.Empty<CF7Launcher.Guardian.WorldCompositor.CombatFxStyle>())
                 fxStyles.Add(new { index=style.Index,linkage=style.Linkage,
                     kind=style.IsCasing?"casing":(style.IsBlood?"blood":(style.IsImpact?"impact":"muzzle")),skipOriginYZero=style.SkipOriginYZero,
                     variantSounds=style.VariantSounds,soundAtBirth=style.SoundAtBirth,randomRotation=style.RandomRotation });
-            bool PublishFxCaps(bool available,bool worldLights,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
+            var shakeConfig=worldShakeCatalog.BuildCapsPayload();
+            bool PublishFxCaps(bool available,bool worldLights,int shakeVersion,int shakeGrant,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
                 task="combat_fx_caps",version=1,generation,native=available,worldLights,bloodVersion=1,equipmentLights=worldLights?2:0,equipmentRadialLights=worldLights?1:0,
-                equipmentRadialPeak=worldLightSettings.EquipmentPeak,sceneLightsVersion=worldLights?1:0,digest=combatFxCatalog?.Sha256 ?? "",sceneLightsDigest=workerSceneLightDigest,styles=fxStyles
+                equipmentRadialPeak=worldLightSettings.EquipmentPeak,sceneLightsVersion=worldLights?1:0,digest=combatFxCatalog?.Sha256 ?? "",sceneLightsDigest=workerSceneLightDigest,styles=fxStyles,
+                shakeVersion,shakeGrant,shakeConfig
             })+"\0",generation);
-            Action<int> readyFx=generation => {
-                Volatile.Write(ref fxCapsGeneration,generation);
-                PublishFxCaps(false,false,generation);
+            worldCompositor.CombatFxCapabilityChanged=(available,worldLights,shakeVersion,shakeGrant,generation) => {
+                bool sent=PublishFxCaps(available,worldLights,shakeVersion,shakeGrant,generation);
+                if (sent || !available) ObserveWorkerCatalogReady(4, available, sent);
+                return sent;
             };
-            socketServer.OnClientReadyForGeneration+=readyFx;
-            socketServer.OnClientDisconnectedForGeneration+=generation => {
-                frameTask.ResetCombatFxForGeneration(generation);
-                if(Interlocked.CompareExchange(ref fxCapsGeneration,0,generation)==generation)
-                    worldCompositor.CombatFxConnectionLost();
-            };
-            worldCompositor.CombatFxCapabilityChanged=(available,worldLights) => {
-                int generation=Volatile.Read(ref fxCapsGeneration);
-                bool sent=generation>0 && PublishFxCaps(available,worldLights,generation);
-                ObserveWorkerCatalogReady(4, available, sent);return sent;
-            };
+            socketServer.RunWithConnectionTransitionFence(() => {
+                socketServer.OnClientReadyForGeneration+=worldCompositor.CombatFxConnectionReady;
+                socketServer.OnClientDisconnectedForGeneration+=generation => {
+                    worldCompositor.CombatFxConnectionLost(generation);
+                    frameTask.ResetCombatFxForGeneration(generation);
+                };
+                if(socketServer.TryGetReadyGeneration(out int readyGeneration))
+                    worldCompositor.CombatFxConnectionReady(readyGeneration);
+                return true;
+            });
             frameTask.CombatFxEventsReady=(events,generation) => {
                 var poses=new List<object>();
                 foreach(var pose in events.Settled)
@@ -2352,7 +2373,6 @@ class Program
                     groundHits=events.GroundHits,settled=poses,bloodLandings=bloodPoses,sounds=events.Sounds
                 })+"\0",generation);
             };
-            if(socketServer.TryGetReadyGeneration(out int readyFxGeneration)) readyFx(readyFxGeneration);
         }
         socketServer.OnClientDisconnected += worldLightingTask.Disconnected;
         int weatherCapsGeneration=0;

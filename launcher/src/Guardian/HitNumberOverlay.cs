@@ -22,7 +22,15 @@ namespace CF7Launcher.Guardian
         private PlayerInfoLayeredDibSurface _surface;
         private Graphics _surfaceGraphics;
         private WorldRasterPresentation _sharedPresentation;
-        private bool _sharedFallbackLogged;
+        private bool _sharedFallbackLogged, _usingLegacyDamage;
+        internal Action<bool> DamageLegacyFallbackChanged;
+
+        private void SetLegacyDamageFallback(bool fallback)
+        {
+            if (_usingLegacyDamage == fallback) return;
+            _usingLegacyDamage = fallback;
+            DamageLegacyFallbackChanged?.Invoke(fallback);
+        }
 
         public HitNumberOverlay(Form owner, Control anchor)
             : base(owner, anchor, 1024f, 576f)
@@ -36,6 +44,7 @@ namespace CF7Launcher.Guardian
             if (InvokeRequired) throw new InvalidOperationException("Damage presentation belongs to the UI thread.");
             if (_sharedPresentation != null) _sharedPresentation.Changed -= OnSharedPresentationChanged;
             DismissOverlay();
+            SetLegacyDamageFallback(false);
             _sharedPresentation = presentation;
             if (_sharedPresentation != null) _sharedPresentation.Changed += OnSharedPresentationChanged;
             OnSharedPresentationChanged();
@@ -50,6 +59,7 @@ namespace CF7Launcher.Guardian
         {
             _sharedPresentation?.Hide();
             DismissOverlay();
+            SetLegacyDamageFallback(false);
         }
 
         protected override void OnOwnerBecameVisible()
@@ -113,6 +123,7 @@ namespace CF7Launcher.Guardian
             if (_sharedPresentation != null && !_sharedPresentation.IsAvailable)
             {
                 DismissOverlay();
+                SetLegacyDamageFallback(false);
                 return;
             }
             HitNumberRuntimeSnapshot snapshot = _currentSnapshot;
@@ -168,9 +179,11 @@ namespace CF7Launcher.Guardian
                     checked(_surface.Width * 4), new Point(screenX, screenY)) || !_sharedPresentation.IsAvailable)
                 {
                     if (_shown) DismissOverlay();
+                    SetLegacyDamageFallback(false);
                     _sharedFallbackLogged = false;
                     return;
                 }
+                SetLegacyDamageFallback(true);
                 _sharedPresentation.Hide();
                 if (!_sharedFallbackLogged)
                 {

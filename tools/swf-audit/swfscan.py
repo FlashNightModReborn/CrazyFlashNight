@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """轻量 SWF 扫描器：尺寸 / 标签直方图 / 实例名提取。无需 ffdec。"""
 import sys, os, zlib, struct, json
+from collections import Counter
 
 SHAPE   = {2,22,32,83,46,84}                 # DefineShape* / DefineMorphShape*
 BITMAP  = {6,8,20,21,35,36,90}               # DefineBits* / JPEGTables
@@ -140,6 +141,193 @@ def scan(path):
         'actions': actions,
         'names': sorted(names),
     }
+
+
+def avm1_container(raw):
+    """Strict tag bounds and AVM1 script/linkage inventory for publish verification."""
+    limit = 512 * 1024 * 1024
+    if len(raw) < 8 or len(raw) > limit:
+        raise ValueError("invalid SWF file size")
+    signature, version = raw[:3], raw[3]
+    declared = struct.unpack_from('<I', raw, 4)[0]
+    if not 8 <= declared <= limit:
+        raise ValueError("invalid or oversized declared SWF length")
+    if signature == b'FWS':
+        data = raw[8:]
+    elif signature == b'CWS':
+        decoder = zlib.decompressobj()
+        data = decoder.decompress(raw[8:], declared - 8 + 1)
+        if not decoder.eof or decoder.unused_data:
+            raise ValueError("incomplete or trailing CWS compressed data")
+    elif signature == b'ZWS':
+        import lzma
+        decoder = lzma.LZMADecompressor(format=lzma.FORMAT_ALONE, memlimit=limit)
+        data = decoder.decompress(
+            raw[12:17] + struct.pack('<Q', declared - 8) + raw[17:], max_length=declared - 8 + 1
+        )
+    else:
+        raise ValueError(f"invalid SWF signature {signature!r}")
+    if len(data) != declared - 8:
+        raise ValueError("SWF declared and decompressed lengths differ")
+
+    header = Bits(data)
+    rect_bits = header.u(5)
+    for _ in range(4):
+        header.s(rect_bits)
+    header.align()
+    actions, exports, imports = Counter(), [], []
+
+    def u16(pos):
+        return struct.unpack_from('<H', data, pos)[0]
+
+    def u32(pos):
+        return struct.unpack_from('<I', data, pos)[0]
+
+    def string(pos, end):
+        stop = data.index(0, pos, end)
+        return data[pos:stop].decode('utf-8'), stop + 1
+
+    def action(kind, start, end):
+        if start > end:
+            raise ValueError(f"{kind} exceeds tag")
+        if start < end:
+            actions[kind] += 1
+
+    def clip_actions(pos, end, code):
+        width = 4 if version >= 6 else 2
+        pos += 2 + width  # reserved and aggregate ClipEventFlags
+        while pos + width <= end:
+            flags = int.from_bytes(data[pos:pos + width], 'little')
+            pos += width
+            if not flags:
+                if pos != end:
+                    raise ValueError("trailing data after ClipActions")
+                return
+            stop = pos + 4 + u32(pos)
+            if stop > end:
+                raise ValueError("ClipAction exceeds PlaceObject tag")
+            action(f"PlaceObject{2 if code == 26 else 3}.ClipAction",
+                   pos + 4 + bool(flags & 0x20000), stop)
+            pos = stop
+        raise ValueError("missing ClipActions terminator")
+
+    def place(pos, end, code):
+        flags = data[pos]
+        if not flags & 128:
+            return
+        extra = data[pos + 1] if code in (70, 94) else 0
+        if code == 94:
+            raise ValueError("PlaceObject4 clip actions are unsupported")
+        pos += 4 if code == 70 else 3  # flags and depth
+        if extra & 8 or (extra & 16 and flags & 2):
+            _, pos = string(pos, end)
+        if flags & 2:
+            pos += 2
+        bits = Bits(data, pos)
+        if flags & 4:
+            skip_matrix(bits)
+        if flags & 8:
+            skip_cxform(bits, True)
+        pos = bits.byte + (2 if flags & 16 else 0)
+        if flags & 32:
+            _, pos = string(pos, end)
+        if flags & 64:
+            pos += 2
+        if extra & 1:
+            count = data[pos]
+            pos += 1
+            fixed_filter_sizes = {0: 23, 1: 9, 2: 15, 3: 27, 6: 80}
+            for _ in range(count):
+                kind = data[pos]
+                pos += 1
+                if kind in fixed_filter_sizes:
+                    pos += fixed_filter_sizes[kind]
+                elif kind in (4, 7):
+                    pos += 20 + data[pos] * 5
+                elif kind == 5:
+                    pos += 15 + data[pos] * data[pos + 1] * 4
+                else:
+                    raise ValueError(f"unknown PlaceObject filter {kind}")
+        pos += bool(extra & 2) + bool(extra & 4) + bool(extra & 32) + 4 * bool(extra & 64)
+        clip_actions(pos, end, code)
+
+    def button_actions(pos, end, code):
+        if code == 7:
+            pos += 2  # button ID
+            while pos < end and data[pos]:
+                bits = Bits(data, pos + 5)
+                skip_matrix(bits)
+                pos = bits.byte
+            action("DefineButton.Action", pos + 1, end)
+            return
+        start = pos + 3  # ActionOffset is relative to this field
+        offset = u16(start)
+        if not offset:
+            return
+        pos = start + offset
+        while pos + 4 <= end:
+            size = u16(pos)
+            stop = pos + size if size else end
+            if not pos + 4 <= stop <= end:
+                raise ValueError("invalid DefineButton2 action size")
+            action("DefineButton2.CondAction", pos + 4, stop)
+            if not size:
+                return
+            pos = stop
+        raise ValueError("missing DefineButton2 final action")
+
+    def tags(pos, end, depth=0):
+        if depth > 64:
+            raise ValueError("SWF sprite nesting exceeds 64")
+        while pos + 2 <= end:
+            word = u16(pos)
+            code, size = word >> 6, word & 63
+            pos += 2
+            if size == 63:
+                size = u32(pos)
+                pos += 4
+            stop = pos + size
+            if stop > end:
+                raise ValueError("SWF tag exceeds container")
+            if code == 0:
+                if size or stop != end:
+                    raise ValueError("invalid SWF End tag or trailing data")
+                return
+            if code == SPRITE:
+                tags(pos + 4, stop, depth + 1)
+            elif code in ACTION:
+                action("DoAction" if code == 12 else "DoInitAction", pos + (2 if code == 59 else 0), stop)
+            elif code in (26, 70, 94):
+                place(pos, stop, code)
+            elif code in (7, 34):
+                button_actions(pos, stop, code)
+            elif code in (56, 57, 71):
+                url = None
+                if code != 56:
+                    url, pos = string(pos, stop)
+                    if code == 71:
+                        pos += 2
+                count = u16(pos)
+                pos += 2
+                for _ in range(count):
+                    character_id = u16(pos)
+                    name, pos = string(pos + 2, stop)
+                    item = dict(name=name, characterId=character_id)
+                    if url is not None:
+                        imports.append(dict(item, url=url))
+                    else:
+                        exports.append(item)
+                if pos != stop:
+                    raise ValueError("invalid linkage tag length")
+            elif code in (72, 82) or (code == 69 and data[pos] & 8):
+                raise ValueError("AVM2 bytecode is outside the AVM1 gate")
+            pos = stop
+        raise ValueError("missing SWF End tag")
+
+    tags(header.byte + 4, len(data))
+    return dict(signature=signature.decode(), version=version, declaredBytes=declared,
+                actionBlocks=sum(actions.values()), actionHistogram=dict(actions),
+                exports=exports, imports=imports)
 
 if __name__ == '__main__':
     args = sys.argv[1:]

@@ -36,6 +36,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly StopDelegate _holdViewport;
         // Dev-only LUT lab export; absent on older companion builds (grab reports unavailable).
         private readonly GrabDelegate _grab,_grabComposite;
+        private readonly WorldShakeSetProfilesDelegate _setWorldShakeProfiles;
+        private readonly WorldShakeSetGrantDelegate _setWorldShakeGrant;
+        private readonly WorldShakeSubmitDelegate _submitWorldShake;
+        private readonly WorldShakeReadDelegate _readWorldShake;
         // lut-set-v1 生产 LUT 路径（32^3 RGBA8 整块上传 + 清除回退矩阵）。
         // Additive exports require the paired native DLL.
         // 严格 Export 拒绝未配套旧 DLL（与 ProbeGetCaptureSize 同模式）。
@@ -91,6 +95,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _holdViewport=Export<StopDelegate>("ProbeHoldViewport");
                 _grab=TryExport<GrabDelegate>("ProbeGrabLatestFrame");
                 _grabComposite=TryExport<GrabDelegate>("ProbeGrabCompositeFrame");
+                _setWorldShakeProfiles=TryExport<WorldShakeSetProfilesDelegate>("ProbeSetWorldShakeProfiles");
+                _setWorldShakeGrant=TryExport<WorldShakeSetGrantDelegate>("ProbeSetWorldShakeGrant");
+                _submitWorldShake=TryExport<WorldShakeSubmitDelegate>("ProbeSubmitWorldShake");
+                _readWorldShake=TryExport<WorldShakeReadDelegate>("ProbeGetWorldShakeStats");
                 _lut=Export<LutDelegate>("ProbeSetLut"); _clearLut=Export<StopDelegate>("ProbeClearLut");
                 _nightVision=Export<NightVisionDelegate>("ProbeSetNightVision");
                 _weather=Export<WeatherDelegate>("ProbeSetWeather"); // paired native presentation capability
@@ -124,6 +132,70 @@ namespace CF7Launcher.Guardian.WorldCompositor
             try { address = NativeLibrary.GetExport(_module, name); } catch { return null; }
             return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer<T>(address);
         }
+        internal bool WorldShakeAvailable => _session != IntPtr.Zero && _setWorldShakeGrant != null
+            && _submitWorldShake != null && _readWorldShake != null;
+
+        internal unsafe void SetWorldShakeProfiles(WorldShakeCatalog catalog)
+        {
+            if (_session == IntPtr.Zero || _setWorldShakeProfiles == null || catalog == null) return;
+            float[] packed = catalog.PackNativeProfiles();
+            fixed (float* ptr = packed)
+            {
+                if (_setWorldShakeProfiles(_session, ptr, catalog.Profiles.Length, catalog.MaxTotalOffsetStagePx) != 1)
+                    throw new InvalidOperationException("Native world shake profile table rejected.");
+            }
+        }
+
+        internal void SetWorldShakeGrant(int grant, bool clearState)
+        {
+            if (WorldShakeAvailable && _setWorldShakeGrant(_session, grant, clearState ? 1 : 0) != 1)
+                throw new InvalidOperationException("Native world shake grant rejected.");
+        }
+
+        internal unsafe void SubmitWorldShake(int grant, ReadOnlySpan<CombatFxShakeImpulse> impulses,
+            float cameraX, float cameraY, float cameraScale)
+        {
+            if (!WorldShakeAvailable || impulses.IsEmpty) return;
+            if (impulses.Length > CombatFxShakeImpulse.MaxPerFrame) throw new ArgumentOutOfRangeException(nameof(impulses));
+            float* packed = stackalloc float[impulses.Length * 4];
+            for (int i = 0; i < impulses.Length; i++)
+            {
+                ref readonly CombatFxShakeImpulse impulse = ref impulses[i];
+                packed[i * 4] = impulse.Profile;
+                packed[i * 4 + 1] = impulse.X;
+                packed[i * 4 + 2] = impulse.Y;
+                packed[i * 4 + 3] = 0;
+            }
+            if (_submitWorldShake(_session, grant, packed, impulses.Length, cameraX, cameraY, cameraScale) != 1)
+                throw new InvalidOperationException("Native world shake submission rejected.");
+        }
+
+        internal WorldShakeStats? ReadWorldShake()
+        {
+            if (!WorldShakeAvailable) return null;
+            var stats = new WorldShakeStats { Size = (uint)Marshal.SizeOf<WorldShakeStats>() };
+            return _readWorldShake(_session, ref stats) == 1 ? stats : null;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WorldShakeStats
+        {
+            internal uint Size, Enabled, ActiveCount, CurrentGrant;
+            internal int LastOffsetX, LastOffsetY;
+            internal uint TailPending, Reserved;
+            internal ulong Accepted, RejectedGrant, DroppedCapacity, Clears, ActivePasses, TailPasses, RtBytes;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private unsafe delegate int WorldShakeSetProfilesDelegate(IntPtr session, float* profiles, int count, float maxTotalOffsetStagePx);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int WorldShakeSetGrantDelegate(IntPtr session, int grant, int clearState);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private unsafe delegate int WorldShakeSubmitDelegate(IntPtr session, int grant, float* impulses, int count,
+            float cameraX, float cameraY, float cameraScale);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int WorldShakeReadDelegate(IntPtr session, ref WorldShakeStats stats);
+
         internal const int GrabOk = 1, GrabInvalidArgument = 0, GrabNoFrame = -1, GrabBufferTooSmall = -2,
             GrabBusy = -3, GrabTimeout = -4, GrabGpuError = -5, GrabExportUnavailable = -6,
             // C# 侧合成码（不进原生 ABI）：合成器未呈现或世界视口裁剪未建立，

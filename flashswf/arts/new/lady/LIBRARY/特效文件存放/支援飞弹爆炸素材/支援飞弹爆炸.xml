@@ -7,7 +7,6 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this._rotation = 0;
-_root.gameworld._y += 5;
 var 获取发射对象 = _root.gameworld[this.发射者名];
 if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {

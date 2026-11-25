@@ -131,3 +131,17 @@ CPU/GPU 灯记录为 16 个 float：`x,y,length,energy,r,g,b,kind,dx,dy,halfWidt
 正式列车的 `combat-fx-assets-current` 检查图集、源闭包、动画适配和光源预设；
 `combat-bullet-assets-current` 检查子弹目录和纹理图集。检查仅需 Python 标准库。
 完整重新导出另需已安装的 Java/FFDec 与 Pillow。
+
+## 屏幕震动表驱动配置
+
+`screen_shake.v1.json` 是屏幕震动的单一数据真源，集中定义：
+
+- `maxTotalOffsetStagePx`：多震叠加时的舞台像素总位移向量上限（0–64）。
+- `profiles`：1–16 个连续编号的震动档位（`id`、`name`、`priority`、`amplitude`、`ticks`、`frequency`、`radius`；`radius=0` 表示全屏无衰减震动）。
+- `bindings.bullets` / `bindings.effects`：按子弹基础素材名（`baseAsset`）和特效名（`EffectSystem.Effect`）映射到档位名称；`bindings.exemptBullets` 显式登记经审视不触发出生震屏的爆炸类素材（如延迟阶段触发的 `量子爆弹` 或纯视觉子元件）。
+
+Host 在启动时加载并校验 `screen_shake.v1.json`（记录 SHA-256），将档位曲线一次性下发给原生 `FlashCompositorNative.dll`（取代 C++ 写死参数，旧 DLL / 缺省配置仍保留内置默认兜底），并将 `shakeConfig`（档位上限、优先级、全屏档位、尾帧长度以及 `bullets`/`effects` 字典）随 `combat_fx_caps` 下发给 AS2。后续增删手雷/爆炸绑定或调优手感曲线只需修改 `screen_shake.v1.json` 并重启游戏，无需重编 C++ DLL 或 `asLoader`。修改后可运行：
+
+```powershell
+python tools/combat-fx-assets/verify_screen_shake.py --strict-coverage
+```

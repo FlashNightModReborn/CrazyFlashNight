@@ -47,6 +47,11 @@ namespace CF7Launcher.Tasks
         internal Action<CombatFxDrawFrame,float,float,float> CombatFxObserved;
         internal Action<CombatFxEvents,int> CombatFxEventsReady;
         internal Action CombatFxRejected,CombatFxCleared;
+        private int _shakeUiGeneration;
+        private int _maxShakeProfile = WorldShakeCatalog.DefaultProfileCount;
+        internal Action<bool> WorldShakePauseObserved;
+        internal Action<CombatFxShakeImpulse[],float,float,float> WorldShakeObserved;
+        internal Action WorldShakeCleared;
         internal Action VisualFrameStarted,VisualFrameCompleted;
         private volatile bool _stopped;
 
@@ -146,32 +151,58 @@ namespace CF7Launcher.Tasks
         internal void ResetBulletVisualShadowForGeneration(int generation) =>
             _bulletVisualShadow?.ResetIfGeneration(generation);
 
-        internal void ConfigureCombatFx(CombatFxCatalog catalog)
+        internal void ConfigureCombatFx(CombatFxCatalog catalog, WorldShakeCatalog shakeCatalog = null)
         {
             lock(_combatFxLock) {
                 _combatFxCatalog=catalog;_combatFxEngine=catalog==null?null:new CombatFxEngine(catalog);
                 _combatFxEngine?.ConfigureVisualBudget(_nativeVisualBudget);
+                _maxShakeProfile=shakeCatalog?.MaxProfileId ?? WorldShakeCatalog.DefaultProfileCount;
             }
         }
         internal void ResetCombatFxForGeneration(int generation)
         {
             lock(_combatFxLock) {
-                if(generation!=_combatFxGeneration) return;
+                if(generation<=0 || generation<_combatFxGeneration || generation<_shakeUiGeneration) return;
+                _shakeUiGeneration=generation+1;
+                WorldShakeCleared?.Invoke();
                 _combatFxEngine?.Reset();_combatFxGeneration=generation+1;_minimumCombatFxEpoch=0;
                 CombatFxCleared?.Invoke();
             }
         }
+        internal void ObserveShakePauseUi(string uiPayload,int connectionGeneration)
+        {
+            if (_stopped || string.IsNullOrEmpty(uiPayload) || connectionGeneration <= 0) return;
+            lock (_combatFxLock)
+            {
+                if (connectionGeneration < _combatFxGeneration || connectionGeneration < _shakeUiGeneration) return;
+                _shakeUiGeneration = connectionGeneration;
+                ReadOnlySpan<char> remaining = uiPayload.AsSpan();
+                while (!remaining.IsEmpty)
+                {
+                    int separator = remaining.IndexOf('|');
+                    ReadOnlySpan<char> segment = separator < 0 ? remaining : remaining[..separator];
+                    if (segment.SequenceEqual("p:1")) WorldShakePauseObserved?.Invoke(true);
+                    else if (segment.SequenceEqual("p:0")) WorldShakePauseObserved?.Invoke(false);
+                    if (separator < 0) break;
+                    remaining = remaining[(separator + 1)..];
+                }
+            }
+        }
+
         private void ObserveCombatFx(string payload,int generation,HitNumberCamera camera)
         {
             lock(_combatFxLock) {
-                if(_combatFxEngine==null || generation<_combatFxGeneration) return;
-                if(!CombatFxFrame.TryParse(payload,_combatFxCatalog,out CombatFxFrame frame)) {
+                if(_combatFxEngine==null || generation<_combatFxGeneration || generation<_shakeUiGeneration) return;
+                if(!CombatFxFrame.TryParse(payload,_combatFxCatalog,out CombatFxFrame frame,_maxShakeProfile)) {
                     CombatFxRejected?.Invoke();LogManager.Log("event=combat_fx_frame_rejected");return;
                 }
                 if(generation>_combatFxGeneration) _minimumCombatFxEpoch=0;
                 if(frame.Epoch<_minimumCombatFxEpoch) return;
                 _combatFxGeneration=generation;
                 if(!_combatFxEngine.Apply(frame,generation)) return;
+                if (frame.Paused) WorldShakePauseObserved?.Invoke(true);
+                else if (frame.Shakes.Length > 0)
+                    WorldShakeObserved?.Invoke(frame.Shakes,camera.OffsetX,camera.OffsetY,camera.Scale);
                 SceneLightClockObserved?.Invoke(frame.GameTick,frame.Paused);
                 CombatFxDrawFrame draw=_combatFxEngine.BuildDraw();
                 CombatFxObserved?.Invoke(draw,camera.OffsetX,camera.OffsetY,camera.Scale);
@@ -179,7 +210,7 @@ namespace CF7Launcher.Tasks
                 if(events!=null) CombatFxEventsReady?.Invoke(events,generation);
                 if(++_combatFxLogFrames>=60) {
                     _combatFxLogFrames=0;
-                    if(draw.Count>0) LogManager.Log("event=combat_fx_frame epoch="+frame.Epoch
+                    if(draw?.Count>0) LogManager.Log("event=combat_fx_frame epoch="+frame.Epoch
                         +" casings="+draw.CasingCount+" muzzles="+(draw.Count-draw.CasingCount-draw.ImpactCount)
                         +" impacts="+draw.ImpactCount+" lights="+draw.LightCount
                         +" dropped="+_combatFxEngine.Dropped+" impactDropped="+_combatFxEngine.ImpactDropped
@@ -362,6 +393,7 @@ namespace CF7Launcher.Tasks
             if (_stopped) return;
             try
             {
+                lock (_combatFxLock) WorldShakeCleared?.Invoke();
                 HitNumberRuntimeSnapshot snapshot;
                 lock (_hitNumberLock) snapshot = _hitNumberRuntime.Reset();
                 _overlay?.UpdateFrame(snapshot);

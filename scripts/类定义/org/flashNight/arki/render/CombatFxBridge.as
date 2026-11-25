@@ -25,11 +25,31 @@ class org.flashNight.arki.render.CombatFxBridge {
     private static var impacts:Array = [];
     private static var impactDropped:Number = 0;
     private static var dropped:Number = 0;
+    private static var shakeCapVersion:Number = 0;
+    private static var shakeLastSeenGrant:Number = 0;
+    private static var shakeGrant:Number = 0;
+    private static var shakePaused:Boolean = false;
+    private static var shakeAwaitingGrant:Boolean = false;
+    private static var shakeGrants:Array = [0,0,0,0,0,0,0,0];
+    private static var shakeProfiles:Array = [0,0,0,0,0,0,0,0];
+    private static var shakeXs:Array = [0,0,0,0,0,0,0,0];
+    private static var shakeYs:Array = [0,0,0,0,0,0,0,0];
+    private static var shakeCount:Number = 0;
+    private static var shakeDropped:Number = 0;
+    private static var shakeTailRemaining:Number = 0;
+    private static var shakeTailNeedsClear:Boolean = false;
+    private static var shakeMaxProfile:Number = 7;
+    private static var shakeTailLimit:Number = 31;
+    private static var shakePriority:Array = [0,1,2,5,3,6,7,4];
+    private static var shakeScreenWide:Object = null;
+    private static var shakeBulletMap:Object = {};
+    private static var shakeEffectMap:Object = {};
+
     public static function installedCatalogDigest(expectedGeneration:Number):String {
         return enabled && generation == expectedGeneration ? org.flashNight.arki.render.WorkerProjectionPolicy.adoptedCatalogDigest(digest) : "";
     }
     public static function isDecorationClean():Boolean {
-        return spawns.length == 0 && impacts.length == 0 && acks.length == 0
+        return spawns.length == 0 && impacts.length == 0 && acks.length == 0 && shakeCount == 0
             && DecalStampQueue.getStats().pending == 0 && BloodVisualBridge.getStats().queued == 0
             && BloodVisualBridge.getStats().pendingStamps == 0;
     }
@@ -71,8 +91,14 @@ class org.flashNight.arki.render.CombatFxBridge {
                 }
         }
         var active:Boolean = caps["native"] === true;
-        if (generation != caps.generation) resetScene();
-        else if (enabled != active || digest != caps.digest) resetDecorations();
+        if (generation != caps.generation) {
+            resetScene();
+            shakeLastSeenGrant = 0;
+            shakeAwaitingGrant = false;
+            shakePaused = _root.暂停 ? true : false;
+        } else if (enabled != active || digest != caps.digest) {
+            resetDecorations();
+        }
         worldLights = caps.worldLights == undefined ? active : caps.worldLights === true;
         if (digest != caps.digest) DecalStampQueue.clearCache();
         generation = caps.generation;
@@ -87,15 +113,129 @@ class org.flashNight.arki.render.CombatFxBridge {
             blood != undefined && blood.kind == "blood" && caps.bloodVersion === 1 ? blood.index : -1);
         EquipmentLightBridge.configure(caps);
         SceneLightBridge.configureCaps(caps);
+        configureShake(caps);
+    }
+
+    private static function resetShakeConfigDefaults():Void {
+        shakeMaxProfile = 7;
+        shakeTailLimit = 31;
+        shakePriority = [0,1,2,5,3,6,7,4];
+        var wide:Object = {};
+        wide[7] = true;
+        shakeScreenWide = wide;
+        shakeBulletMap = {};
+        shakeEffectMap = {};
+    }
+
+    private static function parseShakeBindings(raw:Object, maxProfile:Number, totalRef:Object):Object {
+        if (raw == null || typeof raw != "object" || (raw instanceof Array)) return null;
+        var out:Object = {};
+        for (var key:String in raw) {
+            if (!raw.hasOwnProperty(key)) continue;
+            if (typeof key != "string" || key.length < 1 || key.length > 128) return null;
+            var pid:Number = raw[key];
+            if (typeof pid != "number" || !isFinite(pid) || pid != Math.floor(pid) || pid < 1 || pid > maxProfile) return null;
+            totalRef.count++;
+            if (totalRef.count > 256) return null;
+            out[key] = pid;
+        }
+        return out;
+    }
+
+    private static function applyShakeConfig(cfg:Object):Boolean {
+        if (cfg == undefined) {
+            resetShakeConfigDefaults();
+            return true;
+        }
+        if (cfg == null || typeof cfg != "object" || (cfg instanceof Array)) return false;
+        var nextMax:Number = cfg.maxProfile;
+        var nextTail:Number = cfg.tailTicks;
+        if (typeof nextMax != "number" || !isFinite(nextMax) || nextMax != Math.floor(nextMax) || nextMax < 1 || nextMax > 16) return false;
+        if (typeof nextTail != "number" || !isFinite(nextTail) || nextTail != Math.floor(nextTail) || nextTail < 2 || nextTail > 121) return false;
+        var rawPrio:Array = cfg.priorities;
+        if (!(rawPrio instanceof Array) || rawPrio.length != nextMax + 1 || rawPrio[0] !== 0) return false;
+        var nextPrio:Array = [0];
+        for (var i:Number = 1; i <= nextMax; i++) {
+            var prio:Number = rawPrio[i];
+            if (typeof prio != "number" || !isFinite(prio) || prio != Math.floor(prio) || prio < 1 || prio > 100) return false;
+            nextPrio[i] = prio;
+        }
+        var rawWide:Array = cfg.screenWide;
+        if (!(rawWide instanceof Array) || rawWide.length > nextMax) return false;
+        var nextWide:Object = {};
+        for (var w:Number = 0; w < rawWide.length; w++) {
+            var wid:Number = rawWide[w];
+            if (typeof wid != "number" || !isFinite(wid) || wid != Math.floor(wid) || wid < 1 || wid > nextMax) return false;
+            nextWide[wid] = true;
+        }
+        var totalRef:Object = {count:0};
+        var nextBullets:Object = parseShakeBindings(cfg.bullets, nextMax, totalRef);
+        if (nextBullets == null) return false;
+        var nextEffects:Object = parseShakeBindings(cfg.effects, nextMax, totalRef);
+        if (nextEffects == null) return false;
+        shakeMaxProfile = nextMax;
+        shakeTailLimit = nextTail;
+        shakePriority = nextPrio;
+        shakeScreenWide = nextWide;
+        shakeBulletMap = nextBullets;
+        shakeEffectMap = nextEffects;
+        return true;
+    }
+
+    private static function configureShake(caps:Object):Void {
+        var nextGrant:Number = caps.shakeGrant;
+        if (caps.shakeVersion !== 1 || typeof nextGrant != "number" || !isFinite(nextGrant)
+            || nextGrant != Math.floor(nextGrant) || nextGrant < 1 || nextGrant > 1000000000) {
+            shakeCapVersion = 0;
+            shakeGrant = 0;
+            clearShakeQueueAndTail();
+            return;
+        }
+        if (!applyShakeConfig(caps.shakeConfig)) {
+            shakeCapVersion = 0;
+            shakeGrant = 0;
+            clearShakeQueueAndTail();
+            resetShakeConfigDefaults();
+            return;
+        }
+        shakeCapVersion = 1;
+        // Repeated and stale grants cannot reopen a locally revoked grant.
+        if (nextGrant <= shakeLastSeenGrant) return;
+        shakeLastSeenGrant = nextGrant;
+        clearShakeQueueAndTail();
+        var localPaused:Boolean = shakePaused || (_root.暂停 ? true : false);
+        shakeAwaitingGrant = localPaused;
+        shakeGrant = localPaused ? 0 : nextGrant;
+    }
+
+    private static function clearShakeQueueAndTail():Void {
+        shakeCount = 0;
+        shakeTailRemaining = 0;
+        shakeTailNeedsClear = false;
     }
 
     public static function lightTick():Number { return gameTick; }
     // Births before flush first appear at age zero in its upcoming snapshot.
     public static function lightBirthTick():Number { return gameTick + (_root.暂停 ? 0 : 1); }
     public static function isEnabled():Boolean { return enabled; }
-    public static function disconnect():Void { enabled = false; worldLights = false; generation = -1; EquipmentLightBridge.disconnect(); SceneLightBridge.configureCaps({}); resetScene(); BloodVisualBridge.disconnect(); }
+    public static function disconnect():Void {
+        enabled = false;
+        worldLights = false;
+        generation = -1;
+        EquipmentLightBridge.disconnect();
+        SceneLightBridge.configureCaps({});
+        resetScene();
+        BloodVisualBridge.disconnect();
+        shakeCapVersion = 0;
+        shakeLastSeenGrant = 0;
+        shakeAwaitingGrant = false;
+        resetShakeConfigDefaults();
+    }
 
     public static function resetScene():Void {
+        clearShakeQueueAndTail();
+        shakeGrant = 0;
+        shakeAwaitingGrant = true;
         gameTick = 0;
         resetDecorations();
         EquipmentLightBridge.resetScene();
@@ -109,6 +249,83 @@ class org.flashNight.arki.render.CombatFxBridge {
         acks.length = 0;
         DecalStampQueue.resetScene();
         BloodVisualBridge.resetScene();
+    }
+
+    public static function onPauseChanged(newVal:Boolean, oldVal:Boolean):Void {
+        var nextPaused:Boolean = newVal ? true : false;
+        if (nextPaused == shakePaused) return;
+        shakePaused = nextPaused;
+        shakeGrant = 0;
+        shakeAwaitingGrant = true;
+        if (nextPaused) {
+            shakeCount = 0;
+            if (!enabled && !worldLights && shakeTailRemaining > 0) {
+                shakeTailRemaining = 0;
+                shakeTailNeedsClear = true;
+            }
+        }
+    }
+
+    public static function tryShake(profileId:Number, worldX:Number, worldY:Number):Boolean {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return false;
+        if (shakeCapVersion !== 1 || shakeGrant <= 0 || shakePaused || shakeAwaitingGrant || _root.暂停) return false;
+        if (!(profileId >= 1 && profileId <= shakeMaxProfile && profileId === Math.floor(profileId))) return false;
+        if (shakeScreenWide != null ? shakeScreenWide[profileId] === true : profileId == 7) {
+            // Screen-wide events do not use position, but their wire coordinates must still be valid.
+            if (typeof worldX != "number" || !isFinite(worldX) || Math.abs(worldX) > 1000000) worldX = 0;
+            if (typeof worldY != "number" || !isFinite(worldY) || Math.abs(worldY) > 1000000) worldY = 0;
+        } else if (typeof worldX != "number" || typeof worldY != "number" || !isFinite(worldX + worldY)
+            || Math.abs(worldX) > 1000000 || Math.abs(worldY) > 1000000) {
+            return false;
+        }
+
+        var slot:Number;
+        if (shakeCount < 8) {
+            slot = shakeCount++;
+        } else {
+            shakeDropped++;
+            var profiles:Array = shakeProfiles;
+            var priorities:Array = shakePriority;
+            slot = 0;
+            var lowestPriority:Number = priorities[profiles[slot]];
+            for (var i:Number = 1; i < 8; i++) {
+                var priority:Number = priorities[profiles[i]];
+                if (priority < lowestPriority) {
+                    lowestPriority = priority;
+                    slot = i;
+                }
+            }
+            if (priorities[profileId] <= lowestPriority) slot = -1;
+        }
+        if (slot >= 0) {
+            shakeGrants[slot] = shakeGrant;
+            shakeProfiles[slot] = profileId;
+            shakeXs[slot] = worldX;
+            shakeYs[slot] = worldY;
+        }
+        if (!enabled && !worldLights) {
+            shakeTailRemaining = shakeTailLimit;
+            shakeTailNeedsClear = false;
+        }
+        return true;
+    }
+
+    public static function tryShakePhase(profileId:Number, worldX:Number, worldY:Number):Boolean {
+        return tryShake(profileId, worldX, worldY);
+    }
+
+    public static function tryBulletShake(baseAsset:String, worldX:Number, worldY:Number):Boolean {
+        if (shakeCapVersion !== 1 || shakeGrant <= 0 || baseAsset == undefined) return false;
+        var profileId:Number = shakeBulletMap[baseAsset];
+        if (profileId == undefined) return false;
+        return tryShake(profileId, worldX, worldY);
+    }
+
+    public static function tryEffectShake(effectType:String, worldX:Number, worldY:Number):Boolean {
+        if (shakeCapVersion !== 1 || shakeGrant <= 0 || effectType == undefined) return false;
+        var profileId:Number = shakeEffectMap[effectType];
+        if (profileId == undefined) return false;
+        return tryShake(profileId, worldX, worldY);
     }
 
     private static function visible(x:Number, y:Number):Boolean {
@@ -221,9 +438,17 @@ class org.flashNight.arki.render.CombatFxBridge {
     }
 
     public static function flush():Void {
-        if (!enabled && !worldLights) return;
+        var baseActive:Boolean = enabled || worldLights;
+        var shakeOnlyActive:Boolean = !baseActive && shakeCapVersion === 1
+            && (shakeCount > 0 || shakeTailRemaining > 0 || shakeTailNeedsClear);
+        if (!baseActive && !shakeOnlyActive) return;
         var paused:Boolean = _root.暂停 ? true : false;
-        if (!paused) {
+        if (paused) {
+            shakeCount = 0;
+            shakeGrant = 0;
+            shakeAwaitingGrant = true;
+            shakePaused = true;
+        } else {
             gameTick++;
             if (enabled && !org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) {
                 var drawn:Array = DecalStampQueue.flush();
@@ -240,11 +465,31 @@ class org.flashNight.arki.render.CombatFxBridge {
         impacts.length = 0;
         acks.length = 0;
         payload += EquipmentLightBridge.payload();
+        if (!paused && shakeCount > 0 && !org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) {
+            for (var shakeIndex:Number = 0; shakeIndex < shakeCount; shakeIndex++) {
+                var record:String = ";h," + shakeGrants[shakeIndex] + "," + shakeProfiles[shakeIndex]
+                    + "," + shakeXs[shakeIndex] + "," + shakeYs[shakeIndex];
+                if (length(payload) + length(record) <= 32768) payload += record;
+                else shakeDropped++;
+            }
+        }
+        shakeCount = 0;
+        if (shakeOnlyActive) {
+            if (paused || shakeTailNeedsClear) {
+                shakeTailRemaining = 0;
+                shakeTailNeedsClear = false;
+            } else if (shakeTailRemaining > 0) {
+                shakeTailRemaining--;
+            }
+        }
         org.flashNight.arki.render.FrameBroadcaster.setCombatFxPayload(payload);
     }
 
     public static function getStats():Object {
-        return {enabled:enabled, epoch:epoch, queued:spawns.length, queuedImpacts:impacts.length, dropped:dropped, impactDropped:impactDropped, stamp:DecalStampQueue.getStats()};
+        return {enabled:enabled, epoch:epoch, queued:spawns.length, queuedImpacts:impacts.length,
+            dropped:dropped, impactDropped:impactDropped, stamp:DecalStampQueue.getStats(),
+            shakeVersion:shakeCapVersion, shakeGrant:shakeGrant, shakeQueued:shakeCount,
+            shakeDropped:shakeDropped, shakeTail:shakeTailRemaining};
     }
     /** Source callers may avoid even coordinates for an audited casing. Unknown styles keep their old route. */
     public static function consumeShellWithoutProjection(linkage:String):Boolean {

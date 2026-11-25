@@ -35,6 +35,19 @@ float4 PPS(FeedbackVertex v) : SV_TARGET {
     return float4(lerp(currentFrame.Load(p).rgb,historyFrame.Load(p).rgb,historyWeight),1);
 }
 )hlsl";
+constexpr char WorldShakeShader[] = R"hlsl(
+Texture2D shakeWorld : register(t0);
+SamplerState shakePointClamp : register(s0);
+cbuffer ShakeParams : register(b0) { int2 offsetPx; int2 outputSize; int4 contentTexels; };
+float4 ShakeVS(uint id : SV_VertexID) : SV_POSITION {
+    float2 uv = float2((id << 1) & 2, id & 2);
+    return float4(uv * float2(2, -2) + float2(-1, 1), 0, 1);
+}
+float4 ShakePS(float4 position : SV_POSITION) : SV_TARGET {
+    int2 texel = clamp(int2(position.xy) - offsetPx, contentTexels.xy, contentTexels.zw);
+    return shakeWorld.SampleLevel(shakePointClamp, (float2(texel) + 0.5) / float2(outputSize), 0);
+}
+)hlsl";
 // Physical output pixels; HUD is already premultiplied and never receives world grading.
 constexpr char HudRasterShader[] = R"hlsl(
 Texture2D hudPixels : register(t0);

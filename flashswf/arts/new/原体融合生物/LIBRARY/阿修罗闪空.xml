@@ -7,7 +7,6 @@
             <DOMFrame index="0" duration="41" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this._rotation = 0;
-_root.gameworld._y += 5;
 var 获取发射对象 = _root.gameworld[this.发射者名];
 this.子弹威力 *= 1 + 获取发射对象.空手攻击力 * 0.02;]]></script>
               </Actionscript>

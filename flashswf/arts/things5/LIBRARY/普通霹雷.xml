@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y += 5;
+                <script><![CDATA[
 ]]></script>
               </Actionscript>
               <elements/>
@@ -16,7 +16,7 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y -= 5;
+                <script><![CDATA[
 ]]></script>
               </Actionscript>
               <elements/>
@@ -26,7 +26,7 @@
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y += 3;
+                <script><![CDATA[
 ]]></script>
               </Actionscript>
               <elements/>
@@ -36,7 +36,7 @@
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y -= 3;
+                <script><![CDATA[
 ]]></script>
               </Actionscript>
               <elements/>

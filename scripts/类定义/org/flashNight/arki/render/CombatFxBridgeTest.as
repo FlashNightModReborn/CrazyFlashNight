@@ -24,6 +24,327 @@ class org.flashNight.arki.render.CombatFxBridgeTest {
         else { failed++; trace("[TEST_FAIL] CombatFxBridgeTest: " + name); }
     }
 
+    private static function flushShakeFrame():String {
+        packet = "";
+        CombatFxBridge.flush();
+        FrameBroadcaster.send();
+        var start:Number = packet.indexOf("\x06");
+        if (start < 0) return "";
+        return packet.substr(start + 1).split("\x07")[0].split("\x08")[0].split("\x09")[0];
+    }
+
+    private static function testShakeTail():Void {
+        check(flushShakeFrame() == "", "a newly granted shake-only bridge does not emit idle F6");
+        var tick:Number = CombatFxBridge.lightTick();
+        var epoch:Number = CombatFxBridge.getStats().epoch;
+        check(CombatFxBridge.tryShake(2, 25, -40) && CombatFxBridge.getStats().shakeTail == 31,
+            "a shake birth starts the bounded shake-only window");
+        var frame:Array = flushShakeFrame().split(";");
+        var firstHeader:Array = frame[0].split("|");
+        var sequence:Number = Number(firstHeader[1]);
+        check(frame.length == 2 && frame[1] == "h,5,2,25,-40"
+            && Number(firstHeader[0]) == epoch && Number(firstHeader[2]) == tick + 1 && firstHeader[3] == "0",
+            "the shake-only birth travels with its enqueue grant and active F6 header");
+        var contiguous:Boolean = true;
+        for (var i:Number = 1; i < 31; i++) {
+            var expected:String = epoch + "|" + (sequence + i) + "|" + (tick + 1 + i) + "|0";
+            if (flushShakeFrame() != expected) contiguous = false;
+        }
+        check(contiguous && CombatFxBridge.getStats().shakeTail == 0,
+            "exactly 30 header-only frames follow the birth with no h replay");
+        check(flushShakeFrame() == "" && flushShakeFrame() == "", "shake-only F6 stops at the end of the window");
+    }
+
+    private static function testShakeQueue():Void {
+        var projectionApi:Object = org.flashNight.arki.render.WorkerProjectionPolicy;
+        var oldIsNone:Function = projectionApi.isNone;
+        projectionApi.isNone = function(name:String):Boolean { return name == "combatDecoration"; };
+        check(!CombatFxBridge.tryShake(2, 1, 2) && CombatFxBridge.isDecorationClean() && flushShakeFrame() == "",
+            "worker none cannot produce shake or start an F6 window");
+        projectionApi.isNone = oldIsNone;
+        check(CombatFxBridge.tryShake(2, 1, 2) && !CombatFxBridge.isDecorationClean(),
+            "a pending shake is part of decoration cleanliness");
+        projectionApi.isNone = function(name:String):Boolean { return name == "combatDecoration"; };
+        check(flushShakeFrame().indexOf(";h,") < 0 && CombatFxBridge.isDecorationClean(),
+            "worker none drops a shake queued before the projection policy changed");
+        projectionApi.isNone = oldIsNone;
+
+        var droppedBefore:Number = CombatFxBridge.getStats().shakeDropped;
+        var ids:Array = [7,4,3,2,4,5,6,7];
+        for (var i:Number = 0; i < ids.length; i++) CombatFxBridge.tryShake(ids[i], i, 0);
+        check(CombatFxBridge.getStats().shakeQueued == 8 && CombatFxBridge.getStats().shakeTail == 31,
+            "eight births fill one queue and reset the tail to 31 without accumulating");
+        CombatFxBridge.tryShake(5, 90, 0);
+        CombatFxBridge.tryShake(4, 91, 0);
+        CombatFxBridge.tryShake(2, 92, 0);
+        var wire:String = flushShakeFrame();
+        check(wire.split(";h,").length == 9 && wire.indexOf(";h,5,5,90,0") >= 0
+            && wire.indexOf(";h,5,2,3,0") < 0 && wire.indexOf(";h,5,4,91,0") < 0
+            && wire.indexOf(";h,5,2,92,0") < 0 && wire.indexOf(";h,5,4,1,0") >= 0,
+            "the ninth birth replaces the lowest priority and ties or lower priorities cannot replace a survivor");
+        check(CombatFxBridge.getStats().shakeDropped == droppedBefore + 3 && CombatFxBridge.getStats().shakeQueued == 0,
+            "each capacity eviction or discard is counted and the frame consumes the queue");
+
+        check(!CombatFxBridge.tryShake(0, 1, 2) && !CombatFxBridge.tryShake(8, 1, 2)
+            && !CombatFxBridge.tryShake(1.5, 1, 2) && !CombatFxBridge.tryShake(NaN, 1, 2)
+            && !CombatFxBridge.tryShake(2, NaN, 2) && !CombatFxBridge.tryShake(6, 1, Infinity)
+            && !CombatFxBridge.tryShake(1, -1000001, 2) && CombatFxBridge.getStats().shakeQueued == 0,
+            "invalid profiles and positional coordinates are rejected before enqueue");
+        check(CombatFxBridge.tryShake(1, -1000000, 1000000)
+            && CombatFxBridge.tryShake(7, NaN, Infinity) && CombatFxBridge.tryShake(7, 1000001, -12),
+            "world bounds are inclusive and screen-wide coordinates are normalized independently");
+        wire = flushShakeFrame();
+        check(wire.indexOf(";h,5,1,-1000000,1000000") >= 0 && wire.indexOf(";h,5,7,0,0") >= 0
+            && wire.indexOf(";h,5,7,0,-12") >= 0, "normalization keeps every shake coordinate valid on F6");
+    }
+
+    private static function sampleShakeConfig():Object {
+        var bullets:Object = {};
+        bullets["普通爆炸"] = 2;
+        bullets["集束连环爆炸"] = 2;
+        bullets["高压爆炸"] = 2;
+        bullets["火焰集束手雷爆炸"] = 2;
+        bullets["火焰集束爆炸声"] = 2;
+        bullets["火焰集束爆炸"] = 2;
+        bullets["高爆爆炸"] = 2;
+        bullets["地面爆炸"] = 2;
+        bullets["爆炸"] = 2;
+        bullets["支援飞弹爆炸"] = 3;
+        bullets["小火焰爆炸"] = 1;
+        bullets["普通霹雷"] = 1;
+        bullets["联弹爆炸"] = 1;
+        bullets["巨大物理爆炸"] = 5;
+        bullets["核弹爆炸"] = 5;
+        bullets["阿修罗闪空"] = 4;
+        var effects:Object = {};
+        effects["小地震"] = 7;
+        return {
+            maxProfile: 7,
+            tailTicks: 31,
+            priorities: [0,1,2,5,3,6,7,4],
+            screenWide: [7],
+            bullets: bullets,
+            effects: effects
+        };
+    }
+
+    private static function testShakeProducers(caps:Object):Void {
+        var linkages:Array = ["普通爆炸","集束连环爆炸","高压爆炸","火焰集束手雷爆炸","火焰集束爆炸声",
+            "火焰集束爆炸","高爆爆炸","地面爆炸","爆炸","支援飞弹爆炸","小火焰爆炸","普通霹雷","联弹爆炸",
+            "巨大物理爆炸","核弹爆炸","阿修罗闪空"];
+        var profiles:Array = [2,2,2,2,2,2,2,2,2,3,1,1,1,5,5,4];
+        for (var i:Number = 0; i < linkages.length; i++) {
+            var accepted:Boolean = CombatFxBridge.tryBulletShake(linkages[i], i, -10);
+            var rows:Array = flushShakeFrame().split(";");
+            check(accepted && rows.length == 2 && rows[1] == "h,5," + profiles[i] + "," + i + ",-10",
+                "bullet linkage has its configured wire profile: " + linkages[i]);
+        }
+        check(!CombatFxBridge.tryBulletShake("量子爆弹", 1, 2) && !CombatFxBridge.tryBulletShake("小地震", 1, 2)
+            && !CombatFxBridge.tryBulletShake("核弹爆炸特效", 1, 2) && !CombatFxBridge.tryBulletShake("普通爆炸2", 1, 2)
+            && flushShakeFrame().indexOf(";h,") < 0, "non-whitelisted parents, visual children and near matches never emit");
+        check(CombatFxBridge.tryShakePhase(6, 61, 18) && flushShakeFrame().indexOf(";h,5,6,61,18") >= 0,
+            "the quantum phase helper emits profile six");
+
+        var beforeMade:Number = made;
+        var battle:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
+        var beforeRng:Number = battle.captureState();
+        var previousVisual = _root.是否视觉元素;
+        _root.是否视觉元素 = false;
+        var quake:MovieClip = EffectSystem.Effect("小地震", 0, 0, 100, false);
+        _root.是否视觉元素 = previousVisual;
+        var offscreen:MovieClip = EffectSystem.Effect("小地震", 1000000, -1000000, 100, false);
+        check(quake == null && offscreen == null && made == beforeMade && battle.captureState() == beforeRng,
+            "screen-wide requests preserve culling, visual admission, MovieClip count and gameplay RNG");
+        check(flushShakeFrame().split(";h,5,7,").length == 3,
+            "both the visually disabled and offscreen quake requests emit configured effect profile seven");
+
+        // Dynamic table reconfigure: new profile 8 + custom bullet/effect + custom tail & screenWide.
+        var customBullets:Object = {};
+        customBullets["自定义爆破"] = 8;
+        var customEffects:Object = {};
+        customEffects["自定义震地"] = 8;
+        var customCaps:Object = {
+            version:1, generation:caps.generation, worldLights:false, styles:[], digest:"",
+            shakeVersion:1, shakeGrant:caps.shakeGrant,
+            shakeConfig:{
+                maxProfile:8, tailTicks:40, priorities:[0,1,2,3,4,5,6,7,9], screenWide:[8],
+                bullets:customBullets, effects:customEffects
+            }
+        };
+        customCaps["native"] = false;
+        CombatFxBridge.configure(customCaps);
+        check(!CombatFxBridge.tryBulletShake("普通爆炸", 1, 2) && CombatFxBridge.tryBulletShake("自定义爆破", NaN, Infinity)
+            && CombatFxBridge.getStats().shakeTail == 40
+            && flushShakeFrame().indexOf(";h,5,8,0,0") >= 0,
+            "data-driven shakeConfig replaces bullet map, extends maxProfile/tailTicks, and applies custom screenWide");
+        check(CombatFxBridge.tryEffectShake("自定义震地", 12, 34) && flushShakeFrame().indexOf(";h,5,8,12,34") >= 0,
+            "data-driven shakeConfig drives effect shake bindings");
+
+        // Malformed shakeConfig must fail closed.
+        customCaps.shakeConfig = {maxProfile:8, tailTicks:40, priorities:[0,1], screenWide:[], bullets:{}, effects:{}};
+        CombatFxBridge.configure(customCaps);
+        check(CombatFxBridge.getStats().shakeVersion == 0 && !CombatFxBridge.tryShake(1, 0, 0),
+            "malformed shakeConfig fails closed");
+        // Restore valid config with strictly newer grant? Wait: keep grant sequence intact by re-testing on fresh generation.
+        CombatFxBridge.configure(caps);
+        check(!CombatFxBridge.tryShake(2, 1, 2), "malformed shakeConfig revocation keeps grant high-water mark");
+        caps.generation++;
+        caps.shakeGrant = 5;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.tryBulletShake("普通爆炸", 1, 2) && flushShakeFrame().indexOf(";h,5,2,1,2") >= 0,
+            "fresh generation restores valid shakeConfig cleanly");
+    }
+
+    private static function testShakeGrants(caps:Object):Void {
+        CombatFxBridge.tryShake(2, 1, 2);
+        caps.shakeGrant = 6;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.getStats().shakeGrant == 6 && CombatFxBridge.getStats().shakeQueued == 0
+            && CombatFxBridge.getStats().shakeTail == 0 && flushShakeFrame() == "",
+            "grant rotation clears the unsent prior-grant birth and its tail");
+        CombatFxBridge.tryShake(2, 3, 4);
+        caps.shakeGrant = 5;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.getStats().shakeGrant == 6 && CombatFxBridge.getStats().shakeQueued == 1,
+            "a stale grant cannot change the active grant or its queue");
+        caps.shakeGrant = 6;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.getStats().shakeQueued == 1 && flushShakeFrame().indexOf(";h,6,2,3,4") >= 0,
+            "same-grant caps are idempotent and the birth retains its enqueue-time stamp");
+
+        var invalid:Array = [0,-1,1.5,NaN,Infinity,1000000001,"6",undefined];
+        for (var i:Number = 0; i < invalid.length; i++) {
+            caps.shakeGrant = invalid[i];
+            CombatFxBridge.configure(caps);
+            check(CombatFxBridge.getStats().shakeVersion == 0 && !CombatFxBridge.tryShake(2, 1, 2),
+                "invalid grant disables shake: " + invalid[i]);
+        }
+        caps.shakeVersion = "1";
+        caps.shakeGrant = 7;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.getStats().shakeVersion == 0 && flushShakeFrame() == "",
+            "the shake version must be numeric one and revocation clears the tail");
+        caps.shakeVersion = 1;
+        caps.shakeGrant = 6;
+        CombatFxBridge.configure(caps);
+        check(!CombatFxBridge.tryShake(2, 1, 2), "capability revocation keeps the session grant high-water mark");
+        caps.shakeGrant = 7;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.tryShake(2, 5, 6), "a strictly newer grant reopens after capability revocation");
+
+        CombatFxBridge.resetScene();
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.getStats().shakeQueued == 0 && !CombatFxBridge.tryShake(2, 1, 2) && flushShakeFrame() == "",
+            "scene reset discards the old queue and requires a newer grant within the same connection");
+        caps.shakeGrant = 8;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.tryShake(2, 7, 8), "a newer grant reopens after a scene reset");
+    }
+
+    private static function testShakePause(caps:Object):Void {
+        var tick:Number = CombatFxBridge.lightTick();
+        _root.暂停 = true;
+        CombatFxBridge.onPauseChanged(true, false);
+        check(CombatFxBridge.getStats().shakeGrant == 0 && CombatFxBridge.getStats().shakeQueued == 0
+            && CombatFxBridge.getStats().shakeTail == 0 && !CombatFxBridge.tryShake(2, 1, 2),
+            "pause immediately revokes the grant and drains unsent shake");
+        var pausedHeader:Array = flushShakeFrame().split("|");
+        check(pausedHeader.length == 4 && Number(pausedHeader[2]) == tick && pausedHeader[3] == "1"
+            && flushShakeFrame() == "", "an active shake-only window emits one paused header and then stops");
+        caps.shakeGrant = 9;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.getStats().shakeGrant == 0 && !CombatFxBridge.tryShake(2, 1, 2),
+            "a newer grant received during pause stays unusable");
+
+        _root.暂停 = false;
+        CombatFxBridge.onPauseChanged(false, true);
+        check(!CombatFxBridge.tryShake(2, 1, 2), "unpause waits for a grant");
+        caps.shakeGrant = 8;
+        CombatFxBridge.configure(caps);
+        caps.shakeGrant = 9;
+        CombatFxBridge.configure(caps);
+        check(!CombatFxBridge.tryShake(2, 1, 2) && flushShakeFrame() == "",
+            "grants already seen before and during pause cannot reopen on resume");
+        caps.shakeGrant = 10;
+        CombatFxBridge.configure(caps);
+        CombatFxBridge.onPauseChanged(false, true);
+        check(CombatFxBridge.tryShake(2, 3, 4) && flushShakeFrame().indexOf(";h,10,2,3,4") >= 0,
+            "the first strictly newer grant after resume tags future births and a duplicate pause callback is inert");
+
+        CombatFxBridge.tryShake(2, 5, 6);
+        _root.暂停 = 1;
+        pausedHeader = flushShakeFrame().split("|");
+        check(pausedHeader[3] == "1" && CombatFxBridge.getStats().shakeGrant == 0
+            && CombatFxBridge.getStats().shakeQueued == 0 && flushShakeFrame() == "",
+            "the truthy root pause revokes pending shake in flush even without a pause callback");
+        _root.暂停 = false;
+        CombatFxBridge.onPauseChanged(false, true);
+    }
+
+    private static function fixedLightPayload(wire:String):Function {
+        return function():String { return wire; };
+    }
+
+    private static function testShakePayloadCeiling(caps:Object):Void {
+        caps.generation++;
+        caps.shakeGrant = 1;
+        caps.worldLights = true;
+        CombatFxBridge.configure(caps);
+        var header:String = CombatFxBridge.getStats().epoch + "|1|1|0";
+        var smallRecord:String = ";h,1,1,0,0";
+        // Pad a synthetic equipment-light record so only the shorter shake fits.
+        var lightPrefix:String = ";l,1,0,1.";
+        var lightSuffix:String = ",1,0,0,1,0,1,1,1,1,0,0,0,0";
+        var padLength:Number = 32768 - header.length - smallRecord.length - lightPrefix.length - lightSuffix.length;
+        var zeros:String = "0";
+        while (zeros.length < padLength) zeros += zeros;
+        var lights:String = lightPrefix + zeros.substr(0, padLength) + lightSuffix;
+        var lightApi:Object = org.flashNight.arki.render.EquipmentLightBridge;
+        var oldPayload:Function = lightApi.payload;
+        lightApi.payload = fixedLightPayload(lights);
+        var droppedBefore:Number = CombatFxBridge.getStats().shakeDropped;
+        CombatFxBridge.tryShake(5, 1000000, -1000000);
+        CombatFxBridge.tryShake(1, 0, 0);
+        var wire:String = flushShakeFrame();
+        lightApi.payload = oldPayload;
+        check(wire.length == 32768 && wire == header + lights + smallRecord,
+            "the F6 ceiling preserves all light data and still appends a later shake that fits exactly");
+        check(CombatFxBridge.getStats().shakeDropped == droppedBefore + 1 && CombatFxBridge.getStats().shakeQueued == 0,
+            "only the oversize shake is discarded and counted");
+    }
+
+    private static function runShakeTests():Void {
+        var caps:Object = {version:1, generation:3, worldLights:true, styles:[], digest:""};
+        caps["native"] = false;
+        CombatFxBridge.configure(caps);
+        check(!CombatFxBridge.tryShake(2, 1, 2) && !CombatFxBridge.tryBulletShake("普通爆炸", 1, 2),
+            "old Host caps do not admit shake");
+        var wire:String = flushShakeFrame();
+        check(wire != "" && wire.indexOf(";h,") < 0, "old Host keeps its regular F6 without an h record");
+
+        caps.worldLights = false;
+        caps.shakeVersion = 1;
+        caps.shakeGrant = 5;
+        caps.shakeConfig = sampleShakeConfig();
+        CombatFxBridge.configure(caps);
+        testShakeTail();
+        testShakeQueue();
+        testShakeProducers(caps);
+        testShakeGrants(caps);
+        testShakePause(caps);
+
+        CombatFxBridge.disconnect();
+        caps.shakeGrant = 1;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.tryShake(2, 9, 10) && flushShakeFrame().indexOf(";h,1,2,9,10") >= 0,
+            "Host restart after disconnect can regrant one");
+        caps.shakeGrant = 1000000000;
+        CombatFxBridge.configure(caps);
+        check(CombatFxBridge.tryShake(2, 11, 12), "the upper grant bound is valid");
+        testShakePayloadCeiling(caps);
+        CombatFxBridge.disconnect();
+    }
+
     public static function runAllTests():Void {
         passed = 0; failed = 0; made = 0; packet = "";heard=[];birthHeard=[];lastLinkage="";
         var oldWorld:MovieClip = _root.gameworld;
@@ -296,6 +617,12 @@ class org.flashNight.arki.render.CombatFxBridgeTest {
             && CombatFxBridge.tryMuzzle("测试枪火", 50, 50, 100, 0)
             && !CombatFxBridge.tryShell("未接管弹壳", 50, 50, 100, 1, 150),
             "disconnect keeps known decoration native-only and leaves unknown linkages alone");
+        // The focused runner pins the original pass count and rejects any failure sentinel.
+        var legacyPassed:Number = passed;
+        var legacyFailed:Number = failed;
+        runShakeTests();
+        trace("CombatFxBridgeShakeTest Tests Passed: " + (passed - legacyPassed));
+        trace("CombatFxBridgeShakeTest Tests Failed: " + (failed - legacyFailed));
         DecalStampQueue.clearCache();
         pixels.dispose();bloodPixels.dispose();bloodArt.dispose();
         BitmapEffectRenderer.bitmapDict=oldBloodDict;BitmapEffectRenderer.bloodstainInfos=oldBloodInfos;
@@ -303,7 +630,7 @@ class org.flashNight.arki.render.CombatFxBridgeTest {
         _root.gameworld = oldWorld;_root.server = oldServer;
         _root.暂停 = oldPause;_root.是否视觉元素 = oldVisual;
         world.removeMovieClip();
-        trace("CombatFxBridgeTest Tests Passed: " + passed);
-        trace("CombatFxBridgeTest Tests Failed: " + failed);
+        trace("CombatFxBridgeTest Tests Passed: " + legacyPassed);
+        trace("CombatFxBridgeTest Tests Failed: " + legacyFailed);
     }
 }

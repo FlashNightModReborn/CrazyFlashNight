@@ -221,6 +221,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>应用激活状态的权威源。Program.cs 注入给 PerfDecisionEngine。</summary>
         public AppActivationState ActivationState { get { return _activationState; } }
+        public event Action<bool> AppActivationChanged;
 
         /// <summary>Phase 2 PanelHostController FlashSnapshot.Capture 用。SA 进程重启时返回 IntPtr.Zero。</summary>
         public IntPtr GetFlashHwnd()
@@ -673,6 +674,7 @@ namespace CF7Launcher.Guardian
                     _vacuumWatchdogPolicy.OnSessionDeactivated();
                 }
                 _activationState.OnActivateApp(active);
+                AppActivationChanged?.Invoke(active && !_activationState.IsMinimized);
                 if (active && _webOverlay != null && !NativeInteractionActive)
                     _webOverlay.RequestPanelFocusRestoreAfterAppActivation();
             }
@@ -682,6 +684,8 @@ namespace CF7Launcher.Guardian
                 int previousSizeCode = _runtimeViewportLastSizeCode;
                 bool windowStateReportedMaximized = this.WindowState == FormWindowState.Maximized;
                 _activationState.OnMinimizeChanged(sizeCode == SIZE_MINIMIZED);
+                if (sizeCode == SIZE_MINIMIZED) AppActivationChanged?.Invoke(false);
+                else if (previousSizeCode == SIZE_MINIMIZED) AppActivationChanged?.Invoke(_activationState.IsAppActive);
 
                 // Manual window maximize/restore does not pass through ToggleFullscreen().
                 // Reuse the same settled viewport refresh so Flash, WebOverlay and WebView2

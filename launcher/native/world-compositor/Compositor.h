@@ -113,7 +113,31 @@ struct ProbeSceneLightStats {
 static_assert(sizeof(ProbeSceneLightStats)==40,"Scene light diagnostic layout");
 static_assert(sizeof(ProbeWorkStats)==40, "Diagnostic work layout");
 static_assert(sizeof(ProbeContentStats)==40, "Diagnostic content layout");
+struct ProbeWorldShakeStats {
+    uint32_t size;             // sizeof(ProbeWorldShakeStats) == 88
+    uint32_t enabled;          // 1 if shake stage is healthy (0 if RT allocation fault-locked)
+    uint32_t activeCount;      // currently active impulse slots (0..8)
+    uint32_t currentGrant;     // latest admitted/active grant (0 when cleared/revoked)
+    int32_t  lastOffsetX;      // last presented integer physical pixel offset X
+    int32_t  lastOffsetY;      // last presented integer physical pixel offset Y
+    uint32_t tailPending;      // 1 if zero-offset identity tail frame is still pending
+    uint32_t reserved;
+    uint64_t accepted;         // impulses admitted into slots
+    uint64_t rejectedGrant;    // impulses rejected due to stale/mismatched grant
+    uint64_t droppedCapacity;  // impulses dropped or evicted due to 8-slot cap
+    uint64_t clears;           // total clear operations executed
+    uint64_t activePasses;     // frames rendered via worldShakeRT + final blit
+    uint64_t tailPasses;       // zero-offset identity tail frames presented
+    uint64_t rtBytes;          // current allocated world shake RT bytes (0 if unallocated)
+};
+static_assert(sizeof(ProbeWorldShakeStats) == 88, "World shake diagnostic layout");
 extern "C" {
+__declspec(dllexport) int __cdecl ProbeSetWorldShakeProfiles(void* handle, const float* profiles,
+    int32_t count, float maxTotalOffsetStagePx);
+__declspec(dllexport) int __cdecl ProbeSetWorldShakeGrant(void* handle, int32_t grant, int32_t clearState);
+__declspec(dllexport) int __cdecl ProbeSubmitWorldShake(void* handle, int32_t grant,
+    const float* impulses, int32_t count, float cameraX, float cameraY, float cameraScale);
+__declspec(dllexport) int __cdecl ProbeGetWorldShakeStats(void* handle, ProbeWorldShakeStats* stats);
 __declspec(dllexport) int __cdecl ProbeSetPostprocess(void* handle,int casEnabled,float sharpness,int feedbackEnabled);
 __declspec(dllexport) int __cdecl ProbeSetPostprocessV2(void* handle,int casEnabled,float sharpness,int feedbackEnabled,int casStage);
 __declspec(dllexport) int __cdecl ProbeGetCasStageStats(void* handle,ProbeCasStageStats* stats);

@@ -183,6 +183,7 @@ try {
     $compositorTestInputs = @(
         'launcher/native/world-compositor/InputBridgeSelfTest.cpp',
         'launcher/native/world-compositor/RayBucketSelfTest.cpp',
+        'launcher/native/world-compositor/WorldShakeSelfTest.cpp',
         'launcher/native/world-compositor/g1-fixture/G1Target.cpp',
         'launcher/native/world-compositor/input-ownership-fixture/C1Scene.cpp'
     )

@@ -1,0 +1,72 @@
+{
+  "schema": "cf7-screen-shake.v1",
+  "ticksPerSecond": 30,
+  "maxTotalOffsetStagePx": 14,
+  "profiles": [
+    { "id": 1, "name": "light",        "priority": 1, "amplitude": 3.5, "ticks": 8,  "frequency": 22, "radius": 900 },
+    { "id": 2, "name": "standard",     "priority": 2, "amplitude": 5.0, "ticks": 10, "frequency": 20, "radius": 1000 },
+    { "id": 3, "name": "support",      "priority": 5, "amplitude": 6.0, "ticks": 12, "frequency": 18, "radius": 1100 },
+    { "id": 4, "name": "asura",        "priority": 3, "amplitude": 5.5, "ticks": 10, "frequency": 24, "radius": 950 },
+    { "id": 5, "name": "heavy",        "priority": 6, "amplitude": 8.5, "ticks": 18, "frequency": 15, "radius": 1500 },
+    { "id": 6, "name": "quantum",      "priority": 7, "amplitude": 9.5, "ticks": 24, "frequency": 14, "radius": 1600 },
+    { "id": 7, "name": "quake_screen", "priority": 4, "amplitude": 5.5, "ticks": 14, "frequency": 17, "radius": 0 }
+  ],
+  "bindings": {
+    "bullets": {
+      "小火焰爆炸": "light",
+      "空中小火焰爆炸": "light",
+      "普通霹雷": "light",
+      "联弹爆炸": "light",
+      "紫色小爆炸": "light",
+      "空中爆炸1": "light",
+      "铁血弹爆炸": "light",
+
+      "爆炸": "standard",
+      "普通爆炸": "standard",
+      "火球爆炸": "standard",
+      "等离子爆炸": "standard",
+      "定向爆破": "standard",
+      "集束连环爆炸": "standard",
+      "高压爆炸": "standard",
+      "火焰集束手雷爆炸": "standard",
+      "火焰集束爆炸声": "standard",
+      "火焰集束爆炸": "standard",
+      "烈焰集束爆炸": "standard",
+      "墨绿集束爆炸": "standard",
+      "苍紫爆炸": "standard",
+      "绿色爆炸": "standard",
+      "血爆炸": "standard",
+      "高爆爆炸": "standard",
+      "地面爆炸": "standard",
+      "气功弹爆炸": "standard",
+      "波动拳爆炸": "standard",
+      "穿刺爆炸": "standard",
+
+      "支援飞弹爆炸": "support",
+
+      "阿修罗闪空": "asura",
+
+      "巨大物理爆炸": "heavy",
+      "核弹爆炸": "heavy"
+    },
+    "effects": {
+      "小地震": "quake_screen"
+    },
+    "exemptBullets": [
+      "量子爆弹",
+      "量子爆弹爆炸",
+      "量子爆弹爆炸动画",
+      "核弹爆炸特效",
+      "毒泡爆炸",
+      "毒液爆炸亮绿",
+      "毒液爆炸墨绿",
+      "屎块爆炸",
+      "蜘蛛网爆炸",
+      "光弹爆炸",
+      "爆炸狙击子弹",
+      "爆炸集束子弹",
+      "爆炸联弹",
+      "黑铁-剑气爆炸"
+    ]
+  }
+}

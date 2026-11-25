@@ -388,17 +388,28 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         private static double Percentile(List<double> values) {values.Sort();return values[(int)Math.Ceiling(values.Count*.95)-1];}
-        private static void Run(Action<NativeCompositorSession,CompositionSceneHost,Form,Form> action,Size? outputSize=null,TimeSpan? timeout=null,bool requireWorldFrame=true)
+        private static void Run(Action<NativeCompositorSession,CompositionSceneHost,Form,Form> action,Size? outputSize=null,
+            TimeSpan? timeout=null,bool requireWorldFrame=true,string nativeModule=null)
         {
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-            string candidate=Path.GetFullPath(Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE"));
-            string module=Path.Combine(candidate,"runtime",NativeCompositorSession.ModuleName);
-            var metadata=JObject.Parse(File.ReadAllText(Path.Combine(candidate,"runtime-build-metadata.v2.json")));
-            string[] row=File.ReadLines(Path.Combine(candidate,"runtime","cf7-runtime-manifest.tsv"))
-                .Select(line=>line.Split('\t')).Single(parts=>parts.Length==4 && parts[0]=="file"
-                    && parts[1]=="runtime/"+NativeCompositorSession.ModuleName);
+            string candidate=null;
+            JObject metadata=null;
+            string module;
+            if (nativeModule == null)
+            {
+                candidate=Path.GetFullPath(Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE"));
+                module=Path.Combine(candidate,"runtime",NativeCompositorSession.ModuleName);
+                metadata=JObject.Parse(File.ReadAllText(Path.Combine(candidate,"runtime-build-metadata.v2.json")));
+            }
+            else module=Path.GetFullPath(nativeModule);
             string hash=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(module)));
-            Assert.Equal(row[3],hash,true);
+            if (candidate != null)
+            {
+                string[] row=File.ReadLines(Path.Combine(candidate,"runtime","cf7-runtime-manifest.tsv"))
+                    .Select(line=>line.Split('\t')).Single(parts=>parts.Length==4 && parts[0]=="file"
+                        && parts[1]=="runtime/"+NativeCompositorSession.ModuleName);
+                Assert.Equal(row[3],hash,true);
+            }
             Exception failure=null;
             var thread=new Thread(()=>
             {
@@ -426,10 +437,11 @@ namespace CF7Launcher.Tests.Guardian
                         }
                         action(world,scene,output,source);
                         Console.WriteLine(JsonConvert.SerializeObject(new {nativeModule=module,nativeSha256=hash,
-                            buildIdentity=metadata.Value<string>("buildIdentityHash"),closure=metadata.Value<string>("payloadClosureHash"),
+                            buildIdentity=metadata?.Value<string>("buildIdentityHash"),closure=metadata?.Value<string>("payloadClosureHash"),
                             testCore=typeof(NativeCompositorSession).Assembly.Location,
                             testCoreSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(NativeCompositorSession).Assembly.Location))),
-                            candidateCoreSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(candidate,"runtime","CRAZYFLASHER7MercenaryEmpire.Core.dll")))),
+                            candidateCoreSha256=candidate==null ? null
+                                : Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(candidate,"runtime","CRAZYFLASHER7MercenaryEmpire.Core.dll")))),
                             display=DisplayPowerObservation.ReadSessionState()}));
                     }
                 }

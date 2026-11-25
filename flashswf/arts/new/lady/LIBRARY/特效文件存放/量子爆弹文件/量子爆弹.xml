@@ -19,7 +19,12 @@
             <DOMFrame index="32" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[this._rotation = 0;
-_root.gameworld._y += 5;
+if (!this.__shakePhase33Fired) {
+   this.__shakePhase33Fired = true;
+   if (typeof _root.触发震屏阶段 == "function") {
+      _root.触发震屏阶段(6, this._x, this._y);
+   }
+}
 var 获取发射对象 = _root.gameworld[this.发射者名];
 if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技能.轰炸专家.启用)
 {
@@ -31,14 +36,14 @@ if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技�
             </DOMFrame>
             <DOMFrame index="33" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y -= 5;
+                <script><![CDATA[
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="37" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y -= 15;
+                <script><![CDATA[
 ]]></script>
               </Actionscript>
               <elements/>
@@ -57,7 +62,7 @@ if(获取发射对象.被动技能.轰炸专家 && 获取发射对象.被动技�
             </DOMFrame>
             <DOMFrame index="41" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.gameworld._y -= 20;
+                <script><![CDATA[
 ]]></script>
               </Actionscript>
               <elements/>
