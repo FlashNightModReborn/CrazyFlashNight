@@ -111,8 +111,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:eaf370b0</inputDigest>
-      <sourceDigest>sha256:7b60b4c65a0e25ab67152226e9182b8a402a5959c396537071252bc6769d3907</sourceDigest>
+      <inputDigest>fnv1a32:b73ecd00</inputDigest>
+      <sourceDigest>sha256:c616accfaa21ddb905dbb43170c49071ea4aa8ab240e4c99f10a67078ce07988</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
@@ -163,9 +163,9 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
         <ref>
-          <id>WBR-FIRE-002</id>
+          <id>WBR-FIRE-001</id>
           <target>mechanic.fireMode</target>
-          <evidenceRef>data/items/武器_手枪_大威力手枪.xml#item=韦森686改装版/data;singleshoot=true;interval=320;capacity=6</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_大威力手枪.xml#item=韦森686改装版/data;singleshoot=absent;interval=320;capacity=6</evidenceRef>
         </ref>
         <ref>
           <id>WBR-CAP-002</id>
@@ -4074,8 +4074,8 @@
       <priceLayers>0</priceLayers>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:65b206e9</inputDigest>
-      <sourceDigest>sha256:a0b9d6eb204270fa5e66bfc2740ad620e7bc77dd6e8d9b34ad1610ff53337fb1</sourceDigest>
+      <inputDigest>fnv1a32:8d816665</inputDigest>
+      <sourceDigest>sha256:4904a88547f51b0aed496703f864ef37fa33507c2f7033ccd2fc337e5a6a5df9</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -6886,8 +6886,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:753076c0</inputDigest>
-      <sourceDigest>sha256:9674f988d8c29192369177382bfad3ab048c7e4fe68a4a94eb4729934e873f36</sourceDigest>
+      <inputDigest>fnv1a32:625f39f0</inputDigest>
+      <sourceDigest>sha256:8a38292a57f9b609b7d1b480d9449856df7f04a8c0c115a0ff0d57e5b72c3486</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -6954,8 +6954,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:a0cce4cd</inputDigest>
-      <sourceDigest>sha256:bb1981678d2dbdb8e514476e04afb4940f1a5a73bb79970e32deab62680e207f</sourceDigest>
+      <inputDigest>fnv1a32:29bc82b5</inputDigest>
+      <sourceDigest>sha256:0fe25d27ea289de30efd513dfe9b39cdacb8a401e6e8a5839a22b80798a834ca</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7022,8 +7022,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:3a811724</inputDigest>
-      <sourceDigest>sha256:db4cf9e03e5a6dd7f1c0e4c0fb0aeff7a58b64064f8f71c76f64fdc18032c973</sourceDigest>
+      <inputDigest>fnv1a32:0427e130</inputDigest>
+      <sourceDigest>sha256:5a10df0a8cf9df0673697b3654b879e7d7b62b4a350873114baa7c716bdd56a8</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7090,8 +7090,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:aec214bc</inputDigest>
-      <sourceDigest>sha256:7b969dc65c93dbde6e14064908e72b25cc46f21abeac8e03bcb826b10bfaf72e</sourceDigest>
+      <inputDigest>fnv1a32:b123b288</inputDigest>
+      <sourceDigest>sha256:648f341259b1407fefb180410e32e1be8e004adbf32236fc9d68a16e334797fd</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7158,8 +7158,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:cee024bc</inputDigest>
-      <sourceDigest>sha256:be78b9c0e7e4301d805982f603fce7e5454ae0c5c2a9185799aa0355aba475b0</sourceDigest>
+      <inputDigest>fnv1a32:aec72304</inputDigest>
+      <sourceDigest>sha256:d26f914f11f31edb1ea765ce56a122ea9f2fb624cb6902ffa67eaf8cb44f2a87</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7226,8 +7226,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:57202dd1</inputDigest>
-      <sourceDigest>sha256:8be8a782a0b423c982b36fa073bd94d2b0bdd70971151bdd54c5017504d61ca2</sourceDigest>
+      <inputDigest>fnv1a32:48b712a9</inputDigest>
+      <sourceDigest>sha256:ee69bcaf08027aadb0620e7b8b4320961349775f81339b0331fde0337b1eeeb6</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7566,8 +7566,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:ccb14940</inputDigest>
-      <sourceDigest>sha256:4d61e36863af35938c029217cbe50ed94f66d24300731041ea2bda1976afa53c</sourceDigest>
+      <inputDigest>fnv1a32:ac371ca4</inputDigest>
+      <sourceDigest>sha256:51d3a7000f05ea83e1381345afdde086474798dbdd672378ff3826c488922759</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7634,8 +7634,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:93d4ff4b</inputDigest>
-      <sourceDigest>sha256:0e95531d7a0d287977c133870e1b9f8e6f9b0a0786813518a7c9071ab125a476</sourceDigest>
+      <inputDigest>fnv1a32:c890f937</inputDigest>
+      <sourceDigest>sha256:f3b6ad91f33f94d5d32a3fa3a6ae5ee59389ca1c186f966209ba00d0c7f0a4f0</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -7770,8 +7770,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:84e1be90</inputDigest>
-      <sourceDigest>sha256:4d3d4bb915e82397130d680e180fbb32518719c8348dd928aa35efc7979f35d4</sourceDigest>
+      <inputDigest>fnv1a32:ee3326e0</inputDigest>
+      <sourceDigest>sha256:6991f4830c20b280a1e569cf9da1f5b4cc6e7084fe0195bf057f0fe768ecd20e</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7838,8 +7838,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:45f194fe</inputDigest>
-      <sourceDigest>sha256:f28f6eacf1f3c87b2984d6ea532a0d59da25b9a5b7774e26dc173697eb2b3d5d</sourceDigest>
+      <inputDigest>fnv1a32:787c5022</inputDigest>
+      <sourceDigest>sha256:4588e6c121d2044b92f1f0aadc32a479db9f659c45a04cbe58cd771f0bc17fa5</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
@@ -7974,8 +7974,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:191ea8e1</inputDigest>
-      <sourceDigest>sha256:9325256fe26c67d64d074e9b9a2d178d1cbcd3a0607574ce227718d14c8b34e6</sourceDigest>
+      <inputDigest>fnv1a32:ad97ed6d</inputDigest>
+      <sourceDigest>sha256:25cac61e667f5eeef96d8e01b0eab0dbf02535407f90fa7e3df7c76895405b5d</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -8189,8 +8189,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:ab7c9444</inputDigest>
-      <sourceDigest>sha256:7448bc3c8966a6cc06d4d5d523c9912190268125c8b41b3f4dabe5deb8ec5add</sourceDigest>
+      <inputDigest>fnv1a32:5b801de0</inputDigest>
+      <sourceDigest>sha256:64ed72bef89ae17a34a571357cf6dca8081bf9a55a43fe0b451f84ab0266f6a8</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
@@ -8597,8 +8597,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:b01451a4</inputDigest>
-      <sourceDigest>sha256:2ecf23d051d7631341e475679761a9a011e2e32764137ad527174828254e16b6</sourceDigest>
+      <inputDigest>fnv1a32:bf1e7880</inputDigest>
+      <sourceDigest>sha256:7f7916575fa5afa104323c8b5354027c9ec304b65bc80075d86144dbe69bef64</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
