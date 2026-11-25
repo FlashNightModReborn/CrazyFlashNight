@@ -4,7 +4,7 @@
   "skin": "blueprint",
   "pages": [
     {
-      "pageKey": "1",
+      "pageKey": "1_1",
       "blocks": [
         {
           "type": "blueprint",
@@ -82,6 +82,1065 @@
             {
               "type": "text",
               "text": "【葱花炒蛋】"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【蒜蓉炒空心菜】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "空心菜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "大蒜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "辣椒"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食盐"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "text",
+                "text": "炒锅 ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "把新鲜的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "空心菜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "摘去老茎洗净沥干，按菜梗和嫩叶分开切出五份量；"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "大蒜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "拍扁剁成蒜蓉，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "辣椒"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "切段备好。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "大锅烧热倒足"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，先下蒜蓉与辣椒段大火爆香。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "先下菜梗快炒几下，再倒入菜叶急火快炒至断生变翠绿，撒入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "翻匀。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "全锅兜炒入味后趁热出锅，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：空心菜最怕小火焖煮出水发黑，油温要高、手脚要快，梗叶分批下锅才能五盘都脆绿爽口。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【清炒白菜】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "白菜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "大蒜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食盐"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "text",
+                "text": "炒锅 ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将五人份的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "白菜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "洗净切块，菜帮与菜叶分开叠放；"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "大蒜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "拍碎切片。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "大锅热"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，下蒜片爆出香味后先下白菜帮大火翻炒。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "待菜帮微软再下白菜叶同炒，撒"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "炒至入味收汁。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "迅速起锅，按份"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：菜帮耐炒菜叶易熟，分先后下锅才能保证五份都脆嫩爽口。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_4",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【清炒花菜】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "花菜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "大蒜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食盐"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "text",
+                "text": "炒锅 ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "把"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "花菜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "掰成均匀小朵，焯水沥干备齐五人份；"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "大蒜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "拍碎切末。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "大锅烧热下"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，先放蒜末煸炒出香。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "倒入控干水分的花菜中大火翻炒至边缘微焦，加"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "拌匀。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "翻炒透亮后出锅，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：大锅炒花菜前先过一遍开水，既去生味又好把握熟度，省得外焦里生。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_5",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【清炒土豆丝】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "土豆"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "辣椒"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食盐"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "text",
+                "text": "炒锅 ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "土豆"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "去皮切细丝并淘洗去淀粉、控干成五份量；"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "辣椒"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "洗净切丝。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "铁锅烧至微冒烟倒入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，先下辣椒丝呛出辣香。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "倒入土豆丝大火快炒至断生爽脆，撒入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "颠匀。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "立马出锅以免回软，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：土豆丝下锅前一定要把淀粉洗干净、水沥透，不然大锅里很容易粘锅糊成一团。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_6",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【葱花炒蛋】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "小葱"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "鸡蛋"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食盐"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "text",
+                "text": "炒锅 ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "把足量"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "鸡蛋"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "磕入大盆，切好"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "小葱"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "葱花，加"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "一起打散成蛋液。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "大锅润足"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "烧热，转中大火将葱花蛋液顺锅边淋入。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "待蛋液底部凝起，用锅铲大块推炒至金黄蓬松、葱香四溢。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "趁热起锅，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：蛋液下锅前先和葱花一起搅匀，油温够热再下锅才会蓬松不粘，给食堂打饭刚好分成五份。"
             }
           ]
         }

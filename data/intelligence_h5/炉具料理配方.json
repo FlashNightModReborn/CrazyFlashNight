@@ -4,7 +4,7 @@
   "skin": "blueprint",
   "pages": [
     {
-      "pageKey": "1",
+      "pageKey": "1_1",
       "blocks": [
         {
           "type": "blueprint",
@@ -72,6 +72,898 @@
             {
               "type": "text",
               "text": "【瑶柱蒸蛋】蒸炉"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【蒜蓉烤茄子】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "茄子"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "大蒜"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食用油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食盐"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "烤炉"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "挑五份粗细均匀的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "茄子"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "洗净擦干，表面刷一层"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "；"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "大蒜"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "剥瓣剁成细蓉，用热油激香后拌入"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食盐"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "备用。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将备好的茄子整条送入预热好的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "烤炉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "碳烤至表皮微皱、内里软熟。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "取出茄子从中间剖开，把调好的蒜蓉均匀铺满茄肉，可再按口味补少许盐提鲜。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "放回炉内复烤至蒜香四溢、滋滋冒油即可出炉，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：茄子要先烤软再剖开铺蒜蓉，直接带蒜进炉久烤容易发苦，碳火烤出来的才带焦香。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【蜜汁烤鸡】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "鸡肉"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "酱油"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "白糖"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "香料粉"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "烤箱"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将五人份的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "鸡肉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "洗净吸干水分，加"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "酱油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "、"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "白糖"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "与"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "香料粉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "抓揉均匀，腌制入味。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "提前把"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "烤箱"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "预热到位，将腌好的鸡肉摆上烤盘，表面再刷一层腌汁。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "送入烤制至外皮收紧上色、油脂渗出，中途取出翻面并补刷一层余下的腌汁。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "烤至表皮焦红油亮、内肉熟透后出炉切件，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：用恒温烤箱受热最稳，烤完半程再补刷一次蜜汁，表皮上色漂亮又不会把糖烤糊。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_4",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【酥炸大虾】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "虾"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "面粉"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "鸡蛋"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "食用油"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "炸炉"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装成5盘"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "把五人份的鲜"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "虾"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "开背去虾线沥干；"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "面粉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "与打散的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "鸡蛋"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "搅成顺滑糊状，令虾身均匀裹上一层脆浆。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "向"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "炸炉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "中注入足量"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "食用油"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，升温加热至油面微起细泡。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "将裹好蛋面糊的大虾逐只下锅，炸至外壳定型发泡、呈浅金黄色时先捞出控油。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "拉高油温复炸十余秒逼出余油，捞出沥净，趁酥脆"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装成5盘"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：炸炉油深温稳才能一次出这么多份，先定型再复炸一次，放一会儿也能保持酥脆。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_5",
+      "blocks": [
+        {
+          "type": "blueprint",
+          "title": [
+            {
+              "type": "text",
+              "text": "【瑶柱蒸蛋】"
+            }
+          ],
+          "materials": [
+            [
+              {
+                "type": "text",
+                "text": "用料："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "瑶柱"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "鸡蛋"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "、"
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "小葱"
+                  }
+                ]
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "厨具："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "蒸炉"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " ｜ 出菜："
+              },
+              {
+                "type": "colorToken",
+                "token": "success",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "分装好的5碗"
+                  }
+                ]
+              }
+            ]
+          ],
+          "steps": [
+            {
+              "content": [
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "瑶柱"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "提前温水泡软撕成细丝（泡瑶柱的水留着兑蛋用）；"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "鸡蛋"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "磕入盆中充分打散，加温水调匀并撇去浮沫，"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "小葱"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "切成葱花。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "把调好的蛋液与瑶柱丝平均分入五只蒸碗，扣盖或封好口避免水汽滴落。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "放入水沸上汽的"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "蒸炉"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "，以中火稳蒸至蛋羹凝滑颤动、不留水心。"
+                }
+              ]
+            },
+            {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "开炉撒上准备好的葱花增香，稳稳端出"
+                },
+                {
+                  "type": "colorToken",
+                  "token": "success",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "分装好的5碗"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": "。"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "content": [
+            {
+              "type": "text",
+              "text": "备注：瑶柱自带鲜味不用额外下重盐，蒸炉出蒸汽快且均匀，按碗直出正好端上五人份。"
             }
           ]
         }
