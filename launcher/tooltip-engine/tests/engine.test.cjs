@@ -106,7 +106,30 @@ test('blade count is the AS2 projection; no asset-name inference or Flash emulat
     const c = catalog(); c.items.gun.use = '刀'; delete c.items.gun.weapontype;
     const r = E.buildProjection(input(c, 'gun', { projection: { bladeCount: 4 } }), c);
     assert.match(r.introHTML, /判定数：4/);
-    assert.deepEqual(plain(r.document.rail), ['刀', '默认']);
+    assert.deepEqual(plain(r.document.rail), ['冷兵器', '默认']);
+});
+
+test('melee weapons display 冷兵器 instead of 刀 on rail bookmarks while keeping non-melee rail labels', () => {
+    const c = catalog();
+    c.items.bat = { name: 'bat', displayname: '测试球棒', icon: '球棒', type: '武器', use: '刀', actiontype: '短柄', price: 10, data: { level: 1 } };
+    const batRes = E.buildProjection(input(c, 'bat', { presentation: 'native' }), c);
+    assert.deepEqual(plain(batRes.document.rail), ['冷兵器', '短柄']);
+
+    const overrideRes = E.buildProjection(input(c, 'bat', {
+        presentation: 'native',
+        projection: { calculated: { ...c.items.bat, use: '刀', actiontype: '重斩' } }
+    }), c);
+    assert.deepEqual(plain(overrideRes.document.rail), ['冷兵器', '重斩']);
+
+    c.items.gloves = { name: 'gloves', displayname: '测试拳套', icon: '拳套', type: '防具', use: '手部装备', price: 10, data: { level: 1 } };
+    assert.deepEqual(plain(E.buildProjection(input(c, 'gloves', { presentation: 'native' }), c).document.rail), ['手部装备', '默认']);
+
+    c.items.pistol = { name: 'pistol', displayname: '测试手枪', icon: '手枪', type: '武器', use: '手枪', weapontype: '手枪', price: 10, data: { level: 1 } };
+    assert.deepEqual(plain(E.buildProjection(input(c, 'pistol', { presentation: 'native' }), c).document.rail), ['手枪']);
+
+    const prod = JSON.parse(catalogText());
+    const prodBat = E.buildProjection(input(prod, '棒球棒', { presentation: 'native' }), prod);
+    assert.deepEqual(plain(prodBat.document.rail), ['冷兵器', '短柄']);
 });
 
 test('installed mod summaries consume exactly the matched branch projection', () => {

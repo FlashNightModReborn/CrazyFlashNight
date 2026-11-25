@@ -98,6 +98,8 @@ namespace TooltipEngine {
             }
             if (actionEquipment && (as2Equal(bottom, null) || as2Equal(bottom, "")))
                 bottom = "默认";
+            if (as2Equal(top, ItemUseTypes.MELEE))
+                top = "冷兵器";
             var rail: any[] = [];
             if (as2NotEqual(top, null) && as2NotEqual(top, ""))
                 rail.push(String(top));

@@ -2812,6 +2812,8 @@ var TooltipEngine;
             }
             if (actionEquipment && (TooltipEngine.as2Equal(bottom, null) || TooltipEngine.as2Equal(bottom, "")))
                 bottom = "默认";
+            if (TooltipEngine.as2Equal(top, TooltipEngine.ItemUseTypes.MELEE))
+                top = "冷兵器";
             var rail = [];
             if (TooltipEngine.as2NotEqual(top, null) && TooltipEngine.as2NotEqual(top, ""))
                 rail.push(String(top));
