@@ -352,5 +352,92 @@ namespace Launcher.Tests.Guardian
             Assert.True(image.Width > 0);
             Assert.True(image.Height > 0);
         }
+
+        [Fact]
+        public void UnitAndItemTabsRenderPageJumpHintBesideStatus()
+        {
+            Assert.Equal("输入页码数字后按回车键跳转", ModifierNativeSurface.PageJumpHintForTab("units"));
+            Assert.Equal("输入页码数字后按回车键跳转", ModifierNativeSurface.PageJumpHintForTab("items"));
+            Assert.Null(ModifierNativeSurface.PageJumpHintForTab("economy"));
+            Assert.Null(ModifierNativeSurface.PageJumpHintForTab("level"));
+
+            DirectoryInfo repository = new DirectoryInfo(AppContext.BaseDirectory);
+            while (repository != null && !File.Exists(Path.Combine(
+                repository.FullName, "launcher", "CRAZYFLASHER7MercenaryEmpire.csproj")))
+                repository = repository.Parent;
+            Assert.NotNull(repository);
+            string webRoot = Path.Combine(repository.FullName, "launcher", "web");
+
+            using var owner = new Form();
+            using var task = new ModifierTask(() => true, _ => true);
+            using var surface = new ModifierNativeSurface(owner, webRoot, "owned", task);
+            surface.PrepareAsync().GetAwaiter().GetResult();
+            surface.ClientSize = new Size(1016, 550);
+            Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
+
+            bool HasSoftGoldPixels(Bitmap bitmap, Rectangle logicalRect)
+            {
+                Rectangle rect = ModifierNativeLayout.ToClient(logicalRect, surface.ClientSize);
+                int left = Math.Max(0, rect.Left);
+                int top = Math.Max(0, rect.Top);
+                int right = Math.Min(bitmap.Width, rect.Right);
+                int bottom = Math.Min(bitmap.Height, rect.Bottom);
+                for (int y = top; y < bottom; y++)
+                    for (int x = left; x < right; x++)
+                    {
+                        Color px = bitmap.GetPixel(x, y);
+                        if (px.A > 120 && px.R >= 160 && px.G >= 140 && px.B >= 80
+                            && px.R > px.G && px.G > px.B && (px.R - px.B) >= 35)
+                            return true;
+                    }
+                return false;
+            }
+
+            using (var econ = surface.RenderFrame())
+            {
+                Assert.False(HasSoftGoldPixels(econ, new Rectangle(296, 403, 356, 20)));
+            }
+
+            MethodInfo setTab = typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo setStatus = typeof(ModifierNativeSurface).GetMethod("SetStatus", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo applyUnits = typeof(ModifierNativeSurface).GetMethod("ApplyUnits", BindingFlags.Instance | BindingFlags.NonPublic);
+            MethodInfo applyItems = typeof(ModifierNativeSurface).GetMethod("ApplyItems", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            setTab.Invoke(surface, new object[] { "units" });
+            setStatus.Invoke(surface, new object[] { "正在读取兵种目录…", "pending" });
+            applyUnits.Invoke(surface, new object[] { new JObject
+            {
+                ["success"] = true, ["page"] = 1, ["pageSize"] = 8, ["total"] = 32, ["revision"] = 1,
+                ["units"] = new JArray(new JObject
+                {
+                    ["id"] = 1, ["name"] = "测试兵种", ["spriteName"] = "", ["key"] = "",
+                    ["level"] = 1, ["hostile"] = false
+                })
+            } });
+            using (var unitsFrame = surface.RenderFrame())
+            {
+                SaveModifierFrame(unitsFrame, "modifier-units-hint.png");
+                Assert.True(HasSoftGoldPixels(unitsFrame, new Rectangle(296, 403, 356, 20)));
+                Assert.False(HasSoftGoldPixels(unitsFrame, new Rectangle(656, 403, 120, 20)));
+            }
+
+            setTab.Invoke(surface, new object[] { "items" });
+            setStatus.Invoke(surface, new object[] { "正在读取物品目录…", "pending" });
+            applyItems.Invoke(surface, new object[] { new JObject
+            {
+                ["success"] = true, ["page"] = 1, ["pageSize"] = 64, ["total"] = 64, ["revision"] = 1,
+                ["items"] = new JArray(new JObject
+                {
+                    ["id"] = 1, ["name"] = "测试物品", ["displayName"] = "测试物品",
+                    ["icon"] = "", ["type"] = "", ["use"] = ""
+                })
+            } });
+            using (var itemsFrame = surface.RenderFrame())
+            {
+                SaveModifierFrame(itemsFrame, "modifier-items-hint.png");
+                Assert.True(HasSoftGoldPixels(itemsFrame, new Rectangle(296, 403, 356, 20)));
+                Assert.False(HasSoftGoldPixels(itemsFrame, new Rectangle(656, 403, 120, 20)));
+            }
+        }
     }
 }

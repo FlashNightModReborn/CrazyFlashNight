@@ -38,6 +38,8 @@ namespace CF7Launcher.Guardian
             internal bool Hostile;
         }
 
+        internal const string PageJumpHint = "输入页码数字后按回车键跳转";
+
         private static readonly Color Gold = Color.FromArgb(255, 204, 0);
         private static readonly Color SoftGold = Color.FromArgb(216, 195, 138);
         private static readonly Color UnitText = Color.FromArgb(241, 220, 168);
@@ -1653,6 +1655,11 @@ namespace CF7Launcher.Guardian
             _tooltip.QueuePointerMove(screen.X, screen.Y);
         }
 
+        internal static string PageJumpHintForTab(string tab)
+        {
+            return tab == "units" || tab == "items" ? PageJumpHint : null;
+        }
+
         private void DrawStatus(Graphics graphics)
         {
             if (_unresolvedToken != null)
@@ -1660,9 +1667,24 @@ namespace CF7Launcher.Guardian
                 DrawButton(graphics, ModifierNativeLayout.Reconcile, "reconcile");
                 DrawText(graphics, "核对", ModifierNativeLayout.Reconcile, _tinyFont, ErrorText, _ellipsis);
             }
-            if (string.IsNullOrEmpty(_status)) return;
-            Color color = StatusColor(_statusTone);
-            DrawText(graphics, _status, new Rectangle(180, 403, 510, 20), _statusFont, color, _ellipsis);
+            string hint = PageJumpHintForTab(_activeTab);
+            if (string.IsNullOrEmpty(_status) && string.IsNullOrEmpty(hint)) return;
+            if (string.IsNullOrEmpty(hint))
+            {
+                Color color = StatusColor(_statusTone);
+                DrawText(graphics, _status, new Rectangle(180, 403, 510, 20), _statusFont, color, _ellipsis);
+                return;
+            }
+            if (!string.IsNullOrEmpty(_status))
+            {
+                float measuredWidth = Math.Min(260f, graphics.MeasureString(_status, _statusFont, 260, _ellipsis).Width);
+                Color color = StatusColor(_statusTone);
+                DrawText(graphics, _status, new RectangleF(180f, 403f, measuredWidth + 4f, 20f), _statusFont, color, _ellipsis);
+                float hintX = Math.Max(296f, 180f + measuredWidth + 14f);
+                DrawText(graphics, hint, new RectangleF(hintX, 403f, Math.Max(120f, 652f - hintX), 20f), _statusFont, SoftGold, _ellipsis);
+                return;
+            }
+            DrawText(graphics, hint, new RectangleF(180f, 403f, 472f, 20f), _statusFont, SoftGold, _ellipsis);
         }
 
         private static Color StatusColor(string tone)
