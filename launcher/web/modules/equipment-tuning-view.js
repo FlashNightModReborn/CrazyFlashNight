@@ -162,6 +162,7 @@ var EquipmentTuningView = (function() {
     };
 
     TuningView.prototype.unmount = function() {
+        if (this._teardownModDrag) this._teardownModDrag();
         this._invalidateTooltipAuthority(false);
         if (this._densityController && this._densityController.unregister) this._densityController.unregister(this);
         this._root = null;
@@ -234,8 +235,8 @@ var EquipmentTuningView = (function() {
             record.needsReconcile = this._needsReconcile === true;
         }
         record.confirmationMode = this._modConfirmationMode === 'fast' ? 'fast' : 'safe';
-        record.autoCommitPending = record.confirmationMode === 'fast'
-            && !!this._quickCommitIntent;
+        record.autoCommitPending = !!this._quickCommitIntent
+            && (this._quickCommitIntent.direct === true || record.confirmationMode === 'fast');
         record.writeState = this._refreshRetryPending ? 'refresh_pending'
             : this._refreshRetryRequired ? 'refresh_required'
                 : this._inventoryWriteHandle ? 'write_pending'
@@ -749,11 +750,11 @@ var EquipmentTuningView = (function() {
             return false;
         }
         var self = this;
-        var quickCommit = extra.quickCommit === true && this._modConfirmationMode === 'fast'
+        var directQuick = extra.directQuickCommit === true;
+        var quickCommit = (directQuick || extra.quickCommit === true && this._modConfirmationMode === 'fast')
             && (operation === 'install_mod' || operation === 'replace_mod' || operation === 'detach_mod');
         this._quickCommitIntent = quickCommit ? {
-            intentKey:intentKey,
-            operation:operation,
+            intentKey:intentKey, operation:operation, direct:directQuick,
             candidateName:String(extra.candidateName || ''),
             replaceCandidateName:String(extra.replaceCandidateName || '')
         } : null;

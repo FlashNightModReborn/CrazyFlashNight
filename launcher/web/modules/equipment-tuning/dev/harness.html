@@ -87,7 +87,7 @@ function respond(message){var result=base(message);
     else if(operation==='replace_mod'){materials=[plannedMaterial(candidateName,5,-1,4),plannedMaterial('基础导轨',0,1,1)];removedMods=['基础导轨']}
     else if(operation==='detach_mod'){materials=[plannedMaterial(candidateName,0,1,1)];removedMods=[candidateName]}
     else if(operation==='detach_all_mods'){materials=[plannedMaterial('基础导轨',0,1,1)];removedMods=['基础导轨']}
-    if(__collateralPreview&&operation==='replace_mod'){__collateralPreview=false;removedMods.push('依赖配件');materials.push(plannedMaterial('依赖配件',0,1,1))}
+    if(__collateralPreview&&(operation==='replace_mod'||operation==='detach_mod')){__collateralPreview=false;removedMods.push('依赖配件');materials.push(plannedMaterial('依赖配件',0,1,1))}
     if(__longPreviewOnce&&operation!=='enhance'){__longPreviewOnce=false;for(var longIndex=0;longIndex<80;longIndex++)materials.push(plannedMaterial('长材料 '+longIndex,100+longIndex,-1,99+longIndex));for(var removedIndex=0;removedIndex<24;removedIndex++)removedMods.push('返还配件 '+removedIndex)}
     if(__noStatsOnce)__noStatsOnce=false;else{attachPreviewStats(beforeProjection,operation,'before');attachPreviewStats(afterProjection,operation,'after')}
     Object.assign(result,{success:true,operation:operation,tuningToken:'token.'+operation+'.'+transaction,noOp:noOp,canCommit:true,before:beforeProjection,after:afterProjection,materials:materials,removedMods:removedMods});
@@ -109,6 +109,7 @@ function respond(message){var result=base(message);
 <script src="../../panel-runtime.js"></script>
 <script src="../../workbench-lifecycle.js"></script>
 <script src="../../workbench-focus.js"></script>
+<script src="../../workbench-primitives.js"></script>
 <script src="../../workbench-components.js"></script>
 <script src="../../equipment-tuning-runtime.js"></script>
 <script src="../../inventory-runtime.js"></script>
@@ -481,24 +482,31 @@ function respond(message){var result=base(message);
       &&!detachAll.hasAttribute('data-mod-slot-index')
       &&document.querySelectorAll('.equipment-tuning-mod-slots[data-slot-surface="summary"] .equipment-tuning-status-empty').length===2
       &&operationEmptySlots.every(function(node){return node.tagName==='BUTTON'&&node.tabIndex===0&&node.getAttribute('aria-label').indexOf('点击选择要安装的配件')>=0}));
-    var operationEmptyMetrics=operationEmptySlots.map(function(node){var rect=node.getBoundingClientRect(),glyph=node.querySelector('.equipment-tuning-installed-empty-glyph').getBoundingClientRect(),style=getComputedStyle(node);return{w:rect.width,h:rect.height,gw:glyph.width,gh:glyph.height,border:style.borderTopStyle}}),compactDetachRect=detachAll.getBoundingClientRect(),compactRailRect=operationRail.getBoundingClientRect(),compactFirstSlotRect=operationSlots.firstElementChild.getBoundingClientRect();
-    ok('compact empty slots and the separate detach-all command share one aligned tile rail',
+    var operationEmptyMetrics=operationEmptySlots.map(function(node){var rect=node.getBoundingClientRect(),glyph=node.querySelector('.equipment-tuning-installed-empty-glyph').getBoundingClientRect(),style=getComputedStyle(node);return{w:rect.width,h:rect.height,gw:glyph.width,gh:glyph.height,border:style.borderTopStyle}}),compactDetachRect=detachAll.getBoundingClientRect(),compactRailRect=operationRail.getBoundingClientRect(),compactFirstSlotRect=operationSlots.firstElementChild.getBoundingClientRect(),compactQuickDetach=document.querySelector('.equipment-tuning-installed-quick-detach'),compactQuickDetachRect=compactQuickDetach.getBoundingClientRect(),compactQuickGlyphRect=compactQuickDetach.querySelector('.equipment-tuning-installed-quick-detach-glyph').getBoundingClientRect();
+    ok('compact empty slots and the readable detach-all button align inside the plugin rail',
       operationEmptyMetrics.length===2&&operationEmptyMetrics.every(function(metric){
         return Math.abs(metric.w-48)<0.1&&Math.abs(metric.h-48)<0.1
           &&Math.abs(metric.gw-40)<0.1&&Math.abs(metric.gh-40)<0.1&&metric.border==='dashed';
-      })&&Math.abs(compactDetachRect.width-48)<0.1&&Math.abs(compactDetachRect.height-48)<0.1
-        &&Math.abs(compactDetachRect.top-compactFirstSlotRect.top)<0.1
-        &&Math.abs(compactDetachRect.right-compactRailRect.right)<0.1,
-      JSON.stringify({slots:operationEmptyMetrics,detach:[compactDetachRect.width,compactDetachRect.height,compactDetachRect.top],firstTop:compactFirstSlotRect.top,railRight:compactRailRect.right,detachRight:compactDetachRect.right}));
+      })&&detachAll.textContent.trim()==='卸下全部'
+        &&parseFloat(getComputedStyle(detachAll).fontSize)>=11
+        &&getComputedStyle(detachAll,'::before').content==='none'
+        &&compactDetachRect.width>=68&&Math.abs(compactDetachRect.height-32)<0.1
+        &&compactDetachRect.top>=compactRailRect.top-0.5
+        &&compactDetachRect.bottom<=compactRailRect.bottom+0.5
+        &&Math.abs(compactDetachRect.right-compactRailRect.right)<0.1
+        &&compactQuickDetachRect.width>=24&&compactQuickDetachRect.height>=24
+        &&Math.abs(compactQuickGlyphRect.width-14)<0.5&&Math.abs(compactQuickGlyphRect.height-14)<0.5,
+      JSON.stringify({slots:operationEmptyMetrics,detach:[compactDetachRect.width,compactDetachRect.height,compactDetachRect.top],rail:[compactRailRect.top,compactRailRect.bottom,compactRailRect.right],detachRight:compactDetachRect.right,quick:[compactQuickDetachRect.width,compactQuickDetachRect.height,compactQuickGlyphRect.width,compactQuickGlyphRect.height]}));
     var densityRoot=operationSlots.closest('.item-grid-compact');densityRoot.classList.remove('item-grid-compact');
-    var fullEmptySlot=document.querySelector('.equipment-tuning-installed-empty'),fullEmptyRect=fullEmptySlot.getBoundingClientRect(),fullDetachRect=detachAll.getBoundingClientRect(),fullFirstSlotRect=operationSlots.firstElementChild.getBoundingClientRect(),fullRailRect=operationRail.getBoundingClientRect();
-    ok('full density keeps the empty-slot label and aligns the square batch command outside the capacity group',
+    var fullEmptySlot=document.querySelector('.equipment-tuning-installed-empty'),fullEmptyRect=fullEmptySlot.getBoundingClientRect(),fullDetachRect=detachAll.getBoundingClientRect(),fullRailRect=operationRail.getBoundingClientRect(),fullQuickGlyphRect=document.querySelector('.equipment-tuning-installed-quick-detach-glyph').getBoundingClientRect();
+    ok('full density keeps the empty-slot label and aligns the readable batch command outside the capacity group',
       fullEmptyRect.width>48&&fullEmptyRect.height>=42
       &&getComputedStyle(fullEmptySlot.querySelector('.equipment-tuning-installed-empty-copy')).display==='flex'
       &&!operationSlots.contains(operationActions)
-      &&Math.abs(fullDetachRect.width-42)<0.1&&Math.abs(fullDetachRect.height-42)<0.1
-      &&Math.abs(fullDetachRect.top-fullFirstSlotRect.top)<0.1
-      &&Math.abs(fullDetachRect.right-fullRailRect.right)<0.1);
+      &&detachAll.textContent.trim()==='卸下全部'
+      &&fullDetachRect.width>=68&&Math.abs(fullDetachRect.height-32)<0.1
+      &&Math.abs(fullDetachRect.right-fullRailRect.right)<0.1
+      &&Math.abs(fullQuickGlyphRect.width-16)<0.5&&Math.abs(fullQuickGlyphRect.height-16)<0.5);
     densityRoot.classList.add('item-grid-compact');
     var emptySlotPreviewTraffic=__sent.filter(function(x){return x.cmd==='preview'}).length;
     operationEmptySlots[0].click();await wait();
@@ -586,9 +594,108 @@ function respond(message){var result=base(message);
     ok('replacement preview diffs swapped mod stats in both directions',document.querySelectorAll('.equipment-tuning-preview .equipment-tuning-stats-row').length===2&&document.querySelectorAll('.equipment-tuning-preview .equipment-tuning-stats-row.is-better').length===2&&document.querySelector('.equipment-tuning-preview .equipment-tuning-stats-delta-rows').textContent.indexOf('2 → —')>=0&&document.querySelector('.equipment-tuning-preview .equipment-tuning-stats-delta-rows').textContent.indexOf('— → 4')>=0);
     document.querySelector('.equipment-tuning-installed-card.selected').click();await wait();
     ok('clicking the selected installed mod again cancels replacement without a second cancel-only path',view.debugState().replaceCandidateKey===''&&!document.querySelector('.equipment-tuning-installed-card.selected')&&!document.querySelector('.equipment-tuning-detach-selected'));
-    document.querySelector('.equipment-tuning-detach').click();await wait();document.querySelector('.equipment-tuning-installed-quick-detach').click();await until(function(){return view.debugState().hasPreview&&view.debugState().operation==='detach_mod'});
-    ok('installed mod keeps one dedicated single-detach control',__sent.some(function(x){return x.cmd==='preview'&&x.payload&&x.payload.operation==='detach_mod'&&x.payload.candidateKey==='mod.base'})&&!!document.querySelector('.equipment-tuning-installed-quick-detach'));
-    document.querySelector('.equipment-tuning-installed-card.selected').click();await wait();document.querySelector('.equipment-tuning-detach').click();await wait();
+    var directDetachBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
+    document.querySelector('.equipment-tuning-installed-quick-detach').click();
+    await until(function(){var state=view.debugState();return __sent.filter(function(x){return x.cmd==='commit'}).length===directDetachBefore+1&&!state.busy&&!state.inventoryWritePending&&!state.readPending&&state.hasSnapshot});
+    ok('installed mod corner detach commits directly in progressive mode without collateral dependencies',
+      view.debugState().modConfirmationMode==='safe'
+      &&__sent.some(function(x){return x.cmd==='preview'&&x.payload&&x.payload.operation==='detach_mod'&&x.payload.candidateKey==='mod.base'})
+      &&__sent.filter(function(x){return x.cmd==='commit'})[directDetachBefore].payload.expectedTuningToken.indexOf('token.detach_mod')===0);
+    __collateralPreview=true;var collateralDetachCommitBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
+    document.querySelector('.equipment-tuning-installed-quick-detach').click();
+    await until(function(){return view.debugState().hasPreview&&!view.debugState().readPending});
+    ok('corner detach still stops at preview when collateral dependencies exist',
+      view.debugState().operation==='detach_mod'
+      &&__sent.filter(function(x){return x.cmd==='commit'}).length===collateralDetachCommitBefore
+      &&__toasts.some(function(message){return message.indexOf('额外卸下 1 个依赖插件')>=0}));
+    async function probeModDrag(candidateNode, targetX, targetY, inspectDrag, drop){
+      candidateNode.scrollIntoView({block:'nearest'});
+      var sRect=candidateNode.getBoundingClientRect(),sx=sRect.left+sRect.width/2,sy=sRect.top+sRect.height/2;
+      candidateNode.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,cancelable:true,button:0,isPrimary:true,pointerId:41,clientX:sx,clientY:sy}));
+      document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,cancelable:true,pointerId:41,clientX:targetX,clientY:targetY}));
+      await wait(10);
+      var observation=inspectDrag?inspectDrag():null;
+      if(drop!==false){
+        document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,cancelable:true,button:0,isPrimary:true,pointerId:41,clientX:targetX,clientY:targetY}));
+        candidateNode.click();
+      }
+      return observation;
+    }
+    document.querySelector('.equipment-tuning-detach').click();await wait();
+    var dragEmptySlot=document.querySelector('.equipment-tuning-installed-entry[data-mod-slot-state="empty"]');
+    var dragCandidateNode=document.querySelector('[data-candidate-key="mod.test.1"]');
+    dragEmptySlot.scrollIntoView({block:'nearest'});
+    var emptySlotRect=dragEmptySlot.getBoundingClientRect(),installCommitBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
+    var emptyDragObserved=await probeModDrag(dragCandidateNode,emptySlotRect.left+emptySlotRect.width/2,emptySlotRect.top+emptySlotRect.height/2,function(){
+      var ghost=document.querySelector('.equipment-tuning-drag-ghost');
+      return {
+        hasGhost:!!ghost&&ghost.textContent.trim()==='光学测试瞄具'&&!!ghost.querySelector('[data-icon="测试瞄具图标"]'),
+        draggingClass:document.querySelector('.equipment-tuning-view').classList.contains('equipment-tuning-mod-dragging'),
+        emptyHint:dragEmptySlot.classList.contains('equipment-tuning-drop-hint')&&dragEmptySlot.getAttribute('data-drop-action')==='install',
+        emptyActive:dragEmptySlot.classList.contains('workbench-drop-active')
+      };
+    });
+    await until(function(){var state=view.debugState();return __sent.filter(function(x){return x.cmd==='commit'}).length===installCommitBefore+1&&!state.busy&&!state.inventoryWritePending&&!state.readPending&&state.hasSnapshot});
+    var emptyDragPreviews=__sent.filter(function(x){return x.cmd==='preview'});
+    var emptyDragCommit=__sent.filter(function(x){return x.cmd==='commit'})[installCommitBefore];
+    ok('dragging a mod onto an empty slot highlights targets and directly commits install_mod',
+      dragCandidateNode.getAttribute('data-mod-draggable')==='true'
+      &&emptyDragObserved&&emptyDragObserved.hasGhost&&emptyDragObserved.draggingClass&&emptyDragObserved.emptyHint&&emptyDragObserved.emptyActive
+      &&!document.querySelector('.equipment-tuning-drag-ghost')
+      &&!document.querySelector('.equipment-tuning-drop-hint')
+      &&emptyDragPreviews[emptyDragPreviews.length-1].payload.operation==='install_mod'
+      &&emptyDragCommit&&emptyDragCommit.payload.expectedTuningToken.indexOf('token.install_mod')===0
+      &&view.debugState().replaceCandidateKey==='',
+      JSON.stringify({
+        draggable:dragCandidateNode.getAttribute('data-mod-draggable'),
+        obs:emptyDragObserved,
+        ghostLeft:!!document.querySelector('.equipment-tuning-drag-ghost'),
+        hintLeft:!!document.querySelector('.equipment-tuning-drop-hint'),
+        lastPreviewOp:emptyDragPreviews.length?emptyDragPreviews[emptyDragPreviews.length-1].payload.operation:'',
+        commitToken:emptyDragCommit&&emptyDragCommit.payload&&emptyDragCommit.payload.expectedTuningToken,
+        replaceKey:view.debugState().replaceCandidateKey
+      }));
+    var installedDropEntry=document.querySelector('.equipment-tuning-installed-entry[data-mod-slot-state="installed"]');
+    var replaceDragNode=document.querySelector('[data-candidate-key="mod.test.6"]');
+    installedDropEntry.scrollIntoView({block:'nearest'});
+    var installedDropRect=installedDropEntry.getBoundingClientRect(),replaceDragCommitBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
+    var replaceDragObserved=await probeModDrag(replaceDragNode,installedDropRect.left+installedDropRect.width/2,installedDropRect.top+installedDropRect.height/2,function(){
+      return {
+        replaceHint:installedDropEntry.classList.contains('equipment-tuning-drop-hint')&&installedDropEntry.getAttribute('data-drop-action')==='replace',
+        replaceActive:installedDropEntry.classList.contains('workbench-drop-active')
+      };
+    });
+    await until(function(){var state=view.debugState();return __sent.filter(function(x){return x.cmd==='commit'}).length===replaceDragCommitBefore+1&&!state.busy&&!state.inventoryWritePending&&!state.readPending&&state.hasSnapshot});
+    ok('dragging a compatible mod onto an installed slot directly commits replace_mod',
+      replaceDragObserved&&replaceDragObserved.replaceHint&&replaceDragObserved.replaceActive
+      &&__sent.some(function(x){return x.cmd==='preview'&&x.payload&&x.payload.operation==='replace_mod'&&x.payload.candidateKey==='mod.test.6'&&x.payload.replaceCandidateKey==='mod.base'})
+      &&__sent.filter(function(x){return x.cmd==='commit'})[replaceDragCommitBefore].payload.expectedTuningToken.indexOf('token.replace_mod')===0);
+    var snapshotMod6=view._snapshot.modCandidates.filter(function(x){return x.candidateKey==='mod.test.6'})[0];
+    snapshotMod6.available=false;snapshotMod6.reason='与已有配件冲突';view.render();
+    var rejectCandidateNode=document.querySelector('[data-candidate-key="mod.test.6"]');
+    var rejectEmptyEntry=document.querySelector('.equipment-tuning-installed-entry[data-mod-slot-state="empty"]');
+    rejectEmptyEntry.scrollIntoView({block:'nearest'});
+    var rejectEmptyRect=rejectEmptyEntry.getBoundingClientRect(),rejectTrafficBefore=__sent.filter(function(x){return x.type!=='debug'}).length;
+    var rejectObserved=await probeModDrag(rejectCandidateNode,rejectEmptyRect.left+rejectEmptyRect.width/2,rejectEmptyRect.top+rejectEmptyRect.height/2,function(){
+      return {
+        draggableAttr:rejectCandidateNode.getAttribute('data-mod-draggable'),
+        emptyRejected:rejectEmptyEntry.classList.contains('workbench-drop-rejected'),
+        installedHinted:document.querySelector('.equipment-tuning-installed-entry[data-mod-slot-state="installed"]').classList.contains('equipment-tuning-drop-hint')
+      };
+    });
+    await wait();
+    ok('rejected drop onto an incompatible empty slot stays client-side without business traffic',
+      rejectObserved&&rejectObserved.draggableAttr==='true'&&rejectObserved.emptyRejected&&rejectObserved.installedHinted
+      &&__sent.filter(function(x){return x.type!=='debug'}).length===rejectTrafficBefore
+      &&document.querySelector('[data-tuning-status]').textContent.indexOf('无法放入该槽位：与已有配件冲突')>=0);
+    snapshotMod6.available=true;snapshotMod6.reason='';view.render();
+    var cancelDragNode=document.querySelector('[data-candidate-key="mod.test.1"]'),cancelTrafficBefore=__sent.filter(function(x){return x.type!=='debug'}).length;
+    await probeModDrag(cancelDragNode,1,1,null);await wait();
+    ok('dropping a dragged mod outside slots cancels cleanly without traffic',
+      !document.querySelector('.equipment-tuning-drag-ghost')
+      &&!document.querySelector('.equipment-tuning-mod-dragging')
+      &&__sent.filter(function(x){return x.type!=='debug'}).length===cancelTrafficBefore);
+    document.querySelector('.equipment-tuning-detach').click();await wait();
     document.querySelector('[data-confirmation-mode="fast"]').click();var quickReplaceBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
     ok('single-item shortcut is selected through ChoiceGroup and persisted once',view.debugState().modConfirmationMode==='fast'&&document.querySelector('[data-confirmation-mode="fast"]').getAttribute('aria-pressed')==='true'&&localStorage.getItem('cf7.equipmentTuning.modConfirmationMode')==='fast');
     document.querySelector('.equipment-tuning-candidate.available').click();

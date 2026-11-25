@@ -465,6 +465,69 @@
             before:beforeValue, after:afterValue, delta:delta, direction:direction};
     }
 
+    function evaluateModDropTarget(candidate, target) {
+        if (!candidate || typeof candidate !== 'object') {
+            return {accepted:false, reason:'unknown_candidate'};
+        }
+        var candidateKey = String(candidate.candidateKey || '');
+        if (!candidateKey) return {accepted:false, reason:'unknown_candidate'};
+        if (candidate.installed === true) {
+            return {accepted:false, reason:'already_installed'};
+        }
+        if (Math.max(0, Math.floor(Number(candidate.owned) || 0)) <= 0) {
+            return {accepted:false, reason:'material_missing'};
+        }
+        if (!target || typeof target !== 'object') {
+            return {accepted:false, reason:'target_invalid'};
+        }
+        var slotState = String(target.slotState || '');
+        if (slotState === 'empty') {
+            if (candidate.available === true) {
+                return {
+                    accepted:true,
+                    operation:'install_mod',
+                    candidateKey:candidateKey,
+                    candidateName:String(candidate.itemName || ''),
+                    replaceCandidateKey:'',
+                    replaceCandidateName:''
+                };
+            }
+            return {
+                accepted:false,
+                reason:String(candidate.reason || 'mod_unavailable')
+            };
+        }
+        if (slotState === 'installed') {
+            var installedKey = String(target.installedCandidateKey || '');
+            if (!installedKey) return {accepted:false, reason:'target_invalid'};
+            if (installedKey === candidateKey) {
+                return {accepted:false, reason:'already_installed'};
+            }
+            var replaceableFrom = candidate.replaceableFrom instanceof Array
+                ? candidate.replaceableFrom : [];
+            if (replaceableFrom.indexOf(installedKey) >= 0) {
+                return {
+                    accepted:true,
+                    operation:'replace_mod',
+                    candidateKey:candidateKey,
+                    candidateName:String(candidate.itemName || ''),
+                    replaceCandidateKey:installedKey,
+                    replaceCandidateName:String(target.installedItemName || '')
+                };
+            }
+            return {accepted:false, reason:'不能替换该槽位已安装的配件'};
+        }
+        return {accepted:false, reason:'target_invalid'};
+    }
+
+    function candidateHasModDropTarget(candidate, targets) {
+        if (!(targets instanceof Array)) return false;
+        for (var i = 0; i < targets.length; i++) {
+            if (evaluateModDropTarget(candidate, targets[i]).accepted) return true;
+        }
+        return false;
+    }
+
     return {
         wireRef:wireRef,
         sameRef:sameRef,
@@ -480,6 +543,8 @@
         quickCommitEligible:quickCommitEligible,
         hasMaterialDelta:hasMaterialDelta,
         materialDeltaEquals:materialDeltaEquals,
+        evaluateModDropTarget:evaluateModDropTarget,
+        candidateHasModDropTarget:candidateHasModDropTarget,
         normalizeConversionCandidates:normalizeConversionCandidates,
         previewIntentKey:previewIntentKey,
         isOperation:isOperation,

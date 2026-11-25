@@ -460,28 +460,66 @@
 .equipment-tuning-installed-empty-copy b { font:700 11px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-installed-empty-copy small { color:var(--wb-semantic-disabled); font:10px/1.2 "Microsoft YaHei",sans-serif; }
 .equipment-tuning-installed-quick-detach {
-    position:absolute; z-index:2; top:2px; right:2px; width:16px; height:16px; padding:0; display:grid; place-items:center;
-    border:1px solid #5d3030; background:#170d0e; color:#d78383; font:700 12px/1 Consolas,sans-serif; cursor:pointer;
+    position:absolute; z-index:2; top:0; right:0; width:24px; height:24px; padding:0;
+    display:flex; align-items:flex-start; justify-content:flex-end;
+    border:0; background:transparent; cursor:pointer;
 }
-.equipment-tuning-installed-quick-detach:hover:not(:disabled),.equipment-tuning-installed-quick-detach:focus-visible {
+.equipment-tuning-installed-quick-detach-glyph {
+    width:16px; height:16px; margin:2px 2px 0 0; box-sizing:border-box; display:grid; place-items:center;
+    border:1px solid var(--tuning-danger-border); background:var(--tuning-danger-bg); color:var(--tuning-danger);
+    font:700 12px/1 Consolas,sans-serif; pointer-events:none;
+}
+.equipment-tuning-installed-quick-detach:hover:not(:disabled) .equipment-tuning-installed-quick-detach-glyph,
+.equipment-tuning-installed-quick-detach:focus-visible .equipment-tuning-installed-quick-detach-glyph {
     color:color-mix(in srgb,var(--wb-danger) 55%,var(--wb-text));
     border-color:var(--wb-danger);
     background:color-mix(in srgb,var(--wb-danger) 18%,var(--wb-bg));
 }
 .equipment-tuning-installed-quick-detach:disabled { opacity:.38; cursor:default; }
 .equipment-tuning-installed-rail {
-    display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:5px;
+    display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:5px;
 }
 .equipment-tuning-installed-actions {
-    display:grid; place-items:stretch; align-self:start;
+    display:flex; align-items:center; align-self:center;
 }
 .equipment-tuning-detach-all {
-    width:42px; height:42px; min-height:42px; padding:0; display:grid; place-items:center;
-    font-size:0;
+    width:auto; min-width:68px; height:32px; min-height:32px; padding:0 10px;
+    display:inline-flex; align-items:center; justify-content:center;
+    white-space:nowrap; font:700 11px/1 "Microsoft YaHei",sans-serif;
 }
-.equipment-tuning-detach-all::before {
-    content:"××"; font:700 12px/1 Consolas,sans-serif; letter-spacing:-2px;
+.equipment-tuning-action.danger:hover:not(:disabled),
+.equipment-tuning-action.danger:focus-visible {
+    color:color-mix(in srgb,var(--wb-danger) 55%,var(--wb-text));
+    border-color:var(--wb-danger);
+    background:color-mix(in srgb,var(--wb-danger) 18%,var(--wb-bg));
 }
+.equipment-tuning-candidate[data-mod-draggable="true"]:not(:disabled) { cursor:grab; }
+.equipment-tuning-mod-dragging,
+.equipment-tuning-mod-dragging .equipment-tuning-candidate { cursor:grabbing; }
+.equipment-tuning-candidate.equipment-tuning-drag-source { opacity:.56; }
+.equipment-tuning-installed-entry.equipment-tuning-drop-hint > .equipment-tuning-installed-empty,
+.equipment-tuning-installed-entry.equipment-tuning-drop-hint > .equipment-tuning-installed-card {
+    border-color:var(--dls-crystal);
+    box-shadow:inset 0 0 0 1px rgba(var(--dls-crystal-rgb),.36),0 0 8px rgba(var(--dls-crystal-rgb),.18);
+}
+.equipment-tuning-installed-entry.equipment-tuning-drop-hint[data-drop-action="replace"] > .equipment-tuning-installed-card {
+    border-color:var(--wb-accent);
+    box-shadow:inset 0 0 0 1px var(--wb-accent),0 0 8px rgba(var(--dls-crystal-rgb),.18);
+}
+.equipment-tuning-installed-entry.workbench-drop-active > .equipment-tuning-installed-empty,
+.equipment-tuning-installed-entry.workbench-drop-active > .equipment-tuning-installed-card {
+    border-color:var(--wb-focus);
+    background:rgba(var(--dls-crystal-rgb),.16);
+    box-shadow:inset 0 0 0 1px var(--wb-focus),0 0 10px rgba(var(--dls-crystal-rgb),.28);
+}
+.equipment-tuning-installed-entry.workbench-drop-rejected > .equipment-tuning-installed-empty,
+.equipment-tuning-installed-entry.workbench-drop-rejected > .equipment-tuning-installed-card {
+    border-color:var(--wb-role-reject);
+    border-style:dashed;
+    background:color-mix(in srgb,var(--wb-role-reject) 14%,var(--wb-bg));
+}
+.equipment-tuning-drag-ghost > .kshop-icon,
+.equipment-tuning-drag-ghost > img { width:26px; height:26px; object-fit:contain; }
 .equipment-tuning-mod-filter {
     position:relative; margin:0 0 7px; padding:4px; display:grid; gap:4px; overflow:hidden;
     border:1px solid rgba(var(--dls-crystal-rgb),.18); background:repeating-linear-gradient(135deg,rgba(var(--dls-crystal-rgb),.018) 0 12px,transparent 12px 24px),#071014;
@@ -515,13 +553,14 @@
     display:flex; flex-wrap:wrap; gap:var(--workbench-compact-gap,4px);
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-rail {
-    grid-template-columns:minmax(0,1fr) var(--workbench-compact-tile-size,48px);
+    grid-template-columns:minmax(0,1fr) auto;
     gap:var(--workbench-compact-gap,4px);
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-detach-all {
-    width:var(--workbench-compact-tile-size,48px);
-    height:var(--workbench-compact-tile-size,48px);
-    min-height:var(--workbench-compact-tile-size,48px);
+    width:auto;
+    min-width:68px;
+    height:32px;
+    min-height:32px;
 }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-entry {
     width:var(--workbench-compact-tile-size,48px); height:var(--workbench-compact-tile-size,48px);
@@ -536,7 +575,7 @@
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-empty {
     display:grid; grid-template-columns:1fr; place-items:center; gap:0;
 }
-.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach { top:1px; right:1px; width:14px; height:14px; font-size:10px; }
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach-glyph { margin:1px 1px 0 0; width:14px; height:14px; font-size:10px; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card > .kshop-icon,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-card > img {
     width:var(--workbench-compact-icon-size,40px); height:var(--workbench-compact-icon-size,40px);
@@ -549,10 +588,15 @@
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-empty-copy { display:none; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action { position:relative; }
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action[data-title]:hover::after,
-.item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action[data-title]:focus-visible::after,
+.item-grid-compact .equipment-tuning-view .equipment-tuning-installed .equipment-tuning-action[data-title]:focus-visible::after {
+    content:attr(data-title); position:absolute; left:50%; bottom:calc(100% + 4px); transform:translateX(-50%);
+    padding:3px 6px; border:1px solid var(--dls-crystal-soft); border-radius:1px; background:var(--wb-bg); color:var(--wb-text);
+    font:10px/1.25 "Microsoft YaHei",sans-serif; white-space:nowrap; pointer-events:none; z-index:10;
+    box-shadow:0 0 8px rgba(var(--dls-crystal-rgb),.18);
+}
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach[data-title]:hover::after,
 .item-grid-compact .equipment-tuning-view .equipment-tuning-installed-quick-detach[data-title]:focus-visible::after {
-    content:attr(data-title); position:absolute; left:50%; bottom:calc(100% + 4px); transform:translateX(-50%);
+    content:attr(data-title); position:absolute; left:0; top:calc(100% + 4px);
     padding:3px 6px; border:1px solid var(--dls-crystal-soft); border-radius:1px; background:var(--wb-bg); color:var(--wb-text);
     font:10px/1.25 "Microsoft YaHei",sans-serif; white-space:nowrap; pointer-events:none; z-index:10;
     box-shadow:0 0 8px rgba(var(--dls-crystal-rgb),.18);

@@ -90,7 +90,7 @@ var EquipmentTuningWriteLifecycle = (function() {
         TuningView.prototype._tryQuickCommit = function(intentKey) {
             var intent = this._quickCommitIntent;
             if (!intent || intent.intentKey !== intentKey
-                    || this._modConfirmationMode !== 'fast'
+                    || (!intent.direct && this._modConfirmationMode !== 'fast')
                     || !this._preview
                     || this._previewIntentKey !== intentKey) return false;
             if (this._preview.noOp || !this._preview.tuningToken || this._busy

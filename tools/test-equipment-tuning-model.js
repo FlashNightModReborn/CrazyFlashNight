@@ -434,4 +434,94 @@ equal(
     'AS2 regression covers four authoritative slots and omits missing or malformed capacities'
 );
 
+const dropCandidate = {
+    candidateKey:'mod.test.1',
+    itemName:'测试瞄具',
+    displayName:'光学测试瞄具',
+    icon:'测试瞄具图标',
+    owned:2,
+    available:true,
+    installed:false,
+    reason:'',
+    replaceableFrom:['mod.base']
+};
+equal(
+    Model.evaluateModDropTarget(dropCandidate, {slotState:'empty', slotIndex:1}),
+    {
+        accepted:true,
+        operation:'install_mod',
+        candidateKey:'mod.test.1',
+        candidateName:'测试瞄具',
+        replaceCandidateKey:'',
+        replaceCandidateName:''
+    },
+    'dragging an owned available mod onto an empty slot plans install_mod'
+);
+equal(
+    Model.evaluateModDropTarget(dropCandidate, {
+        slotState:'installed',
+        slotIndex:0,
+        installedCandidateKey:'mod.base',
+        installedItemName:'基础导轨'
+    }),
+    {
+        accepted:true,
+        operation:'replace_mod',
+        candidateKey:'mod.test.1',
+        candidateName:'测试瞄具',
+        replaceCandidateKey:'mod.base',
+        replaceCandidateName:'基础导轨'
+    },
+    'dragging a compatible mod onto an installed slot plans replace_mod'
+);
+equal(
+    Model.evaluateModDropTarget(dropCandidate, {
+        slotState:'installed',
+        slotIndex:0,
+        installedCandidateKey:'mod.other',
+        installedItemName:'其他配件'
+    }),
+    {accepted:false, reason:'不能替换该槽位已安装的配件'},
+    'incompatible installed mod rejects drop without issuing replacement intent'
+);
+const replaceOnlyCandidate = {
+    candidateKey:'mod.replace.only',
+    itemName:'专属替换件',
+    displayName:'专属替换件',
+    icon:'专属替换图标',
+    owned:1,
+    available:false,
+    installed:false,
+    reason:'槽位已满',
+    replaceableFrom:['mod.base']
+};
+equal(
+    Model.evaluateModDropTarget(replaceOnlyCandidate, {slotState:'empty', slotIndex:1}),
+    {accepted:false, reason:'槽位已满'},
+    'slot-blocked candidate keeps empty slot rejected while remaining replaceable on compatible slot'
+);
+equal(
+    Model.candidateHasModDropTarget(replaceOnlyCandidate, [
+        {slotState:'installed', slotIndex:0, installedCandidateKey:'mod.base', installedItemName:'基础导轨'}
+    ]),
+    true,
+    'candidate replaceable onto at least one installed mod remains draggable'
+);
+equal(
+    Model.candidateHasModDropTarget({
+        candidateKey:'mod.unowned',
+        itemName:'零库存配件',
+        owned:0,
+        available:false,
+        installed:false,
+        reason:'material_missing',
+        replaceableFrom:['mod.base']
+    }, [
+        {slotState:'installed', slotIndex:0, installedCandidateKey:'mod.base', installedItemName:'基础导轨'},
+        {slotState:'empty', slotIndex:1}
+    ]),
+    false,
+    'unowned candidate cannot start drag even if replaceableFrom is non-empty'
+);
+
 console.log('Equipment tuning model ' + checks + '/' + checks + ' passed');

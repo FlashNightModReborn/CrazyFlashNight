@@ -30,6 +30,8 @@ var EquipmentTuningRender = (function() {
         var errorMessage = Model.errorMessage;
         var diagnosticAuthoritySourceKey = Model.diagnosticAuthoritySourceKey;
         var tuningSourceSupports = Model.tuningSourceSupports;
+        var evaluateModDropTarget = Model.evaluateModDropTarget;
+        var candidateHasModDropTarget = Model.candidateHasModDropTarget;
         var Confirmation = typeof EquipmentTuningConfirmation !== 'undefined'
             ? EquipmentTuningConfirmation : null;
         var Components = typeof WorkbenchComponents !== 'undefined'
@@ -121,6 +123,7 @@ var EquipmentTuningRender = (function() {
         var previewScroll = preserveScroll && previousPreview ? {top:previousPreview.scrollTop,left:previousPreview.scrollLeft} : null;
         var detailScroll = preserveScroll && previousDetail ? {top:previousDetail.scrollTop,left:previousDetail.scrollLeft} : null;
         if (this._modNavigator) { this._modNavigator.destroy(); this._modNavigator = null; }
+        this._teardownModDrag();
         this._releaseSourceTooltipBinding();
         clear(this._root, this._tooltipScope);
         var root = element('div', 'equipment-tuning-view');
@@ -166,6 +169,7 @@ var EquipmentTuningRender = (function() {
         if (!customizing) this._updateCommitBar();
         this._applyInteractionProjection(root);
         this._syncModIntentPresentation(root);
+        if (!customizing) this._installModDrag(root);
         if (restoreFocusKey(root, focusKey)) {
             this._renderFocusKey = '';
             this._renderFocusDeferred = false;
@@ -621,6 +625,10 @@ var EquipmentTuningRender = (function() {
     };
 
     TuningView.prototype.consumeEscape = function() {
+        if (this._modDrag && this._modDrag.debugState().dragging) {
+            this._modDrag.cancel('escape');
+            return true;
+        }
         if (this._closeInfoPanel()) return true;
         if (this._replaceCandidateKey) return this._clearReplacementCandidate();
         return false;
@@ -1122,9 +1130,16 @@ var EquipmentTuningRender = (function() {
     };
 
     TuningView.prototype._renderCandidates = function(
-            body, candidates, operation, emptyText) {
+            body, candidates, operation, emptyText, dropSlots) {
         var list = element('div', 'equipment-tuning-candidates');
         var self = this;
+        var modOp = isModOperation(operation);
+        var rawModCandidates = this._snapshot && this._snapshot.modCandidates || [];
+        if (modOp) {
+            list.addEventListener('dragstart', function(event) {
+                if (event && event.preventDefault) event.preventDefault();
+            });
+        }
         if (!candidates.length) {
             body.appendChild(empty(emptyText || '当前装备没有可用候选。'));
             return;
@@ -1149,6 +1164,11 @@ var EquipmentTuningRender = (function() {
                 'data-tuning-disabled-reason',
                 candidate.available ? '' : String(reasonText || '当前候选不可用。')
             );
+            if (modOp) {
+                var rawCandidate = findRawModCandidate(rawModCandidates, candidate.candidateKey) || candidate;
+                var canDrag = candidateHasModDropTarget(rawCandidate, dropSlots);
+                button.setAttribute('data-mod-draggable', canDrag ? 'true' : 'false');
+            }
             setCapability(
                 button,
                 operation === 'install_tier' ? 'tier' : 'candidate',
@@ -1173,7 +1193,12 @@ var EquipmentTuningRender = (function() {
                 + (candidate.scopeLabel ? ' · ' + escapeHtml(candidate.scopeLabel) : '')
                 + (candidate.roleLabel ? ' · ' + escapeHtml(candidate.roleLabel) : '')
                 + (reasonText ? ' · ' + escapeHtml(reasonText) : '') + '</small></span>';
+            var candidateImages = button.querySelectorAll('img');
+            for (var imgIndex = 0; imgIndex < candidateImages.length; imgIndex++) {
+                candidateImages[imgIndex].draggable = false;
+            }
             button.addEventListener('click', function() {
+                if (modOp && self._modDrag && self._modDrag.consumeClick()) return;
                 var capability = operation === 'install_tier' ? 'tier' : 'candidate';
                 self._recordDiagnostic('candidate_hit', {
                     operation:operation,
@@ -1310,7 +1335,7 @@ var EquipmentTuningRender = (function() {
                     ? (capacity === 0
                         ? '插件槽 · 无插件槽'
                         : '插件槽 ' + installed.length + '/' + capacity
-                            + ' · 点击已装替换，点击空槽安装')
+                            + ' · 可拖入配件安装或替换')
                     : capacityProjection.state === 'malformed'
                         ? '插件槽 · 容量未知，仅显示已安装配件'
                         : '插件槽 · 仅显示已安装配件';
@@ -1384,7 +1409,7 @@ var EquipmentTuningRender = (function() {
                 entry.appendChild(button);
                 var detach = element('button', 'equipment-tuning-installed-quick-detach');
                 detach.type = 'button';
-                detach.textContent = '×';
+                detach.innerHTML = '<span class="equipment-tuning-installed-quick-detach-glyph" aria-hidden="true">×</span>';
                 detach.setAttribute('aria-label', '卸下配件：' + displayName);
                 detach.setAttribute('data-title', '卸下：' + displayName);
                 detach.disabled = self._busy || self._readPending || self._needsReconcile || !candidateKey;
@@ -1394,7 +1419,8 @@ var EquipmentTuningRender = (function() {
                     self.requestPreview('detach_mod', {
                         candidateKey:candidateKey,
                         candidateName:String(name),
-                        quickCommit:self._modConfirmationMode === 'fast'
+                        quickCommit:true,
+                        directQuickCommit:true
                     });
                 });
                 entry.appendChild(detach);
@@ -1458,7 +1484,6 @@ var EquipmentTuningRender = (function() {
                 });
                 all.classList.add('danger', 'equipment-tuning-detach-all');
                 all.setAttribute('aria-label','卸下全部已安装配件');
-                all.setAttribute('data-title','卸下全部已安装配件');
                 all.disabled = self._busy || self._readPending || self._needsReconcile;
                 setCapability(all, 'detach', false);
                 installedActions.appendChild(all);
@@ -1499,7 +1524,14 @@ var EquipmentTuningRender = (function() {
         var count = element('p', 'equipment-tuning-filter-count');
         count.textContent = '显示 ' + availableCandidates.length + ' / ' + candidates.filter(function(candidate) { return candidate.installed !== true; }).length;
         body.appendChild(count);
-        this._renderCandidates(body, availableCandidates, replacementMode ? 'replace_mod' : 'install_mod');
+        var dropSlots = buildModDropSlots(equipment, candidates);
+        this._renderCandidates(
+            body,
+            availableCandidates,
+            replacementMode ? 'replace_mod' : 'install_mod',
+            '',
+            dropSlots
+        );
     };
 
     TuningView.prototype._renderPreview = function() {
@@ -1786,6 +1818,311 @@ var EquipmentTuningRender = (function() {
         if (transitionRejected) return '暂无可用进阶：进阶顺序尚未满足。';
         return '当前装备没有可用进阶。';
     }
+
+    function isModOperation(operation) {
+        return operation === 'install_mod' || operation === 'replace_mod'
+            || operation === 'detach_mod' || operation === 'detach_all_mods';
+    }
+
+    function findRawModCandidate(candidates, candidateKey) {
+        candidates = candidates instanceof Array ? candidates : [];
+        candidateKey = String(candidateKey || '');
+        if (!candidateKey) return null;
+        for (var i = 0; i < candidates.length; i++) {
+            if (String(candidates[i] && candidates[i].candidateKey || '') === candidateKey) {
+                return candidates[i];
+            }
+        }
+        return null;
+    }
+
+    function buildModDropSlots(equipment, candidates) {
+        var installed = equipment && equipment.mods instanceof Array ? equipment.mods : [];
+        var capacityProjection = modSlotCapacityProjection(equipment, installed.length);
+        var targets = [];
+        var i;
+        for (i = 0; i < installed.length; i++) {
+            var installedCandidate = candidateForItem(candidates, installed[i]);
+            targets.push({
+                slotState:'installed',
+                slotIndex:i,
+                installedCandidateKey:String(installedCandidate && installedCandidate.candidateKey || ''),
+                installedItemName:String(installed[i] || '')
+            });
+        }
+        if (capacityProjection.state === 'known') {
+            for (i = installed.length; i < capacityProjection.value; i++) {
+                targets.push({slotState:'empty', slotIndex:i});
+            }
+        }
+        return targets;
+    }
+
+    function modDropDescriptor(entryNode, snapshot) {
+        if (!entryNode || !entryNode.getAttribute) return null;
+        var slotState = String(entryNode.getAttribute('data-mod-slot-state') || '');
+        var slotIndex = Number(entryNode.getAttribute('data-mod-slot-index'));
+        if (slotState === 'empty') {
+            return {slotState:'empty', slotIndex:slotIndex};
+        }
+        if (slotState === 'installed') {
+            var installedKey = String(entryNode.getAttribute('data-candidate-key') || '');
+            var candidates = snapshot && snapshot.modCandidates || [];
+            var rawInstalled = findRawModCandidate(candidates, installedKey);
+            var installedMods = snapshot && snapshot.equipment
+                && snapshot.equipment.mods instanceof Array
+                ? snapshot.equipment.mods : [];
+            var installedName = rawInstalled && rawInstalled.itemName
+                ? String(rawInstalled.itemName)
+                : (isFinite(slotIndex) && installedMods[slotIndex] != null
+                    ? String(installedMods[slotIndex]) : '');
+            return {
+                slotState:'installed',
+                slotIndex:slotIndex,
+                installedCandidateKey:installedKey,
+                installedItemName:installedName
+            };
+        }
+        return null;
+    }
+
+    function collectModDropSlotsFromDom(installedList, snapshot) {
+        if (!installedList || !installedList.querySelectorAll) return [];
+        var entries = installedList.querySelectorAll('.equipment-tuning-installed-entry');
+        var slots = [];
+        for (var i = 0; i < entries.length; i++) {
+            var descriptor = modDropDescriptor(entries[i], snapshot);
+            if (descriptor) slots.push(descriptor);
+        }
+        return slots;
+    }
+
+    function closestWithin(target, selector, root) {
+        if (!target || typeof target.closest !== 'function') return null;
+        var match = target.closest(selector);
+        return match && (!root || root.contains(match)) ? match : null;
+    }
+
+    TuningView.prototype._teardownModDrag = function() {
+        var root = this._root && this._root.querySelector('.equipment-tuning-view');
+        if (root) {
+            root.classList.remove('equipment-tuning-mod-dragging');
+            var hinted = root.querySelectorAll(
+                '.equipment-tuning-drop-hint,[data-drop-action],.equipment-tuning-drag-source'
+            );
+            for (var i = 0; i < hinted.length; i++) {
+                hinted[i].classList.remove('equipment-tuning-drop-hint');
+                hinted[i].classList.remove('equipment-tuning-drag-source');
+                hinted[i].removeAttribute('data-drop-action');
+            }
+        }
+        this._dragModCandidate = null;
+        if (this._modDrag && typeof this._modDrag.destroy === 'function') {
+            this._modDrag.destroy();
+        }
+        this._modDrag = null;
+        this._modDragBroker = null;
+    };
+
+    TuningView.prototype._installModDrag = function(root) {
+        this._teardownModDrag();
+        if (!root || !isModOperation(this._operation) || !this._snapshot
+                || typeof WorkbenchPrimitives === 'undefined' || !WorkbenchPrimitives
+                || typeof WorkbenchPrimitives.InteractionBroker !== 'function'
+                || typeof WorkbenchPrimitives.PointerDragController !== 'function') {
+            return false;
+        }
+        var candidatesList = root.querySelector('.equipment-tuning-candidates');
+        var installedList = root.querySelector(
+            '.equipment-tuning-installed[data-slot-surface="operation"]'
+        );
+        if (!candidatesList || !installedList) return false;
+        var self = this;
+        var doc = root.ownerDocument || document;
+        var dragEpoch = this._tooltipEpoch;
+
+        function markDropHints(candidate, active) {
+            var entries = installedList.querySelectorAll('.equipment-tuning-installed-entry');
+            for (var i = 0; i < entries.length; i++) {
+                var entry = entries[i];
+                entry.classList.remove('equipment-tuning-drop-hint');
+                entry.removeAttribute('data-drop-action');
+                if (!active || !candidate) continue;
+                var descriptor = modDropDescriptor(entry, self._snapshot);
+                var decision = evaluateModDropTarget(candidate, descriptor);
+                if (decision.accepted) {
+                    entry.classList.add('equipment-tuning-drop-hint');
+                    entry.setAttribute(
+                        'data-drop-action',
+                        decision.operation === 'replace_mod' ? 'replace' : 'install'
+                    );
+                }
+            }
+        }
+
+        function setDragActive(active, source) {
+            root.classList.toggle('equipment-tuning-mod-dragging', active === true);
+            if (source && source.node) {
+                source.node.classList.toggle('equipment-tuning-drag-source', active === true);
+            }
+            if (active === true && typeof PanelTooltip !== 'undefined'
+                    && PanelTooltip && typeof PanelTooltip.hide === 'function') {
+                PanelTooltip.hide();
+            }
+        }
+
+        var sourceView = {
+            instanceKey:this.instanceKey + ':mod-candidates',
+            exportOffer:function(candidate) {
+                if (!candidate || !self._snapshot || !self._allowInteraction('candidate', false)) {
+                    return null;
+                }
+                return {
+                    subjectKind:'equipment-tuning-mod',
+                    sourceRef:{
+                        candidateKey:String(candidate.candidateKey || ''),
+                        tooltipEpoch:dragEpoch
+                    }
+                };
+            }
+        };
+        var targetView = {
+            instanceKey:this.instanceKey + ':mod-slots',
+            probeAccept:function(offer, hit) {
+                if (!offer || offer.subjectKind !== 'equipment-tuning-mod' || !offer.sourceRef
+                        || offer.sourceRef.tooltipEpoch !== self._tooltipEpoch
+                        || !self._snapshot) {
+                    return {accepted:false, reason:'stale_state'};
+                }
+                var candidate = findRawModCandidate(
+                    self._snapshot.modCandidates,
+                    offer.sourceRef.candidateKey
+                );
+                if (!candidate) return {accepted:false, reason:'unknown_candidate'};
+                var decision = evaluateModDropTarget(candidate, hit);
+                if (!decision.accepted) return {accepted:false, reason:decision.reason};
+                return {accepted:true, operationId:decision.operation, targetRef:hit};
+            }
+        };
+
+        this._modDragBroker = new WorkbenchPrimitives.InteractionBroker({
+            onIntent:function(intent) {
+                var snapshot = self._snapshot;
+                if (!intent || !snapshot || !self._allowInteraction('candidate', false)) return;
+                var rawCandidate = findRawModCandidate(
+                    snapshot.modCandidates,
+                    intent.sourceRef && intent.sourceRef.candidateKey
+                );
+                if (!rawCandidate) return;
+                if (intent.operationId === 'install_mod') {
+                    self._replaceCandidateKey = '';
+                    self._replaceCandidateName = '';
+                    self.requestPreview('install_mod', {
+                        candidateKey:String(rawCandidate.candidateKey || ''),
+                        candidateName:String(rawCandidate.itemName || ''),
+                        replaceCandidateKey:'',
+                        replaceCandidateName:'',
+                        quickCommit:true,
+                        directQuickCommit:true
+                    });
+                } else if (intent.operationId === 'replace_mod' && intent.targetRef) {
+                    self.requestPreview('replace_mod', {
+                        candidateKey:String(rawCandidate.candidateKey || ''),
+                        candidateName:String(rawCandidate.itemName || ''),
+                        replaceCandidateKey:String(intent.targetRef.installedCandidateKey || ''),
+                        replaceCandidateName:String(intent.targetRef.installedItemName || ''),
+                        quickCommit:true,
+                        directQuickCommit:true
+                    });
+                }
+            },
+            onReject:function(result) {
+                if (!result || result.origin !== 'drag' || result.reason === 'no_offer') return;
+                var rawReason = String(result.reason || '');
+                var message;
+                if (rawReason === 'target_invalid' || rawReason === 'invalid_target') {
+                    message = '当前槽位无法接收该配件';
+                } else {
+                    message = blockedReasonText(rawReason);
+                    if (message === rawReason) {
+                        var mapped = errorMessage(rawReason);
+                        if (mapped !== '调制操作失败，请重试。') message = mapped;
+                    }
+                }
+                message = String(message || '当前槽位无法接收该配件').replace(/。$/, '');
+                self._status = '无法放入该槽位：' + message + '。';
+                self._emit();
+                self.render({previewOnly:true});
+            }
+        });
+        var brokerPort = {
+            select:function() { return true; },
+            dispatch:function(source, item, target, hit, origin) {
+                return self._modDragBroker.dispatch(source, item, target, hit, origin);
+            }
+        };
+        this._modDrag = new WorkbenchPrimitives.PointerDragController({
+            sourceElement:candidatesList,
+            broker:brokerPort,
+            allowInteractiveSource:true,
+            selectOnPointerDown:false,
+            threshold:5,
+            timeoutMs:6000,
+            getSource:function(target) {
+                if (!self._snapshot || !self._allowInteraction('candidate', false)) return null;
+                var node = closestWithin(
+                    target,
+                    '.equipment-tuning-candidate[data-candidate-key]',
+                    candidatesList
+                );
+                if (!node || node.disabled) return null;
+                var rawCandidate = findRawModCandidate(
+                    self._snapshot.modCandidates,
+                    node.getAttribute('data-candidate-key')
+                );
+                var slots = collectModDropSlotsFromDom(installedList, self._snapshot);
+                return rawCandidate && candidateHasModDropTarget(rawCandidate, slots)
+                    ? {view:sourceView, item:rawCandidate, node:node} : null;
+            },
+            resolveTarget:function(clientX, clientY) {
+                var target = doc && typeof doc.elementFromPoint === 'function'
+                    ? doc.elementFromPoint(clientX, clientY) : null;
+                var entryNode = closestWithin(
+                    target,
+                    '.equipment-tuning-installed-entry',
+                    installedList
+                );
+                if (!entryNode) return null;
+                var hit = modDropDescriptor(entryNode, self._snapshot);
+                if (!hit) return null;
+                var decision = evaluateModDropTarget(self._dragModCandidate, hit);
+                return {
+                    view:targetView,
+                    hit:hit,
+                    node:entryNode,
+                    accepted:decision.accepted === true
+                };
+            },
+            renderGhost:function(source) {
+                var ghost = doc.createElement('div');
+                ghost.className = 'workbench-drag-ghost inventory-drag-ghost equipment-tuning-drag-ghost';
+                ghost.innerHTML = iconHtml(candidateIconName(source.item), 'kshop-icon')
+                    + '<span>' + escapeHtml(candidateDisplayName(source.item, '配件')) + '</span>';
+                return ghost;
+            },
+            onDragStart:function(source) {
+                self._dragModCandidate = source && source.item || null;
+                setDragActive(true, source);
+                markDropHints(self._dragModCandidate, true);
+            },
+            onDragEnd:function(source) {
+                markDropHints(self._dragModCandidate, false);
+                self._dragModCandidate = null;
+                setDragActive(false, source);
+            }
+        });
+        return true;
+    };
 
         return TuningView;
     }
