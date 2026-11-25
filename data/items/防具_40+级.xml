@@ -3023,6 +3023,7 @@
     <setId>advanced_protective_suit</setId>
     <price>100000</price>
     <description>先进防护服，融合了幻影装甲的技术。</description>
+    <skill>&lt;font color="#66ccff"&gt;【喷气背包】&lt;/font&gt;装载有用于升空的喷气背包，停止喷气时自动充气，按飞行键使用。</skill>
     <data>
       <level>60</level>
       <weight>-5</weight>
@@ -3035,6 +3036,25 @@
       <punch>0</punch>
       <defence>730</defence>
     </data>
+    <lifecycle>
+      <attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-15</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-15</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_防具技能>
+    </lifecycle>
     <balance>
       <formulaFamily>armor</formulaFamily>
       <schemaVersion>1</schemaVersion>
@@ -3054,7 +3074,7 @@
       <marketPrice>100000</marketPrice>
       <status>unresolved</status>
       <inputDigest>fnv1a32:9318c629</inputDigest>
-      <sourceDigest>sha256:1133f881f2ffd14e02f6c686e8fc0e420c846e302ceb823e1c309a97b9d1d67c</sourceDigest>
+      <sourceDigest>sha256:61bec240756c2ee26c50392db276f339e440b0b079543314e798c0d16d7123ff</sourceDigest>
       <auditRef>armor:先进防护服胸甲</auditRef>
     </balance>
   </item>
