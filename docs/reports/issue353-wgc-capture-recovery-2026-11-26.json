@@ -1,0 +1,1562 @@
+{
+  "issue": 353,
+  "verdict": {
+    "localMain": "#353 源码已修复。最终候选在 Windows 11 真实游戏、GPU、跨进程和 AVM1 输入测试中通过专项验收。",
+    "gameRecoveryMs": [
+      301.1,
+      120.1,
+      227.7,
+      116.9
+    ],
+    "terminalFailureMs": 10386,
+    "hostResults": "标准全量 8874 通过、2 失败、35 跳过。修改器焦点从前台启动单跑通过，1920 宽的 HUD 局部重绘在修复前后均失败。",
+    "extendedResults": "开启可选 GPU 的全量共 8911 项，8749 通过、148 失败、14 跳过。134 项因测试期间系统输入变化中断，同名用例全部独立复跑通过。其余 14 项的原始失败与专项对照均保留。",
+    "fieldStatus": "Win10 19045 / GTX 1650 / 96 DPI 的原反馈机器仍待同一候选复测。"
+  },
+  "date": "2026-11-26",
+  "sourceBase": "23c7a2adcf1716806d45a28cc723a896a785143d",
+  "branch": "main",
+  "deployment": "本地 main 源码与隔离开发候选。Steam 正式启动器另行发布。",
+  "candidate": {
+    "leaf": "c-7926a5f215ee-08846e81b3-20261126t043833866z-cc30155b",
+    "buildIdentityHash": "7926A5F215EEAFCE774BED6672E9DF3AF6A05C3377B0F1D231A03FA200AF5719",
+    "payloadClosureHash": "47E754CB98E214301D74569E59914930FC837B7B6A89AD64A7A26CD4B972962E",
+    "sha256": {
+      "CRAZYFLASHER7MercenaryEmpire.Core.dll": "d4633b149a3b4d64e33f37131a779cb90c1bef2368368d1b1470bd013a62f64e",
+      "FlashCompositorNative.dll": "f512ee0884bdd5bcc4c7af9391ca49fbd9e613bf5ee5c7e86a93d9bb546c45e0",
+      "FlashInputBridge.dll": "0bd4e2095971d014d1f64326c92b51fc13966e435868e6420a90b463be7d5718",
+      "FlashInputBroker.exe": "18af07a384a06472ec565defafcde375097d7729eda5725d1301c2a491806ff6"
+    },
+    "matchedCommittedMainSource": true
+  },
+  "platform": {
+    "os": "Windows 11 Pro 24H2",
+    "build": "26100.9278",
+    "gpu": "Intel Iris Xe",
+    "driver": "32.0.101.7088",
+    "desktopPixels": [
+      2160,
+      1440
+    ]
+  },
+  "realGame": {
+    "entry": "提交 215be91d79 的隔离候选 Core 与真实 Adobe Flash Player 20，关闭无画面场景回退。",
+    "processIdentity": {
+      "corePid": 13524,
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\runtime-candidates\\v2\\c-7926a5f215ee-08846e81b3-20261126t043833866z-cc30155b\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "D4633B149A3B4D64E33F37131A779CB90C1BEF2368368D1B1470BD013A62F64E",
+      "buildIdentity": "7926A5F215EEAFCE774BED6672E9DF3AF6A05C3377B0F1D231A03FA200AF5719",
+      "payloadClosure": "47E754CB98E214301D74569E59914930FC837B7B6A89AD64A7A26CD4B972962E"
+    },
+    "scene": "房间 / 出生地",
+    "slot": "cf7_agent_353_capture_1126",
+    "movement": {
+      "source": "完整游戏 AS2 agent harness move_to",
+      "beforeX": 515,
+      "requestedX": 543,
+      "afterX": 540,
+      "z": 353,
+      "tolerance": 4,
+      "beforeFrame": 216,
+      "afterFrame": 230
+    },
+    "cleanDurableExit": true,
+    "sessionInactiveAfterExit": true,
+    "windowTransactions": [
+      {
+        "mode": "maximize",
+        "before": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": false,
+          "size": [
+            1066,
+            600
+          ]
+        },
+        "after": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": true,
+          "size": [
+            1440,
+            889
+          ]
+        },
+        "windowChangeMs": 50.8,
+        "geometry": "12:45:42.520 event=world_compositor_geometry FClient={X=0,Y=35,Width=1456,Height=900} captureFrame={X=0,Y=0,Width=2160,Height=1368} dwmFrame={X=0,Y=0,Width=2160,Height=1368} windowFrame={X=-11,Y=-11,Width=2182,Height=1390} WGC={Width=2160, Height=1368} crop={X=0,Y=35,Width=1456,Height=900} clientOffset={X=0,Y=0} generation=2 extentRevision=2 mapping=3 P={X=0,Y=34,Width=2160,Height=1334} frameFenceMs=278343513.3",
+        "receipt": "event=world_compositor_geometry_recovered generation=2 extentRevision=2 mapping=3 present=26 frameQpcMs=278343782.9945 output={Width=2160, Height=1334} waitMs=301.1",
+        "elapsedMs": 697.8
+      },
+      {
+        "mode": "restore",
+        "before": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": true,
+          "size": [
+            1440,
+            889
+          ]
+        },
+        "after": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": false,
+          "size": [
+            1066,
+            600
+          ]
+        },
+        "windowChangeMs": 50.5,
+        "geometry": "12:45:43.097 event=world_compositor_geometry FClient={X=281,Y=251,Width=1600,Height=900} captureFrame={X=278,Y=206,Width=1604,Height=947} dwmFrame={X=278,Y=206,Width=1604,Height=947} windowFrame={X=269,Y=206,Width=1622,Height=956} WGC={Width=1604, Height=947} crop={X=3,Y=45,Width=1600,Height=900} clientOffset={X=0,Y=0} generation=3 extentRevision=3 mapping=4 P={X=280,Y=251,Width=1600,Height=900} frameFenceMs=278344227.2",
+        "receipt": "event=world_compositor_geometry_recovered generation=3 extentRevision=3 mapping=4 present=35 frameQpcMs=278344349.6466 output={Width=1600, Height=900} waitMs=120.1",
+        "elapsedMs": 302.4
+      },
+      {
+        "mode": "maximize",
+        "before": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": false,
+          "size": [
+            1066,
+            600
+          ]
+        },
+        "after": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": true,
+          "size": [
+            1440,
+            889
+          ]
+        },
+        "windowChangeMs": 50.4,
+        "geometry": "12:45:43.576 event=world_compositor_geometry FClient={X=0,Y=35,Width=1456,Height=900} captureFrame={X=0,Y=0,Width=2160,Height=1368} dwmFrame={X=0,Y=0,Width=2160,Height=1368} windowFrame={X=-11,Y=-11,Width=2182,Height=1390} WGC={Width=2160, Height=1368} crop={X=0,Y=35,Width=1456,Height=900} clientOffset={X=0,Y=0} generation=4 extentRevision=4 mapping=5 P={X=0,Y=34,Width=2160,Height=1334} frameFenceMs=278344679.7",
+        "receipt": "event=world_compositor_geometry_recovered generation=4 extentRevision=4 mapping=5 present=44 frameQpcMs=278344899.6475 output={Width=2160, Height=1334} waitMs=227.7",
+        "elapsedMs": 451.9
+      },
+      {
+        "mode": "restore",
+        "before": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": true,
+          "size": [
+            1440,
+            889
+          ]
+        },
+        "after": {
+          "hwnd": "0x6d0ac6",
+          "pid": 13524,
+          "title": "CF7:FlashNight — 隔离候选 / 未部署",
+          "maximized": false,
+          "size": [
+            1066,
+            600
+          ]
+        },
+        "windowChangeMs": 50.3,
+        "geometry": "12:45:44.080 event=world_compositor_geometry FClient={X=281,Y=251,Width=1600,Height=900} captureFrame={X=278,Y=206,Width=1604,Height=947} dwmFrame={X=278,Y=206,Width=1604,Height=947} windowFrame={X=269,Y=206,Width=1622,Height=956} WGC={Width=1604, Height=947} crop={X=3,Y=45,Width=1600,Height=900} clientOffset={X=0,Y=0} generation=5 extentRevision=5 mapping=6 P={X=280,Y=251,Width=1600,Height=900} frameFenceMs=278345220.6",
+        "receipt": "event=world_compositor_geometry_recovered generation=5 extentRevision=5 mapping=6 present=53 frameQpcMs=278345332.9789 output={Width=1600, Height=900} waitMs=116.9",
+        "elapsedMs": 318.2
+      }
+    ],
+    "saveProtection": {
+      "ok": true,
+      "checkedFiles": 495,
+      "violations": []
+    },
+    "measurement": "每次窗口状态变化都要求捕获代次、映射与呈现序号递增。实际输出像素取自成功回执，与该次提交的 P 比较；驱动脚本的客户区坐标受 DPI 虚拟化影响。"
+  },
+  "g1": {
+    "baselinePass": 46,
+    "baselineFail": 0,
+    "exactCandidatePass": 63,
+    "exactCandidateFail": 0,
+    "faultControl": "故意提供两组与实际帧均不匹配的 OS 矩形，帧、重建、提交、输入桥和呈现均使用真实模块",
+    "observation": "12:44:43.530 unknown_replay gen=8->9 observed=83->103 present=74->74 item=2160x1368 pool=2160x1368 actual=2160x1368",
+    "rawPixelMeasurements": [
+      "12:44:44.404 raw_origin mode=reuse gen=11 extent=2160x1368 item=2160x1368 pool=2160x1368 A=({X=27,Y=73}, 16) B=({X=73,Y=91}, 16) measured={X=0,Y=0} predicted={X=0,Y=0} elapsedMs=155",
+      "12:44:44.565 raw_origin mode=fresh gen=12 extent=2160x1368 item=2160x1368 pool=2160x1368 A=({X=27,Y=73}, 16) B=({X=73,Y=91}, 16) measured={X=0,Y=0} predicted={X=0,Y=0} elapsedMs=161"
+    ],
+    "steadyView": "两块不同颜色的 4×4 标记均从覆盖完整 ContentSize 的诊断纹理读出。两次测量均在同一已最大化的源 HWND 上进行。",
+    "covered": [
+      "最大化三次及还原",
+      "最大化与 540px DRS 同时发起",
+      "保持 P 和输入会话",
+      "静态场景恢复",
+      "代际过期提交拒绝",
+      "冻结期间鼠标按键、Present 和 CPU 回读检查",
+      "在真实跨进程绘制通道中替换尚未取得 paintGate 的 DRS 目标，旧工作被取消，原子绘制请求序号没有递增"
+    ]
+  },
+  "startup": [
+    {
+      "phase": "session-1/initial",
+      "success": true,
+      "elapsedMs": 255.1
+    },
+    {
+      "phase": "session-1/resume",
+      "success": true,
+      "elapsedMs": 100.6
+    },
+    {
+      "phase": "session-1/resize",
+      "success": true,
+      "elapsedMs": 104.4
+    },
+    {
+      "phase": "session-2/initial",
+      "success": true,
+      "elapsedMs": 211.6
+    },
+    {
+      "phase": "session-2/resume",
+      "success": true,
+      "elapsedMs": 92.7
+    },
+    {
+      "phase": "session-2/resize",
+      "success": true,
+      "elapsedMs": 56.5
+    },
+    {
+      "phase": "session-3/initial",
+      "success": true,
+      "elapsedMs": 212.4
+    },
+    {
+      "phase": "session-3/resume",
+      "success": true,
+      "elapsedMs": 99.7
+    },
+    {
+      "phase": "session-3/resize",
+      "success": true,
+      "elapsedMs": 94.4
+    }
+  ],
+  "gpu": {
+    "previousFixtureBaseline": {
+      "success": false,
+      "records": 83,
+      "failures": [
+        "effects-output-bars-zoom-dynamic-light: light anchor",
+        "effects-output-bars-zoom-scene-light: light anchor"
+      ],
+      "zoomedLightAnchors": [
+        {
+          "case": "effects-output-bars-zoom-dynamic-light",
+          "errorPx": 82.24069739208097,
+          "changedLetterboxPixels": 0
+        },
+        {
+          "case": "effects-output-bars-zoom-scene-light",
+          "errorPx": 82.24069739208097,
+          "changedLetterboxPixels": 0
+        }
+      ]
+    },
+    "previousFixtureCandidate": {
+      "success": false,
+      "records": 83,
+      "failures": [
+        "effects-output-bars-zoom-dynamic-light: light anchor",
+        "effects-output-bars-zoom-scene-light: light anchor"
+      ],
+      "zoomedLightAnchors": [
+        {
+          "case": "effects-output-bars-zoom-dynamic-light",
+          "errorPx": 82.24069739208097,
+          "changedLetterboxPixels": 0
+        },
+        {
+          "case": "effects-output-bars-zoom-scene-light",
+          "errorPx": 82.24069739208097,
+          "changedLetterboxPixels": 0
+        }
+      ]
+    },
+    "correctedFixtureCandidate": {
+      "success": true,
+      "records": 83,
+      "failures": [],
+      "zoomedLightAnchors": [
+        {
+          "case": "effects-output-bars-zoom-dynamic-light",
+          "errorPx": 0.007028327622771115,
+          "changedLetterboxPixels": 0
+        },
+        {
+          "case": "effects-output-bars-zoom-scene-light",
+          "errorPx": 0.007725516184027035,
+          "changedLetterboxPixels": 0
+        }
+      ]
+    },
+    "fixtureCorrection": "填入与本帧标记相同的相机平移和缩放，保留原有 3 像素误差上限与黑边像素检查。",
+    "postprocessOracle": {
+      "earlierFixture": {
+        "oldCoreAndNative": {
+          "passed": 1,
+          "failed": 2,
+          "skipped": 0,
+          "total": 3,
+          "inputQualificationCancelled": 0,
+          "failures": [
+            {
+              "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.SmallerSourceViewportsPreserveWorldGeometryAndPhysicalHudPixels",
+              "reason": "Opaque HUD fixture did not reach source extent {Width=192, Height=128}"
+            },
+            {
+              "name": "CF7Launcher.Tests.Guardian.HitNumberRenderPlannerTests.PlannedRegionContainsOutlinedGlyphsWithoutTouchingSurfaceEdge",
+              "reason": "Assert.False() Failure\nExpected: False\nActual:   True"
+            }
+          ],
+          "results": "tmp/issue353-20261126-105548/graphics-comparison-old/recheck.trx"
+        },
+        "previousCandidate": {
+          "passed": 0,
+          "failed": 3,
+          "skipped": 0,
+          "total": 3,
+          "inputQualificationCancelled": 0,
+          "failures": [
+            {
+              "name": "CF7Launcher.Tests.Guardian.HitNumberRenderPlannerTests.PlannedRegionContainsOutlinedGlyphsWithoutTouchingSurfaceEdge",
+              "reason": "Assert.False() Failure\nExpected: False\nActual:   True"
+            },
+            {
+              "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.SmallerSourceViewportsPreserveWorldGeometryAndPhysicalHudPixels",
+              "reason": "Opaque HUD fixture did not reach source extent {Width=192, Height=128}"
+            },
+            {
+              "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.PostprocessPixelsHistoryLifecycleAndGpuCosts",
+              "reason": "Assert.InRange() Failure: Value not in range\nRange:  (0 - 2)\nActual: 225"
+            }
+          ],
+          "results": "tmp/issue353-20261126-105548/graphics-comparison-candidate/recheck.trx"
+        },
+        "capturedPixelEvidence": [
+          {
+            "name": "off.png",
+            "sha256": "1ee3e553f0c29a9fcdebabfff716528b5dbb10bb1714993aff9982e027d2653a",
+            "size": [
+              960,
+              540
+            ],
+            "marker": [
+              30,
+              80,
+              140
+            ],
+            "lowerGradient": [
+              30,
+              80,
+              140
+            ]
+          },
+          {
+            "name": "cas-high.png",
+            "sha256": "9bdd89b886941faa8bb9fa2979b63221cdc091c80b1ae9310f9a705586393a61",
+            "size": [
+              960,
+              540
+            ],
+            "marker": [
+              255,
+              69,
+              0
+            ],
+            "lowerGradient": [
+              143,
+              173,
+              149
+            ]
+          }
+        ]
+      },
+      "correction": "CAS 输入必须包含最后画入的橙色标记、整帧均无原窗口背景，并与关闭 CAS 的输出逐字节相等。只有此时才比较三种锐化质量，字节误差原阈值维持 2。",
+      "correctedOldCoreAndNative": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "total": 1,
+        "inputQualificationCancelled": 0,
+        "failures": [],
+        "results": "tmp/issue353-main-20261126-1238/old-complete-pattern/recheck.trx"
+      },
+      "correctedIntegratedCandidate": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "total": 1,
+        "inputQualificationCancelled": 0,
+        "failures": [],
+        "results": "tmp/focus-sol-20261013/candidate-20261126T044804284Z/recheck.trx"
+      },
+      "oldNativeQualityMeasurements": [
+        {
+          "quality": "HIGH",
+          "maxByteError": 1,
+          "changed": 114600
+        },
+        {
+          "quality": "MEDIUM",
+          "maxByteError": 1,
+          "changed": 119534
+        },
+        {
+          "quality": "LOW",
+          "maxByteError": 1,
+          "changed": 119934
+        }
+      ],
+      "qualityMeasurements": [
+        {
+          "quality": "HIGH",
+          "maxByteError": 1,
+          "changed": 114600
+        },
+        {
+          "quality": "MEDIUM",
+          "maxByteError": 1,
+          "changed": 119534
+        },
+        {
+          "quality": "LOW",
+          "maxByteError": 1,
+          "changed": 119934
+        }
+      ]
+    }
+  },
+  "tests": {
+    "targeted": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "total": 9,
+      "inputQualificationCancelled": 0,
+      "failures": [],
+      "results": "tmp/focus-sol-20261013/candidate-20261126T044840080Z/recheck.trx"
+    },
+    "inputSchedulingAndOptInGpu": {
+      "passed": 99,
+      "failed": 0,
+      "skipped": 0,
+      "total": 99,
+      "inputQualificationCancelled": 0,
+      "failures": [],
+      "results": "tmp/focus-sol-20261013/candidate-20261126T044855897Z/recheck.trx"
+    },
+    "canonical": {
+      "passed": 8874,
+      "failed": 2,
+      "skipped": 35,
+      "total": 8911,
+      "inputQualificationCancelled": 0,
+      "failures": [
+        {
+          "name": "Launcher.Tests.Guardian.ModifierSurfaceTests.ModifierMouseWorkflowPreservesGameKeyboardFocus",
+          "reason": "Assert.Equal() Failure: Values differ\nExpected: 18352712\nActual:   198808"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920)",
+          "reason": "System.InvalidOperationException : Focus paint at 1920, seq 15, stage 169\n---- Assert.Equal() Failure: Collections differ\n                          ↓ (pos 425904)\nExpected: [···, 124, 255, 38, 35, 30, ···]\nActual:   [···, 124, 255, 129, 127, 124, ···]\n                          ↑ (pos 425904)"
+        }
+      ],
+      "results": "tmp/focus-sol-20261013/integration-20261126T044948625Z/recheck.trx"
+    },
+    "extendedOptIn": {
+      "passed": 8749,
+      "failed": 148,
+      "skipped": 14,
+      "total": 8911,
+      "inputQualificationCancelled": 134,
+      "failures": [
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.TraceStoppedDuringDispatchDoesNotCreateAnUnmatchedExit",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TraceStoppedDuringDispatchDoesNotCreateAnUnmatchedExit expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.RingRetentionIsBoundedAndOverflowIsExplicitlyReported",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RingRetentionIsBoundedAndOverflowIsExplicitlyReported expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ClosePermitHasOneRootAttemptAndTailUsesOnlyInnerFocusAfterSourceRetires",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ClosePermitHasOneRootAttemptAndTailUsesOnlyInnerFocusAfterSourceRetires expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreReportsFailureWhenRootMatchesButInnerFocusIsWrong",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin PublicRestoreReportsFailureWhenRootMatchesButInnerFocusIsWrong expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostDirectStaleCloseMustLeaveCurrentInstanceAlive(instance: \"wrong\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostDirectStaleCloseMustLeaveCurrentInstanceAlive expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.InFlightWriteClearedByDetach_RequiresSnapshotAfterRebind",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin InFlightWriteClearedByDetach_RequiresSnapshotAfterRebind expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows(foreground: 4097, flashIsCurrent: False, expected: False, foregroundChanges: 0)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 4)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.UserTakeoverGuardRejectsBeforeAnyOwnedWindowOperation",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin UserTakeoverGuardRejectsBeforeAnyOwnedWindowOperation expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.HookDispatchDelayIsRecordedOnEveryEdge",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HookDispatchDelayIsRecordedOnEveryEdge expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows(foreground: 8193, flashIsCurrent: True, expected: False, foregroundChanges: 0)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RescueControls_AreSingleClickExactVersionRequests",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RescueControls_AreSingleClickExactVersionRequests expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.DetachFailureRetainsSpecificDiagnosticAndExactPair(throws: True)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin DetachFailureRetainsSpecificDiagnosticAndExactPair expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows(foreground: 0, flashIsCurrent: True, expected: True, foregroundChanges: 1)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 2)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.MessageTimeWrapAroundDoesNotBreakDelayMath",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin MessageTimeWrapAroundDoesNotBreakDelayMath expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ImageOptionsRejectBadTypesAndRollbackFailedWrites(key: \"motionFeedbackEnabled\", value: True, original: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ImageOptionsRejectBadTypesAndRollbackFailedWrites expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.SmallerSourceViewportsPreserveWorldGeometryAndPhysicalHudPixels",
+          "reason": "Opaque HUD fixture did not reach source extent {Width=192, Height=128}"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 7)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.TimedOutWrite_BlocksFurtherWritesUntilAuthoritativeSnapshot",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TimedOutWrite_BlocksFurtherWritesUntilAuthoritativeSnapshot expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"esc\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostCloseReasonMustReachFinalEnvelope expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.MessageTimeOrderingRejectsPhysicallyImpossibleCandidate",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin MessageTimeOrderingRejectsPhysicallyImpossibleCandidate expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ExactInstanceAndClose_RetirePendingAndRestorePreviewThroughFlash",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ExactInstanceAndClose_RetirePendingAndRestorePreviewThroughFlash expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.UnknownWriteLatch_SurvivesCloseAndRebindUntilValidSnapshot",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin UnknownWriteLatch_SurvivesCloseAndRebindUntilValidSnapshot expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ExactFlashRootCanSatisfyPinnedRestore",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ExactFlashRootCanSatisfyPinnedRestore expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.CaptureRecoveryOnlyTakesFocusFromTheGame(foreground: 8193, focus: 4097, expected: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CaptureRecoveryOnlyTakesFocusFromTheGame expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.EligibilityCallbackCannotRetireTargetAndStillPermitFocus",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin EligibilityCallbackCannotRetireTargetAndStillPermitFocus expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.LegalRetirementTailDoesNotRequireOldSurfaceActive",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin LegalRetirementTailDoesNotRequireOldSurfaceActive expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"process_failed\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostCloseReasonMustReachFinalEnvelope expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.DelayBeyondTwoSecondsStillCorrelatesAsStaleCandidate",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin DelayBeyondTwoSecondsStillCorrelatesAsStaleCandidate expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.ApplicationSwitchMustPreserveReadingPanel(panel: \"intelligence\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ApplicationSwitchMustPreserveReadingPanel expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.NativeAndHudClaimsAreIndependentAxes",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin NativeAndHudClaimsAreIndependentAxes expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.Snapshot_RequiresSchemaTwoAndAlwaysBoundedMigrationNotice",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin Snapshot_RequiresSchemaTwoAndAlwaysBoundedMigrationNotice expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 1)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "Launcher.Tests.Guardian.ModifierSurfaceTests.ModifierMouseWorkflowPreservesGameKeyboardFocus",
+          "reason": "Assert.Equal() Failure: Values differ\nExpected: 5639386\nActual:   198808"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.FailedStaleStateAuthoritySnapshotRemainsOrdinaryUnappliedFailure",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin FailedStaleStateAuthoritySnapshotRemainsOrdinaryUnappliedFailure expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.StaleCloseMustNotFallThroughGenericInbound(instance: \"old\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin StaleCloseMustNotFallThroughGenericInbound expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.ExpiredResourceGuardRejectsBeforeFinalSideEffect",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ExpiredResourceGuardRejectsBeforeFinalSideEffect expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.SetForegroundFailureNeverReportsSuccess",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SetForegroundFailureNeverReportsSuccess expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.SnapshotIssuedBeforeAmbiguousWrite_CannotClearNewReconcileEpoch",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SnapshotIssuedBeforeAmbiguousWrite_CannotClearNewReconcileEpoch expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.DetachFailureRetainsSpecificDiagnosticAndExactPair(throws: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin DetachFailureRetainsSpecificDiagnosticAndExactPair expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.LegacyDuplicateSnapshot_IsForwardedSoWebCanRepairIt",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin LegacyDuplicateSnapshot_IsForwardedSoWebCanRepairIt expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.HookDispatchAboveUint32UptimeUsesWrappingDomainNot64BitSubtraction",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HookDispatchAboveUint32UptimeUsesWrappingDomainNot64BitSubtraction expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffActivatesExactRootAndKeepsFocusInFlash",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin BeforeHideHandoffActivatesExactRootAndKeepsFocusInFlash expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.WrappingTickDeltaCrossesUint32BoundaryAndFlagsImpossible",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin WrappingTickDeltaCrossesUint32BoundaryAndFlagsImpossible expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"deactivated\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostCloseReasonMustReachFinalEnvelope expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.FailedApplySnapshotCannotBypassDurabilityContract(durable: True)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin FailedApplySnapshotCannotBypassDurabilityContract expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.StaleCloseMustNotFallThroughGenericInbound(instance: \"wrong\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin StaleCloseMustNotFallThroughGenericInbound expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.ImpossibleHookIntervalIsMarkedAmbiguousNotInvented",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ImpossibleHookIntervalIsMarkedAmbiguousNotInvented expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.CrossThreadSentMouseMustNotPublishTrustedQueueAge",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CrossThreadSentMouseMustNotPublishTrustedQueueAge expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CompareLegacyAndOpaqueWithMatchedTwoTileWorkload",
+          "reason": "Assert.InRange() Failure: Value not in range\nRange:  (98 - 104)\nActual: 140"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.IndependentFreshPeekCanChooseSecondUnclaimedCandidate",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin IndependentFreshPeekCanChooseSecondUnclaimedCandidate expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.CaptureRecoveryOnlyTakesFocusFromTheGame(foreground: 4096, focus: 4097, expected: True)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CaptureRecoveryOnlyTakesFocusFromTheGame expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.CrossThreadOwnedTimeoutStopsSenderAndUnwindsWindowResources",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CrossThreadOwnedTimeoutStopsSenderAndUnwindsWindowResources expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ExecutionClaimRevokedDuringFirstAttemptPreventsFocusAndFallback",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ExecutionClaimRevokedDuringFirstAttemptPreventsFocusAndFallback expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 0)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ReducedPresentation_IsStrictBooleanObservedAndRolledBackOnSaveFailure",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ReducedPresentation_IsStrictBooleanObservedAndRolledBackOnSaveFailure expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation(activated: True, replaceFlash: True)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CompareLegacyAndOpaqueWithCapturedMainHudRasters",
+          "reason": "Run the complete-unit GPU pixel fixture first."
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SourceApiFailureCannotChangeBusinessInputOrPublishQueueAge(failure: 1)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SourceApiFailureCannotChangeBusinessInputOrPublishQueueAge expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_AcceptsCompatibilityHitNumberModes(mode: \"classic\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostSet_AcceptsCompatibilityHitNumberModes expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SourceApiFailureCannotChangeBusinessInputOrPublishQueueAge(failure: 2)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SourceApiFailureCannotChangeBusinessInputOrPublishQueueAge expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.DeliveryUnknownWrite_RequiresAuthorityReconcileWhilePreviewDoesNot",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin DeliveryUnknownWrite_RequiresAuthorityReconcileWhilePreviewDoesNot expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.TrackedHwndChangeDuringRestoreCannotSucceed",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TrackedHwndChangeDuringRestoreCannotSucceed expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.InvalidOrRetiredViewportCannotCollapseAnchor",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin InvalidOrRetiredViewportCannotCollapseAnchor expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.CaptureRecoveryOnlyTakesFocusFromTheGame(foreground: 4096, focus: 8193, expected: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CaptureRecoveryOnlyTakesFocusFromTheGame expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.LostRightCaptureDoesNotHoldSettlementHandoffAfterLeftClick(instance: \"loot.capture\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin LostRightCaptureDoesNotHoldSettlementHandoffAfterLeftClick expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.ExactCloseExecutionControlRejectsAReplacement",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ExactCloseExecutionControlRejectsAReplacement expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows(foreground: 4097, flashIsCurrent: True, expected: True, foregroundChanges: 1)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CasSourceCostAbbaAtLowResolution",
+          "reason": "Opaque HUD fixture did not reach ABBA complete input"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HiddenBootstrapAnchorTracksClientBeforeNativeResize(logHeight: 180, expectedHeight: 837)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HiddenBootstrapAnchorTracksClientBeforeNativeResize expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.TraceStartedDuringUntracedDispatchDoesNotInventEntryOrExit",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TraceStartedDuringUntracedDispatchDoesNotInventEntryOrExit expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.SuccessfulAttachFollowedByEligibilityRevocationDetachesExactPair",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SuccessfulAttachFollowedByEligibilityRevocationDetachesExactPair expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HitNumberLedger_RejectsUnavailableOrNonExactPayload",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HitNumberLedger_RejectsUnavailableOrNonExactPayload expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.GuardianIndicatorForegroundIsNotAccepted",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin GuardianIndicatorForegroundIsNotAccepted expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.PostprocessPixelsHistoryLifecycleAndGpuCosts",
+          "reason": "Opaque HUD fixture did not reach complete GDI pattern and identical CAS-off pixels"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostDirectStaleCloseMustLeaveCurrentInstanceAlive(instance: \"stale\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostDirectStaleCloseMustLeaveCurrentInstanceAlive expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CasHighAndMediumOutputPixelsStayCompatible",
+          "reason": "Opaque HUD fixture did not reach H/M full input"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.InnerFocusOnFlashChildCountsAsHeld",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin InnerFocusOnFlashChildCountsAsHeld expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffDoesNothingIfForegroundChangedSinceCapture",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin BeforeHideHandoffDoesNothingIfForegroundChangedSinceCapture expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.QueuedOrdinaryCloseMustNotRetireNewExactInstance",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin QueuedOrdinaryCloseMustNotRetireNewExactInstance expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.EligibilityCallbackThrowAfterSuccessfulAttachStillDetachesExactPair",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin EligibilityCallbackThrowAfterSuccessfulAttachStillDetachesExactPair expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"capture_lost\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostCloseReasonMustReachFinalEnvelope expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SameThreadSentMouseMustNotPublishTrustedQueueAge",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SameThreadSentMouseMustNotPublishTrustedQueueAge expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.NestedWndProcMustKeepEachEntrySample",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin NestedWndProcMustKeepEachEntrySample expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ImageOptionsRejectBadTypesAndRollbackFailedWrites(key: \"casEnabled\", value: False, original: True)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ImageOptionsRejectBadTypesAndRollbackFailedWrites expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 5)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation(activated: True, replaceFlash: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.ApplicationSwitchMustPreserveReadingPanel(panel: \"help\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ApplicationSwitchMustPreserveReadingPanel expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.ExceptionUnwindingRetainsTheEntrySample",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ExceptionUnwindingRetainsTheEntrySample expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.UnrelatedOwnedWindowMustNotQualifyForGameRestore",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin UnrelatedOwnedWindowMustNotQualifyForGameRestore expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.OwnedWindowRebuildKeepsReceiverIdentityCapturedAtEntry",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin OwnedWindowRebuildKeepsReceiverIdentityCapturedAtEntry expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.MalformedSuccessfulApply_IsRejectedBeforeWebAdoption",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin MalformedSuccessfulApply_IsRejectedBeforeWebAdoption expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WorldBulletPresentationGpuTests.ControlledSkewKeepsWorldAdvancingAndProjectilesFrameAligned",
+          "reason": "System.InvalidOperationException : Bullet GPU fixture failed: System.InvalidOperationException: capture size {Width=1536, Height=864} differs from fixture size\n   at CF7Launcher.Tests.Guardian.WorldBulletPresentationGpuTests.Fixture.Require(Boolean ok, String why) in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resou"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.ActualHudWndProcExitMustKeepItsEntryCorrelation",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ActualHudWndProcExitMustKeepItsEntryCorrelation expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HitNumberLedger_IsStrictLocalPagedQueryWithoutFlashTraffic",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HitNumberLedger_IsStrictLocalPagedQueryWithoutFlashTraffic expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.CloseAttachRevocationStillDetachesExactPair",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CloseAttachRevocationStillDetachesExactPair expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.MissingExecutionClaimMakesNoFocusCalls",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin MissingExecutionClaimMakesNoFocusCalls expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WorldSharedPresentationGpuTests.SharedRoot_PreservesWorldPixelsAndClipsShrinkingDamageWithoutFeedback",
+          "reason": "Shared GPU fixture did not reach damage pixels in shared root."
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.OutOfTargetEdgesAreContextOnlyAndUnmatchedUpIsMarked",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin OutOfTargetEdgesAreContextOnlyAndUnmatchedUpIsMarked expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 6)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.TryReviveSuccess_RejectsLegacyAndInvalidAuthorityShapes",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TryReviveSuccess_RejectsLegacyAndInvalidAuthorityShapes expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation(activated: False, replaceFlash: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.SuccessfulTryRevive_AdoptsCurrentAuthorityContract",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SuccessfulTryRevive_AdoptsCurrentAuthorityContract expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.LostRightCaptureDoesNotHoldSettlementHandoffAfterLeftClick(instance: \"\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin LostRightCaptureDoesNotHoldSettlementHandoffAfterLeftClick expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.WebOverlayRoute_RecognizesSettingsAsDedicatedDomain",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin WebOverlayRoute_RecognizesSettingsAsDedicatedDomain expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SameThreadMouseActivateMustUseObservedCorrelationDomain",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin SameThreadMouseActivateMustUseObservedCorrelationDomain expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_RejectsUnknownHitModeAndOutOfRangeOrFractionalLimit",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostSet_RejectsUnknownHitModeAndOutOfRangeOrFractionalLimit expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreReportsFailureWhenInnerFocusIsNone",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin PublicRestoreReportsFailureWhenInnerFocusIsNone expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.FallbackThreadQueryRetiringTargetCannotAttach",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin FallbackThreadQueryRetiringTargetCannotAttach expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreSucceedsWhenRootAndInnerFocusBothHeld",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin PublicRestoreSucceedsWhenRootAndInnerFocusBothHeld expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ProjectedUndefinedKeyLabel_IsRejectedBeforeWebAdoption",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ProjectedUndefinedKeyLabel_IsRejectedBeforeWebAdoption expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreToleratesSpuriousSetForegroundReturnFalse",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin PublicRestoreToleratesSpuriousSetForegroundReturnFalse expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CompareLegacyAndOpaqueWithCapturedPlayerInfoRasters",
+          "reason": "Run the complete-unit GPU pixel fixture first."
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.CapturedOldTimerCannotDeliverOrClearNewClose",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CapturedOldTimerCannotDeliverOrClearNewClose expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.TransitionBackingMustRemainAnExactPresentationOwner",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TransitionBackingMustRemainAnExactPresentationOwner expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.StaleCloseMustNotFallThroughGenericInbound(instance: null)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin StaleCloseMustNotFallThroughGenericInbound expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.UnmatchedReasonsDistinguishEmptyMismatchStaleResidueAndConsumed",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin UnmatchedReasonsDistinguishEmptyMismatchStaleResidueAndConsumed expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HiddenBootstrapAnchorTracksClientBeforeNativeResize(logHeight: 0, expectedHeight: 1017)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HiddenBootstrapAnchorTracksClientBeforeNativeResize expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CompleteMainHudSharesPixelsAndFallbackWithPlayerInfo",
+          "reason": "Opaque HUD fixture did not reach complete main HUD rasters"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.RestartClearsHistoryAndDisabledTraceInventsNothing",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RestartClearsHistoryAndDisabledTraceInventsNothing expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.MalformedSuccessfulCancel_PreservesPartialRestoreAsUnknownWrite",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin MalformedSuccessfulCancel_PreservesPartialRestoreAsUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 8)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_AcceptsCompatibilityHitNumberModes(mode: \"total\")",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostSet_AcceptsCompatibilityHitNumberModes expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.TutorialOptOut_IsHostLocalStrictBooleanAndSaveFailurePreservesAuthority",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TutorialOptOut_IsHostLocalStrictBooleanAndSaveFailurePreservesAuthority expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostDirectStaleCloseMustLeaveCurrentInstanceAlive(instance: null)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostDirectStaleCloseMustLeaveCurrentInstanceAlive expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.CaptureRecoveryOnlyTakesFocusFromTheGame(foreground: 4096, focus: 0, expected: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CaptureRecoveryOnlyTakesFocusFromTheGame expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.Apply_RequiresSchemaTwoAndAllThirtySixUniqueKeys_AndPerformanceZeroOrOne",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin Apply_RequiresSchemaTwoAndAllThirtySixUniqueKeys_AndPerformanceZeroOrOne expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.RingResetDuringDispatchCannotPairExitWithAnotherTraceSession",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RingResetDuringDispatchCannotPairExitWithAnotherTraceSession expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.RetirementDuringAttachStillAttemptsDetachWithoutLaterFocus(detachResult: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RetirementDuringAttachStillAttemptsDetachWithoutLaterFocus expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CasFrozenScreenshotComparisonAndGpuCosts",
+          "reason": "Opaque HUD fixture did not reach frozen source 360L"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.OtherGuardianChildInSharedRootIsNotAccepted",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin OtherGuardianChildInSharedRootIsNotAccepted expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 9)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.CrossThreadMouseActivateUsesUnavailableQueueTimestamp",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin CrossThreadMouseActivateUsesUnavailableQueueTimestamp expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 3)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.RetirementDuringAttachStillAttemptsDetachWithoutLaterFocus(detachResult: True)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RetirementDuringAttachStillAttemptsDetachWithoutLaterFocus expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffDoesNotReportSuccessWhenKeyboardFocusRemainsElsewhere",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin BeforeHideHandoffDoesNotReportSuccessWhenKeyboardFocusRemainsElsewhere expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.RealPlayerInfoUnitPreservesMpAndBuffPixelsAndRetiresAllThreeLegacyDisplays",
+          "reason": "Opaque HUD fixture did not reach real HUD rasters"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WorldSharedPresentationGpuTests.SharedRoot_AnimatedTimingRingWrapsWithoutUiPresentationPolling",
+          "reason": "Shared GPU fixture did not reach damage pixels in shared root."
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.UpPhasePairsByReleasePointAndReportsMissingUp",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin UpPhasePairsByReleasePointAndReportsMissingUp expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.BurstSamePositionClicksCorrelateFifoAndRetainAmbiguity",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin BurstSamePositionClicksCorrelateFifoAndRetainAmbiguity expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 10)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_SavesImmediately_NotifiesObserver_AndRollsBackOnFailure",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin HostSet_SavesImmediately_NotifiesObserver_AndRollsBackOnFailure expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.TailLosesPermissionWhenAnotherOwnerOrForeignForegroundArrives",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin TailLosesPermissionWhenAnotherOwnerOrForeignForegroundArrives expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.PendingCloseCannotBeRelabeledAsReplacementInstance",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin PendingCloseCannotBeRelabeledAsReplacementInstance expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.Snapshot_RoutesFlatCommand_AndInjectsAuthoritativeHostPrefs",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin Snapshot_RoutesFlatCommand_AndInjectsAuthoritativeHostPrefs expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.FailedApplySnapshotCannotBypassDurabilityContract(durable: False)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin FailedApplySnapshotCannotBypassDurabilityContract expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows(foreground: 4096, flashIsCurrent: True, expected: True, foregroundChanges: 0)",
+          "reason": "System.OperationCanceledException : Resource qualification cancelled at case.begin ReturnForegroundAfterHiddenFlashProtectsExternalAndStaleWindows expired=False inputReadSucceeded=True expectedTick=278294562 observedTick=278923031"
+        }
+      ],
+      "results": "tmp/focus-sol-20261013/integration-20261126T045412204Z/recheck.trx"
+    },
+    "guardRecheck": {
+      "passed": 134,
+      "failed": 0,
+      "skipped": 0,
+      "total": 134,
+      "inputQualificationCancelled": 0,
+      "failures": [],
+      "results": "tmp/focus-sol-20261013/candidate-20261126T045859554Z/recheck.trx"
+    },
+    "foregroundPrerequisiteRecheck": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "total": 1,
+      "inputQualificationCancelled": 0,
+      "failures": [],
+      "results": "tmp/issue353-main-20261126-1238/final-foreground/recheck.trx",
+      "environment": {
+        "test": "ModifierMouseWorkflowPreservesGameKeyboardFocus",
+        "runner": "dotnet vstest / unchanged Launcher.Tests.dll",
+        "testHostForegroundPermission": [
+          {
+            "pid": 12264,
+            "verifiedDescendant": true,
+            "allowed": false,
+            "elapsedMs": 508.2
+          }
+        ],
+        "result": 0
+      }
+    },
+    "oldCoreHudAndFocusComparison": {
+      "passed": 0,
+      "failed": 3,
+      "skipped": 0,
+      "total": 3,
+      "inputQualificationCancelled": 0,
+      "failures": [
+        {
+          "name": "Launcher.Tests.Guardian.ModifierSurfaceTests.ModifierMouseWorkflowPreservesGameKeyboardFocus",
+          "reason": "Assert.Equal() Failure: Values differ\nExpected: 8587302\nActual:   198808"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.CompleteMainHudSharesPixelsAndFallbackWithPlayerInfo",
+          "reason": "Opaque HUD fixture did not reach complete main HUD rasters"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.OpaqueHudGpuTests.RealPlayerInfoUnitPreservesMpAndBuffPixelsAndRetiresAllThreeLegacyDisplays",
+          "reason": "Opaque HUD fixture did not reach real HUD rasters"
+        }
+      ],
+      "results": "tmp/issue353-20261126-105548/baseline-bound-hud-focus/recheck.trx"
+    },
+    "baselineComparison": "标准全量用例 ModifierMouseWorkflowPreservesGameKeyboardFocus 在旧 Core + 旧原生模块上也在建立前台窗口的同一行失败。两个 HUD 用例同样在旧模块等待实际 HUD 栅格时失败。",
+    "comparisonIdentity": {
+      "testHostCoreSha256": "36ADE2ADCB29228C4FA071F9A5D87682D099C628B56394FEA9B07064D940F259",
+      "nativeSha256": "C5283D3B57C52B1A3FE260CD18BCE5DC2F478CE3844A10176097EC93F41035D1",
+      "nativeSource": "修复前 main 重编的 Native 与现役 runtime 的模块逐字节相同。对照在独立目录使用现役模块、现役 manifest 与修复前测试 Core。"
+    },
+    "frozenReplay": {
+      "source": "h6 黑铁会实机原图.png",
+      "sha256": "d78f6ae02c12dfdfa1744d9be52e5918a841bf91182e6db1bbede34968897543",
+      "size": [
+        1600,
+        900
+      ],
+      "filter": "Pillow LANCZOS",
+      "scope": "Fresh frozen replay from an existing project gameplay capture",
+      "files": {
+        "360L-source.png": "b9e5f52afb5a24e0feb14b1d1b74588e573819b48a9b68c3248f80e92e5693a7",
+        "540L-source.png": "097be7adfc99f3fc4330127fd46730facc6ffa826a3b74ad4d4cec854f596e4b"
+      }
+    },
+    "hostScope": "Host 使用带测试接口的 Core 单独构建。真实游戏、G1、启动探针和键盘夹具都核验并装入最终候选的 Core/Native 实际字节。",
+    "focusHudDirtyRegionComparison": {
+      "oldManagedCore": {
+        "passed": 2,
+        "failed": 1,
+        "skipped": 0,
+        "total": 3,
+        "inputQualificationCancelled": 0,
+        "failures": [
+          {
+            "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920)",
+            "reason": "System.InvalidOperationException : Focus paint at 1920, seq 15, stage 169\n---- Assert.Equal() Failure: Collections differ\n                          ↓ (pos 425904)\nExpected: [···, 124, 255, 38, 35, 30, ···]\nActual:   [···, 124, 255, 129, 127, 124, ···]\n                          ↑ (pos 425904)"
+          }
+        ],
+        "results": "tmp/issue353-main-20261126-1238/focus-hud-old/recheck.trx"
+      },
+      "integratedTestCore": {
+        "passed": 2,
+        "failed": 1,
+        "skipped": 0,
+        "total": 3,
+        "inputQualificationCancelled": 0,
+        "failures": [
+          {
+            "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920)",
+            "reason": "System.InvalidOperationException : Focus paint at 1920, seq 15, stage 169\n---- Assert.Equal() Failure: Collections differ\n                          ↓ (pos 425904)\nExpected: [···, 124, 255, 38, 35, 30, ···]\nActual:   [···, 124, 255, 129, 127, 124, ···]\n                          ↑ (pos 425904)"
+          }
+        ],
+        "results": "tmp/issue353-main-20261126-1238/focus-hud-candidate/recheck.trx"
+      },
+      "widths": [
+        768,
+        1024,
+        1920
+      ]
+    },
+    "extendedInputQualificationReconciliation": {
+      "failedCases": 134,
+      "sameCasesPassedWhenRerun": 134,
+      "unmatchedCases": []
+    }
+  },
+  "fieldBoundaries": [
+    "原报告机器为 Windows 10 19045、GTX 1650、96 DPI，本轮没有取得该机器相同候选的运行回执。",
+    "本机两种捕获对象的原始像素都支持现有矩形。现场 1922×1049 原点和新建 Item 对该机的效果仍待测。",
+    "AVM1 键盘夹具验证了改绑后按住、恢复中新增按键、在外部进程松键及恢复后首次新按键。完整游戏的操作验证使用独立测试槽与虚拟移动；没有真人在原报告机器上操作的回执。"
+  ],
+  "originalIssue": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/353",
+  "testerEvidence": "https://github.com/FlashNightModReborn/cf7-evidence/tree/9a064699b59f39e31714197616f6266955302a49/test-evidence/issue-353",
+  "localEvidence": "tmp/issue353-main-20261126-1238",
+  "previousCandidate": {
+    "sourceBase": "4280ce2e0f9aaf88259ed769cb7f8f11ca065ff9",
+    "buildIdentityHash": "C4F668CEE17CA2B3C372EB97C94CAACE8DBE8538DE295E307A733AFF77CCDF4D",
+    "payloadClosureHash": "179D42BD7BDD11035C9D0DD7065A582EB9CEC76DACA8408CBC3AFA867CFA4809",
+    "purpose": "此前基于 4280ce2e0f 验证同一 WGC 修复。随后主线合入 23c7a2adcf 的奖励与存档改动，并收紧后处理测试的完整图案检查。",
+    "canonical": {
+      "total": 8910,
+      "passed": 8874,
+      "failed": 1,
+      "skipped": 35
+    },
+    "extendedOptIn": {
+      "total": 8910,
+      "passed": 8888,
+      "failed": 8,
+      "skipped": 14
+    },
+    "foregroundRecheck": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "inputQualificationCancelled": 0,
+      "failures": [],
+      "results": "tmp/issue353-20261126-105548/final-foreground/recheck.trx",
+      "environment": {
+        "test": "ModifierMouseWorkflowPreservesGameKeyboardFocus",
+        "runner": "dotnet vstest / unchanged Launcher.Tests.dll",
+        "testHostForegroundPermission": [
+          {
+            "pid": 9400,
+            "verifiedDescendant": true,
+            "allowed": false,
+            "elapsedMs": 493.5
+          }
+        ],
+        "result": 0
+      },
+      "nonQualificationFailureReasons": []
+    },
+    "crossProcessPassed": 63,
+    "realGameRecoveryMs": [
+      234.5,
+      130.1,
+      168.7,
+      138.3
+    ]
+  },
+  "launcherSourceSha256": {
+    "launcher/native/world-compositor/Compositor.cpp": "1c44bc29ddc8f9f61aba1fb7a3911a7a265010b6835ba990bf7225262e0edf0c",
+    "launcher/native/world-compositor/Compositor.h": "85a89f3bb985419e132cbbe92dcf6282916ad015433d6ece330609752647b60d",
+    "launcher/native/world-compositor/g1-fixture/G1Target.cpp": "c6975fcd64f55643e97edbe34ecfbae7b863f0e44b966c2db6bda234699eb97a",
+    "launcher/native/world-compositor/g1-fixture/Program.cs": "3b9293371d3bcbde9fe345392cefa9543e74e2354b0a6ed06b8153d45780bdab",
+    "launcher/perf/combat-fx/StartupProbe.cs": "57c40265775aaafa4761dc66c0ee7f47e8d5d1539e29bf8ea42e52ff36c52484",
+    "launcher/perf/flash-compositor/ContentViewportRegression.cs": "980808852f044838681a81881df7e9f14c335d73f4e72ae20485bff794b8a885",
+    "launcher/src/Guardian/WindowManager.CloseFocus.cs": "987291360855a7121cc2fbf308ffa6153d3db090f952a26490f66979c2d10561",
+    "launcher/src/Guardian/WorldCompositor/NativeCompositorSession.cs": "872fc5aacb6503a18aeff4684f212ff532e112329ff3416673728dd4a368533f",
+    "launcher/src/Guardian/WorldCompositor/NativePointerBridge.cs": "2a1dff79511f85627b7e3d4783bb65ed5bc15947f4ace34a42ad1c852338b4b1",
+    "launcher/src/Guardian/WorldCompositor/WorldCompositionSurface.cs": "059dd66d7895aafc455486cdb6451211d602b7f90d849d235eca5ea7d9f5a213",
+    "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs": "dd7cc301c8e550725f985be79acf036207ec06be238d66b1e669d8633fbf7d34",
+    "launcher/src/Program.cs": "1f45dfde6eacd3149713db30bbc79abdd03a3747807a59ef71814e63b87edffb",
+    "launcher/tests/Guardian/OpaqueHudGpuTests.Postprocess.cs": "72af365fb9f9149453d173b4159e80a2b605dbf0b4aa7e1dc88d034560b1e29d",
+    "launcher/tests/Guardian/WindowManagerFocusRestoreTests.cs": "e34c0bc597de7bc7ade75b09e897b2cdb57335d3ddac1800bb1cfc10a2ba8bcd",
+    "launcher/tests/Guardian/WorldCompositorTests.cs": "1a10ca16a982518fd9b3395795142591bdb6bd59249d7ed58097cf7748ce1bca",
+    "launcher/tests/Guardian/WorldPointerBridgeBoundaryTests.cs": "8ab7b264abbf3521f1fa6b40cb2ea293ef50e7f074264aec2325d368205c21e3"
+  },
+  "projectorKeyboardAndTerminalFailure": {
+    "mechanism": "CS6 新编 AVM1 SWF 与实际 Adobe Flash Player 20，通过有焦点的自有窗口输入。以单独 AVM1 消息确认失焦后才采样。测试移动、攻击和交互绑定为左、上、右方向键。",
+    "stimulus": "Windows SendInput；每个按键边沿前复核本试验窗口或独立探针窗口的前台归属。角色移动及攻击、交互计数来自 SWF。物理键盘与完整游戏另记。",
+    "scope": "使用正式代码的捕获 Controller、WindowManager 键盘转移和 Native/Bridge。人为设置持续几何不匹配。最终不可恢复故障由真实 Flash 子窗口完全移出捕获范围触发，核验错误框 PID/owner 及只一次关闭请求。",
+    "sha256": {
+      "Adobe Flash Player 20.exe": "30ba7cf81d10556bb123506693c72f62ba27db1f37a7a2d546e96ac3a8d31b91",
+      "HoverProbe.swf": "18af24f489700d675e66fd5e6287ed26a67f5364f86a521db0028e33712a08e8",
+      "HoverProbe.as": "5bcf37fba2da2ce23dd929673cbd7db7cd1bc96132deca747fdc17a9b6aabf0d",
+      "Program.cs": "79010fc3384c0d89f304b85f498918f9b6f00b008577c372fd2231e712011ed6",
+      "FlashHoverHost.dll": "67a0d7480a1aa344230f9cb80617931f63eacab53089bed817145154fa896c6c",
+      "watch.py": "96b6b31440e983bbd7fe3517dcfd76638d69d9e15cafcb16da84fd880fad1e2c"
+    },
+    "hashMatchedCandidateModules": {
+      "CRAZYFLASHER7MercenaryEmpire.Core.dll": "d4633b149a3b4d64e33f37131a779cb90c1bef2368368d1b1470bd013a62f64e",
+      "FlashCompositorNative.dll": "f512ee0884bdd5bcc4c7af9391ca49fbd9e613bf5ee5c7e86a93d9bb546c45e0",
+      "FlashInputBridge.dll": "0bd4e2095971d014d1f64326c92b51fc13966e435868e6420a90b463be7d5718",
+      "FlashInputBroker.exe": "18af07a384a06472ec565defafcde375097d7729eda5725d1301c2a491806ff6"
+    },
+    "result": {
+      "result": 0,
+      "failed": 0,
+      "checks": [
+        {
+          "name": "before_hold_attack_interact_callbacks",
+          "ok": true,
+          "detail": {
+            "frames": 12,
+            "rawMove": 0,
+            "rawAttack": 5,
+            "rawUse": 4,
+            "first": {
+              "Event": "down",
+              "Code": 38,
+              "Index": 36,
+              "Move": false,
+              "Attack": true,
+              "Use": false,
+              "WorldX": 100,
+              "Attacks": 1,
+              "Interactions": 0
+            },
+            "last": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 48,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 100,
+              "Attacks": 1,
+              "Interactions": 1
+            },
+            "edges": [
+              {
+                "Event": "down",
+                "Code": 38,
+                "Index": 36,
+                "Move": false,
+                "Attack": true,
+                "Use": false,
+                "WorldX": 100,
+                "Attacks": 1,
+                "Interactions": 0
+              },
+              {
+                "Event": "up",
+                "Code": 38,
+                "Index": 40,
+                "Move": false,
+                "Attack": false,
+                "Use": false,
+                "WorldX": 100,
+                "Attacks": 1,
+                "Interactions": 0
+              },
+              {
+                "Event": "down",
+                "Code": 39,
+                "Index": 43,
+                "Move": false,
+                "Attack": false,
+                "Use": true,
+                "WorldX": 100,
+                "Attacks": 1,
+                "Interactions": 1
+              },
+              {
+                "Event": "up",
+                "Code": 39,
+                "Index": 46,
+                "Move": false,
+                "Attack": false,
+                "Use": false,
+                "WorldX": 100,
+                "Attacks": 1,
+                "Interactions": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "fresh_move_and_callback",
+          "ok": true,
+          "detail": {
+            "Event": "frame",
+            "Code": 0,
+            "Index": 52,
+            "Move": true,
+            "Attack": false,
+            "Use": false,
+            "WorldX": 103,
+            "Attacks": 1,
+            "Interactions": 1
+          }
+        },
+        {
+          "name": "prior_hold_stops_after_focus_loss",
+          "ok": true,
+          "detail": {
+            "frames": 9,
+            "rawMove": 0,
+            "rawAttack": 0,
+            "rawUse": 0,
+            "first": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 55,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 103,
+              "Attacks": 1,
+              "Interactions": 1
+            },
+            "last": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 63,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 103,
+              "Attacks": 1,
+              "Interactions": 1
+            },
+            "edges": []
+          }
+        },
+        {
+          "name": "new_attack_and_interact_blocked_while_held",
+          "ok": true,
+          "detail": {
+            "frames": 8,
+            "rawMove": 0,
+            "rawAttack": 0,
+            "rawUse": 0,
+            "first": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 64,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 103,
+              "Attacks": 1,
+              "Interactions": 1
+            },
+            "last": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 71,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 103,
+              "Attacks": 1,
+              "Interactions": 1
+            },
+            "edges": []
+          }
+        },
+        {
+          "name": "ready_image_keeps_old_key_quarantined",
+          "ok": true,
+          "detail": {
+            "frames": 7,
+            "rawMove": 0,
+            "rawAttack": 0,
+            "rawUse": 0,
+            "first": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 77,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 103,
+              "Attacks": 1,
+              "Interactions": 1
+            },
+            "last": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 83,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 103,
+              "Attacks": 1,
+              "Interactions": 1
+            },
+            "edges": []
+          }
+        },
+        {
+          "name": "fresh_remapped_move_attack_interact_after_recovery",
+          "ok": true,
+          "detail": {
+            "Event": "frame",
+            "Code": 0,
+            "Index": 96,
+            "Move": false,
+            "Attack": false,
+            "Use": false,
+            "WorldX": 105,
+            "Attacks": 2,
+            "Interactions": 2
+          }
+        },
+        {
+          "name": "external_release_and_no_reactivation",
+          "ok": true,
+          "detail": {
+            "frames": 8,
+            "rawMove": 0,
+            "rawAttack": 0,
+            "rawUse": 0,
+            "first": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 110,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 106,
+              "Attacks": 2,
+              "Interactions": 2
+            },
+            "last": {
+              "Event": "frame",
+              "Code": 0,
+              "Index": 117,
+              "Move": false,
+              "Attack": false,
+              "Use": false,
+              "WorldX": 106,
+              "Attacks": 2,
+              "Interactions": 2
+            },
+            "edges": []
+          }
+        },
+        {
+          "name": "unresolvable_geometry_shows_one_owned_error_and_closes",
+          "ok": true,
+          "detail": {
+            "elapsedMs": 10386,
+            "notices": 1,
+            "terminalClose": true
+          }
+        }
+      ],
+      "frames": 447
+    },
+    "ownedDialog": [
+      {
+        "pid": 16288,
+        "title": "画面渲染失败",
+        "ownerTitle": "CF7 #353 AVM1 keyboard verification",
+        "elapsedMs": 15121.1,
+        "dismissed": true
+      }
+    ],
+    "additionalObservation": "早期字母键对照中，活动中文输入法将 J/K 的 KeyDown 报为 VK_PROCESSKEY (229)，KeyUp 与 Key.isDown 可区分 J/K。方向键正对照覆盖了相同配置下明确的 KeyDown / KeyUp。"
+  },
+  "repairCommit": "215be91d7965b1b0c8c4ca11b789e5eb797e4584",
+  "previousLocalEvidence": "tmp/issue353-20261126-105548"
+}
