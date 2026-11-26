@@ -1,5 +1,9 @@
 ﻿import flash.display.BitmapData;
 import flash.geom.Matrix;
+import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent;
+import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
+import org.flashNight.arki.component.Damage.DamageResult;
 
 /** Actual published CF6 zombie timelines (敌人-CF6普通男僵尸 and 敌人-CF6女僵尸) in Antigravity专用素材.swf.
  * Initialization and outgoing damage are fixtures; no player profile or persistence is touched.
@@ -9,6 +13,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
     private static var loader:MovieClipLoader, listener:Object;
     private static var passed:Number, failed:Number, ticks:Number, ready:Boolean, finished:Boolean;
     private static var cases:Array, staticUnits:Array, randomDeathUnits:Array;
+    private static var impactDeathUnit:MovieClip;
     private static var links:Array = ["敌人-CF6普通男僵尸", "敌人-CF6女僵尸"];
 
     private static function check(ok:Boolean, name:String):Void {
@@ -154,6 +159,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
             check(randUnit != null, "attach female random death probe " + rd);
             randomDeathUnits.push(randUnit);
         }
+        impactDeathUnit = library.attachMovie(links[1], "cf6FemaleImpactDeath", library.getNextHighestDepth(), {fixtureCase: -1});
+        check(impactDeathUnit != null, "attach female lethal-impact probe");
         ready = true;
         ticks = 0;
     }
@@ -270,6 +277,16 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
                 ruLaunch.方向改变("右");
                 ruLaunch.状态改变("血腥死");
             }
+            impactDeathUnit.dispatcher = new EventDispatcher();
+            impactDeathUnit.hp = 0;
+            impactDeathUnit.浮空 = true;
+            impactDeathUnit.倒地 = true;
+            KillEventComponent.onKill(impactDeathUnit);
+            var lethalBullet:MovieClip = library.createEmptyMovieClip("cf6LethalBullet", library.getNextHighestDepth());
+            lethalBullet.击倒率 = 0;
+            lethalBullet.水平击退速度 = 0;
+            lethalBullet.垂直击退速度 = 0;
+            ImpactStateHandler.handleImpactState(impactDeathUnit, lethalBullet, new DamageResult(), "右", true);
         }
         if (ticks == 4) {
             for (var sj:Number = 0; sj < staticUnits.length; sj++) {
@@ -294,6 +311,9 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest {
                 else hitA2++;
             }
             check(hitA0 > 0 && hitA1 > 0 && hitA2 > 0, "female natural onLoad hits all branches a0=" + hitA0 + " a1=" + hitA1 + " a2=" + hitA2);
+            check(impactDeathUnit.状态 == "血腥死" && impactDeathUnit.fixtureAirborne !== true
+                && impactDeathUnit.浮空 !== true && impactDeathUnit.倒地 !== true,
+                "lethal hit after knockdown keeps native death animation instead of airborne knockdown");
         }
         if (ticks == 105) {
             for (var k:Number = 0; k < cases.length; k++) {

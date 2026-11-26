@@ -138,6 +138,25 @@ _root.敌人函数.宠物属性初始化 = function() {
 
 _root.敌人函数.行走 = function() {
     var self = this;
+    if (org.flashNight.arki.unit.UnitAI.core.AIEnvironment.isPaused()) {
+        var 暂停行走状态 = self.__enemyPauseWalkState;
+        if ((self.右行 || self.左行 || self.上行 || self.下行
+                || self.状态 == self.攻击模式 + "行走" || self.状态 == self.攻击模式 + "跑")
+                && 暂停行走状态 == undefined) {
+            self.__enemyPauseWalkState = self.状态;
+            self.stop();
+            if (self.man != undefined) self.man.stop();
+        }
+        self.右行 = self.左行 = self.上行 = self.下行 = false;
+        return;
+    }
+    if (self.__enemyPauseWalkState != undefined) {
+        if (self.状态 == self.__enemyPauseWalkState) {
+            self.play();
+            if (self.man != undefined) self.man.play();
+        }
+        delete self.__enemyPauseWalkState;
+    }
     if (self.右行 || self.左行 || self.上行 || self.下行) {
         // 定义策略对象，封装跑和走两种移动方式的参数
         var 移动策略 = {

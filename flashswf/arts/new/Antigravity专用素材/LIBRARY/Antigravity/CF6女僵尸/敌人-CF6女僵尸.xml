@@ -91,6 +91,17 @@ if(this.配置音效)
 {
    this.配置音效("僵尸", this);
 }
+this.__cf6StateChangeBeforeDeath = this.状态改变;
+this.状态改变 = function(新状态名:String):Void {
+   if(新状态名 == "血腥死")
+   {
+      this.浮空 = false;
+      this.倒地 = false;
+      this.垂直速度 = 0;
+      this.硬直中 = false;
+   }
+   this.__cf6StateChangeBeforeDeath.call(this, 新状态名);
+};
 ]]></script>
               </Actionscript>
               <elements/>

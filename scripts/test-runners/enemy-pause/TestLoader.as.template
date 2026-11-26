@@ -1,0 +1,4 @@
+﻿#include "逻辑/单位函数/单位函数_lsy_敌人模板迁移.as"
+trace("FocusedTestRunId enemy-pause Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitAI.EnemyPauseMovementTest.runAllTests();
+trace("FocusedTestRunId enemy-pause Complete: __FOCUSED_RUN_ID__");
