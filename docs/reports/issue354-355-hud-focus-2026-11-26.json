@@ -1,0 +1,939 @@
+{
+  "title": "CrazyFlashNight #354 聚焦血条局部重绘、#355 修改器键盘焦点验收",
+  "date": "2026-11-26",
+  "branch": "main",
+  "commits": {
+    "after353": "7c60bb96f82108214872853cb6a187f2a8ab5ddd",
+    "fix354": "30db173daf9164b0abc77f70d0784eb3701f1a02",
+    "fix355": "19d5b37783dafbc69b63e7af344290639638b78e",
+    "originMainAtVerification": "71ea2409471445801ae9482175fa0b08796b8758"
+  },
+  "status": {
+    "scope": "本地 main，Windows 11，隔离候选，正常交互启动。",
+    "host": {
+      "NotExecuted": 36,
+      "Passed": 8879
+    },
+    "remoteIssues": "核对时两张均为 OPEN。本轮未推送、未执行发布。",
+    "candidateStatus": "ready, exactly one matching build and payload; NOT_DEPLOYED"
+  },
+  "references": {
+    "sharedConversation": "https://chatgpt.com/share/6b07de2f-c2a0-83e8-af38-b805f84c7946",
+    "354": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/354",
+    "355": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/355"
+  },
+  "hud354": {
+    "finding": "紧凑行数字布局变化后留下旧文字像素；密集布局中斜分隔线也会越过单元格逻辑边界。",
+    "change": "次要血量和百分比文本绘制与损伤计算共用边界。分隔线按原绘制顺序在实际像素裁剪区内重画。",
+    "baselineHost": {
+      "trx": "tmp/focus-sol-20261013/baseline-20261126T072501101Z/recheck.trx",
+      "sha256": "a00c785d1dfdea4fff38d5f8118376f21824a92a8b16ee3ddcb4793d8d31916e",
+      "counts": {
+        "Failed": 1,
+        "Passed": 3
+      },
+      "total": 4,
+      "cases": [
+        {
+          "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920)",
+          "outcome": "Failed",
+          "detail": "System.InvalidOperationException : Focus paint at 1920, seq 15, stage 169\r\n---- Assert.Equal() Failure: Collections differ\r\n                          ↓ (pos 425904)\r\nExpected: [···, 124, 255, 38, 35, 30, ···]\r\nActual:   [···, 124, 255, 129, 127, 124, ···]\r\n                          ↑ (pos 425904)"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1024)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 768)",
+          "outcome": "Passed"
+        }
+      ],
+      "failures": [
+        "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920)"
+      ]
+    },
+    "sequence15": {
+      "window": [
+        1920,
+        1080
+      ],
+      "pixelCoordinates": "HUD 合成位图内的零基坐标；颜色为 RGBA。",
+      "before": {
+        "size": [
+          698,
+          972
+        ],
+        "differingPixels": 5,
+        "pixels": [
+          {
+            "xy": [
+              380,
+              152
+            ],
+            "fullRGBA": [
+              30,
+              35,
+              38,
+              255
+            ],
+            "partialRGBA": [
+              124,
+              127,
+              129,
+              255
+            ]
+          },
+          {
+            "xy": [
+              380,
+              153
+            ],
+            "fullRGBA": [
+              30,
+              34,
+              37,
+              255
+            ],
+            "partialRGBA": [
+              124,
+              127,
+              128,
+              255
+            ]
+          },
+          {
+            "xy": [
+              380,
+              161
+            ],
+            "fullRGBA": [
+              95,
+              98,
+              100,
+              255
+            ],
+            "partialRGBA": [
+              24,
+              29,
+              31,
+              255
+            ]
+          },
+          {
+            "xy": [
+              380,
+              162
+            ],
+            "fullRGBA": [
+              181,
+              183,
+              184,
+              255
+            ],
+            "partialRGBA": [
+              23,
+              28,
+              30,
+              255
+            ]
+          },
+          {
+            "xy": [
+              380,
+              163
+            ],
+            "fullRGBA": [
+              93,
+              97,
+              98,
+              255
+            ],
+            "partialRGBA": [
+              22,
+              27,
+              29,
+              255
+            ]
+          }
+        ],
+        "fullPngSha256": "675625ea4f13c0eb59b649f216342ea7c8438bce9ff03fc90ee2d98f63beab95",
+        "partialPngSha256": "a38144d1ee0fc223731e2523bb428fa683c51a89af7f7603a2940cfa2e3f97e5"
+      },
+      "after": {
+        "size": [
+          698,
+          972
+        ],
+        "differingPixels": 0,
+        "pixels": [],
+        "fullPngSha256": "675625ea4f13c0eb59b649f216342ea7c8438bce9ff03fc90ee2d98f63beab95",
+        "partialPngSha256": "675625ea4f13c0eb59b649f216342ea7c8438bce9ff03fc90ee2d98f63beab95"
+      }
+    },
+    "eightTargetIntermediate": {
+      "reason": "修正文字边界后增加护卫目标、逐包提交与动画覆盖，发现相邻斜分隔线仍有一个像素。",
+      "intermediate": {
+        "size": [
+          698,
+          972
+        ],
+        "differingPixels": 1,
+        "pixels": [
+          {
+            "xy": [
+              97,
+              183
+            ],
+            "fullRGBA": [
+              15,
+              18,
+              19,
+              255
+            ],
+            "partialRGBA": [
+              12,
+              15,
+              16,
+              255
+            ]
+          }
+        ],
+        "fullPngSha256": "501c682ed276227f95243adcc1ad74f5b5bd4a0b6a92af85c75e265d9ceeec5a",
+        "partialPngSha256": "bc76285a7072ad8a6fb51cba063a5a3656bfbbe37831e6e68f3e63014dc934e0"
+      }
+    },
+    "finalHudCases": [
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920, targetCount: 4, protectFirst: False, paintEachPacket: True)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 768, targetCount: 4, protectFirst: False, paintEachPacket: False)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.DamageMatchesFullPaintAcrossAlphaOverlapDisjointRegionsAndLifecycle",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920, targetCount: 3, protectFirst: True, paintEachPacket: True)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1024, targetCount: 4, protectFirst: False, paintEachPacket: False)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.BuffDamageWithTwelveColdSkillsNeverEntersTheDeckPainter(width: 1024, height: 576)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.BuffDamageWithTwelveColdSkillsNeverEntersTheDeckPainter(width: 1920, height: 1080)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.BuffDamageWithTwelveColdSkillsNeverEntersTheDeckPainter(width: 1600, height: 900)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920, targetCount: 5, protectFirst: True, paintEachPacket: True)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920, targetCount: 8, protectFirst: True, paintEachPacket: True)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.ComboAnimationAndStableNotchRefreshMatchCompletePaint",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.RepaintRaisedDuringPaintIsRetainedForTheNextFrame",
+        "outcome": "Passed"
+      },
+      {
+        "name": "CF7Launcher.Tests.Guardian.NativeHudDirtyRegionTests.FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(width: 1920, targetCount: 4, protectFirst: False, paintEachPacket: False)",
+        "outcome": "Passed"
+      }
+    ],
+    "checks": "768、1024、1920 宽；3、4、5、8 个目标；护卫濒危与恢复、连击、轨道动画；逐包及累计提交；跨过 16 矩形预算；逐像素比较全量绘制；仅相关组件重绘且排除 Buff 栏。",
+    "measurement": {
+      "method": "Windows 离屏真实生产 Core，使用相同状态包和位图。每模式预热 30 帧后计 180 帧，每版本两轮交错测量。p50/p95 是 CPU paint 毫秒。",
+      "oldCoreSha256": "d4633b149a3b4d64e33f37131a779cb90c1bef2368368d1b1470bd013a62f64e",
+      "fixedCoreSha256": "1cbc5328ac5ae40a32a5caa9bfcdd87bc0593865b459c22449b2e9516e23d601",
+      "runs": {
+        "previous": [
+          [
+            {
+              "mode": "primary-hp",
+              "frames": 180,
+              "meanPixels": 21708.0,
+              "maxPixels": 21708,
+              "maxWidgets": 1,
+              "p50Ms": 0.2783,
+              "p95Ms": 0.3728
+            },
+            {
+              "mode": "track-animation",
+              "frames": 180,
+              "meanPixels": 12960.0,
+              "maxPixels": 12960,
+              "maxWidgets": 1,
+              "p50Ms": 0.1016,
+              "p95Ms": 0.2068
+            },
+            {
+              "mode": "four-headers",
+              "frames": 180,
+              "meanPixels": 75073.88888888889,
+              "maxPixels": 79361,
+              "maxWidgets": 1,
+              "p50Ms": 1.0581,
+              "p95Ms": 1.4252
+            }
+          ],
+          [
+            {
+              "mode": "primary-hp",
+              "frames": 180,
+              "meanPixels": 21708.0,
+              "maxPixels": 21708,
+              "maxWidgets": 1,
+              "p50Ms": 0.2739,
+              "p95Ms": 0.3883
+            },
+            {
+              "mode": "track-animation",
+              "frames": 180,
+              "meanPixels": 12960.0,
+              "maxPixels": 12960,
+              "maxWidgets": 1,
+              "p50Ms": 0.0991,
+              "p95Ms": 0.1245
+            },
+            {
+              "mode": "four-headers",
+              "frames": 180,
+              "meanPixels": 75073.88888888889,
+              "maxPixels": 79361,
+              "maxWidgets": 1,
+              "p50Ms": 1.0667,
+              "p95Ms": 1.337
+            }
+          ]
+        ],
+        "fixed": [
+          [
+            {
+              "mode": "primary-hp",
+              "frames": 180,
+              "meanPixels": 21708.0,
+              "maxPixels": 21708,
+              "maxWidgets": 1,
+              "p50Ms": 0.266,
+              "p95Ms": 0.3556
+            },
+            {
+              "mode": "track-animation",
+              "frames": 180,
+              "meanPixels": 12960.0,
+              "maxPixels": 12960,
+              "maxWidgets": 1,
+              "p50Ms": 0.1005,
+              "p95Ms": 0.1344
+            },
+            {
+              "mode": "four-headers",
+              "frames": 180,
+              "meanPixels": 77871.88888888889,
+              "maxPixels": 82159,
+              "maxWidgets": 1,
+              "p50Ms": 1.1397,
+              "p95Ms": 1.5213
+            }
+          ],
+          [
+            {
+              "mode": "primary-hp",
+              "frames": 180,
+              "meanPixels": 21708.0,
+              "maxPixels": 21708,
+              "maxWidgets": 1,
+              "p50Ms": 0.268,
+              "p95Ms": 0.3596
+            },
+            {
+              "mode": "track-animation",
+              "frames": 180,
+              "meanPixels": 12960.0,
+              "maxPixels": 12960,
+              "maxWidgets": 1,
+              "p50Ms": 0.0935,
+              "p95Ms": 0.1714
+            },
+            {
+              "mode": "four-headers",
+              "frames": 180,
+              "meanPixels": 77871.88888888889,
+              "maxPixels": 82159,
+              "maxWidgets": 1,
+              "p50Ms": 1.1378,
+              "p95Ms": 1.3743
+            }
+          ]
+        ]
+      },
+      "fourHeadersMeanPaintAreaChangePercent": 3.73
+    },
+    "scope": "旧像素在可重复的 1920×1080 离屏合成中定位。未在玩家自然战斗录像中捕获这一帧。"
+  },
+  "modifier355": {
+    "finding": "初始前台建立可能被 Windows 拒绝。另外，修改器非编辑区域交还了 Guardian 前台，却可能把键盘留在 Guardian 自身。",
+    "change": "在编辑结束或当前面板关闭时，通过现有输入准入和已校验的 Flash 目标单次交还键盘。原生编辑控件继续接收自己的点击。",
+    "fixture": {
+      "controlledInteractive": {
+        "trx": "tmp/issue354355-20261126-1/positive-final/final-foreground/recheck.trx",
+        "sha256": "d086cf1ca1408ba8fe384b39d0fbce0ad969ef6a6dfb4ddf3fb6b124f9ae80fd",
+        "counts": {
+          "Passed": 1
+        },
+        "total": 1,
+        "cases": [
+          {
+            "name": "Launcher.Tests.Guardian.ModifierSurfaceTests.ModifierMouseWorkflowPreservesGameKeyboardFocus",
+            "outcome": "Passed",
+            "output": "session=2 testPid=17876 foregroundBefore=0x120B3C/pid=15968/tid=23612 owner=0x50BF4/pid=17876/tid=7412 desktopQuery=True receivesInput=1 SetForegroundWindow=True foregroundAfter=0x50BF4/pid=17876/tid=7412\r\npanel shown, owner foreground=0x50BF4/pid=17876/tid=7412\r\nquery received q, input=0x270C34/pid=17876/tid=7412\r\nclick returned keyboard focus to the game child=0x100D06/pid=17876/tid=7412"
+          }
+        ]
+      },
+      "inactiveDesktop": {
+        "trx": "tmp/issue354355-20261126-1/negative-final/recheck.trx",
+        "sha256": "67fbdda7099d25e38787bd00db16c2b7035e8cf381044cffb9bd19f95037efa1",
+        "counts": {
+          "NotExecuted": 1
+        },
+        "total": 1,
+        "cases": [
+          {
+            "name": "Launcher.Tests.Guardian.ModifierSurfaceTests.ModifierMouseWorkflowPreservesGameKeyboardFocus",
+            "outcome": "NotExecuted",
+            "detail": "BLOCKED inactive input desktop; session=2 testPid=12904 foregroundBefore=0x0/pid=0/tid=0 owner=0x330568/pid=12904/tid=22488 desktopQuery=True receivesInput=0; not run: panel show, search input, click, owner keyboard focus"
+          }
+        ]
+      },
+      "foregroundDeniedOnInputDesktop": {
+        "trx": "tmp/issue354355-20261126-1/combined-focused/recheck.trx",
+        "sha256": "64b8b0d4fff499263568c0f657da4066ccb4f385f548b6c7d5935aa2fb0cb8fb",
+        "counts": {
+          "NotExecuted": 1,
+          "Passed": 13
+        },
+        "total": 14,
+        "cases": [
+          {
+            "name": "Launcher.Tests.Guardian.ModifierSurfaceTests.ModifierMouseWorkflowPreservesGameKeyboardFocus",
+            "outcome": "NotExecuted",
+            "detail": "BLOCKED initial foreground unavailable; session=2 testPid=16900 foregroundBefore=0x2F09AE/pid=15940/tid=12720 owner=0x300B9C/pid=16900/tid=23248 desktopQuery=True receivesInput=1 SetForegroundWindow=False foregroundAfter=0x2F09AE/pid=15940/tid=12720; not run: panel show, search input, click, owner keyboard focus"
+          }
+        ]
+      },
+      "canonical": [
+        {
+          "name": "Launcher.Tests.Guardian.ModifierSurfaceTests.ModifierMouseWorkflowPreservesGameKeyboardFocus",
+          "outcome": "NotExecuted",
+          "detail": "BLOCKED initial foreground unavailable; session=2 testPid=21476 foregroundBefore=0x2F09AE/pid=15940/tid=12720 owner=0x1300A66/pid=21476/tid=8704 desktopQuery=True receivesInput=1 SetForegroundWindow=False foregroundAfter=0x2F09AE/pid=15940/tid=12720; not run: panel show, search input, click, owner keyboard focus"
+        }
+      ],
+      "classification": "前台验证发生在面板显示前。通过门槛后，显示、搜索、点击、焦点与失效后的守卫均为硬断言。"
+    },
+    "realGame": {
+      "method": "Windows 普通候选启动、同一专用存档、生产 Flash 与 AS2。Win32 鼠标/键盘事件打开 HUD 扳手、编辑搜索框、点击面板和关闭。查询 hero._x 只读，移动按键保持 330 ms。焦点分别读取前台输入队列与实际 Flash 线程。",
+      "before": {
+        "mode": "isolated_candidate",
+        "slot": "cf7_agent_355_focus_1126",
+        "attempt": "8a1e9ff43c384e70bb6bbee1402e7e59",
+        "guardianPid": 11936,
+        "flashPid": 8800,
+        "gameEntered": true,
+        "enterCount": 1,
+        "candidate": "c-43ef9f3b1165-08846e81b3-20261126t073713035z-a8993c45",
+        "coreSha256": "1CBC5328AC5AE40A32A5CAA9BFCDD87BC0593865B459C22449B2E9516E23D601",
+        "buildIdentity": "43EF9F3B1165398E87C92A4FE31118F9009E0C2FB16391C9A99D37918E09B08D",
+        "payloadClosure": "C7C6C539CB2F5567E20BC2446CBD65FD83756484B2437A892DFC071942EF51E2",
+        "movement": [
+          514.8,
+          605.55,
+          605.55,
+          605.55,
+          605.55
+        ],
+        "checkpoints": [
+          {
+            "action": "world",
+            "foreground": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            }
+          },
+          {
+            "action": "read hero._x",
+            "x": 514.8
+          },
+          {
+            "action": "d",
+            "foreground": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            },
+            "holdMs": 330
+          },
+          {
+            "action": "read hero._x",
+            "x": 605.55
+          },
+          {
+            "action": "wrench",
+            "foreground": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            }
+          },
+          {
+            "action": "panel",
+            "foreground": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0xd60c3c",
+              "pid": 8800,
+              "class": "ShockwaveFlash"
+            }
+          },
+          {
+            "action": "read hero._x",
+            "x": 605.55
+          },
+          {
+            "action": "search",
+            "foreground": {
+              "hwnd": "0x140b40",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x2130ca8",
+              "pid": 11936,
+              "class": "WindowsForms10.Edit.app.0.39e11db_r3_ad1"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x2130ca8",
+              "pid": 11936,
+              "class": "WindowsForms10.Edit.app.0.39e11db_r3_ad1"
+            },
+            "textBefore": "d7d7d",
+            "textAfterDigit": "d7d7d7",
+            "committedText": "d7d7d7的"
+          },
+          {
+            "action": "read hero._x",
+            "x": 605.55
+          },
+          {
+            "action": "release",
+            "foreground": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "panelStillVisible": true
+          },
+          {
+            "action": "d",
+            "foreground": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x190a58",
+              "pid": 11936,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "holdMs": 330
+          },
+          {
+            "action": "read hero._x",
+            "x": 605.55
+          }
+        ]
+      },
+      "after": {
+        "mode": "isolated_candidate",
+        "slot": "cf7_agent_355_focus_1126",
+        "attempt": "7be6a8c2abfc4763bc97f3ae27396f1d",
+        "guardianPid": 6984,
+        "flashPid": 6592,
+        "gameEntered": true,
+        "enterCount": 1,
+        "candidate": "c-ddba9b7ef3c9-08846e81b3-20261126t080254548z-8a6b06e1",
+        "coreSha256": "78D73F7051D58C49E41CFEFFE86908A013F467C0B2D30CD55D7C58C289D2E161",
+        "buildIdentity": "DDBA9B7EF3C985556F414CD5FDAF94B6683D15CD371FE08297362A6449751E2B",
+        "payloadClosure": "CD9AC56315489CEBD512E56DF511075B40AD833A949BB3917DC57BFB89A82E2B",
+        "movement": [
+          514.8,
+          605.55,
+          605.55,
+          605.55,
+          696.3,
+          613.3
+        ],
+        "checkpoints": [
+          {
+            "action": "activate",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x2450966",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x2450966",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            }
+          },
+          {
+            "action": "world",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            }
+          },
+          {
+            "action": "read hero._x",
+            "x": 514.8
+          },
+          {
+            "action": "d",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "holdMs": 330
+          },
+          {
+            "action": "read hero._x",
+            "x": 605.55
+          },
+          {
+            "action": "wrench",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            }
+          },
+          {
+            "action": "panel",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            }
+          },
+          {
+            "action": "read hero._x",
+            "x": 605.55
+          },
+          {
+            "action": "search",
+            "foreground": {
+              "hwnd": "0x140b46",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x180b54",
+              "pid": 6984,
+              "class": "WindowsForms10.Edit.app.0.39e11db_r3_ad1"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x180b54",
+              "pid": 6984,
+              "class": "WindowsForms10.Edit.app.0.39e11db_r3_ad1"
+            },
+            "textBefore": "",
+            "textAfterDigit": "7",
+            "committedText": "7的"
+          },
+          {
+            "action": "read hero._x",
+            "x": 605.55
+          },
+          {
+            "action": "release",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "panelStillVisible": true
+          },
+          {
+            "action": "d",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "holdMs": 330
+          },
+          {
+            "action": "read hero._x",
+            "x": 696.3
+          },
+          {
+            "action": "search",
+            "foreground": {
+              "hwnd": "0x140b46",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x180b54",
+              "pid": 6984,
+              "class": "WindowsForms10.Edit.app.0.39e11db_r3_ad1"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x180b54",
+              "pid": 6984,
+              "class": "WindowsForms10.Edit.app.0.39e11db_r3_ad1"
+            },
+            "textBefore": "7的",
+            "textAfterDigit": "7的7",
+            "committedText": "7的7的"
+          },
+          {
+            "action": "close",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "panelStillVisible": false
+          },
+          {
+            "action": "a",
+            "foreground": {
+              "hwnd": "0x160bde",
+              "pid": 6984,
+              "class": "WindowsForms10.Window.8.app.0.39e11db_r3_ad1"
+            },
+            "keyboardFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "flashThreadFocus": {
+              "hwnd": "0x50c7a",
+              "pid": 6592,
+              "class": "ShockwaveFlash"
+            },
+            "holdMs": 330
+          },
+          {
+            "action": "read hero._x",
+            "x": 613.3
+          }
+        ]
+      },
+      "observation": "搜索期间角色不动；修复后面板保持显示时 D 使 x 从 605.55 到 696.30；在编辑中直接关闭面板后 A 使 x 回到 613.30。"
+    }
+  },
+  "integration": {
+    "host": {
+      "command": "powershell -NoProfile -File tools/run-focus-sol-recheck.ps1 -Phase integration -Canonical -NoBuild",
+      "sourceInputsSha256": "1d2a6c353479cc2ed4e32a91a40328fb792c33529f0006c67dc928f9f2231012",
+      "sdk": "10.0.300",
+      "trx": "tmp/focus-sol-20261013/integration-20261126T081306958Z/recheck.trx",
+      "sha256": "b6b72a1e2d341b2cb256a53cbe99211d3087c84fea84f4304b57a10528847f3b",
+      "counts": {
+        "NotExecuted": 36,
+        "Passed": 8879
+      },
+      "total": 8915
+    },
+    "nativeViewport": {
+      "rows": 83,
+      "success": true,
+      "failures": [],
+      "nativeSha256": "F512EE0884BDD5BCC4C7AF9391CA49FBD9E613BF5EE5C7E86A93D9BB546C45E0",
+      "receipt": "tmp/issue354355-20261126-1/viewport-final/results.json",
+      "receiptSha256": "34556c637132c61869b67c48857a43d6f7eb585cbf46e6ba6f68b67b5255daf7"
+    },
+    "liveRecovery353": [
+      {
+        "mode": "maximize",
+        "receipt": "event=world_compositor_geometry_recovered generation=2 extentRevision=2 mapping=3 present=2140 frameQpcMs=290741019.5049 output={Width=2160, Height=1334} waitMs=132.7",
+        "geometry": "16:12:19.765 event=world_compositor_geometry FClient={X=0,Y=35,Width=1456,Height=900} captureFrame={X=0,Y=0,Width=2160,Height=1368} dwmFrame={X=0,Y=0,Width=2160,Height=1368} windowFrame={X=-11,Y=-11,Width=2182,Height=1390} WGC={Width=2160, Height=1368} crop={X=0,Y=35,Width=1456,Height=900} clientOffset={X=0,Y=0} generation=2 extentRevision=2 mapping=3 P={X=0,Y=34,Width=2160,Height=1334} frameFenceMs=290740894.0"
+      },
+      {
+        "mode": "restore",
+        "receipt": "event=world_compositor_geometry_recovered generation=3 extentRevision=3 mapping=4 present=2147 frameQpcMs=290741386.1431 output={Width=1600, Height=900} waitMs=119.6",
+        "geometry": "16:12:20.131 event=world_compositor_geometry FClient={X=281,Y=251,Width=1600,Height=900} captureFrame={X=278,Y=206,Width=1604,Height=947} dwmFrame={X=278,Y=206,Width=1604,Height=947} windowFrame={X=269,Y=206,Width=1622,Height=956} WGC={Width=1604, Height=947} crop={X=3,Y=45,Width=1600,Height=900} clientOffset={X=0,Y=0} generation=3 extentRevision=3 mapping=4 P={X=280,Y=251,Width=1600,Height=900} frameFenceMs=290741285.8"
+      }
+    ],
+    "saveProtection": {
+      "agentSlot": "cf7_agent_355_focus_1126",
+      "afterNormalLaunch": "普通交互启动自动写入 1 个启动器版本时间戳。其他 494 项在两次启动后逐字节一致。",
+      "marker": ".launcher-version-marker.json",
+      "baselineMarkerSha256": "82d5fbc76fee71ba9284a2b29e64f82f61640a6ae19b7fbdfa72986948c0986d",
+      "postLaunchMarkerSha256": "21d6120c4b841a9dc667125672fc95b911c20b156c4f4412354a095133a7aba5",
+      "restoration": "停掉本次拥有的进程后核对新旧 SHA-256，还原该标记的原始字节和修改时间。",
+      "finalVerification": {
+        "ok": true,
+        "checkedFiles": 495,
+        "violations": []
+      }
+    },
+    "runtime": {
+      "buildOnly": true,
+      "localSelection": "ready",
+      "coreSha256": "78D73F7051D58C49E41CFEFFE86908A013F467C0B2D30CD55D7C58C289D2E161",
+      "buildIdentity": "DDBA9B7EF3C985556F414CD5FDAF94B6683D15CD371FE08297362A6449751E2B",
+      "payloadClosure": "CD9AC56315489CEBD512E56DF511075B40AD833A949BB3917DC57BFB89A82E2B",
+      "deploymentStatus": "NOT_DEPLOYED"
+    }
+  }
+}
