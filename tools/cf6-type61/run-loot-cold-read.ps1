@@ -54,10 +54,11 @@ $environmentType=$core.GetType('CF7Launcher.Config.FlashStorageEnvironment',$tru
 $prepare=$environmentType.GetMethod('Prepare',[Reflection.BindingFlags]'Static,NonPublic')
 $results=@()
 $files=@()
-foreach($kind in @('longgun','sidearm_pair','none','guarantee')) {
+foreach($kind in @('longgun','sidearm_pair','none','guarantee','unpicked','legacy')) {
     $nonce=[guid]::NewGuid().ToString('N').Substring(0,16)
     $slot='cf7_env_cf6_loot_'+$nonce
-    foreach($phase in @('decide','admit','claim','read')) {
+    $phases=if($kind -eq 'legacy'){@('seed_v2','read_v2','migrate_v2','read_v3')}else{@('pick_save','read')}
+    foreach($phase in $phases) {
         $request=[ordered]@{phase=$phase;nonce=$nonce;slot=$slot;kind=$kind}
         [IO.File]::WriteAllText((Join-Path $evidence 'request.json'),($request | ConvertTo-Json -Compress),[Text.UTF8Encoding]::new($false))
         $resultFile=Join-Path $evidence 'result.json'
@@ -81,7 +82,7 @@ foreach($kind in @('longgun','sidearm_pair','none','guarantee')) {
             $results+=[ordered]@{phase=$phase;kind=$kind;slot=$slot;pid=$process.Id;outcome=$response.outcome;rolls=$response.rolls}
             [IO.File]::WriteAllText((Join-Path $evidence 'progress.json'),($results | ConvertTo-Json -Depth 8),[Text.UTF8Encoding]::new($false))
             if($response.outcome -cne 'ok'){throw ('Owned cold probe failed: '+$kind+'/'+$phase+' '+$response.outcome)}
-            if($response.rolls -ne $(if($phase -eq 'decide'){1}else{0})){throw 'Cold probe gate-count mismatch'}
+            if($response.rolls -ne $(if($phase -eq 'pick_save'){1}else{0})){throw 'Cold probe gate-count mismatch'}
         } finally {
             if(!$process.HasExited){[void]$process.CloseMainWindow();if(!$process.WaitForExit(2000)){$process.Kill();[void]$process.WaitForExit(2000)}}
             $process.Dispose()
@@ -93,19 +94,19 @@ foreach($kind in @('longgun','sidearm_pair','none','guarantee')) {
         if(!([IO.Path]::GetFullPath($owned).StartsWith([IO.Path]::GetFullPath($storageRoot)+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase))){throw 'Owned SOL escaped storage root'}
         Copy-Item -LiteralPath $owned -Destination (Join-Path $evidence ($kind+'-'+$phase+'.sol'))
         $files+=[ordered]@{kind=$kind;phase=$phase;sha256=(Get-FileHash -LiteralPath $owned -Algorithm SHA256).Hash;bytes=(Get-Item -LiteralPath $owned).Length}
-        if($phase -eq 'read') {
-            # This exact random slot was created and verified by the four
-            # processes above. Only its own single SOL is removed.
+        if($phase -eq $phases[-1]) {
+            # The exact random slot was created and verified by these processes.
+            # Only its own single SOL is removed.
             Remove-Item -LiteralPath $owned
         }
     }
 }
-if(@($results.pid | Select-Object -Unique).Count -ne 16){throw 'Cold read did not use sixteen distinct processes'}
-$report=[ordered]@{schema='cf6-fixed-loot.cold-native.v1';cases=$results;files=$files;
+if(@($results.pid | Select-Object -Unique).Count -ne 14){throw 'Cold read did not use fourteen distinct processes'}
+$report=[ordered]@{schema='cf6-fixed-loot.cold-native.v2';cases=$results;files=$files;
     swfSha256=(Get-FileHash -LiteralPath $swf).Hash;sourceSwfSha256=(Get-FileHash -LiteralPath $compiledSwf).Hash;ownedShortPath=($null -ne $ownedStage);playerSha256=(Get-FileHash -LiteralPath $player).Hash;
     coreSha256=(Get-FileHash -LiteralPath $corePath).Hash;coreDirectory=$coreDirectory;candidateRoot=$resolvedCandidate;productionStorageEnvironment=$true;
     freshProcessReadback=$true;playerSavesOpened=$false;controlledGateAndEquipment=$true;
-    scope='Real standalone SaveManager, staging, claim and cold-read components; not production Launcher SafeExit UI acceptance'}
+    scope='Standalone AVM1 pickup manager with a local clip fixture, physical SaveManager SOL, and v2/v3 readback'}
 [IO.File]::WriteAllText((Join-Path $evidence 'report.json'),($report | ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
 if($ownedStage){
     # Only this exact freshly created copy and its empty owned directory.
@@ -116,4 +117,4 @@ if($ownedStage){
     Remove-Item -LiteralPath $swf
     if(@(Get-ChildItem -LiteralPath $ownedStage -Force).Count -eq 0){Remove-Item -LiteralPath $ownedStage}
 }
-Write-Host '[OK] Four exclusive loot results survived sixteen independent Flash processes without reroll or duplication.'
+Write-Host '[OK] Pickup and legacy migration verified across fourteen independent Flash processes.'

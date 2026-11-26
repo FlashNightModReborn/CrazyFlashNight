@@ -233,6 +233,13 @@ def build(source=None, include_fixed=True):
     config['deliveryItems']=deliveries
     skill_rows=ET.parse(ROOT/'data/skills/skills.xml').findall('Skill')
     trainer=[s.findtext('Name') for s in skill_rows if s.findtext('Name') and 1<=int(s.findtext('UnlockLevel','999'))<=60 and s.findtext('Name') not in source['blockedSkills']]
+    runtime = ROOT / 'scripts/类定义/org/flashNight/arki/scene/Cf6Type61Service.as'
+    skill_limit = re.search(r'^[ \t]*private static var MAX_LEARNABLE_SKILLS:Number = (\d+);$', runtime.read_text('utf-8-sig'), re.M)
+    if skill_limit is None:
+        raise ValueError('Type61 runtime learnable skill limit is missing')
+    max_skills = int(skill_limit.group(1))
+    if not 1 <= len(trainer) <= max_skills:
+        raise ValueError(f'Type61 generated {len(trainer)} learnable skills; runtime allows 1–{max_skills}')
     config['learnableSkills']=trainer
     def obsolete(name):
         return name in ('金币','金钱','K点','技能点','经验值') or items.get(name) is not None and items[name].findtext('use') in ('药剂','弹夹','战场补给')

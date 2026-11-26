@@ -77,10 +77,11 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     }
 
     //添加物品
-    public function add(key:String,item):Boolean{
+    public function add(key:String,item,placement:Object):Boolean{
         if (rejectsExitWrite()) return false;
         if(isEmpty(key) && isAddable(key,item)){
             items[key] = item;
+            if (placement != null) placement.wrote = true;
             if(hasDispatcher()) dispatcher.publish("ItemAdded", this, key); // 发布ItemAdded事件
             return true;
         }

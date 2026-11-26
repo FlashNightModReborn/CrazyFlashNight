@@ -425,8 +425,7 @@ class org.flashNight.arki.scene.BookRunService {
             _ending = null; return;
         }
         if (ending.slot !== String(_root.savePath)) { _ending = null; return; }
-        if (SaveManager.getInstance().hasRewardCommitPending()
-            || !org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition()) {
+        if (SaveManager.getInstance().hasRewardCommitPending()) {
             _root.帧计时器.添加单次任务(persistOutcome, 1); return;
         }
         // 终局结果属于临时角色。复用正规返回基地及书架换槽的全量保存屏障，

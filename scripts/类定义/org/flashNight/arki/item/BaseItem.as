@@ -55,6 +55,21 @@ class org.flashNight.arki.item.BaseItem{
         return new BaseItem(__name, __value, initObject.lastUpdate);
     }
 
+    /** 完整装备值可以在暂存、拾取与快捷装备之间使用同一构造入口。 */
+    public static function createDetachedEquipment(raw:Object):BaseItem {
+        if (raw == null || !ItemUtil.isEquipment(String(raw.name)) || raw.value == null
+                || typeof raw.value != "object" || raw.value instanceof Array) return null;
+        return createFromObject(PersistedSnapshot.cloneData(raw));
+    }
+
+    public static function placeFullEquipment(raw:Object, inventory:Object, slot, placement:Object):BaseItem {
+        var item:BaseItem = createDetachedEquipment(raw);
+        if (item == null || inventory == null) return null;
+        org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+        if (placement != null) placement.entered = true;
+        return inventory.add(slot, item, placement) ? item : null;
+    }
+
     // 通过字符串创建物品对象。输入字符串为 name#value#tier 的形式，value 和 tier 在创建装备时会自动转换为强化度和进阶。
     public static function createFromString(str:String):BaseItem{
         var strArr = str.split("#");

@@ -42,7 +42,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     }
 
     //重构add函数，填写-1时自动寻找可用的索引
-    public function add(key:Number, item:Object):Boolean {
+    public function add(key:Number, item:Object, placement:Object):Boolean {
         if (rejectsExitWrite()) return false;
         if(item == null || item.name == undefined || item.name == "" || item.value == undefined || item.value == null) return false;
         if(typeof item.value == "number" && (isNaN(item.value) || item.value <= 0)) return false;
@@ -54,6 +54,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         var nextIndexes:Array = beforeIndexes.concat();
         nextIndexes.splice(indexPosition(beforeIndexes, key), 0, key);
         items[key] = item;
+        if (placement != null) placement.wrote = true;
         indexArrayCache = nextIndexes;
         indexArrayCapacity = capacity;
         occupiedCount = nextIndexes.length;
@@ -95,16 +96,16 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
      * 数量型物品写入也推进版本。版本必须先于基类的同步 ItemValueChanged/ItemRemoved
      * 事件可见；若本次归零又触发 remove()，版本可能再推进一次，调用方只依赖单调性。
      */
-    public function addValue(key:String, value:Number):Void {
+    public function addValue(key:String, value:Number, placement:Object):Void {
         if (rejectsExitWrite()) return;
         if (isNaN(value)) return;
         var current:Object = getItem(key);
         if (current == null) {
-            super.addValue(key, value);
+            super.addValue(key, value, placement);
             return;
         }
         bumpMutationRevision();
-        super.addValue(key, value);
+        super.addValue(key, value, placement);
     }
 
     /** 返回容器级单调写版本；不使用帧号/毫秒 tick，避免同帧多写碰撞。 */

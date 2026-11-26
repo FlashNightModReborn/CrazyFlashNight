@@ -13,6 +13,7 @@ import org.flashNight.gesh.object.PersistedSnapshot;
 
 /** 61路线固定配额只由此域交付；保存未知时查原操作，清场不能绕过候选。 */
 class org.flashNight.arki.scene.Cf6Type61Service {
+    private static var MAX_LEARNABLE_SKILLS:Number = 128;
     private static var room:Object;
     private static var watchClip:MovieClip;
     private static var pendingClear:Object;
@@ -29,7 +30,7 @@ class org.flashNight.arki.scene.Cf6Type61Service {
                 || !(c.fieldSupplies instanceof Array) || c.fieldSupplies.length != 59
                 || !(c.shopIds instanceof Array) || c.shopIds.length != 6
                 || !(c.choicePoolIds instanceof Array) || c.choicePoolIds.length != 11
-                || !(c.learnableSkills instanceof Array) || c.learnableSkills.length < 1 || c.learnableSkills.length > 80
+                || !(c.learnableSkills instanceof Array) || c.learnableSkills.length < 1 || c.learnableSkills.length > MAX_LEARNABLE_SKILLS
                 || !(c.midMods instanceof Array) || c.midMods.length != 3 || c.recipeUnlocks == null) return false;
         if (c.initialConstellationNode !== "TUTORIAL" || !(c.ordinaryConstellations instanceof Array)
                 || c.ordinaryConstellations.length != 4) return false;
@@ -317,9 +318,8 @@ class org.flashNight.arki.scene.Cf6Type61Service {
         var id:String=String(manager.currentBookMapId());
         var checkpoint:Object=checkpointFor(id);
         // Tutorial still waits for its initial delivery, but the terminal boss has no economic grant.
-        var lootReady:Boolean=org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition();
-        if (checkpoint == null && id != "TUTORIAL" && lootReady) return false;
-        if (RewardStashService.pendingOperationId() == "" && _root._saveExt.bookRun.type61Claims[id] === true && lootReady) return false;
+        if (RewardStashService.pendingOperationId() == ""
+                && ((checkpoint == null && id != "TUTORIAL") || _root._saveExt.bookRun.type61Claims[id] === true)) return false;
         world.允许通行=false;
         if (current(room)) {
             room.clearRequested=true;
@@ -351,7 +351,7 @@ class org.flashNight.arki.scene.Cf6Type61Service {
         var claims:Object=_root._saveExt.bookRun.type61Claims;
         if (claims.TUTORIAL !== true) {deliver(r,"TUTORIAL");return;}
         if (!r.clearRequested) return;
-        if (!org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition()) return;
+        if (RewardStashService.pendingOperationId() != "") return;
         if (claims[r.mapId] !== true && checkpointFor(r.mapId) != null) {deliver(r,r.mapId);return;}
         r.clearRequested=false;
         try {r.manager.clearStage();} finally {release(r);}

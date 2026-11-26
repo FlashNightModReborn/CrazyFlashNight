@@ -1,6 +1,8 @@
 ﻿import org.flashNight.arki.scene.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
+import org.flashNight.arki.unit.Action.PickUp.PickUpManager;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 import org.flashNight.gesh.object.PersistedSnapshot;
 import org.flashNight.neur.Server.SaveManager;
 import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
@@ -24,14 +26,15 @@ class org.flashNight.arki.scene.Cf6SoldierLootColdProbeTest {
             trace("FocusedTestRunId cf6-soldier-loot-cold Complete: "+_root.cf6LootColdRunId);return;
         }
         var parts:Array=message.split("|");phase=parts[0];nonce=parts[1];slot=parts[2];kind=parts[3];
-        if(parts.length!=4 || nonce.length!=16 || slot!=="cf7_env_cf6_loot_"+nonce
-            || (kind!="longgun" && kind!="sidearm_pair" && kind!="none" && kind!="guarantee")
-            || (phase!="decide" && phase!="admit" && phase!="claim" && phase!="read"))return;
+        var validPhase:Boolean=kind==="legacy"
+            ? phase==="seed_v2" || phase==="read_v2" || phase==="migrate_v2" || phase==="read_v3"
+            : (kind==="longgun" || kind==="sidearm_pair" || kind==="none" || kind==="guarantee" || kind==="unpicked")
+                && (phase==="pick_save" || phase==="read");
+        if(parts.length!=4 || nonce.length!=16 || slot!=="cf7_env_cf6_loot_"+nonce || !validPhase)return;
         for(var h:Number=0;h<nonce.length;h++)if("0123456789abcdef".indexOf(nonce.charAt(h))<0)return;
         var outcome:String="ok";
         try {execute();}catch(error){outcome="failed:"+String(error);}
-        // Halt the owned service before reporting, so this process cannot
-        // silently cross from durable decision into admission after the probe.
+        // Freeze this process at the reported phase, including the read-only v2 phase.
         var service:Object=Cf6SoldierLoot;if(service.watcher!=null)delete service.watcher.onEnterFrame;
         socket.send(phase+"|"+nonce+"|"+slot+"|"+kind+"|"+outcome+"|"+rolls);
     }
@@ -46,6 +49,8 @@ class org.flashNight.arki.scene.Cf6SoldierLootColdProbeTest {
         _root.全局健身HP加成=_root.全局健身MP加成=_root.全局健身空攻加成=_root.全局健身防御加成=_root.全局健身内力加成=0;
         _root.基建系统={infrastructure:{}};_root.宠物信息=[[],[],[],[],[]];_root.宠物领养限制=5;
         _root.UpdateTaskProgress=function():Void {};_root.发布消息=function():Void {};_root.更新主角被动技能=function():Void {};
+        _root.getItemData=function(name:String):Object {return ItemUtil.getRawItemData(name);};
+        _root.soundEffectManager={playSound:function():Void {}};
         _root.根据等级得升级所需经验=function(level:Number):Number {return 0;};
         _root.UI系统={};_root.tasks_to_do=[];_root.tasks_finished={};_root.task_chains_progress={};_root.等级限制=100;
         ItemUtil.itemDataDict={};ItemUtil.equipmentDict={G1111:true,MP7:true};ItemUtil.materialDict={透镜:true};ItemUtil.informationMaxValueDict={};
@@ -56,13 +61,13 @@ class org.flashNight.arki.scene.Cf6SoldierLootColdProbeTest {
         for(i=0;i<names.length;i++)_root.物品栏[names[i]]=new ArrayInventory(null,50);
         _root.收集品栏={材料:new DictCollection(null),情报:new InformationCollection(null)};
         config=Cf6FixedActionsFixture.config();config.lootPolicy=Cf6SoldierLootFixture.policy();
-        // No flush override: both decision and inventory admission must reach
-        // the physical SharedObject backend in this independent process.
+        // No flush override: the ordinary save and each legacy migration must reach the physical SOL.
         sm._configureSaveFlowForTest({flushResult:undefined,saveInFlight:false});
         RewardInboxService.resetForTests();
     }
     private static function makeActor():MovieClip {
         var world:MovieClip=_root.createEmptyMovieClip("coldLootWorld",_root.getNextHighestDepth());_root.gameworld=world;
+        world.dispatcher=new LifecycleEventDispatcher(world);
         require(Cf6SoldierActions.bindWorld(world,StageReturnFlow.worldIdentity(world),config,"A19"),"world bind");
         var unit:MovieClip=world.createEmptyMovieClip("exactColdActor",world.getNextHighestDepth());
         unit.cf6UnitIdentity="CF6-M-XX";unit.cf6RosterVersion=config.version;unit.cf6BirthIdentity={};unit.version=1;
@@ -77,100 +82,151 @@ class org.flashNight.arki.scene.Cf6SoldierLootColdProbeTest {
         unit.手枪属性={capacity:40,clipname:"手枪弹药"};unit.手枪2属性={capacity:40,clipname:"手枪弹药"};
         require(Cf6SoldierActions.register(unit)!=null,"actor bind");return unit;
     }
-    private static function packet():Object {return _root._saveExt.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"];}
-    private static function exact():Void {
-        var p:Object=packet(),ledger:Object=_root._saveExt.bookRun.cf6SoldierLoot;
-        require(p.kind===(kind=="guarantee"?"longgun":kind) && Cf6SoldierLootRules.validLedger(ledger),"cold packet validity");
-        if(kind!="none"){
-            require(p.ground.mapId==="A19" && p.ground.x===200 && p.ground.z===300,"durable ground anchor survives process boundary");
-            if(p.state==="OWNED")require(p.groundEntries instanceof Array && p.groundEntries.length===p.items.length,
-                "durable ground entries retain exact equipment references");
-        }
-        require(ledger.packages===(kind=="none"?0:1) && ledger.pairs===(kind=="sidearm_pair"?1:0),"once-only quotas");
-        if(kind=="longgun" || kind=="guarantee")require(p.items[0].value.shot===4 && p.items[0].value.isRocketMode===false
-            && p.items[0].value.__future.kept===17 && p.items[0].value.ammoState.reserve===3,"G1111 full boolean/value snapshot");
-        if(kind=="sidearm_pair")require(p.items.length===2 && p.items[0].value.shot===2 && p.items[1].value.shot===7
-            && p.consumables.length===1 && p.consumables[0].value===2,"independent paired weapons and summed ammunition");
-        require(kind=="none" || p.items[0].value.mods instanceof Array,"empty mods round trip");
-        if(kind=="guarantee"){
-            require(p.items[0].value.mods.join(",")=="战术鱼骨零件,战术握把,加长弹匣","complete three-mod weapon survives each cold phase");
-            require(p.roll.reason=="first_weapon_guarantee" && p.roll.naturalHit===false && p.roll.eligibleOrdinal===8,"guard evidence cold read");
-            for(var historical:Number=0;historical<7;historical++)require(ledger.records["u.old-miss-"+historical].roll.reason=="roll_miss"
-                && ledger.records["u.old-miss-"+historical].roll.nominalPercent===3,"historical miss retained");
-        }
+    private static function newRun():Void {
+        for(var occupied:String in storage.data)throw new Error("nonce slot already exists");
+        _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"type61",slot:slot,seed:101,startedAt:42,planSeed:42,outcome:"active"},
+            retained:{__future:{kept:9}}};
     }
-    private static function execute():Void {
-        setup();
-        if(phase=="decide"){
-            for(var occupied:String in storage.data)throw new Error("nonce slot already exists");
-            _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"type61",slot:slot,seed:101,startedAt:42,planSeed:42,outcome:"active"},
-                retained:{__future:{kept:9}}};
-            require(Cf6SoldierLoot.bind(config),"initial bind");
+
+    private static function currentLedger():Object {return _root._saveExt.bookRun.cf6SoldierLoot;}
+
+    private static function seedV2(id:String,state:String,unit:MovieClip):Void {
+        var history:Object=currentLedger();
+        var miss:Boolean=state==="DECIDED_MISS";
+        var header:Object={sourceKey:slot+"."+id,unitIdentity:id,spawnIdentity:id,
+            rosterVersion:config.version,configurationFingerprint:"old"};
+        var roll:Object={recorded:true,gateEvaluated:true,hit:!miss,nominalPercent:3,luckBonus:0,
+            prdPoolKey:"legacy",reason:miss?"roll_miss":"roll_hit"};
+        var snapshot:Object=miss?{}:{primary:unit.长枪.toObject(),ground:{mapId:"A19",x:200,z:300}};
+        var packet:Object=Cf6SoldierLootRules.packet(header,snapshot,miss?"none":"longgun",roll,
+            miss?[]:[{name:"步枪弹药",value:1,lastUpdate:1}]);
+        packet.state=state;
+        require(Cf6SoldierLootRules.reserve(history,packet),"old ledger seed");
+    }
+
+    private static function ordinaryWorld():Object {
+        var world:MovieClip=_root.gameworld;
+        var manager:PickUpManager=new PickUpManager();
+        var creator:Object=manager;
+        // The real prefab is covered by Cf6SoldierLootHost. This network-mode probe
+        // gives the same Pickup manager a local MovieClip carrying its real spawn parameters.
+        creator.createCollectible=function(name:String,quantity:Number,x:Number,z:Number,fly:Boolean,params:Object,out:Object):Void {
+            var index:Number=world.getNextHighestDepth(),mc:MovieClip=world.createEmptyMovieClip("pickup"+index,index);
+            mc.index=index;mc.物品名=name;mc.数量=quantity;mc._x=x;mc._y=z;mc.pickupItemData=params.pickupItemData;
+            manager.getPickupItemDict()[index]=mc;
+            out.state="created";
+        };
+        _root.pickupItemManager=manager;
+        var player:MovieClip=world.createEmptyMovieClip("coldLootHero",world.getNextHighestDepth());
+        player.hp=1000;player.是否为敌人=false;_root.控制目标=player._name;
+        return {manager:manager,player:player};
+    }
+
+    private static function exactRifle(item:Object):Boolean {
+        return item.name==="G1111" && item.value.level===13 && item.value.shot===4
+            && item.value.reloadCount===8 && item.value.isRocketMode===false && item.value.__future.kept===17
+            && item.value.ammoState.reserve===3 && item.value.mods instanceof Array;
+    }
+
+    private static function checkNewState():Void {
+        var ledger:Object=currentLedger(),record:Object=ledger.records["u.CF6-M-XX"];
+        var expected:String=kind==="none"?"none":kind==="sidearm_pair"?"sidearm_pair":"longgun";
+        require(ledger.v===3 && Cf6SoldierLootRules.validLedger(ledger) && record.kind===expected
+            && record.items===undefined && ledger.eligibleDeaths===(kind==="guarantee"?8:1),"v3 decision and quota, without saved payload");
+        var bag:Object=_root.物品栏.背包.toObject(),guns:Number=0,ammo:Number=0,shots:Number=0;
+        for(var index:String in bag){
+            var item:Object=bag[index];
+            if(item.name==="G1111" || item.name==="MP7"){
+                guns++;shots+=item.value.shot;
+                if(item.name==="G1111")require(exactRifle(item),"picked rifle value survives serialization");
+                if(kind==="guarantee")require(item.value.mods.join(",")==="战术鱼骨零件,战术握把,加长弹匣","three picked mods survive");
+            }else if(item.name==="步枪弹药" || item.name==="手枪弹药")ammo+=item.value;
+        }
+        var expectedCount:Number=(kind==="none" || kind==="unpicked")?0:kind==="sidearm_pair"?2:1;
+        require(guns===expectedCount && ammo===expectedCount && shots===(expectedCount===2?9:expectedCount===1?4:0)
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")===0
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"MP7")===0,"owned inventory only contains actual pickups");
+    }
+
+    private static function executeNew():Void {
+        if(phase==="pick_save"){
+            newRun();
+            if(kind==="guarantee"){
+                _root._saveExt.bookRun.cf6SoldierLoot=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
+                for(var i:Number=0;i<7;i++)seedV2("old-miss-"+i,"DECIDED_MISS",null);
+            }
             var roller:Object=DropLuckRoller,original:Function=roller.rollDropWithContext;
             roller.coldOriginal=original;
             roller.rollDropWithContext=function(prefix:String,item:Object,luck:Number,prd:Object):Boolean {
                 Cf6SoldierLootColdProbeTest.rolls++;
-                LinearCongruentialEngine.instance.nextFloat=function():Number {return (Cf6SoldierLootColdProbeTest.kind=="none" || Cf6SoldierLootColdProbeTest.kind=="guarantee")?.999999:0;};
-                var actualRoller:Object=DropLuckRoller;var passed:Boolean=actualRoller.coldOriginal(prefix,item,luck,prd);
-                LinearCongruentialEngine.instance.nextFloat=function():Number {return Cf6SoldierLootColdProbeTest.kind=="sidearm_pair"?.6:0;};
-                return passed;
+                LinearCongruentialEngine.instance.nextFloat=function():Number {
+                    return (Cf6SoldierLootColdProbeTest.kind==="none" || Cf6SoldierLootColdProbeTest.kind==="guarantee")?.999999:0;
+                };
+                var actualRoller:Object=DropLuckRoller;
+                var hit:Boolean=actualRoller.coldOriginal(prefix,item,luck,prd);
+                LinearCongruentialEngine.instance.nextFloat=function():Number {return Cf6SoldierLootColdProbeTest.kind==="sidearm_pair"?.6:0;};
+                return hit;
             };
-            if(kind=="guarantee"){
-                var history:Object=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
-                _root._saveExt.bookRun.cf6SoldierLoot=history;
-                for(var historical:Number=0;historical<7;historical++){
-                    var hid:String="old-miss-"+historical;
-                    var hh:Object={sourceKey:slot+"."+hid,unitIdentity:hid,spawnIdentity:hid,
-                        rosterVersion:config.version,configurationFingerprint:config.version+"|old"};
-                    var hr:Object={recorded:true,gateEvaluated:true,hit:false,nominalPercent:3,luckBonus:0,
-                        prdPoolKey:"cf6.fixed158.ordinary|缴获包",reason:"roll_miss"};
-                    require(Cf6SoldierLootRules.reserve(history,Cf6SoldierLootRules.packet(hh,{},"none",hr,[])),"old miss seed");
-                }
+            require(Cf6SoldierLoot.bind(config),"initial v2/v3 binding");
+            var actor:MovieClip=makeActor(),fixture:Object=ordinaryWorld();
+            var flushBefore:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
+            require(Cf6SoldierLoot.combatDeath(actor) && rolls===1,"one death gate");
+            require(sm._getSavePhysicalStatsForTest().flushAttempt===flushBefore,"death made no save attempt");
+            require(_root.物品栏.背包.getIndexes().length===0 && RewardStashService.peek()==null,
+                "death leaves the asset containers empty");
+            if(kind!=="unpicked"){
+                var dict:Object=fixture.manager.getPickupItemDict(),objects:Array=[];
+                for(var key:String in dict)objects.push(dict[key]);
+                for(i=0;i<objects.length;i++)fixture.manager.pickup(objects[i],fixture.player,false);
             }
-            if(kind=="guarantee")require(Cf6SoldierLootRules.validLedger(history) && Cf6SoldierLootRules.eligibleDeaths(history)===7,"seeded real historical ledger");
-            var actor:MovieClip=makeActor();require(Cf6SoldierLoot.combatDeath(actor),"capture once");
-            Cf6SoldierLoot.prepareForTransition();
-            require(packet().state===(kind=="none"?"DECIDED_MISS":"DECIDED_HIT"),"real durable decision");
-            require(RewardStashService.pendingOperationId()=="" && rolls===1,"decision exact flush ack");
-            require(sm._getSavePhysicalStatsForTest().flushSuccess>0,"physical flush occurred");
-            exact();return;
+            checkNewState();
+            require(sm.flushBeforeTransition("safe_exit") && sm._getSavePhysicalStatsForTest().flushSuccess>0,
+                "normal pickup saved to physical SOL without a Soldier reward operation");
+        }else{
+            readStorage();
+            config.lootPolicy.groundDropsEnabled=false;
+            require(Cf6SoldierLoot.bind(config),"generation-off reader accepts v3");
+            checkNewState();
+            require(rolls===0 && _root.pickupItemManager==null,"fresh process did not regenerate unpicked assets");
         }
-        require(storage.data.test!=null,"saved image exists in fresh process");
-        require(sm.loadFromMydata(storage.data.test,"cf6_owned_cold_probe"),"canonical fresh-process load");
-        require(_root._saveExt.retained.__future.kept===9,"unrelated extension retained");
-        var gate:Object=DropLuckRoller;
-        gate.rollDropWithContext=function():Boolean {Cf6SoldierLootColdProbeTest.rolls++;throw new Error("cold resume rerolled");return false;};
-        require(Cf6SoldierLoot.bind(config),"resume bind");exact();
-        if(phase=="admit"){
-            for(var attempt:Number=0;attempt<4;attempt++)Cf6SoldierLoot.prepareForTransition();
-            require(Cf6SoldierLoot.prepareForTransition(),"atomic admission settles");
-            require(packet().state===(kind=="none"?"DECIDED_MISS":"OWNED"),"admitted once");
-            require(RewardStashService.peek().entries.length===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?1:2),"complete durable equipment packet");
-            var admittedBag:Object=_root.物品栏.背包.toObject(),admittedAmmo:Number=0;
-            for(var admittedIndex:String in admittedBag)if(admittedBag[admittedIndex].name=="步枪弹药" || admittedBag[admittedIndex].name=="手枪弹药")
-                admittedAmmo+=admittedBag[admittedIndex].value;
-            require(admittedAmmo===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?1:2),"same durable admission places paired ammunition in inventory");
-        }else if(phase=="claim" && kind!="none"){
-            var store:Object=RewardStashService.peek(),refs:Array=[];
-            for(var j:Number=0;j<store.entries.length;j++)refs.push({entryId:store.entries[j].entryId,revision:store.entries[j].revision,
-                quantity:RewardStashStore.quantity(store.entries[j].item)});
-            require(RewardStashService.take({storeId:store.storeId,expectedRevision:store.commitRevision,
-                operationId:"cold.claim."+nonce,entries:refs}).success===true,"actual whole-packet claim");
+    }
+
+    private static function readStorage():Void {
+        require(storage.data.test!=null,"saved image exists in a new process");
+        require(sm.loadFromMydata(storage.data.test,"cf6_owned_cold_probe"),"canonical cold read");
+        require(_root._saveExt.retained.__future.kept===9,"unrelated extension survived");
+    }
+
+    private static function executeLegacy():Void {
+        if(phase==="seed_v2"){
+            newRun();
+            _root._saveExt.bookRun.cf6SoldierLoot=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
+            var unit:MovieClip=makeActor();
+            seedV2("old-owned","OWNED",unit);
+            seedV2("old-hit","DECIDED_HIT",unit);
+            require(sm.flushBeforeTransition("safe_exit"),"save that preserves an unstarted v2 hit");
+            return;
         }
-        if(phase=="claim" || phase=="read"){
-            require(RewardStashService.peek().entries.length===0,"claimed stash empty");
-            var bag:Object=_root.物品栏.背包.toObject(),guns:Number=0,ammo:Number=0,shots:Number=0;
-            for(var index:String in bag){
-                var item:Object=bag[index];
-                if(item.name=="G1111" || item.name=="MP7"){
-                    guns++;shots+=item.value.shot;
-                    if(item.name=="G1111")require(item.value.isRocketMode===false && item.value.__future.kept===17
-                        && item.value.ammoState.reserve===3,"claimed G1111 serialization");
-                }else if(item.name=="步枪弹药" || item.name=="手枪弹药")ammo+=item.value;
-            }
-            require(guns===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?1:2) && ammo===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?1:2)
-                && shots===(kind=="none"?0:(kind=="longgun" || kind=="guarantee")?4:9),"fresh owned inventory exact once");
+        readStorage();
+        config.lootPolicy.groundDropsEnabled=false;
+        require(Cf6SoldierLoot.bind(config),"generation-off reader binds old and new history");
+        if(phase==="read_v2"){
+            require(currentLedger().v===2 && currentLedger().records["u.old-hit"].state==="DECIDED_HIT"
+                && RewardStashService.peek()==null,"v2 still readable without applying its promise on read");
+            return;
         }
-        exact();require(rolls===0,"no gate replay across process boundary");
+        if(phase==="migrate_v2")require(Cf6SoldierLoot.settleLegacyBeforeReplacement(),"one confirmed old admission");
+        var ledger:Object=currentLedger(),stash:Object=RewardStashService.peek();
+        require(ledger.v===3 && ledger.records["u.old-owned"].kind==="longgun" && ledger.records["u.old-hit"].kind==="longgun"
+            && ledger.packages===2 && stash.entries.length===1 && exactRifle(stash.entries[0].item),
+            "v3 and one old weapon persist together without reviving the missing owned weapon");
+        require(_root.物品栏.背包.getItem("0").name==="步枪弹药"
+            && _root.物品栏.背包.getItem("0").value===1 && rolls===0,"old ammo was delivered only once with no reroll");
+    }
+
+    private static function execute():Void {
+        setup();
+        if(kind==="legacy")executeLegacy();
+        else executeNew();
     }
 }

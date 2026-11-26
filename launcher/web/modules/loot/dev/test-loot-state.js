@@ -1834,6 +1834,43 @@ function battleReport() { return {v:2,runId:'run.battle.1',stageName:'人形战�
     activeFrames:930,totalKills:2,omittedKillTypes:0,totalItemGains:0,totalItemLosses:0,
     omittedItemFlowTypes:0,rewardRollOmissions:0,kills:[battleUnit('unit.1'),battleUnit('unit.2')],itemFlows:[],
     omittedIndividualKills:0,totalAllyDowns:0,totalAllyLosses:0,heroDowns:0,omittedAllies:0,allies:[]}; }
+test('confirmed report destination survives an overflow after all 96 visible flow types',()=>{
+    const source=battleReport();
+    source.rewardStashed=true;
+    source.rewardDelivery={hasDirect:true,hasStash:true};
+    source.itemFlows=Array.from({length:96},(_,i)=>({direction:'gain',kind:'item',
+        itemKey:'物资'+i,displayName:'物资'+i,iconName:'',tier:'',source:'pickup',reason:'pickup',count:1}));
+    source.totalItemGains=98;
+    source.omittedItemFlowTypes=2;
+    const report=LootView.normalizeSettlementReport(source);
+    const view=new LootView.View({init:{sourceKind:'stage_settlement',report}});
+    assert.strictEqual(view.rewardDelivery.label,'正常入账和暂存');
+    assert.ok(view.rewardDelivery.organize.includes('暂存区'));
+    source.rewardDelivery.hasStash=false;
+    assert.strictEqual(report.rewardDelivery.hasStash,true);
+    source.rewardDelivery.hasStash='false';
+    assert.strictEqual(LootView.normalizeSettlementReport(source),null);
+});
+
+test('legacy reports require positive non-currency stash evidence and keep unknown destinations neutral',()=>{
+    const source=battleReport();
+    source.rewardStashed=true;
+    source.itemFlows=[{direction:'gain',kind:'money',itemKey:'金币',displayName:'金币',
+        iconName:'',tier:'',source:'stage_settlement',reason:'stage_reward_stashed',count:100}];
+    source.totalItemGains=100;
+    const destination=()=>new LootView.View({init:{sourceKind:'stage_settlement',
+        report:LootView.normalizeSettlementReport(source)}}).rewardDelivery;
+    assert.strictEqual(destination().label,'已入账');
+    source.itemFlows[0].kind='material';
+    assert.strictEqual(destination().label,'含暂存物资');
+    source.rewardDelivery={hasDirect:false,hasStash:false};
+    assert.strictEqual(destination().label,'无物品投送');
+    source.rewardDelivery.hasStash=true;
+    assert.strictEqual(destination().label,'暂存区');
+    source.rewardDelivery={hasDirect:true,hasStash:false};
+    assert.strictEqual(destination().label,'正常入账');
+});
+
 function battleAlly(id,status,hero) {const unit=battleUnit(id);delete unit.individual;delete unit.count;
     return Object.assign(unit,{status,downs:1,isHero:!!hero});}
 function fixedBattleAlly(id,status) {return Object.assign(battleAlly(id,status||'dead'),{

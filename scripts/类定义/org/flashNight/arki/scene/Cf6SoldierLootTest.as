@@ -1,8 +1,7 @@
 ﻿import org.flashNight.arki.scene.*;
 import org.flashNight.arki.unit.Action.PickUp.PickUpManager;
-import flash.display.BitmapData;
-import flash.geom.Matrix;
-import flash.geom.Rectangle;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
+import org.flashNight.neur.Event.EventBus;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.pause.PauseManager;
@@ -15,7 +14,7 @@ import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 /** Real AVM1 actors, RewardStashService and SaveManager; nonce-owned storage.
  * Controlled random input and explicit save faults do not touch player saves. */
 class org.flashNight.arki.scene.Cf6SoldierLootTest {
-    private static var passed:Number,failed:Number,rolls:Number,caseIndex:Number,exitCalls:Number;
+    private static var passed:Number,failed:Number,rolls:Number,caseIndex:Number;
     private static var slot:String,config:Object,world:MovieClip,sm:SaveManager,storage:SharedObject;
     private static var sourceRoll:Function,sourceRandom:Function,sourceUi:Function,saveStates:Array,gateHit:Boolean,choice:Number;
     private static function check(ok:Boolean,label:String):Void {
@@ -34,19 +33,21 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
     }
     private static function cleanState():Void {
         sm._configureSaveFlowForTest({saveInFlight:false,flushResult:true,beforeRewardExposure:null,beforeLocalCommit:null});
-        for(var settle:Number=0;settle<5;settle++)Cf6SoldierLoot.prepareForTransition();
-        check(RewardStashService.pendingOperationId()=="" && Cf6SoldierLoot.prepareForTransition(),"previous case durably settled");
+        if(RewardStashService.pendingOperationId()!="")throw new Error("previous fixture still has an unknown write");
         _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"type61",slot:slot,
             seed:101,startedAt:++caseIndex,planSeed:42,outcome:"active"},retained:{__future:{kept:9}}};
         _root.物品栏={};
         var names:Array=["背包","装备栏","药剂栏","仓库","战备箱"];
         for(var i:Number=0;i<names.length;i++)_root.物品栏[names[i]]=new ArrayInventory(null,50);
+        _root.物品栏.装备栏=new EquipmentInventory(null);
         _root.收集品栏={材料:new DictCollection(null),情报:new InformationCollection(null)};
         gateHit=true;choice=0;rolls=0;saveStates=[];
         RewardInboxService.resetForTests();
         check(Cf6SoldierLoot.bind(config),"bind nonce run "+caseIndex);
         if(world!=null)world.removeMovieClip();
         world=_root.createEmptyMovieClip("__cf6LootWorld"+caseIndex,_root.getNextHighestDepth());_root.gameworld=world;
+        world.dispatcher=new LifecycleEventDispatcher(world);
+        _root.pickupItemManager=new PickUpManager();
         check(Cf6SoldierActions.bindWorld(world,StageReturnFlow.worldIdentity(world),config,"A19"),"bind native world "+caseIndex);
     }
     private static function actor(identity:String):MovieClip {
@@ -68,244 +69,257 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
         check(Cf6SoldierActions.register(unit)!=null,"native actor registered "+identity);
         return unit;
     }
-    private static function drain():Void {
-        var done:Boolean=false;
-        for(var i:Number=0;i<5 && !done;i++)done=Cf6SoldierLoot.prepareForTransition();
-        check(done,"all saved decisions and admissions settled: "+Cf6SoldierLoot.status().error);
+    private static function ledger():Object {return _root._saveExt.bookRun.cf6SoldierLoot;}
+
+    private static function groundItems(name:String):Array {
+        var dict:Object=_root.pickupItemManager.getPickupItemDict(),items:Array=[];
+        for(var key:String in dict)if(dict[key].物品名===name)items.push(dict[key]);
+        items.sortOn("index",Array.NUMERIC);
+        return items;
     }
-    private static function packet(id:String):Object {return _root._saveExt.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"];}
-    private static function exactCase():Void {
-        cleanState();var unit:MovieClip=actor("exact");
-        check(Cf6SoldierLoot.combatDeath(unit),"capture native combat death");unit.长枪.value.shot=99;
-        check(!Cf6SoldierLoot.prepareForTransition(),"durable decision alone blocks transition");
-        check(!sawSaveSuccess() && Cf6SoldierLoot.blocksSaveSuccess(),"partial decision save cannot emit exit-authorizing sv2");
-        var exitOwner:Object=org.flashNight.arki.item.CharacterBuildExit;
-        check(!exitOwner.domainsReady(sm),"saved DECIDED_HIT without item admission also blocks CharacterBuild exit");
-        check(packet("exact").state=="DECIDED_HIT" && RewardStashService.peek().entries.length==0,"decision precedes asset admission");
-        check(storage.data.test.ext.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"].items[0].value.shot==4,"first save contains frozen actual equipment");
-        drain();check(sawSaveSuccess() && !Cf6SoldierLoot.blocksSaveSuccess(),"completed admission permits save-success projection");
-        var stash:Object=RewardStashService.peek();
-        check(stash.entries.length==1 && stash.entries[0].item.value.isRocketMode===false && bagQuantity("步枪弹药")==1,"one weapon and actual ordinary ammo admitted");
-        check(stash.entries[0].item.value.__future.kept==17 && stash.entries[0].item.value.ammoState.reserve==3,"full serialized value retained");
-        check(packet("exact").state=="OWNED" && rolls==1,"one gate becomes owned");
-        check(Cf6SoldierLoot.combatDeath(unit),"duplicate death is acknowledged");drain();check(rolls==1,"duplicate never rolls again");
-        var refs:Array=[];
-        for(var i:Number=0;i<stash.entries.length;i++)refs.push({entryId:stash.entries[i].entryId,revision:stash.entries[i].revision,quantity:RewardStashStore.quantity(stash.entries[i].item)});
-        var result:Object=RewardStashService.take({storeId:stash.storeId,expectedRevision:stash.commitRevision,operationId:"cf6.fixture.take",entries:refs});
-        check(result.success && result.accepted.length==1,"real stash claim transfers weapon plus ammunition");
-        var bag:Object=_root.物品栏.背包.toObject(),savedBag:Object=storage.data.test.inventory.背包,found:Boolean=false;
-        for(var index:String in bag)if(bag[index].name=="G1111"){
-            found=true;check(bag[index].value.shot==4 && bag[index].value.isRocketMode===false && bag[index].value.__future.kept==17,"BaseItem serialization preserves exact claimed weapon");
-            check(savedBag[index].value.__future.kept==17 && savedBag[index].value.ammoState.reserve==3,"claimed full value reaches save image");
-        }
-        check(found && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==0,"weapon exists exactly once after claim");
+
+    private static function hero():MovieClip {
+        var player:MovieClip=world.createEmptyMovieClip("__cf6GroundHero",world.getNextHighestDepth());
+        player.hp=1000;player.是否为敌人=false;player._x=200;player._y=player.Z轴坐标=300;
+        _root.控制目标=player._name;
+        return player;
     }
-    private static function absentMaterialCase():Void {
-        cleanState();var unit:MovieClip=actor("noMaterial");
-        unit.cf6LootMaterial=null;unit.长枪.value.mods=[];
-        unit.cf6FirepowerProfile={v:1,gunOnly:123,nano:4};
-        check(Cf6SoldierLoot.combatDeath(unit),"no-material death still captures native weapon");
-        drain();var p:Object=packet("noMaterial");
-        check(rolls==1 && p.state=="OWNED" && p.kind=="longgun","missing material removes only that category");
-        check(p.items[0].cf6FirepowerProfile==undefined && p.items[0].value.cf6FirepowerProfile==undefined
-            && p.items[0].value.mods.length==0,"actor firepower never enters saved weapon");
-        check(storage.data.test.ext.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"].kind=="longgun",
-            "actual save image retains the valid weapon-only category");
-        Cf6SoldierLoot.combatDeath(unit);drain();check(rolls==1,"no-material duplicate never rerolls");
-    }
-    private static function failureCases():Void {
-        cleanState();var unit:MovieClip=actor("known");Cf6SoldierLoot.combatDeath(unit);
-        sm._configureSaveFlowForTest({beforeRewardExposure:function():Void {throw new Error("owned_pre_exposure_fault");}});
-        check(!Cf6SoldierLoot.prepareForTransition() && RewardStashService.pendingOperationId()=="","known before-exposure rollback stays retryable");
-        check(rolls==1 && packet("known")==null,"rollback restores committed ledger");
-        sm._configureSaveFlowForTest({beforeRewardExposure:null});drain();check(rolls==1 && packet("known").state=="OWNED","known rollback preserves random decision");
-        cleanState();unit=actor("unknown");Cf6SoldierLoot.combatDeath(unit);
-        sm._configureSaveFlowForTest({flushResult:false});check(!Cf6SoldierLoot.prepareForTransition(),"exposed false decision blocks transition");
-        var op:String=RewardStashService.pendingOperationId();var packs:Number=sm._getSavePhysicalStatsForTest().packGameState;
-        check(op!="" && rolls==1 && RewardStashService.committedFeature()==null,"unknown decision retains old committed projection");
-        Cf6SoldierLoot.prepareForTransition();check(RewardStashService.pendingOperationId()==op && rolls==1
-            && sm._getSavePhysicalStatsForTest().packGameState==packs,"query resumes original frozen image without repack/reroll");
-        sm._configureSaveFlowForTest({flushResult:true});drain();check(rolls==1 && packet("unknown").state=="OWNED","unknown decision resolves once");
-        cleanState();unit=actor("pendingAdmission");Cf6SoldierLoot.combatDeath(unit);Cf6SoldierLoot.prepareForTransition();
-        sm._configureSaveFlowForTest({flushResult:"pending"});check(!Cf6SoldierLoot.prepareForTransition(),"pending admission blocks transition");
-        op=RewardStashService.pendingOperationId();check(op!="" && RewardStashService.committedFeature().entries.length==0,"unconfirmed admission not projected as owned inventory");
-        sm._configureSaveFlowForTest({flushResult:true});drain();check(rolls==1 && RewardStashService.peek().entries.length==1
-            && bagQuantity("步枪弹药")==1,"pending admission commits durable weapon and actual inventory ammunition together");
-        cleanState();unit=actor("restart");Cf6SoldierLoot.combatDeath(unit);Cf6SoldierLoot.prepareForTransition();
-        var api:Object=Cf6SoldierLoot;api.context=null;api.captured={};
-        check(Cf6SoldierLoot.bind(config),"rebind durable decision after service reconstruction");drain();
-        check(rolls==1 && packet("restart").state=="OWNED","durable hit resumes without gate replay");
-    }
-    private static function edgeCases():Void {
-        cleanState();choice=.6;var unit:MovieClip=actor("pair");Cf6SoldierLoot.combatDeath(unit);drain();
-        var stash:Object=RewardStashService.peek();
-        check(stash.entries.length==2 && stash.entries[0].item.value.shot==2 && stash.entries[1].item.value.shot==7,"both native sidearms keep independent spent rounds");
-        check(bagQuantity("手枪弹药")==2 && packet("pair").kind=="sidearm_pair","same ammo sums both hands in one packet");
-        cleanState();gateHit=false;unit=actor("miss");Cf6SoldierLoot.combatDeath(unit);drain();
-        check(packet("miss").state=="DECIDED_MISS" && RewardStashService.peek().entries.length==0,"real PRD miss has no consolation equipment/ammo");
-        cleanState();unit=actor("break");unit.soldierPhase=1;
-        check(!Cf6SoldierLoot.combatDeath(unit),"shield break cannot award");unit.soldierPhase=2;unit.cf6EncounterRetired=true;
-        check(!Cf6SoldierLoot.combatDeath(unit),"support retirement cannot award");unit.cf6EncounterRetired=false;
-        unit.长枪.value.isRocketMode="false";check(Cf6SoldierLoot.combatDeath(unit),"malformed equipment freezes an ineligible decision");drain();
-        check(rolls==0 && packet("break").roll.reason=="ineligible","malformed G1111 never reaches random gate");
-        cleanState();for(var i:Number=0;i<50;i++)_root.物品栏.背包.add(i,BaseItem.create("G1111",1));
-        unit=actor("fullBag");Cf6SoldierLoot.combatDeath(unit);drain();
-        check(RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==1 && _root.物品栏.背包.getIndexes().length==50,"full bag admits entire packet to stash");
-        cleanState();choice=.95;unit=actor("materialDrop");Cf6SoldierLoot.combatDeath(unit);drain();
-        check(packet("materialDrop").kind=="mod_material" && packet("materialDrop").ground==null
-            && _root.收集品栏.材料.getValue("透镜")==1
-            && RewardStashService.peek().entries.length==0,"non-ground mod_material enters material collection directly without stashing");
-        cleanState();unit=actor("exit");Cf6SoldierLoot.combatDeath(unit);exitCalls=0;
-        _root.gameCommands={safeExit:function():Void {
-            Cf6SoldierLootTest.exitCalls++;Cf6SoldierLootTest.sm.flushBeforeTransition("safe_exit");
-        }};
-        check(Cf6SoldierLoot.deferSafeExit(),"exit defers during the durable decision/admission gap");
-        check(!sawSaveSuccess(),"deferred exit has no early sv2 before full admission");
-        Cf6SoldierLoot.tick();Cf6SoldierLoot.tick();check(exitCalls==1 && sawSaveSuccess() && packet("exit").state=="OWNED","safe exit invoked once after atomic admission");
-    }
-    private static function seedSevenMisses():Object {
-        var ledger:Object=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
-        _root._saveExt.bookRun.cf6SoldierLoot=ledger;
-        for(var i:Number=0;i<7;i++){
-            var id:String="historical-miss-"+i;
-            var header:Object={sourceKey:"historical."+caseIndex+"."+id,unitIdentity:id,spawnIdentity:id,
-                rosterVersion:config.version,configurationFingerprint:config.version+"|old-policy"};
-            var roll:Object={recorded:true,gateEvaluated:true,hit:false,nominalPercent:3,luckBonus:0,
-                prdPoolKey:"cf6.fixed158.ordinary|缴获包",reason:"roll_miss"};
-            check(Cf6SoldierLootRules.reserve(ledger,Cf6SoldierLootRules.packet(header,{},"none",roll,[])),"historical durable miss fixture");
-        }
-        check(Cf6SoldierLootRules.validLedger(ledger) && Cf6SoldierLootRules.eligibleDeaths(ledger)==7,"seven valid evaluated deaths exist before guard");
-        return PersistedSnapshot.cloneData(ledger.records);
-    }
-    private static function firstWeaponCases():Void {
-        cleanState();gateHit=false;var previous:Object=seedSevenMisses();
-        var unit:MovieClip=actor("guard");check(Cf6SoldierLoot.combatDeath(unit),"capture eighth eligible death");drain();
-        var p:Object=packet("guard"),ledger:Object=_root._saveExt.bookRun.cf6SoldierLoot;
-        check(rolls==1 && p.kind=="longgun" && p.roll.reason=="first_weapon_guarantee"
-            && p.roll.naturalHit===false && p.roll.eligibleOrdinal==8,"native eighth-death guarantee with one real PRD gate");
-        check(ledger.packages==1 && ledger.weaponInstances==1 && ledger.pairs==0 && ledger.materials==0,"guard consumes original package and weapon quotas");
-        var unchanged:Boolean=true;
-        for(var key:String in previous)if(ledger.records[key].roll.reason!="roll_miss" || ledger.records[key].roll.nominalPercent!==3)unchanged=false;
-        check(unchanged,"seven original durable misses retain their original rate and result");
-        check(storage.data.test.ext.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"].roll.reason=="first_weapon_guarantee","guard evidence saved with owned packet");
-        cleanState();gateHit=false;seedSevenMisses();unit=actor("guardPending");Cf6SoldierLoot.combatDeath(unit);
-        sm._configureSaveFlowForTest({flushResult:"pending"});check(!Cf6SoldierLoot.prepareForTransition(),"unknown guard decision blocks transition");
-        var op:String=RewardStashService.pendingOperationId();Cf6SoldierLoot.prepareForTransition();
-        check(op!="" && RewardStashService.pendingOperationId()===op && rolls==1,"unknown guard queries the same frozen operation");
-        sm._configureSaveFlowForTest({flushResult:true});drain();
-        check(rolls==1 && packet("guardPending").state=="OWNED","pending guard resolves once without reroll");
-    }
+
     private static function bagQuantity(name:String):Number {
         var bag:Object=_root.物品栏.背包.toObject(),total:Number=0;
         for(var key:String in bag)if(bag[key].name===name)total+=typeof bag[key].value=="object"?1:Number(bag[key].value);
         return total;
     }
-    private static function groundSetup(pair:Boolean):Object {
-        cleanState();
-        _root.pickupItemManager=new PickUpManager();
-        var hero:MovieClip=world.createEmptyMovieClip("__cf6GroundHero",world.getNextHighestDepth());
-        hero.hp=1000;hero.是否为敌人=false;hero._x=200;hero._y=hero.Z轴坐标=300;
-        _root.控制目标=hero._name;
-        var unit:MovieClip=actor("ground");
-        // Opaque mod identity persistence is tested here; compatibility is the separate fixed158 native/loadout gate.
-        unit.长枪.value.mods=["测试保留插件"];
-        if(pair){choice=.6;unit.手枪.value.mods=["测试左手保留"];unit.手枪2.value.mods=["测试右手保留"];}
-        check(Cf6SoldierLoot.combatDeath(unit),"ground native death admitted");drain();Cf6SoldierLoot.tick();
-        var p:Object=packet("ground"),manager:Object=_root.pickupItemManager;
-        check(p.state=="OWNED" && p.ground.mapId=="A19" && p.groundEntries.length===(pair?2:1),"drop points to durable exact equipment entry");
-        var mc:MovieClip=null,dict:Object=manager.getPickupItemDict();
-        for(var index:String in dict)if(dict[index].cf6GroundEntryId===p.groundEntries[0])mc=dict[index];
-        trace("[CF6_GROUND_STATE] ledger="+Cf6SoldierLootRules.validLedger(_root._saveExt.bookRun.cf6SoldierLoot)
-            +" count="+manager.getCount()+" displayed="+Cf6SoldierGroundPickup.status().displayed
-            +" error="+Cf6SoldierGroundPickup.status().error+" map="+Cf6SoldierActions.context().mapId
-            +" parent="+mc._parent+" world="+world+" entry="+p.groundEntries[0]);
-        check(mc!=null && mc._parent===world && typeof mc.cf6CaptureLabel.text=="string"
-            && mc.cf6CaptureLabel.text.indexOf("+13")>-1,"actual pickup prefab shows captured enhancement");
-        if(mc!=null){
-            var image:BitmapData=new BitmapData(400,180,true,0),matrix:Matrix=new Matrix();matrix.tx=200;matrix.ty=120;
-            image.draw(mc,matrix);var bounds:Rectangle=image.getColorBoundsRect(0xFF000000,0,false);
-            check(bounds.width>80 && bounds.height>10,"actual pickup prefab and nameplate render pixels");image.dispose();
-        }
-        return {manager:manager,mc:mc,hero:hero,packet:p};
+
+    private static function tickFrames(count:Number):Void {
+        for(var i:Number=0;i<count;i++)Cf6SoldierLoot.tick();
     }
-    private static function groundCases():Void {
-        var fixture:Object=groundSetup(),mc:MovieClip=fixture.mc;
-        check(Cf6SoldierGroundPickup.status().displayed==1 && bagQuantity("G1111")==0,"durable staging does not silently put weapon into inventory");
-        var foreign:MovieClip=_root.createEmptyMovieClip("__cf6ForeignCollector",_root.getNextHighestDepth());foreign.hp=100;
-        fixture.manager.pickup(mc,foreign,false);foreign.removeMovieClip();
-        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")===0,
-            "collector from another world cannot claim current ground equipment");
-        fixture.hero.__playerStatProjectionBlocked=true;fixture.manager.pickup(mc,fixture.hero,false);
-        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")===0,
-            "blocked actor projection cannot begin ground ownership transfer");delete fixture.hero.__playerStatProjectionBlocked;
-        sm._configureSaveFlowForTest({flushResult:"pending"});
-        fixture.manager.pickup(mc,fixture.hero,false);
-        var op:String=RewardStashService.pendingOperationId();
-        check(op!="" && Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed===true,"ground unknown commit holds one entity");
-        fixture.manager.pickup(mc,fixture.hero,false);
-        check(RewardStashService.pendingOperationId()===op && rolls==1,"repeat input cannot replay take or death roll");
-        sm._configureSaveFlowForTest({flushResult:true});Cf6SoldierGroundPickup.reconcile();
-        check(!Cf6SoldierGroundPickup.busy() && bagQuantity("G1111")==1,"canonical query completes one durable pickup");
-        var bag:Object=_root.物品栏.背包.toObject(),full:Boolean=false;
-        for(var key:String in bag)if(bag[key].name=="G1111")full=bag[key].value.mods[0]=="测试保留插件"
-            && bag[key].value.level==13 && bag[key].value.ammoState.reserve==3 && bag[key].value.__future.kept==17;
-        check(full && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==0,"ground transfer preserves complete item value exactly once");
-        fixture.manager.pickup(mc,fixture.hero,false);Cf6SoldierLoot.tick();
-        check(bagQuantity("G1111")==1 && Cf6SoldierGroundPickup.status().displayed==0,"committed entity never respawns or grants twice");
 
-        fixture=groundSetup();mc=fixture.mc;
-        for(var i:Number=0;i<50;i++)if(_root.物品栏.背包.getItem(i)==null)_root.物品栏.背包.add(i,BaseItem.create("MP7",1));
-        fixture.manager.pickup(mc,fixture.hero,false);
-        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")==0
-            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")==1,"full bag keeps the actual entity and durable weapon");
+    private static function nativePickupCase():Void {
+        cleanState();
+        var player:MovieClip=hero(),unit:MovieClip=actor("rifle");
+        unit.长枪.value.mods=["测试保留插件"];
+        var receipts:Array=[],picked:Array=[];
+        world.dispatcher.subscribe("Pickup",function(name:String):Void {picked.push(name);});
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void { receipts.push(receipt); });
+        var physical:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
+        check(Cf6SoldierLoot.combatDeath(unit),"real actor death yields world loot");
+        unit.长枪.value.shot=99;
+        var gun:MovieClip=groundItems("G1111")[0],ammo:MovieClip=groundItems("步枪弹药")[0];
+        check(gun!=null && gun._parent===world && gun.pickupItemData.value.shot===4
+            && gun.pickupItemData.value.mods[0]==="测试保留插件" && ammo!=null,
+            "real prefab receives distinct complete rifle and ammo payloads");
+        check(ledger().v===3 && ledger().records["u.CF6-M-XX"].kind==="longgun"
+            && ledger().records["u.CF6-M-XX"].items===undefined && ledger().eligibleDeaths===1,
+            "v3 records only eligible identity and category");
+        check(RewardStashService.peek()==null && bagQuantity("G1111")===0 && bagQuantity("步枪弹药")===0
+            && receipts.length===0 && sm._getSavePhysicalStatsForTest().flushAttempt===physical,
+            "death adds zero owned assets, gain receipts and dedicated saves");
+        check(Cf6SoldierLoot.combatDeath(unit) && rolls===1 && groundItems("G1111").length===1,"duplicate death does not reroll");
 
-        fixture=groundSetup();mc=fixture.mc;
-        sm._configureSaveFlowForTest({beforeRewardExposure:function():Void {throw new Error("ground_known_rejection");}});
-        fixture.manager.pickup(mc,fixture.hero,false);
-        check(!Cf6SoldierGroundPickup.busy() && mc.__pickupClaimed!==true && bagQuantity("G1111")==0,"known rejection unlocks without adding inventory");
-        sm._configureSaveFlowForTest({beforeRewardExposure:null});fixture.manager.pickup(mc,fixture.hero,false);
-        check(bagQuantity("G1111")==1 && rolls==1,"manual retry after known rejection takes the same frozen weapon");
+        var manager:Object=_root.pickupItemManager,bag:Object=_root.物品栏.背包;
+        var outsider:MovieClip=_root.createEmptyMovieClip("__otherCollector",_root.getNextHighestDepth());outsider.hp=100;
+        manager.pickup(gun,outsider,false);outsider.removeMovieClip();
+        check(gun.__pickupClaimed!==true && bagQuantity("G1111")===0,"another world cannot collect the payload");
+        for(var i:Number=0;i<50;i++)bag.add(i,BaseItem.create("MP7",1));
+        manager.pickup(gun,player,false);
+        check(gun.__pickupClaimed!==true && groundItems("G1111").length===1 && RewardStashService.peek()==null,
+            "full bag keeps the ordinary ground drop without redirect");
+        bag.remove(13);bag.remove(14);
+        manager.pickup(gun,player,false);manager.pickup(gun,player,false);
+        manager.pickup(ammo,player,false);
+        var value:Object=bag.getItem(13).value;
+        check(bagQuantity("G1111")===1 && bagQuantity("步枪弹药")===1 && value.shot===4
+            && value.mods[0]==="测试保留插件" && value.ammoState.reserve===3 && value.__future.kept===17
+            && value.isRocketMode===false && groundItems("G1111").length===0,
+            "real pickup records exact complete equipment and ordinary ammunition once");
+        check(receipts.length===2 && receipts[0].effects[0].name==="G1111"
+            && receipts[0].effects[0].count===1 && receipts[1].effects[0].name==="步枪弹药"
+            && picked.join("|")==="G1111|步枪弹药",
+            "only actual pickups publish one gain and one correctly named Pickup event per asset");
+        check(sm._getSavePhysicalStatsForTest().flushAttempt===physical && sm.flushBeforeTransition("safe_exit"),
+            "normal save and exit need no Soldier-specific reward commit");
+        check(storage.data.test.ext.bookRun.cf6SoldierLoot.v===3 && sawSaveSuccess(),
+            "ordinary save emits success and contains v3 summary");
+        PlayerAssetTransaction.setTestSink(null);
+    }
 
-        fixture=groundSetup();mc=fixture.mc;
-        var name:String=mc._name,index:Number=mc.index;
-        sm._configureSaveFlowForTest({flushResult:"pending"});fixture.manager.pickup(mc,fixture.hero,false);
-        mc.removeMovieClip();var replacement:MovieClip=world.createEmptyMovieClip(name,world.getNextHighestDepth());
-        var replacementMark:Object={};replacement.cf6GroundIdentity=replacementMark;replacement.index=index;
-        fixture.manager.getPickupItemDict()[index]=replacement;
-        sm._configureSaveFlowForTest({flushResult:true});Cf6SoldierGroundPickup.reconcile();
-        check(replacement._parent===world && replacement.cf6GroundIdentity===replacementMark
-            && fixture.manager.getPickupItemDict()[index]===replacement,"late receipt cannot remove a recycled MovieClip path");
-        check(bagQuantity("G1111")==1 && !Cf6SoldierGroundPickup.busy(),"late receipt still preserves durable ownership");
+    private static function remainingWorldCases():Void {
+        cleanState();var player:MovieClip=hero(),unit:MovieClip=actor("pair");
+        choice=.6;unit.手枪.value.mods=["测试左手保留"];unit.手枪2.value.mods=["测试右手保留"];
+        Cf6SoldierLoot.combatDeath(unit);
+        var pair:Array=groundItems("MP7"),ammo:MovieClip=groundItems("手枪弹药")[0];
+        check(pair.length===2 && pair[0]!==pair[1] && pair[1]._x>pair[0]._x && ammo.pickupItemData.value===2,
+            "same-name twins are independent and the ammo amount sums both reloads");
+        var manager:Object=_root.pickupItemManager;
+        manager.pickup(pair[0],player,false);manager.pickup(pair[1],player,false);
+        check(bagQuantity("MP7")===2 && bagQuantity("手枪弹药")===0
+            && _root.物品栏.背包.getItem("0").value.shot===2 && _root.物品栏.背包.getItem("1").value.shot===7,
+            "picking the two guns preserves distinct values and leaves ammo unowned");
 
-        fixture=groundSetup();
-        var entryId:String=fixture.packet.groundEntries[0],oldRolls:Number=rolls;
-        world.removeMovieClip();world=_root.createEmptyMovieClip("__cf6LootReturn"+caseIndex,_root.getNextHighestDepth());_root.gameworld=world;
-        check(Cf6SoldierActions.bindWorld(world,StageReturnFlow.worldIdentity(world),config,"A19"),"reenter original map");
-        _root.pickupItemManager=new PickUpManager();Cf6SoldierLoot.tick();
-        check(Cf6SoldierGroundPickup.status().displayed==1 && RewardStashStore.find(RewardStashService.peek(),entryId)!=null
-            && rolls==oldRolls,"unpicked durable equipment reappears without a new reward decision");
+        cleanState();player=hero();unit=actor("material");choice=.99;
+        Cf6SoldierLoot.combatDeath(unit);
+        var materialLoot:MovieClip=groundItems("透镜")[0];
+        check(materialLoot!=null && _root.收集品栏.材料.getValue("透镜")===0 && RewardStashService.peek()==null,
+            "material is an ordinary unowned drop");
+        _root.pickupItemManager.pickup(materialLoot,player,false);
+        check(_root.收集品栏.材料.getValue("透镜")===1 && groundItems("透镜").length===0,"material is credited only on pickup");
 
-        fixture=groundSetup(true);
-        var second:MovieClip=null,all:Object=fixture.manager.getPickupItemDict();
-        for(var slotIndex:String in all)if(all[slotIndex].cf6GroundEntryId===fixture.packet.groundEntries[1])second=all[slotIndex];
-        check(second!=null && second!==fixture.mc && second._x-fixture.mc._x===44
-            && second.cf6GroundIdentity!==fixture.mc.cf6GroundIdentity,"paired same-name guns create two distinct separated ground entities");
-        fixture.manager.pickup(fixture.mc,fixture.hero,false);fixture.manager.pickup(second,fixture.hero,false);
-        var paired:Object=_root.物品栏.背包.toObject(),left:Boolean=false,right:Boolean=false;
-        for(var pairedSlot:String in paired)if(paired[pairedSlot].name==="MP7"){
-            var value:Object=paired[pairedSlot].value;
-            if(value.shot===2 && value.mods[0]==="测试左手保留")left=true;
-            if(value.shot===7 && value.mods[0]==="测试右手保留")right=true;
+        cleanState();unit=actor("abandon");Cf6SoldierLoot.combatDeath(unit);
+        var before:Number=rolls;
+        world.removeMovieClip();world=_root.createEmptyMovieClip("__newGround",_root.getNextHighestDepth());
+        _root.gameworld=world;world.dispatcher=new LifecycleEventDispatcher(world);_root.pickupItemManager=new PickUpManager();
+        check(Cf6SoldierActions.bindWorld(world,StageReturnFlow.worldIdentity(world),config,"A19"),"rebind same map with a new world");
+        tickFrames(60);
+        check(bagQuantity("G1111")===0 && bagQuantity("步枪弹药")===0 && RewardStashService.peek()==null
+            && groundItems("G1111").length===0 && rolls===before && ledger().packages===1,
+            "unpicked loot vanishes on departure without refund, repopulation or assets");
+    }
+
+    private static function listenerFaultCase():Void {
+        cleanState();var player:MovieClip=hero();Cf6SoldierLoot.combatDeath(actor("fault"));
+        var gun:MovieClip=groundItems("G1111")[0],manager:Object=_root.pickupItemManager;
+        var bag:Object=_root.物品栏.背包;
+        var dispatcher:LifecycleEventDispatcher=new LifecycleEventDispatcher(world);
+        bag.setDispatcher(dispatcher);
+        var calls:Number=0,gains:Number=0;
+        dispatcher.subscribe("ItemAdded",function(container:Object,key:String):Void {
+            calls++;
+            manager.pickup(gun,player,false);
+            container.remove(key);
+            throw "consumed_rifle_listener";
+        });
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void {
+            if(receipt.effects[0].name==="G1111")gains+=receipt.effects[0].count;
+        });
+        var failure:Object=null;
+        try {manager.pickup(gun,player,false);}catch(error){failure=error;}
+        finally {PlayerAssetTransaction.setTestSink(null);bag.setDispatcher(null);dispatcher.destroy();}
+        manager.pickup(gun,player,false);
+        check(failure==="consumed_rifle_listener" && calls===1 && gains===1 && gun.__pickupClaimed===true
+            && bagQuantity("G1111")===0 && groundItems("G1111").length===0,
+            "write then consume and throw finalizes exactly one pickup despite reentrant input");
+        check(PlayerAssetTransaction.current()==null && Number(EventBus.getInstance()["_dispatchDepth"])===0,
+            "write fault leaves transaction and EventBus ready");
+    }
+
+    private static function quickEquipmentCases():Void {
+        cleanState();hero();Cf6SoldierLoot.combatDeath(actor("quick"));
+        var payload:Object=groundItems("G1111")[0].pickupItemData;
+        var coordinator:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+        var oldFlush:Function=coordinator.flush,oldTransition:Function=coordinator.equipmentTransition;
+        coordinator.flush=function():Object {return {status:"unchanged"};};
+        coordinator.equipmentTransition=function():Object {return null;};
+        try {
+            var placement:Object={},manager:Object=_root.pickupItemManager,equipment:Object=_root.物品栏.装备栏;
+            check(manager.拾取并装备("G1111",13,payload,placement) && placement.wrote===true
+                && equipment.getItem("长枪").value.__future.kept===17,
+                "quick equip into a vacant slot writes the complete payload");
+            payload.value.shot=11;placement={};
+            var bag:Object=_root.物品栏.背包, prior:Object=equipment.getItem("长枪");
+            var listener:LifecycleEventDispatcher=new LifecycleEventDispatcher(world);
+            var bothVisible:Boolean=false;
+            bag.setDispatcher(listener);
+            listener.subscribe("ItemAdded",function():Void {
+                bothVisible=equipment.getItem("长枪")!==prior && bag.getItem("0")===prior;
+                throw "quick_displacement_observer";
+            });
+            check(manager.拾取并装备("G1111",13,payload,placement) && placement.wrote===true && bothVisible
+                && equipment.getItem("长枪").value.shot===11 && bag.getItem("0").value.shot===4,
+                "quick replacement completes both slots before a throwing inventory listener");
+            bag.setDispatcher(null);listener.destroy();
+        }finally{coordinator.flush=oldFlush;coordinator.equipmentTransition=oldTransition;}
+    }
+
+    private static function legacyRecord(id:String,state:String,unit:MovieClip):Object {
+        var header:Object={sourceKey:"legacy."+id,unitIdentity:id,spawnIdentity:id,
+            rosterVersion:config.version,configurationFingerprint:config.version+"|legacy"};
+        var miss:Boolean=state==="DECIDED_MISS";
+        var roll:Object={recorded:true,gateEvaluated:true,hit:!miss,nominalPercent:5,luckBonus:0,
+            prdPoolKey:"legacy|缴获包",reason:miss?"roll_miss":"roll_hit"};
+        var snapshot:Object=miss?{}:{primary:unit.长枪.toObject(),ground:{mapId:"A19",x:200,z:300}};
+        var packet:Object=Cf6SoldierLootRules.packet(header,snapshot,miss?"none":"longgun",roll,
+            miss?[]:[{name:"步枪弹药",value:1,lastUpdate:1}]);
+        packet.state=state;
+        return packet;
+    }
+
+    private static function seedLegacy(state:String,unit:MovieClip):Object {
+        var old:Object=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
+        check(Cf6SoldierLootRules.reserve(old,legacyRecord("fixed-old",state,unit)),"seed legal old state "+state);
+        _root._saveExt.bookRun.cf6SoldierLoot=old;
+        return old;
+    }
+
+    private static function rejectStaleSol(image:Object, version:Number):Void {
+        var retained:Object=storage.data[SaveManager.SAVE_KEY], prior:Object=_root.mydata;
+        var flushes:Number=sm._getSavePhysicalStatsForTest().flushAttempt;
+        storage.data[SaveManager.SAVE_KEY]=image;
+        try {
+            check(!sm.loadAll() && ledger().v===version && _root.mydata===prior,
+                "direct SOL reader protects the current book ledger v"+version);
+            sm.preload();
+            check(_root.mydata===prior && sm._getSavePhysicalStatsForTest().flushAttempt===flushes,
+                "preload does not project or physically migrate the stale SOL");
+            check(!sm.unpackGameState(image) && ledger().v===version,
+                "direct public unpack cannot bypass the book ledger reader");
+        }finally{
+            if(retained===undefined)delete storage.data[SaveManager.SAVE_KEY];
+            else storage.data[SaveManager.SAVE_KEY]=retained;
         }
-        check(left && right && bagQuantity("MP7")===2 && bagQuantity("手枪弹药")===2
-            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"MP7")===0,
-            "two real pickups preserve separate spent rounds and mods with one shared two-reload supply");
+    }
+
+    private static function historicalCases():Void {
+        cleanState();var unit:MovieClip=actor("legacy");
+        var old:Object=seedLegacy("DECIDED_HIT",unit);
+        var missing:Object=PersistedSnapshot.cloneData(sm.packGameState());
+        missing.ext.bookRun.cf6SoldierLoot=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
+        rejectStaleSol(missing,2);
+        sm._configureSaveFlowForTest({beforeRewardExposure:function():Void {throw new Error("legacy_exposure_fixture");}});
+        var refusal:Object=sm.prepareNewCharacter(null,"fixture");
+        check(!refusal.success && refusal.error==="reward_commit_pending" && ledger().v===2
+            && ledger().records["u.fixed-old"].state==="DECIDED_HIT" && RewardStashService.pendingOperationId()=="",
+            "replacement refuses to overwrite an old hit before its migration becomes durable");
+        var stale:Object=PersistedSnapshot.cloneData(sm.packGameState());
+        sm._configureSaveFlowForTest({beforeRewardExposure:null,flushResult:"pending"});
+        tickFrames(90);
+        var op:String=RewardStashService.pendingOperationId();
+        check(op!="" && !Cf6SoldierLoot.settleLegacyBeforeReplacement() && ledger().v===3,
+            "unknown migration keeps the same candidate and prevents destructive replacement");
+        sm._configureSaveFlowForTest({flushResult:true});
+        check(RewardStashService.resume(op).success && Cf6SoldierLoot.settleLegacyBeforeReplacement()
+            && ledger().records["u.fixed-old"].kind==="longgun" && rolls===0,
+            "legacy entitlement resolves exactly once before the compact state is usable");
+        check(RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")===1 && bagQuantity("步枪弹药")===1
+            && groundItems("G1111").length===0 && storage.data.test.ext.bookRun.cf6SoldierLoot.v===3,
+            "old weapon and ammo use their original asset destinations in the migration save");
+        check(!sm.loadFromMydata(stale,"legacy_stale_fixture") && ledger().v===3
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")===1,
+            "a captured v2 snapshot cannot revive a confirmed migration");
+        rejectStaleSol(stale,3);
+
+        cleanState();unit=actor("oldOwned");seedLegacy("OWNED",unit);gateHit=false;
+        Cf6SoldierLoot.combatDeath(unit);
+        check(ledger().v===3 && RewardStashService.peek()==null && bagQuantity("G1111")===0
+            && ledger().records["u.fixed-old"].kind==="longgun","missing owned entry never grants a second historical item");
+
+        cleanState();unit=actor("isolatedOld");seedLegacy("COMMIT_PENDING",unit);
+        check(!Cf6SoldierLoot.settleLegacyBeforeReplacement() && ledger().v===2 && RewardStashService.peek()==null
+            && RewardStashService.pendingOperationId()=="","serialized pending state retains evidence and starts no award");
+
+        cleanState();unit=actor("guaranteed");gateHit=false;
+        old=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
+        for(var i:Number=0;i<7;i++)Cf6SoldierLootRules.reserve(old,legacyRecord("miss."+i,"DECIDED_MISS",null));
+        _root._saveExt.bookRun.cf6SoldierLoot=old;
+        Cf6SoldierLoot.combatDeath(unit);
+        check(rolls===1 && ledger().eligibleDeaths===8 && ledger().weaponInstances===1 && groundItems("G1111").length===1,
+            "eighth actual eligible gate keeps the one-rifle guarantee after legacy misses");
     }
 
     public static function runAllTests():Boolean {
-        passed=failed=rolls=caseIndex=exitCalls=0;
+        passed=failed=rolls=caseIndex=0;
         var keys:Array=["savePath","允许存档","角色名","等级","基础身价值","身价","存档系统","mydata","_saveExt","暂停","UpdateTaskProgress",
-            "物品栏","收集品栏","金钱","虚拟币","经验值","技能点数","gameworld","主角被动技能","商城已购买物品","UI系统","tasks_to_do","tasks_finished","task_chains_progress","等级限制","gameCommands","pickupItemManager","控制目标","getItemData","发布消息"];
+            "物品栏","收集品栏","金钱","虚拟币","经验值","技能点数","gameworld","主角被动技能","商城已购买物品","UI系统","tasks_to_do","tasks_finished","task_chains_progress","等级限制","pickupItemManager","控制目标","getItemData","发布消息","soundEffectManager","刷新人物装扮"];
         var previous:Object={},present:Object={};for(var k:Number=0;k<keys.length;k++){previous[keys[k]]=_root[keys[k]];present[keys[k]]=_root.hasOwnProperty(keys[k]);}
         var oldData:Object=ItemUtil.itemDataDict,oldEquipment:Object=ItemUtil.equipmentDict,oldMaterial:Object=ItemUtil.materialDict,oldInfo:Object=ItemUtil.informationMaxValueDict;
         var loot:Object=Cf6SoldierLoot,actions:Object=Cf6SoldierActions,oldRoom:Object=actions.room;
@@ -322,6 +336,8 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
             _root.金钱=_root.虚拟币=_root.经验值=_root.技能点数=0;_root.商城已购买物品=[];_root.主角被动技能={};_root.存档系统={dirtyMark:false};
             _root.getItemData=function(name:String):Object {return ItemUtil.getRawItemData(name);};
             _root.发布消息=function(text:String):Void {};
+            _root.soundEffectManager={playSound:function():Void {}};
+            _root.刷新人物装扮=function():Object {return {status:"unchanged"};};
             _root.UpdateTaskProgress=function():Void {};_root.UI系统={};_root.tasks_to_do=[];_root.tasks_finished=[];_root.task_chains_progress={};_root.等级限制=100;
             ItemUtil.itemDataDict={};ItemUtil.equipmentDict={G1111:true,MP7:true};ItemUtil.materialDict={透镜:true};ItemUtil.informationMaxValueDict={};
             var items:Array=["G1111","MP7","步枪弹药","手枪弹药","透镜"];
@@ -329,15 +345,15 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
                 type:i<2?"武器":i==4?"收集品":"消耗品",use:i<2?"长枪":i==4?"材料":"弹夹",data:{level:1,weight:0}};
             config=Cf6FixedActionsFixture.config();config.lootPolicy=Cf6SoldierLootFixture.policy();
             // No prior player run is bound in this isolated test process.
-            loot.context=null;loot.queue=[];loot.captured={};loot.plan=null;loot.operation="";
-            exactCase();failureCases();edgeCases();absentMaterialCase();firstWeaponCases();groundCases();
+            loot.context=null;loot.queue=[];loot.captured={};loot.legacyOperation="";
+            nativePickupCase();remainingWorldCases();listenerFaultCase();quickEquipmentCases();historicalCases();
             check(WeaponAmmoRuntime.quoteInventoryPacks(40,0,40)==1 && WeaponAmmoRuntime.quoteInventoryPacks(40,8,40)==1
                 && WeaponAmmoRuntime.quoteInventoryPacks(40,80,40)==0,"ordinary paid reload quote is shared with real spend");
         }catch(error){check(false,"unexpected exception: "+error);}
         finally {
             sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:null,beforeLocalCommit:null});
             if(RewardStashService.pendingOperationId()!="")RewardStashService.resume(RewardStashService.pendingOperationId());
-            for(var attempt:Number=0;attempt<5;attempt++)Cf6SoldierLoot.prepareForTransition();
+            PlayerAssetTransaction.setTestSink(null);
             check(RewardStashService.pendingOperationId()=="","fixture leaves no unknown write lock");
             if(loot.watcher!=null)loot.watcher.removeMovieClip();loot.watcher=null;
             if(actions.watcher!=null)actions.watcher.removeMovieClip();actions.watcher=null;actions.room=oldRoom;
@@ -347,7 +363,7 @@ class org.flashNight.arki.scene.Cf6SoldierLootTest {
             ItemUtil.itemDataDict=oldData;ItemUtil.equipmentDict=oldEquipment;ItemUtil.materialDict=oldMaterial;ItemUtil.informationMaxValueDict=oldInfo;
             sm._configureSaveFlowForTest({flushResult:undefined,saveInFlight:false});
             for(k=0;k<keys.length;k++)if(present[keys[k]])_root[keys[k]]=previous[keys[k]];else delete _root[keys[k]];
-            loot.context=null;loot.queue=[];loot.captured={};loot.plan=null;loot.operation="";
+            loot.context=null;loot.queue=[];loot.captured={};loot.legacyOperation="";
             if(owns)storage.clear();RewardInboxService.resetForTests();
         }
         trace("Cf6SoldierLootTest: "+passed+" passed, "+failed+" failed; isolated real save boundary");

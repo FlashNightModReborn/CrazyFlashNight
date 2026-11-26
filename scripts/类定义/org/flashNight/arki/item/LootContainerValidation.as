@@ -123,21 +123,28 @@ class org.flashNight.arki.item.LootContainerValidation {
 
     /** 关卡结算报告是随 panel admission 冻结的只读投影；奖励写仍只认 loot authority。 */
     public static function validateSettlementReport(report:Object):Boolean {
+        if (hasOwnField(report, "rewardDelivery")) {
+            var delivery:Object = report.rewardDelivery;
+            if (report.rewardStashed !== true || !hasOnlyKeys(delivery, ["hasDirect", "hasStash"])
+                    || !hasOwnField(delivery, "hasDirect") || typeof delivery.hasDirect != "boolean"
+                    || !hasOwnField(delivery, "hasStash") || typeof delivery.hasStash != "boolean") return false;
+        }
         if (report != null && report.v === 2) {
             if (report.rewardStashed !== undefined && typeof report.rewardStashed != "boolean") return false;
             var base:Object = {};
             for (var field:String in report) {
-                if (field != "rewardStashed") base[field] = report[field];
+                if (field != "rewardStashed" && field != "rewardDelivery") base[field] = report[field];
             }
             return org.flashNight.arki.scene.StageRunSession.normalizeSettlementReport(base) != null;
         }
         var keys:Array = ["v", "runId", "stageName", "difficulty", "outcome",
             "activeFrames", "totalKills", "omittedKillTypes", "totalItemGains",
             "totalItemLosses", "omittedItemFlowTypes", "rewardRollOmissions",
-            "kills", "itemFlows", "rewardStashed"];
+            "kills", "itemFlows", "rewardStashed", "rewardDelivery"];
         if (!hasOnlyKeys(report, keys)) return false;
         for (var i:Number = 0; i < keys.length; i++) {
-            if (keys[i] != "rewardStashed" && !hasOwnField(report, String(keys[i]))) return false;
+            if (keys[i] != "rewardStashed" && keys[i] != "rewardDelivery"
+                    && !hasOwnField(report, String(keys[i]))) return false;
         }
         if ((report.rewardStashed !== undefined && typeof report.rewardStashed != "boolean") || report.v !== 1
                 || typeof report.runId != "string"

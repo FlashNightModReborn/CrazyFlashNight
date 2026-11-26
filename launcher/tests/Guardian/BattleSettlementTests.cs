@@ -40,6 +40,30 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(2,((JArray)normalized["kills"]).Count);
             Assert.NotEqual(normalized["kills"][0].Value<string>("unitId"),normalized["kills"][1].Value<string>("unitId"));
         }
+        [Fact]
+        public void RewardDeliveryIsOptionalAndStrictlyProjectedAfterSettlement()
+        {
+            var report = Report();
+            report["rewardStashed"] = true;
+            Assert.True(LootPanelCoordinator.TryNormalizeSettlementReport(report, out var legacy));
+            Assert.Null(legacy["rewardDelivery"]);
+
+            var delivery = new JObject { ["hasDirect"] = true, ["hasStash"] = true };
+            report["rewardDelivery"] = delivery;
+            Assert.True(LootPanelCoordinator.TryNormalizeSettlementReport(report, out var current));
+            delivery["hasStash"] = false;
+            Assert.True(current["rewardDelivery"].Value<bool>("hasStash"));
+            Assert.True(current.Value<bool>("rewardStashed"));
+
+            delivery["hasStash"] = "false";
+            Assert.False(LootPanelCoordinator.TryNormalizeSettlementReport(report, out _));
+            delivery["hasStash"] = false;
+            delivery["extra"] = true;
+            Assert.False(LootPanelCoordinator.TryNormalizeSettlementReport(report, out _));
+            delivery.Remove("extra");
+            report["rewardStashed"] = false;
+            Assert.False(LootPanelCoordinator.TryNormalizeSettlementReport(report, out _));
+        }
         [Theory]
         [InlineData("duplicate")][InlineData("missing-slot")][InlineData("oversized-name")]
         [InlineData("unknown-field")][InlineData("missing-unit")][InlineData("wrong-total")]

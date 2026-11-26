@@ -290,17 +290,17 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         });
         var admitCtx:Object = {source:"stage_settlement", reason:"stage_reward_stashed",
             inventoryReason:"stage_reward_acquired", operationId:"pref.direct.1"};
+        var delivery:Object = {};
         check(RewardStashService.begin("pref.direct.1", admitCtx, null, null)
                 && RewardStashService.admit([
                     {name:"暂存测试材料", value:2, lastUpdate:1},
                     {name:"暂存测试装备", value:{level:2, tier:"", mods:[], shots:1}, lastUpdate:2},
                     {name:"暂存测试装备", value:{level:3, tier:"", mods:[], shots:2}, lastUpdate:3}
-                ], true, true, admitCtx)
+                ], true, true, admitCtx, delivery)
                 && RewardStashService.end("pref.direct.1", {success:true}, "stage.return_base").success,
             "mixed admit splits directly acquired and overflow stashed items");
-        var stats:Object = RewardStashService.lastAdmitStats();
         var reasonsText:String = "|" + observedReasons.join("|") + "|";
-        check(stats != null && stats.directCount == 2 && stats.stashedCount == 1
+        check(delivery.hasDirect === true && delivery.hasStash === true
                 && _root.收集品栏.材料.getValue("暂存测试材料") == 2
                 && bag.getItem(49).value.level == 2
                 && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == 1
@@ -357,6 +357,8 @@ class org.flashNight.arki.item.RewardStashServiceTest {
                 && notices[notices.length - 1] == "箱中物资已领取。",
             "map chest truncates capped intel without stashing and announces direct claim");
 
+        testDeliveryPlanningBoundaries();
+
         ItemUtil.itemDataDict["在线补给包·Ⅰ"] = {name:"在线补给包·Ⅰ", type:"消耗品", use:"礼包",
             displayname:"在线补给包·Ⅰ", icon:"a", data:{level:1}};
         ItemUtil.itemDataDict["在线补给包·Ⅱ"] = {name:"在线补给包·Ⅱ", type:"消耗品", use:"礼包",
@@ -372,9 +374,10 @@ class org.flashNight.arki.item.RewardStashServiceTest {
                 && notices[notices.length - 1] == "补给已收入背包。",
             "online supply enters empty backpack directly without stashing");
         var s1Dup:Object = RewardInboxService.deliverOnlineSupplyPack("在线补给包·Ⅰ", "christmas_tree:online-10m");
+        RewardInboxService.requestOpenPanel();
         check(s1Dup.success && s1Dup.duplicate === true
-                && ItemUtil.getTotal("在线补给包·Ⅰ") == 1,
-            "duplicate online supply sourceKey replays without granting twice");
+                && ItemUtil.getTotal("在线补给包·Ⅰ") == 1 && notices.length == 1,
+            "duplicate source and legacy facade never grant or announce twice");
         fillBag();
         notices = [];
         var s2:Object = RewardInboxService.deliverOnlineSupplyPack("在线补给包·Ⅱ", "christmas_tree:online-20m");
@@ -384,8 +387,88 @@ class org.flashNight.arki.item.RewardStashServiceTest {
                 && RewardStashStore.ownedQuantity(RewardStashService.peek(), "在线补给包·Ⅱ") == 1
                 && notices[notices.length - 1] == "补给已存入暂存区，可从物品页整理。",
             "online supply falls back to stash on full bag and preserves stash notice");
+        testSupplyFinality(sm, notices);
         RewardInboxService.setStashDelivery(null);
     }
+
+    private static function testDeliveryPlanningBoundaries():Void {
+        var material:Object = _root.收集品栏.材料;
+        var before:Object = material.toObject();
+        var maxQuantity:Number = 9007199254740991;
+        material.setItems({暂存测试材料:maxQuantity});
+        var materialReward:Object = {name:"暂存测试材料", value:1, lastUpdate:1};
+        var storeSize:Number = RewardStashService.peek().entries.length;
+        var delivery:Object = {hasDirect:true, hasStash:true};
+        var context:Object = {source:"stage_settlement", reason:"stage_reward_stashed",
+            inventoryReason:"stage_reward_acquired", operationId:"pref.reject"};
+        var didBegin:Boolean = RewardStashService.begin("pref.reject", context, null, null);
+        var admitted:Boolean = didBegin && RewardStashService.admit([materialReward], true, true, context, delivery);
+        if (didBegin) RewardStashService.cancel("test_rejection");
+        check(didBegin && !admitted && delivery.hasStash === undefined && delivery.hasDirect === undefined
+                && material.getValue(materialReward.name) == maxQuantity
+                && RewardStashService.peek().entries.length == storeSize,
+            "material cap rejects the candidate without stash or delivery facts");
+        material.setItems(before);
+
+        var plans:Object = {};
+        var equip:Object = {name:"暂存测试装备", value:1};
+        var drugInventory:Object = _root.物品栏.药剂栏;
+        _root.物品栏.药剂栏 = null;
+        var plan:Object = ItemUtil.require([equip], plans);
+        _root.物品栏.药剂栏 = drugInventory;
+        check(plan == null && typeof plans.error == "string" && plans.error != "inventory_full"
+                && ItemUtil.require([equip], plans) == null && plans.error == "inventory_full",
+            "missing authority and whole backpack use different planning failures");
+
+        ItemUtil.itemDataDict["即时补给测试"] = {name:"即时补给测试", type:"消耗品", use:"战场补给"};
+        check(ItemUtil.require([{name:"即时补给测试", value:1}], plans) == null
+                && plans.error == "domain_rejected", "full bag cannot bypass battlefield supply rejection");
+
+        var moneyBefore:Number = Number(_root.金钱);
+        context.operationId = "pref.convert";
+        check(RewardStashService.begin("pref.convert", context, null, null)
+                && RewardStashService.admit([
+                    {name:"满上限情报", value:1, lastUpdate:1},
+                    {name:"暂存测试装备", value:{level:1, tier:"", mods:[]}, lastUpdate:2}
+                ], true, true, context, delivery)
+                && RewardStashService.end("pref.convert", {success:true}, "stage.return_base").success
+                && delivery.hasDirect === true && delivery.hasStash === true
+                && Number(_root.金钱) == moneyBefore + 100,
+            "fully converted intel still counts as direct alongside stashed equipment");
+    }
+
+    private static function testSupplyFinality(sm:SaveManager, notices:Array):Void {
+        var name:String = "在线补给包·Ⅲ";
+        var key:String = "christmas_tree:online-40m";
+        ItemUtil.itemDataDict[name] = {name:name, type:"消耗品", use:"礼包",
+            displayname:name, icon:"a", data:{level:1}};
+        var noticeCount:Number = notices.length;
+        sm._configureSaveFlowForTest({beforeRewardExposure:function():Void { throw new Error("supply_pack_fixture"); }});
+        var rejected:Object = RewardInboxService.deliverOnlineSupplyPack(name, key);
+        sm._configureSaveFlowForTest({beforeRewardExposure:null, flushResult:"pending"});
+        check(!rejected.success && RewardStashService.pendingOperationId() == ""
+                && !RewardInboxService.hasDeliveredOnlineSupplyPack(key) && notices.length == noticeCount
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), name) == 0,
+            "pre-exposure supply failure keeps source and notice uncommitted");
+
+        var pending:Object = RewardInboxService.deliverOnlineSupplyPack(name, key);
+        var operation:String = RewardStashService.pendingOperationId();
+        check(!pending.success && operation != "" && !RewardInboxService.hasDeliveredOnlineSupplyPack(key)
+                && notices.length == noticeCount,
+            "unknown supply does not expose a delivered key or success notice");
+
+        sm._configureSaveFlowForTest({flushResult:false});
+        check(!RewardStashService.resume(operation).success && RewardStashService.pendingOperationId() === operation
+                && !RewardInboxService.hasDeliveredOnlineSupplyPack(key) && notices.length == noticeCount,
+            "an exposed false retains the original unannounced supply candidate");
+
+        sm._configureSaveFlowForTest({flushResult:true});
+        check(RewardStashService.resume(operation).success && RewardStashService.resume(operation).success
+                && RewardInboxService.hasDeliveredOnlineSupplyPack(key) && notices.length == noticeCount + 1
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(), name) == 1,
+            "confirmation publishes supply once and keeps exact source idempotence");
+    }
+
     private static function starRecipe():Object {
         var names:Array=["光剑天秤","光斧金牛","光刀狮子","光刃摩羯","血色光剑天秤"],entries:Array=[];
         for(var i:Number=0;i<names.length;i++) entries.push({itemName:names[i],quantityMin:1,quantityMax:1,weight:i==4?4:9});

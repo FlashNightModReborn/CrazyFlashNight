@@ -33,7 +33,7 @@
      * @param item 目标物品
      * @return 是否成功放入
      */
-    function add(key:String,item):Boolean;
+    function add(key:String,item,placement:Object):Boolean;
 
     /**
      * 移除物品

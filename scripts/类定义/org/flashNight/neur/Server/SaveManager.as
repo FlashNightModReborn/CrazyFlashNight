@@ -15,6 +15,7 @@ import JSON;
 import org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel;
 import org.flashNight.arki.key.KeyManager;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
+import org.flashNight.arki.scene.Cf6SoldierLootRules;
 /**
  * SaveManager — 存档系统统一管理器（单例）
  *
@@ -1182,7 +1183,7 @@ class org.flashNight.neur.Server.SaveManager {
         _rewardPhysicalStarted = false;
         _rewardPhysicalResult = undefined;
         try { org.flashNight.arki.pause.PauseManager.setRewardCommitPending(false); } catch (pauseNoticeError) {}
-        try { FrameBroadcaster.pushUiState(committed ? (org.flashNight.arki.scene.Cf6SoldierLoot.blocksSaveSuccess()?"sv:1":"sv:2") : "sv:3"); } catch (uiNoticeError) {}
+        try { FrameBroadcaster.pushUiState(committed ? "sv:2" : "sv:3"); } catch (uiNoticeError) {}
     }
 
     /** 奖励事务有界生产日志：单行分类字段、连续重复折叠、进程内封顶；不带存档内容。 */
@@ -1278,7 +1279,8 @@ class org.flashNight.neur.Server.SaveManager {
                 "[SaveManager.flushBeforeTransition] reason outside transition allowlist, fail-closed: " + reason);
             return false;
         }
-        if(!org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition())return false;
+        // Bookshelf takes its recovery image after this fence. Resolve a finite v2 promise before that image is frozen.
+        if (reason == "bookshelf.switch" && !Cf6SoldierLootRules.prepareLegacyReplacement()) return false;
         return _strictFlushCore("transition", reason);
     }
 
@@ -1507,7 +1509,7 @@ class org.flashNight.neur.Server.SaveManager {
         try {
             // sv:2 只代表 SharedObject.flush() 已确认成功；false / "pending"
             // 必须投影为失败态，安全退出面板据此禁止 EXIT_CONFIRM。
-            FrameBroadcaster.pushUiState(ok ? (org.flashNight.arki.scene.Cf6SoldierLoot.blocksSaveSuccess()?"sv:1":"sv:2") : "sv:3");
+            FrameBroadcaster.pushUiState(ok ? "sv:2" : "sv:3");
         } catch (uiStateError) {
             reportPostFlushFailure(sm, "ui_state", uiStateError, ok);
         }
@@ -1759,6 +1761,7 @@ class org.flashNight.neur.Server.SaveManager {
             _root.mydata = undefined;
             return;
         }
+        if (!Cf6SoldierLootRules.acceptSaveRead(raw)) return;
         _root.mydata = raw;
 
         // 结构校验：主角储存数据必须存在
@@ -1908,12 +1911,14 @@ class org.flashNight.neur.Server.SaveManager {
             sm.sendServerMessage("[SaveManager.loadAll] prefetch 未就绪，走 SOL");
         }
 
-        // ─── SOL 路径（原有逻辑完全不变）───
+        // ─── SOL 路径 ───
 
-        // 始终从 SO 鲜读
+        // 在迁移或改写根投影之前校验 SOL 鲜读的书中承诺。
         var so:SharedObject = getSO();
         var soData:Object = so.data;
-        _root.mydata = soData[SAVE_KEY];
+        var local:Object = soData[SAVE_KEY];
+        if (!Cf6SoldierLootRules.acceptSaveRead(local)) return false;
+        _root.mydata = local;
 
         // 空槽位 guard
         if (_root.mydata == undefined) {
@@ -2004,7 +2009,8 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function deleteSlot():Boolean {
         if (!settingsWriteAllowed()) return false;
-        if (_rewardCandidate != null) return false;
+        if (_rewardCandidate != null
+                || !Cf6SoldierLootRules.prepareLegacyReplacement()) return false;
         // P3a: 清理预取缓存（防止删档后被内存缓存复活）
         clearPrefetch();
 
@@ -2376,6 +2382,7 @@ class org.flashNight.neur.Server.SaveManager {
             if (cf6Loadout == null) return false;
         }
         if (run == null && !validateMydata(snapshot)) return false;
+        if (!Cf6SoldierLootRules.prepareLegacyReplacement(run == null ? snapshot.ext.bookRun : run, true)) return false;
         clearPrefetch();
         org.flashNight.arki.scene.StageManager.getInstance().clear();
         resetPerCharacterMemory();
@@ -2463,7 +2470,8 @@ class org.flashNight.neur.Server.SaveManager {
      */
     public function prepareNewCharacter(initialState:Object, reservationOwner:String):Object {
         if (!settingsWriteAllowed()) return {success:false, error:"settings_recovery_required"};
-        if (_rewardCandidate != null) return {success:false, error:"reward_commit_pending"};
+        if (_rewardCandidate != null || !Cf6SoldierLootRules.prepareLegacyReplacement())
+            return {success:false, error:"reward_commit_pending"};
         var reservation:Object = reserveNewCharacterTutorial(reservationOwner);
         if (!reservation.success) return reservation;
         var tutorialStageName:String = String(reservation.stageName);
@@ -2818,45 +2826,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 用于拦截截断/损坏的 JSON 数据（含边界截断导致尾部 tasks/pets/shop 丢失的场景）。
      */
     private function validateMydata(mydata:Object):Boolean {
-        if (mydata == undefined) return false;
-        if (mydata.version != "3.0") return false;
-        if (mydata.lastSaved == undefined) return false;
-
-        // 数组槽位（unpackGameState 消费的最大索引+1）
-        if (!(mydata[0] instanceof Array) || mydata[0].length < 14) return false;
-        if (mydata[0][0] == undefined || mydata[0][0] == null || String(mydata[0][0]).length == 0) return false;
-        if (mydata[0][3] == undefined || isNaN(Number(mydata[0][3]))) return false;
-        if (!(mydata[1] instanceof Array) || mydata[1].length < 28) return false;
-        if (mydata[3] == undefined) return false;
-        if (!(mydata[4] instanceof Array) || mydata[4].length < 2) return false;
-        if (!(mydata[5] instanceof Array)) return false;
-        if (!(mydata[7] instanceof Array) || mydata[7].length < 5) return false;
-
-        // 对象字段
-        if (mydata.inventory == undefined) return false;
-        if (mydata.inventory.背包 == undefined) return false;
-        if (mydata.inventory.装备栏 == undefined) return false;
-        if (mydata.inventory.药剂栏 == undefined) return false;
-        if (mydata.inventory.仓库 == undefined) return false;
-        if (mydata.inventory.战备箱 == undefined) return false;
-        if (mydata.collection == undefined) return false;
-        if (mydata.collection.材料 == undefined) return false;
-        if (mydata.collection.情报 == undefined) return false;
-        if (mydata.infrastructure == undefined) return false;
-
-        // 尾部字段校验 — 每个 loadFromMydata 消费的子字段都必须存在
-        if (mydata.tasks == undefined) return false;
-        if (mydata.tasks.tasks_to_do == undefined) return false;
-        if (mydata.tasks.tasks_finished == undefined) return false;
-        if (mydata.tasks.task_chains_progress == undefined) return false;
-        if (mydata.pets == undefined) return false;
-        if (mydata.pets.宠物信息 == undefined) return false;
-        if (mydata.pets.宠物领养限制 == undefined) return false;
-        if (mydata.shop == undefined) return false;
-        if (mydata.shop.商城已购买物品 == undefined) return false;
-        if (mydata.shop.商城购物车 == undefined) return false;
-
-        return true;
+        return org.flashNight.neur.Server.SaveSnapshotSchema.validate(mydata);
     }
 
     /**
@@ -2865,7 +2835,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 不做：tasks/pets/shop、dirtyMark、副作用链。
      */
     private function _applyCore(mydata:Object):Boolean {
-        if (!validateMydata(mydata)) return false;
+        if (!validateMydata(mydata) || !Cf6SoldierLootRules.acceptSaveRead(mydata)) return false;
         // 每次切换存档都从该存档重新判定迁移，不能继承上一个角色的待保存 latch。
         _settingsMigrationPending = false;
         _drugLoadoutMigrationPending = false;
@@ -2886,7 +2856,6 @@ class org.flashNight.neur.Server.SaveManager {
             return false;
         }
         if (rewardSchema.changed) _rewardInboxMigrationPending = true;
-        if (!org.flashNight.arki.scene.Cf6SoldierLootRules.normalizeSaveData(mydata)) return false;
         // AMF0 空数组→空对象修复（幂等纯内存修复；修复结果随 _saveExt 与
         // tasks/pets 应用层进入运行时，下次存盘自然持久化）。
         org.flashNight.arki.scene.StageRunSession.normalizeSaveData(mydata);
@@ -2954,8 +2923,7 @@ class org.flashNight.neur.Server.SaveManager {
      * tasks/pets/shop 由 loadAll() 走“优先非空顶层，空壳回退 mydata”的合并逻辑
      */
     public function unpackGameState(mydata:Object):Boolean {
-        if (_rewardCandidate != null) return false;
-        if (mydata == undefined) return false;
+        if (_rewardCandidate != null || mydata == undefined || !Cf6SoldierLootRules.acceptSaveRead(mydata)) return false;
 
         var 主角储存数据:Array = mydata[0];
         var 装备储存数据:Array = mydata[1];

@@ -2011,6 +2011,7 @@ namespace CF7Launcher.Guardian
             normalized = null;
             var baseReport = report == null ? null : (JObject)report.DeepClone();
             baseReport?.Remove("rewardStashed");
+            baseReport?.Remove("rewardDelivery");
             int version;
             if (report == null || !TryReadInteger(report["v"], 1, 2, out version)) return false;
             var reportKeys = new List<string> { "v", "runId", "stageName", "difficulty",
@@ -2031,6 +2032,20 @@ namespace CF7Launcher.Guardian
             long totalItemLosses;
             long omittedItemFlowTypes;
             if (report["rewardStashed"] != null && report["rewardStashed"].Type != JTokenType.Boolean) return false;
+            JObject rewardDelivery = null;
+            if (report["rewardDelivery"] != null)
+            {
+                var delivery = report["rewardDelivery"] as JObject;
+                if (report.Value<bool?>("rewardStashed") != true || delivery == null
+                    || !HasExactKeys(delivery, "hasDirect", "hasStash")
+                    || delivery["hasDirect"].Type != JTokenType.Boolean
+                    || delivery["hasStash"].Type != JTokenType.Boolean) return false;
+                rewardDelivery = new JObject
+                {
+                    ["hasDirect"] = delivery.Value<bool>("hasDirect"),
+                    ["hasStash"] = delivery.Value<bool>("hasStash")
+                };
+            }
             long rewardRollOmissions;
             if (!TryReadInteger(report["v"], 1, 2, out version)
                 || !TryReadOpaque(report["runId"], out runId)
@@ -2121,6 +2136,7 @@ namespace CF7Launcher.Guardian
                 ["kills"] = normalizedKills,
                 ["itemFlows"] = normalizedItemFlows
             };
+            if (rewardDelivery != null) normalized["rewardDelivery"] = rewardDelivery;
             if (version == 2)
             {
                 long omittedIndividualKills, totalAllyDowns, totalAllyLosses, heroDowns, omittedAllies;

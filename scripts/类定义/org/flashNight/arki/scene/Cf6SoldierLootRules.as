@@ -9,6 +9,10 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
         return {v:2,rosterVersion:roster,policyVersion:policy,records:{},prd:{},sequence:0,
             packages:0,pairs:0,weaponInstances:0,materials:0};
     }
+    public static function createGroundLedger(roster:String,policy:String):Object {
+        return {v:3,rosterVersion:roster,policyVersion:policy,records:{},prd:{},eligibleDeaths:0,
+            packages:0,pairs:0,weaponInstances:0,materials:0};
+    }
     private static function emptyObject(value):Boolean {
         if(value==null || typeof value!="object" || value instanceof Array)return false;
         for(var key:String in value)return false;
@@ -19,6 +23,8 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
      * or revise a prior version's durable outcome, quota or full item value. */
     public static function normalizeLedger(raw:Object):Object {
         if(raw==null)return {ok:true,changed:false,feature:raw};
+        if(raw.v===3)return validLedger(raw)?{ok:true,changed:false,feature:raw}
+            :{ok:false,changed:false,error:"invalid_cf6_ground_loot"};
         if(raw.v!==2)return {ok:false,changed:false,error:"future_cf6_loot"};
         var candidate:Object=PersistedSnapshot.cloneData(raw),changed:Boolean=false;
         for(var key:String in candidate.records){
@@ -33,7 +39,43 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
         return validLedger(candidate)?{ok:true,changed:changed,feature:changed?candidate:raw}
             :{ok:false,changed:false,error:"invalid_cf6_loot"};
     }
-    public static function normalizeSaveData(data:Object):Boolean {
+    /** A runtime reload may retain a frozen entitlement, but cannot erase or revive it. */
+    public static function preservesLoadedLedger(current:Object,incoming:Object):Boolean {
+        if (current==null || current.bookId!=="cf6-sting" || current.routeId!=="type61" || current.cf6SoldierLoot==null) return true;
+        var old:Object=current.cf6SoldierLoot;
+        var same:Boolean=incoming.bookId===current.bookId && incoming.routeId===current.routeId
+            && incoming.slot===current.slot && incoming.seed===current.seed
+            && incoming.startedAt===current.startedAt && incoming.planSeed===current.planSeed;
+        var next:Object=same ? incoming.cf6SoldierLoot : null;
+        if(old.v===3)return !same || next.v===3;
+        if(old.v!==2)return false;
+        for(var key:String in old.records){
+            var before:Object=old.records[key],after:Object=next.records[key];
+            if(before.state==="DECIDED_HIT" || before.state==="COMMIT_PENDING"){
+                if(next.v!==2 || !PersistedSnapshot.sameData(before,after))return false;
+            }else if(after.state==="DECIDED_HIT" || after.state==="COMMIT_PENDING")return false;
+        }
+        return true;
+    }
+
+    /** Keeps the bootstrap's save writer independent of the shared Soldier implementation. */
+    public static function prepareLegacyReplacement(incoming:Object,checkSnapshot:Boolean):Boolean {
+        var run:Object=_root._saveExt.bookRun;
+        var old:Object=run.cf6SoldierLoot;
+        if (run.bookId==="cf6-sting" && run.routeId==="type61" && old!=null && old.v!==3) {
+            if (run.slot!==String(_root.savePath)) return false;
+            var loot:Object=_global.org.flashNight.arki.scene.Cf6SoldierLoot;
+            if (typeof loot.settleLegacyBeforeReplacement!="function" || loot.settleLegacyBeforeReplacement()!==true) return false;
+        }
+        return !checkSnapshot || preservesLoadedLedger(_root._saveExt.bookRun,incoming);
+    }
+
+    public static function acceptSaveRead(data:Object):Boolean {
+        return normalizeSaveData(data, _root._saveExt.bookRun);
+    }
+
+    public static function normalizeSaveData(data:Object,currentRun:Object):Boolean {
+        if (!preservesLoadedLedger(currentRun,data.ext.bookRun)) return false;
         var raw:Object=data.ext.bookRun.cf6SoldierLoot;
         if(raw==null)return true;
         var normalized:Object=normalizeLedger(raw);
@@ -115,24 +157,75 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
         return kind=="mod_material" || packet.consumables.length>0;
     }
     public static function validLedger(ledger:Object):Boolean {
-        if(ledger==null || ledger.v!==2 || typeof ledger.rosterVersion!="string" || typeof ledger.policyVersion!="string"
-            || ledger.records==null || ledger.records instanceof Array || ledger.prd==null || ledger.prd instanceof Array
-            || !whole(ledger.sequence,0,10000))return false;
-        var packages:Number=0,pairs:Number=0,weapons:Number=0,materials:Number=0,records:Number=0,guarantees:Number=0,sources:Object={};
+        if(ledger==null || (ledger.v!==2 && ledger.v!==3) || typeof ledger.rosterVersion!="string" || typeof ledger.policyVersion!="string"
+            || ledger.records==null || typeof ledger.records!="object" || ledger.records instanceof Array
+            || ledger.prd==null || typeof ledger.prd!="object" || ledger.prd instanceof Array)return false;
+        var legacy:Boolean=ledger.v===2;
+        if(legacy && !whole(ledger.sequence,0,10000))return false;
+        var counts:Object=createGroundLedger("","");
+        var records:Number=0,guarantees:Number=0,sources:Object={};
         for(var key:String in ledger.records){
-            var packet:Object=ledger.records[key];records++;
-            if(!validPacket(packet) || key!=="u."+packet.unitIdentity || sources["$"+packet.sourceKey])return false;
-            sources["$"+packet.sourceKey]=true;
-            if(packet.roll.reason=="first_weapon_guarantee")guarantees++;
-            if(packet.kind=="none")continue;
-            packages++;
-            if(packet.kind=="sidearm_pair"){pairs++;weapons+=2;}
-            if(packet.kind=="longgun")weapons++;
-            if(packet.kind=="mod_material")materials++;
+            var row:Object=ledger.records[key];
+            if(++records>158)return false;
+            if(legacy){
+                if(!validPacket(row) || key!=="u."+row.unitIdentity || sources["$"+row.sourceKey])return false;
+                sources["$"+row.sourceKey]=true;
+                if(row.roll.reason=="first_weapon_guarantee")guarantees++;
+                if(row.roll.gateEvaluated===true)counts.eligibleDeaths++;
+            }else{
+                if(!validGroundRecord(key,row))return false;
+                if(row.eligible===true)counts.eligibleDeaths++;
+            }
+            countKind(counts,row.kind);
         }
-        return records<=158 && guarantees<=1 && packages<=6 && pairs<=2 && weapons<=8 && materials<=2
-            && ledger.packages===packages && ledger.pairs===pairs && ledger.weaponInstances===weapons && ledger.materials===materials;
+        return guarantees<=1 && counts.packages<=6 && counts.pairs<=2 && counts.weaponInstances<=8 && counts.materials<=2
+            && ledger.packages===counts.packages && ledger.pairs===counts.pairs
+            && ledger.weaponInstances===counts.weaponInstances && ledger.materials===counts.materials
+            && (legacy || ledger.eligibleDeaths===counts.eligibleDeaths);
     }
+
+    private static function validGroundRecord(key:String,row:Object):Boolean {
+        if(key.indexOf("u.")!=0 || key.length<3 || row==null || typeof row!="object" || row instanceof Array
+            || typeof row.eligible!="boolean")return false;
+        for(var field:String in row)if(field!="eligible" && field!="kind")return false;
+        return row.kind==="none" || (row.eligible && (row.kind==="longgun" || row.kind==="sidearm_pair" || row.kind==="mod_material"));
+    }
+
+    private static function countKind(ledger:Object,kind:String):Void {
+        if(kind!="none")ledger.packages++;
+        if(kind=="sidearm_pair"){ledger.pairs++;ledger.weaponInstances+=2;}
+        if(kind=="longgun")ledger.weaponInstances++;
+        if(kind=="mod_material")ledger.materials++;
+    }
+
+    /** Reduce a validated v2 ledger only after every old hit has a terminal disposition. */
+    public static function toGroundLedger(legacy:Object):Object {
+        if(legacy==null || legacy.v!==2 || !validLedger(legacy))return null;
+        var result:Object=createGroundLedger(legacy.rosterVersion,legacy.policyVersion);
+        result.prd=PersistedSnapshot.cloneData(legacy.prd);
+        for(var key:String in legacy.records){
+            var row:Object=legacy.records[key];
+            if(row.state!=="OWNED" && row.state!=="DECIDED_MISS")return null;
+            result.records[key]={eligible:row.roll.gateEvaluated,kind:row.kind};
+            if(row.roll.gateEvaluated===true)result.eligibleDeaths++;
+            countKind(result,row.kind);
+        }
+        return result;
+    }
+
+    public static function reserveGround(ledger:Object,id:String,eligible:Boolean,kind:String):Boolean {
+        var key:String="u."+id,row:Object={eligible:eligible,kind:kind};
+        if(ledger.v!==3 || ledger.records[key]!==undefined || !validGroundRecord(key,row))return false;
+        if(kind!="none" && (ledger.packages>=6
+            || kind=="sidearm_pair" && (ledger.pairs>=2 || ledger.weaponInstances>6)
+            || kind=="longgun" && ledger.weaponInstances>=8
+            || kind=="mod_material" && ledger.materials>=2))return false;
+        ledger.records[key]=row;
+        if(eligible)ledger.eligibleDeaths++;
+        countKind(ledger,kind);
+        return true;
+    }
+
     public static function available(ledger:Object,snapshot:Object,weights:Object):Object {
         var result:Object={longgun:0,sidearm_pair:0,mod_material:0,total:0};
         if(ledger.packages>=6)return result;
@@ -144,6 +237,7 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
     }
     /** Count only frozen, evaluated deaths; cancelled/ineligible identities are not pity progress. */
     public static function eligibleDeaths(ledger:Object):Number {
+        if(ledger.v===3)return ledger.eligibleDeaths;
         var count:Number=0;
         for(var key:String in ledger.records)if(ledger.records[key].roll.gateEvaluated===true)count++;
         return count;
@@ -225,10 +319,7 @@ class org.flashNight.arki.scene.Cf6SoldierLootRules {
             || packet.kind=="longgun" && ledger.weaponInstances>=8
             || packet.kind=="mod_material" && ledger.materials>=2))return false;
         ledger.records["u."+packet.unitIdentity]=PersistedSnapshot.cloneData(packet);
-        if(packet.kind!="none")ledger.packages++;
-        if(packet.kind=="sidearm_pair"){ledger.pairs++;ledger.weaponInstances+=2;}
-        if(packet.kind=="longgun")ledger.weaponInstances++;
-        if(packet.kind=="mod_material")ledger.materials++;
+        countKind(ledger,packet.kind);
         return true;
     }
 }

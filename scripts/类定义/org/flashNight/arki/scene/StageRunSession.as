@@ -909,15 +909,16 @@ class org.flashNight.arki.scene.StageRunSession {
             + " configured=" + (_root.关卡可获得奖励品 instanceof Array ? _root.关卡可获得奖励品.length : 0)
             + " omitted=" + Number(_run.rewardRollOmissions);
         var context:Object = {source:"stage_settlement", reason:"stage_reward_stashed", inventoryReason:"stage_reward_acquired", operationId:operationId};
-        if (!org.flashNight.arki.item.RewardStashService.begin(operationId, context, stashResolved, {run:_run})) {
+        var domain:Object = {run:_run, delivery:{}};
+        if (!org.flashNight.arki.item.RewardStashService.begin(operationId, context, stashResolved, domain)) {
             settlementDiag("stash", detail + " result=begin_failed"
                 + " error=" + safeText(org.flashNight.arki.item.RewardStashService.lastError, 96, "unknown"));
             return false;
         }
         try {
             var admitted:Boolean = _run.restoredSettlement === true
-                ? org.flashNight.arki.item.RewardStashService.admitRestoredSettlement(items, context)
-                : org.flashNight.arki.item.RewardStashService.admit(items, true, true, context);
+                ? org.flashNight.arki.item.RewardStashService.admitRestoredSettlement(items, context, domain.delivery)
+                : org.flashNight.arki.item.RewardStashService.admit(items, true, true, context, domain.delivery);
             if (!admitted) {
                 org.flashNight.arki.item.RewardStashService.cancel("invalid_stage_reward");
                 settlementDiag("stash", detail + " result=admit_failed");
@@ -959,6 +960,7 @@ class org.flashNight.arki.scene.StageRunSession {
         _preparedReport.totalItemLosses = committedReport.totalItemLosses;
         _preparedReport.omittedItemFlowTypes = committedReport.omittedItemFlowTypes;
         _preparedReport.itemFlows = committedReport.itemFlows;
+        _run.rewardDelivery = domain.delivery;
         _run.settlement = "stashed";
         _run.remainingRewards = 0;
         _preparedInventory = null;
@@ -1061,9 +1063,7 @@ class org.flashNight.arki.scene.StageRunSession {
                 || _settlementStarted && !LootContainerService.hasActiveStashedReport(String(_run.runId))
                 || !isCurrentRewardStashed()
                 || !org.flashNight.arki.scene.StageReturnFlow.isReturnTransition(token,_run)) return null;
-        var report:Object = clonePlainValue(_preparedReport,0);
-        report.rewardStashed = true;
-        return report;
+        return buildStashedReport();
     }
 
     /** 关闭只读战报只消费呈现，不重放返回、暂存或到达确认。 */
@@ -1103,11 +1103,16 @@ class org.flashNight.arki.scene.StageRunSession {
             && _settlementStarted && isCurrentRewardStashed();
     }
 
+    private static function buildStashedReport():Object {
+        var report:Object = clonePlainValue(_preparedReport, 0);
+        report.rewardStashed = true;
+        if (_run.rewardDelivery != null) report.rewardDelivery = clonePlainValue(_run.rewardDelivery, 0);
+        return report;
+    }
+
     private static function openStashedReport():Boolean {
-        var stashedReport:Object = clonePlainValue(_preparedReport, 0);
-        stashedReport.rewardStashed = true;
         var begun:Object = LootContainerService.beginStageSettlement(
-            new ArrayInventory({}, 8), stashedReport);
+            new ArrayInventory({}, 8), buildStashedReport());
         if (begun == null || begun.success !== true) {
             observeFocus("scene_ready_result", _focusReturnIntent, "rewards_pending");
             // 报告打开失败不撤销已经保存的物资，也不占下一次关卡准入。

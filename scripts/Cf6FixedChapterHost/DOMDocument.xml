@@ -105,6 +105,7 @@
     <Include href="Import101.xml" itemID="6af00000-f8d78414" loadImmediate="false"/>
     <Include href="Import102.xml" itemID="6af00000-b1911a97" loadImmediate="false"/>
     <Include href="Import103.xml" itemID="6af00000-18b85e3b" loadImmediate="false"/>
+    <Include href="Import104.xml" itemID="6af00000-2ffbe731" loadImmediate="false"/>
   </symbols>
   <timelines>
     <DOMTimeline name="场景 1">
@@ -155,6 +156,7 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
     // 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
     var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
     metaBuff.hudInfo = {name:"霸体减伤", description:"降低受到的伤害；同类减伤取最强效果。", polarity:"benefit", stacks:0};
+    if (来源ID == "觉醒霸体" || 来源ID == "霸体") metaBuff.hudInfo.source = {kind:"skill",key:来源ID};
     target.buffManager.addBuff(metaBuff, buffId);
 
 };
@@ -326,7 +328,7 @@ _root.主角函数.获取装备主动战技种类 = function(装备类型, 装�
     #include "../逻辑/装备函数/RPG.as"
 };
 
-_root.cf6NativeRslAnchorCount=104;
+_root.cf6NativeRslAnchorCount=105;
 
 import flash.display.*;
 import flash.filters.*;
@@ -554,17 +556,6 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                     <Color alphaMultiplier="0"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Import92" name="source92">
-                  <matrix>
-                    <Matrix tx="-5000" ty="-5000"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import93" name="source93">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
@@ -676,6 +667,17 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import103" name="source103">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import104" name="source104">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -1604,6 +1606,17 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允�
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import91" name="source91">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import92" name="source92">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>

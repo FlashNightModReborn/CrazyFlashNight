@@ -40,11 +40,11 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
      * 普通生命周期写在同步事件前推进版本，使监听器读到的版本已覆盖当前写入。
      * legacy add 仍保留原有 use 规则；11 槽白名单只约束新的事务入口。
      */
-    public function add(key:String, item:Object):Boolean {
+    public function add(key:String, item:Object, placement:Object):Boolean {
         if (rejectsExitWrite()) return false;
         if (!isEmpty(key) || !isAddable(key, item)) return false;
         bumpMutationRevision();
-        if (!super.add(key, item)) {
+        if (!super.add(key, item, placement)) {
             mutationRevision--;
             return false;
         }
@@ -62,13 +62,13 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
      * 装备栏中的手雷是数量型物品。零增量、空槽与非数值 value 都不是有效写入。
      * 归零时基类会再动态派发 remove，版本与 ArrayInventory 一样允许再次推进。
      */
-    public function addValue(key:String, value:Number):Void {
+    public function addValue(key:String, value:Number, placement:Object):Void {
         if (rejectsExitWrite()) return;
         if (isNaN(value) || value == 0) return;
         var item:Object = getItem(key);
         if (item == null || typeof item.value != "number") return;
         bumpMutationRevision();
-        super.addValue(key, value);
+        super.addValue(key, value, placement);
     }
 
     public function setItems(_items:Object):Void {

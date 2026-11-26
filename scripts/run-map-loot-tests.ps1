@@ -41,7 +41,7 @@ $compileLease = $null
 $runId = [System.Guid]::NewGuid().ToString('N')
 $expectedServicePassCount = 198
 $expectedPlannerPassCount = 12
-$expectedStagePassCount = 946
+$expectedStagePassCount = 947
 $expectedPassCount = $expectedServicePassCount + $expectedPlannerPassCount + $expectedStagePassCount
 
 function Get-EvidenceIdentity([string]$Path) {

@@ -61,10 +61,8 @@ class org.flashNight.arki.item.CharacterBuildExitTest {
         var gun:Object=_root.物品栏.装备栏.getItem("手枪").value;
         var store:SharedObject=SharedObject.getLocal(p.slot);
         var gym:Object=org.flashNight.arki.ui.GymTrainingPanelService;
-        var loot:Object=org.flashNight.arki.scene.Cf6SoldierLoot;
-        var ground:Object=org.flashNight.arki.scene.Cf6SoldierGroundPickup;
         var settingsClass:Object=SaveManager;
-        var setting=settingsClass._settingsBootstrap,training=gym._session,operation=loot.operation,claim=ground.pending;
+        var setting=settingsClass._settingsBootstrap,training=gym._session;
         var socket:Object=org.flashNight.neur.Server.ServerManager.getInstance();
         var send:Function=socket.sendServerMessage;
         socket.sendServerMessage=function(message:String) {
@@ -97,12 +95,12 @@ class org.flashNight.arki.item.CharacterBuildExitTest {
             gym._session={phase:"save_pending",saveOwner:_root.存档系统,slotKey:realSlot,sourceExt:_root._saveExt};
             check(prepare(p).state=="blocked","gym unconfirmed growth prevents a terminal save");
             gym._session=training;
-            loot.operation="cf6-partial-admission";
-            check(prepare(p).state=="blocked","CF6 pending admission prevents a terminal save");
-            loot.operation=operation;
-            ground.pending={};
-            check(prepare(p).state=="blocked","ground claim pending prevents a terminal save");
-            ground.pending=claim;
+            var copy:Object=ext.bookRun;
+            ext.bookRun={cf6SoldierLoot:{v:3}};
+            check(prepare(p).state=="prepared","world loot summary does not prevent an ordinary save exit");
+            ext.bookRun.cf6SoldierLoot={v:2};
+            check(prepare(p).state=="prepared","a save retaining old loot history can still exit");
+            if(copy==undefined)delete ext.bookRun;else ext.bookRun=copy;
             var scope:Object={ready:false};
             check(sm.beginRewardCommit("exit.fixture.reward",function() {return this.ready;},scope),
                 "reward owner takes its original write");
@@ -180,7 +178,7 @@ class org.flashNight.arki.item.CharacterBuildExitTest {
             var owner:Object=org.flashNight.arki.item.CharacterBuildExit;
             if (_root.__characterExitSeal!=null) owner.release(_root,_root.__characterExitSeal);
             sm._configureSaveFlowForTest({flushResult:undefined});
-            settingsClass._settingsBootstrap=setting;gym._session=training;loot.operation=operation;ground.pending=claim;
+            settingsClass._settingsBootstrap=setting;gym._session=training;
             _root.UpdateTaskProgress=function() {};
             pauses.releaseLease(otherLease);
             socket.sendServerMessage=send;

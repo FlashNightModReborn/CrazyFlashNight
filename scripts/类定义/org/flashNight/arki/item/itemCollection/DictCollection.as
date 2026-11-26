@@ -24,11 +24,12 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     }
 
     //添加键值对
-    public function add(key:String,value:Number):Boolean{
+    public function add(key:String,value:Number,placement:Object):Boolean{
         if (rejectsExitWrite()) return false;
         if(!isPositiveSafeInteger(value)) return false;
         if(isEmpty(key) && isAddable(key,value)){
             items[key] = value;
+            if (placement != null) placement.wrote = true;
             clearQuarantinedKey(key);
             bumpMutationRevision();
             if(this.hasDispatcher()) dispatcher.publish("ItemAdded", this, key); // 发布ItemAdded事件
@@ -50,7 +51,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     }
 
     //改变键值对的值
-    public function addValue(key:String,value:Number):Void{
+    public function addValue(key:String,value:Number,placement:Object):Void{
         if (rejectsExitWrite()) return;
         if(!isSafeInteger(value)) return;
         var before:Number = getValue(key);
@@ -66,6 +67,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
             return;
         }
         items[key] = after;
+        if (placement != null) placement.wrote = true;
         clearQuarantinedKey(key);
         bumpMutationRevision();
         if(this.hasDispatcher()) {

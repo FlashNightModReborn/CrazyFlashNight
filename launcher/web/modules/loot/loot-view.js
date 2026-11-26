@@ -83,6 +83,12 @@ var LootView = (function() {
             if (typeof value.rewardStashed !== 'boolean') return null;
             expected.rewardStashed = true;
         }
+        if (value && Object.prototype.hasOwnProperty.call(value, 'rewardDelivery')) {
+            var delivery=value.rewardDelivery;
+            if (value.rewardStashed!==true || !exactKeys(delivery,{hasDirect:true,hasStash:true})
+                    || typeof delivery.hasDirect!=='boolean' || typeof delivery.hasStash!=='boolean') return null;
+            expected.rewardDelivery=true;
+        }
         if (value && value.v===2) {
             ['omittedIndividualKills','totalAllyDowns','totalAllyLosses','heroDowns','omittedAllies','allies']
                 .forEach(function(key){expected[key]=true;});
@@ -130,6 +136,7 @@ var LootView = (function() {
             totalItemGains:value.totalItemGains,totalItemLosses:value.totalItemLosses,
             omittedItemFlowTypes:value.omittedItemFlowTypes,
             rewardRollOmissions:value.rewardRollOmissions,kills:kills,itemFlows:itemFlows,rewardStashed:value.rewardStashed === true};
+        if (delivery) report.rewardDelivery={hasDirect:delivery.hasDirect,hasStash:delivery.hasStash};
         if (value.v===2) {
             if (!safeWhole(value.omittedIndividualKills)||!safeWhole(value.totalAllyDowns)
                     ||!safeWhole(value.totalAllyLosses)||!safeWhole(value.heroDowns)
@@ -368,6 +375,7 @@ var LootView = (function() {
         this.isSettlement = this.init && this.init.sourceKind === 'stage_settlement';
         this.isRewardInbox = this.init && this.init.sourceKind === 'reward_inbox';
         this.isStashedReport = this.isSettlement && this.init.report.rewardStashed === true;
+        this.rewardDelivery = this.isStashedReport ? describeRewardDelivery(this.init.report) : null;
         this.reportPane = null;
         this.reportView = null;
         this.settlementSidePane = null;
@@ -453,12 +461,12 @@ var LootView = (function() {
             ariaLabel:this.isSettlement ? '查看关卡结算帮助' : '查看战利品整理帮助',
             title:this.isSettlement ? '关卡结算帮助' : '战利品整理帮助',
             message:this.isStashedReport
-                ? '本轮奖励已保存到暂存区。右栏展示本关所得与消耗，奖励已入账，无需重复领取。'
+                ? this.rewardDelivery.message+'右栏展示本关所得与消耗。'
                 : this.isSettlement
                 ? '领取奖励\n• 单击或 Enter 可直接领取。\n• Ctrl+A 或底部“全部收取”会批量领取。\n• 左栏查看战斗战报；右栏切换所得、消耗和材料存量。'
                 : '领取物品\n• Enter、双击或 Ctrl+单击可直接领取。\n• 空格先选择，再到背包侧确认。\n• Ctrl+A 或底部“全部收取”会批量领取。',
             detail:this.isStashedReport
-                ? '关闭结算不会丢失奖励。可在角色物品页进入暂存区整理；材料存量展示当前持有量。'
+                ? this.rewardDelivery.organize+'关闭结算会保留已入账奖励。材料存量展示当前持有量。'
                 : this.isSettlement
                 ? '左栏展示击杀和友军记录；右栏展示本关所得、消耗与当前材料存量。\n库存整理仍使用原有背包与战备箱界面。普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。'
                 : this.isRewardInbox
@@ -813,11 +821,8 @@ var LootView = (function() {
         if (report.omittedKillTypes) notices.push('另有 '+report.omittedKillTypes+' 类敌人未展开');
         if (report.omittedIndividualKills) notices.push('另有 '+report.omittedIndividualKills+' 次人形击杀未展开');
         if (report.rewardRollOmissions) notices.push(report.rewardRollOmissions+' 项奖励配置未进入本轮结算');
-        var stageStashState=stageStashSummary(report);
-        if (report.rewardStashed && stageStashState.hasStashed) {
-            notices.push(stageStashState.hasAcquired
-                ? '部分物资已存入暂存区，可稍后从角色物品页整理。'
-                : '本轮物资已存入暂存区，可稍后从角色物品页整理。');
+        if (this.rewardDelivery && this.rewardDelivery.organize) {
+            notices.push(this.rewardDelivery.message+this.rewardDelivery.organize);
         }
         this.killStatus.textContent=notices.join(' · ')||('展示 '+report.kills.length+' 条记录');
 
@@ -851,9 +856,7 @@ var LootView = (function() {
         this.assetSummary.querySelector('[data-settlement-summary-status]').textContent=summary.partial?'仅统计已展开明细':'获得 / 消耗';
         this.flowStatus.textContent=summary.partial?'另有 '+report.omittedItemFlowTypes+' 类明细未展开':'';
         this.rewardSection.querySelector('[data-settlement-gain-note]').textContent=this.isStashedReport
-            ? (stageStashState.hasStashed
-                ? '战斗拾取与关卡奖励。未收入背包的关卡奖励已存入暂存区，可在角色物品页整理。'
-                : '战斗拾取与关卡奖励。关卡奖励已优先收入背包或收集品栏。')
+            ? '战斗拾取与关卡奖励。'+this.rewardDelivery.message
             : '本关已获得的物资；上方待领取奖励领取后进入背包。';
         if (this.tooltipScope) { this.tooltipScope.releaseTree(this.flowList);this.tooltipScope.releaseTree(this.lossList); }
         this.flowList.textContent='';this.lossList.textContent='';
@@ -1862,7 +1865,7 @@ var LootView = (function() {
                 : '箱内 '+state.remainingCount+' 个非空槽位')
             : (this.isSettlement ? '等待奖励内容' : '等待箱子内容'));
         this.shell.setMetric('remaining',this.isStashedReport?'奖励去向':this.isSettlement?'待领奖励':'剩余槽位',
-            this.isStashedReport ? '暂存区' : state.remainingCount == null ? '—' : state.remainingCount);
+            this.isStashedReport ? this.rewardDelivery.label : state.remainingCount == null ? '—' : state.remainingCount);
         var busy=state.phase==='opening'||state.phase==='write_pending'||!!state.pending
             ||claimAll||organizerActive;
         if (state.phase==='reconcile_required') this.shell.setStatus('需要核对','warning');
@@ -1901,9 +1904,8 @@ var LootView = (function() {
         }
         if (this.commitBar) this.commitBar.update(
             this.isStashedReport && (this.options.transitionPreview || state.phase==='active' && !busy)
-                ? {label:'完成结算',status:hasStashedStageFlow(this.init.report)
-                    ? '奖励已保存，未能放入背包的物资可在角色物品页整理暂存；关闭结算不会丢失奖励。'
-                    : '奖励已发放并保存；关闭结算不会丢失奖励。',state:'ready',canCommit:true}
+                ? {label:'完成结算',status:this.rewardDelivery.message+this.rewardDelivery.organize
+                    +'关闭结算会保留已入账奖励。',state:'ready',canCommit:true}
                 : commitPresentation(
                 state,claimAll,organizerActive,this.isSettlement,this.isRewardInbox,
                 !this.isRewardInbox || this.init.rootAdmissionEnabled === true));
@@ -2179,19 +2181,25 @@ var LootView = (function() {
         return String(value==null?'':value).replace(/&/g,'&amp;')
             .replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
-    function stageStashSummary(report) {
-        var flows=report&&Array.isArray(report.itemFlows)?report.itemFlows:[];
-        var hasStashed=false,hasAcquired=false;
-        for (var i=0;i<flows.length;i++) {
-            var flow=flows[i];
-            if (!flow) continue;
-            if (flow.reason==='stage_reward_stashed') hasStashed=true;
-            else if (flow.reason==='stage_reward_acquired') hasAcquired=true;
+    function describeRewardDelivery(report) {
+        var organize='可从角色物品页整理暂存区。';
+        var delivery=report.rewardDelivery;
+        if (delivery) {
+            if (delivery.hasStash && delivery.hasDirect)
+                return {label:'正常入账和暂存',message:'部分奖励已正常入账，其余已存入暂存区。',organize:organize};
+            if (delivery.hasStash)
+                return {label:'暂存区',message:'物品奖励已存入暂存区。',organize:organize};
+            if (delivery.hasDirect)
+                return {label:'正常入账',message:'物品奖励已正常入账。',organize:''};
+            return {label:'无物品投送',message:'本轮无物品投送。',organize:''};
         }
-        return {hasStashed:hasStashed,hasAcquired:hasAcquired};
-    }
-    function hasStashedStageFlow(report) {
-        return stageStashSummary(report).hasStashed;
+        var hasStash=report.itemFlows.some(function(flow) {
+            return flow.direction==='gain' && flow.source==='stage_settlement'
+                && flow.reason==='stage_reward_stashed' && flow.kind!=='money' && flow.kind!=='kpoint';
+        });
+        return hasStash
+            ? {label:'含暂存物资',message:'有物资已存入暂存区。',organize:organize}
+            : {label:'已入账',message:'奖励已确认入账。',organize:''};
     }
 
     function normalizeReportPresentation(value) {

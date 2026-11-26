@@ -58,11 +58,12 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
      * @param key 物品栏位置键
      * @param value 要增减的数量（正数增加，负数减少）
      */
-    public function addValue(key:String,value:Number):Void{
+    public function addValue(key:String,value:Number,placement:Object):Void{
         if (rejectsExitWrite()) return;
         if(isNaN(value)) return;
         var item = items[key];
         item.value += value;  // 注意：此处假定item.value为Number类型
+        if (placement != null) placement.wrote = true;
         if(item.value <= 0) remove(key);
         else if(hasDispatcher()) dispatcher.publish("ItemValueChanged", this, key); // 发布ItemValueChanged事件
     }

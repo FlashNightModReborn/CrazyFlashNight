@@ -52,6 +52,7 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
     // 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
     var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
     metaBuff.hudInfo = {name:"霸体减伤", description:"降低受到的伤害；同类减伤取最强效果。", polarity:"benefit", stacks:0};
+    if (来源ID == "觉醒霸体" || 来源ID == "霸体") metaBuff.hudInfo.source = {kind:"skill",key:来源ID};
     target.buffManager.addBuff(metaBuff, buffId);
 
 };

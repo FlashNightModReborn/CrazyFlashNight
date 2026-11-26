@@ -659,9 +659,11 @@ class org.flashNight.arki.item.ItemUtil{
      * 输入值为一个物品数组
      * 返回带有背包、装备栏、药剂栏、材料、情报与货币/成长字段的 Object。
      * 装备栏当前只记录“获取同名手雷时补充已装备堆”的窄路由。
-     * 若背包空间不足，返回null
+     * 规划拒绝返回 null。自动奖励可传调用局部结果，区分容量不足和其他拒绝。
      */
-    public static function require(itemArray:Array):Object {
+    public static function require(itemArray:Array, rejection:Object):Object {
+        if (rejection != null) delete rejection.error;
+        if (!(itemArray instanceof Array)) return rejectRequirement(rejection, "invalid_plan");
         var list = {金币:0, K点:0, 经验值:0, 技能点:0, 背包:{}, 装备栏:{}, 药剂栏:{}, 材料:{}, 情报:{}};
         var mergables:Object = {}; // 用来累计可合并物品的需求：键为物品名，值为总需求数量
         var mergableOrder:Array = []; // 冻结首次出现顺序，批内规划不依赖 for..in 反插入顺序
@@ -669,8 +671,10 @@ class org.flashNight.arki.item.ItemUtil{
 
         // 遍历要求数组，区分材料、情报、可合并与不可合并物品
         for(var i = 0; i < itemArray.length; i++){
-            var name:String = itemArray[i].name;
-            var value:Number = Number(itemArray[i].value);
+            var entry:Object = itemArray[i];
+            if (entry == null) return rejectRequirement(rejection, "invalid_item");
+            var name:String = entry.name;
+            var value:Number = Number(entry.value);
             if(name == "金币" || name == "K点" || name == "经验值" || name == "技能点"){
                 var scalarTotal:Number = Number(list[name]) + value;
                 var scalarCurrent:Number;
@@ -685,18 +689,20 @@ class org.flashNight.arki.item.ItemUtil{
                         || scalarTotal > MAX_SAFE_COLLECTION_QUANTITY
                         || isNaN(scalarCurrent) || !isFinite(scalarCurrent)
                         || Math.floor(scalarCurrent) != scalarCurrent
-                        || scalarCurrent + scalarTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                        || scalarCurrent + scalarTotal > MAX_SAFE_COLLECTION_QUANTITY) return rejectRequirement(rejection, "domain_cap");
                 // 同名标量奖励聚合，避免资产 last-wins、回执 merge-sum 的账实分叉。
                 list[name] = scalarTotal;
                 continue;
             }
             // 未知物品必须在任何写入前失败，不能由 BaseItem.create(null) 演化成
             // “实际未入包、调用方却收到成功与获得回执”。
-            if(!isItem(name)) return null;
+            if(!isItem(name)) return rejectRequirement(rejection, "invalid_item");
+            if (rejection != null && getRawItemData(name).use === "战场补给")
+                return rejectRequirement(rejection, "domain_rejected");
             if(isMaterial(name)){
                 if(isNaN(value) || !isFinite(value) || value <= 0
                         || Math.floor(value) != value
-                        || value > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                        || value > MAX_SAFE_COLLECTION_QUANTITY) return rejectRequirement(rejection, "invalid_item");
                 var materialTotal:Number = Number(list.材料[name] || 0) + value;
                 var materialCurrent:Number = Number(_root.收集品栏.材料.getValue(name));
                 if(isNaN(materialTotal) || !isFinite(materialTotal)
@@ -705,14 +711,14 @@ class org.flashNight.arki.item.ItemUtil{
                         || isNaN(materialCurrent) || !isFinite(materialCurrent)
                         || materialCurrent < 0
                         || Math.floor(materialCurrent) != materialCurrent
-                        || materialCurrent + materialTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                        || materialCurrent + materialTotal > MAX_SAFE_COLLECTION_QUANTITY) return rejectRequirement(rejection, "domain_cap");
                 list.材料[name] = materialTotal;
             } else if(isInformation(name)){
                 var informationTotal:Number = Number(list.情报[name] || 0) + value;
                 if(isNaN(informationTotal) || informationTotal <= 0
                         || informationTotal != Math.floor(informationTotal)
                         || informationTotal > getInformationRemaining(name)
-                            + (itemArray[i].ownershipDelta === 0 ? value : 0)) return null;
+                            + (entry.ownershipDelta === 0 ? value : 0)) return rejectRequirement(rejection, "domain_cap");
                 list.情报[name] = informationTotal;
             } else if(!isEquipment(name)){
                 // 可合并物品
@@ -726,14 +732,14 @@ class org.flashNight.arki.item.ItemUtil{
                         || Math.floor(stackIncrement) != stackIncrement
                         || isNaN(stackTotal) || !isFinite(stackTotal)
                         || Math.floor(stackTotal) != stackTotal
-                        || stackTotal > MAX_SAFE_COLLECTION_QUANTITY) return null;
+                        || stackTotal > MAX_SAFE_COLLECTION_QUANTITY) return rejectRequirement(rejection, "domain_cap");
                 mergables[name] = stackTotal;
             } else {
                 // 不可合并物品直接加入列表
                 if(isNaN(value) || !isFinite(value) || value <= 0
                         || Math.floor(value) != value
-                        || value > MAX_SAFE_COLLECTION_QUANTITY) return null;
-                nonMergeableList.push(itemArray[i]);
+                        || value > MAX_SAFE_COLLECTION_QUANTITY) return rejectRequirement(rejection, "invalid_item");
+                nonMergeableList.push(entry);
             }
         }
 
@@ -758,7 +764,7 @@ class org.flashNight.arki.item.ItemUtil{
                     || isNaN(grenadeTotal) || !isFinite(grenadeTotal)
                     || Math.floor(grenadeTotal) != grenadeTotal
                     || grenadeTotal > MAX_SAFE_COLLECTION_QUANTITY){
-                return null;
+                return rejectRequirement(rejection, "domain_cap");
             }
             list.装备栏.手雷 = {
                 name:String(equippedGrenade.name),
@@ -780,7 +786,8 @@ class org.flashNight.arki.item.ItemUtil{
         if(hasPendingMergable || nonMergeableList.length > 0){
             var acquireState:Object = DrugSlotAffinityService
                 .createAcquirePlanningState(_root, 药剂栏, 背包);
-            if(!acquireState.ok) return null;
+            if(!acquireState.ok)
+                return rejectRequirement(rejection, String(acquireState.error || "authority_unavailable"));
 
             // 所有可堆叠物品按首次出现顺序使用同一 shadow。
             // 空 exact affinity 优先于已有药剂堆，有意保留“原槽恢复”的双堆语义。
@@ -797,7 +804,10 @@ class org.flashNight.arki.item.ItemUtil{
                     .planAcquireTarget(
                         acquireState, mergeName, mergeValue,
                         isDrugItem, true);
-                if(!mergePlan.success) return null;
+                if(!mergePlan.success)
+                    return rejectRequirement(rejection, String(mergePlan.error || "invalid_plan"));
+                if(mergePlan.storageKind != "drug" && mergePlan.storageKind != "backpack")
+                    return rejectRequirement(rejection, "invalid_plan");
                 var mergeRequest:Object = {
                     name:mergeName,
                     value:mergeValue,
@@ -820,8 +830,9 @@ class org.flashNight.arki.item.ItemUtil{
                     .planAcquireTarget(
                         acquireState, String(pendingItem.name),
                         Number(pendingItem.value), false, false);
-                if(!vacancyPlan.success
-                        || vacancyPlan.storageKind != "backpack") return null;
+                if(!vacancyPlan.success)
+                    return rejectRequirement(rejection, String(vacancyPlan.error || "invalid_plan"));
+                if(vacancyPlan.storageKind != "backpack") return rejectRequirement(rejection, "invalid_plan");
                 list.背包[String(vacancyPlan.slot)] = pendingItem;
             }
         }
@@ -830,8 +841,10 @@ class org.flashNight.arki.item.ItemUtil{
         return list;
     }
 
-
-
+    private static function rejectRequirement(rejection:Object, error:String):Object {
+        if (rejection != null) rejection.error = error;
+        return null;
+    }
 
     /* 
      * acquire 函数处理获得物品事件。
@@ -839,7 +852,7 @@ class org.flashNight.arki.item.ItemUtil{
      * 若成功获得所有物品，返回true
      * 若背包空间不足，返回false
      */
-    public static function acquire(itemArray:Array, context:Object):Boolean {
+    public static function acquire(itemArray:Array, context:Object, placement:Object):Boolean {
         // 战场即时补给(use=战场补给)只经 PickupEffectService 现场消耗，拒绝一切入包
         // （商店/任务奖励/礼包/Web 资源箱天然堵死）。singleAcquire 经本漏斗，无需另拦。
         if(itemArray instanceof Array){
@@ -1007,12 +1020,14 @@ class org.flashNight.arki.item.ItemUtil{
                 var materialRequested:Number = Number(list.材料[materialName]);
                 var materialBefore:Number = Number(材料.getValue(materialName));
                 try {
-                    if(材料.isEmpty(materialName)) 材料.add(materialName, materialRequested);
-                    else 材料.addValue(materialName, materialRequested);
+                    if (placement != null) placement.entered = true;
+                    if(材料.isEmpty(materialName)) 材料.add(materialName, materialRequested, placement);
+                    else 材料.addValue(materialName, materialRequested, placement);
                 } finally {
                     var rawCommittedMaterial:Number =
                         Number(材料.getValue(materialName)) - materialBefore;
-                    var committedMaterial:Number = rawCommittedMaterial;
+                    var committedMaterial:Number = placement != null && placement.wrote
+                        ? materialRequested : rawCommittedMaterial;
                     if(committedMaterial > materialRequested) committedMaterial = materialRequested;
                     if(rawCommittedMaterial != materialRequested) acquireExact = false;
                     if(committedMaterial > 0 && !isNaN(committedMaterial)) {
@@ -1159,9 +1174,11 @@ class org.flashNight.arki.item.ItemUtil{
                             newItem = BaseItem.create(
                                 bagReq.name, bagReq.value, acquireLastUpdate);
                         }
-                        背包.add(targetIndex, newItem);
+                        if (placement != null) placement.entered = true;
+                        背包.add(targetIndex, newItem, placement);
                     } else {
-                        背包.addValue(targetIndex, bagReq.value);
+                        if (placement != null) placement.entered = true;
+                        背包.addValue(targetIndex, bagReq.value, placement);
                         背包.getItem(targetIndex).update(acquireLastUpdate);
                     }
                 } finally {
@@ -1177,7 +1194,8 @@ class org.flashNight.arki.item.ItemUtil{
                     }
                     var expectedBagCommit:Number = bagIsEquipment
                         ? 1 : Number(bagReq.value);
-                    var committedBag:Number = rawCommittedBag;
+                    var committedBag:Number = placement != null && placement.wrote
+                        ? expectedBagCommit : rawCommittedBag;
                     if(committedBag > expectedBagCommit) {
                         committedBag = expectedBagCommit;
                     }

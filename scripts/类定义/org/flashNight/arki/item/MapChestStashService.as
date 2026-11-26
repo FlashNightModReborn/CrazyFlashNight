@@ -72,16 +72,13 @@ class org.flashNight.arki.item.MapChestStashService {
         var plan:Object = LootMaterializationPlanner.planForStash(target);
         if (plan == null || plan.success !== true) return rejected("materialization_failed");
         var context:Object = {source:"map_chest", reason:"opened_chest_stash", inventoryReason:"opened_chest_acquired", operationId:source, mergeScope:"operation"};
-        var domain:Object = {target:target, plan:plan, killAction:killAction, directCount:0, stashedCount:0};
+        var domain:Object = {target:target, plan:plan, killAction:killAction, delivery:{}};
         if (!RewardStashService.begin(source, context, resolved, domain)) return rejected(RewardStashService.lastError);
         try {
             var items:Array = [];
             var raw:Object = plan.inventory.toObject();
             for (var s:Number = 0; s < plan.capacity; s++) if (raw[String(s)] != null) items.push(raw[String(s)]);
-            if (!RewardStashService.admit(items, true, true, context)) throw new Error("invalid_map_reward");
-            var stats:Object = RewardStashService.lastAdmitStats();
-            domain.directCount = stats != null ? stats.directCount : 0;
-            domain.stashedCount = stats != null ? stats.stashedCount : 0;
+            if (!RewardStashService.admit(items, true, true, context, domain.delivery)) throw new Error("invalid_map_reward");
             if (!LootMaterializationPlanner.commitStashSource(target)) throw new Error("source_changed");
             lane = _root._saveExt.mapStashSources;
             if (lane == null || lane.generation !== _generation) lane = {v:1, generation:_generation, consumed:[]};
@@ -119,9 +116,9 @@ class org.flashNight.arki.item.MapChestStashService {
         domain.target.__rewardStashCommitted = true;
         finishEntity(domain.target, domain.killAction);
         var notice:String;
-        if (domain.stashedCount > 0 && domain.directCount > 0) notice = "箱中部分物资已领取，其余已存入暂存区。";
-        else if (domain.stashedCount > 0) notice = "箱中物资已存入暂存区。";
-        else if (domain.directCount > 0) notice = "箱中物资已收入背包或收集品栏。";
+        if (domain.delivery.hasStash && domain.delivery.hasDirect) notice = "箱中部分物资已领取，其余已存入暂存区。";
+        else if (domain.delivery.hasStash) notice = "箱中物资已存入暂存区。";
+        else if (domain.delivery.hasDirect) notice = "箱中物资已收入背包或收集品栏。";
         else notice = "箱中物资已领取。";
         try { _root.发布消息(notice); } catch (noticeError) { }
         return true;

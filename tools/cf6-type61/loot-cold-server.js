@@ -1,9 +1,11 @@
 'use strict';
 const fs=require('node:fs'),net=require('node:net'),path=require('node:path');
 const root=path.resolve(process.argv[2]);
-const valid=r=>['decide','admit','claim','read'].includes(r.phase)
-  && /^[a-f0-9]{16}$/u.test(r.nonce) && r.slot==='cf7_env_cf6_loot_'+r.nonce
-  && ['longgun','sidearm_pair','none','guarantee'].includes(r.kind);
+const valid=r=>/^[a-f0-9]{16}$/u.test(r.nonce) && r.slot==='cf7_env_cf6_loot_'+r.nonce
+  && (r.kind==='legacy'
+    ? ['seed_v2','read_v2','migrate_v2','read_v3'].includes(r.phase)
+    : ['longgun','sidearm_pair','none','guarantee','unpicked'].includes(r.kind)
+      && ['pick_save','read'].includes(r.phase));
 const server=net.createServer(socket=>{
   fs.appendFileSync(path.join(root,'connections.log'),'connect '+new Date().toISOString()+'\n');
   let buffer='';socket.on('error',()=>{});

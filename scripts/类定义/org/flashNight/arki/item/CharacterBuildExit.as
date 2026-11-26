@@ -33,9 +33,7 @@ class org.flashNight.arki.item.CharacterBuildExit {
         return sm.settingsWriteAllowed() && !sm.hasRewardCommitPending()
             && !org.flashNight.arki.ui.GymTrainingPanelService.hasUnconfirmedGrowth()
             && !org.flashNight.arki.item.LootContainerService.hasStageSettlementPending()
-            && !org.flashNight.arki.item.LootContainerService.hasPendingTransportDetach()
-            && !org.flashNight.arki.scene.Cf6SoldierLoot.blocksSaveSuccess()
-            && !org.flashNight.arki.scene.Cf6SoldierGroundPickup.busy();
+            && !org.flashNight.arki.item.LootContainerService.hasPendingTransportDetach();
     }
 
     private static function sameOperation(x:Object,p:Object):Boolean {
@@ -135,8 +133,7 @@ class org.flashNight.arki.item.CharacterBuildExit {
             release(r,x);
         }
         if (x.state != "prepared" || p.phase != "persist") return x.state;
-        if (!eligible(p) || !domainsReady(sm) || !org.flashNight.arki.scene.Cf6SoldierLoot.prepareForTransition()
-                || !domainsReady(sm) || !current(o,r,p)) {
+        if (!eligible(p) || !domainsReady(sm) || !current(o,r,p)) {
             x.state="blocked"; return x.state;
         }
         x.state="unconfirmed";

@@ -1,190 +1,270 @@
 'use strict';
-const test=require('node:test');
-const assert=require('node:assert/strict');
-const vm=require('node:vm');
-const path=require('node:path');
-const {loadStaticClass}=require('../cf6-soldier-assets/offline/as2-source');
-const root=path.resolve(__dirname,'../../scripts/类定义/org/flashNight/arki/scene');
-function fixture(){
-  const c=vm.createContext({isFinite,Math,length:value=>typeof value==='string'?value.length:0,trace:()=>{}});
-  vm.runInContext(`
-    var writes=0,rolls=0,choices=0,queries=0,admits=0,notices=0;
-    var outcome='committed',gateHit=true,category=0,domainPending=null,saved=null;
-    var PersistedSnapshot={cloneData:function(v){return JSON.parse(JSON.stringify(v));},cloneArrayData:function(v){return JSON.parse(JSON.stringify(v));}};
-    var _root={savePath:'cf7_test_loot',_saveExt:{bookRun:{bookId:'cf6-sting',routeId:'type61',slot:'cf7_test_loot',seed:7,startedAt:8,planSeed:9,outcome:'active'}},
-      getNextHighestDepth:function(){return 1;},createEmptyMovieClip:function(){return {_name:'watcher'};},发布消息:function(){notices++;}};
-    var PauseManager={count:0,install:function(){},lease:function(){this.count++;return 'loot';},releaseLease:function(){this.count--;}};
-    var Cf6Type61Service={isActive:function(){return true;}},BookDefinition={get:function(){return {type61:{soldiers:config}};}};
-    var Cf6SoldierActions={actorValid:function(r){return r.valid;},context:function(){return null;}};
-    // This legacy admission model has no world. Real ground transfer is covered in AVM1 with the imported prefab.
-    var Cf6SoldierGroundPickup={busy:function(){return false;},tick:function(){},reconcile:function(){},status:function(){return {};}};
-    var ItemUtil={isItem:function(n){return n==='透镜';}};
-    var DropLuckRoller={getLuckBonus:function(){return .2;},rollDropWithContext:function(key,row,luck,prd){rolls++;prd.state[key]=(prd.state[key]||0)+1;return gateHit;}};
-    var LinearCongruentialEngine={instance:{nextFloat:function(){choices++;return category;}}};
-    function PseudoRandomDistribution(state){this.state=state;}
-    var WeaponAmmoRuntime={quoteInventoryPacks:function(rounds,reserve,capacity){return Math.max(0,Math.ceil((rounds-reserve)/capacity));}};
-    function settle(committed){
-      var p=domainPending;if(!p)return;
-      if(committed)saved=PersistedSnapshot.cloneData(_root._saveExt);
-      else _root._saveExt=p.before;
-      domainPending=null;p.callback(committed,p.domain);
-    }
-    var RewardStashService={lastError:'',
-      pendingOperationId:function(){return domainPending?domainPending.id:'';},
-      begin:function(id,origin,callback,domain){
-        if(domainPending)return false;
-        domainPending={id:id,callback:callback,domain:domain,before:PersistedSnapshot.cloneData(_root._saveExt)};
-        _root._saveExt=PersistedSnapshot.cloneData(_root._saveExt);return true;
-      },
-      end:function(){writes++;if(outcome==='committed'){settle(true);return {success:true};}
-        if(outcome==='not_committed'){settle(false);return {success:false,error:'save_not_committed'};}
-        return {success:false,error:'commit_pending'};},
-      resume:function(id){queries++;if(!domainPending||id!==domainPending.id)throw Error('wrong query');
-        if(outcome==='committed')settle(true);return {};},
-      admit:function(items,preferInventory,allowStash){
-        if(preferInventory||!allowStash)throw Error('wrong admission');
-        admits++;if(outcome==='admission_throw')throw Error('admission_throw');
-        var stash=_root._saveExt.stash||(_root._saveExt.stash=[]);
-        for(var i=0;i<items.length;i++)stash.push(PersistedSnapshot.cloneData(items[i]));return true;
-      },
-      cancel:function(){if(domainPending)settle(false);return {success:false,error:'cancelled'};}
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const vm = require('node:vm');
+const path = require('node:path');
+const {loadStaticClass} = require('../cf6-soldier-assets/offline/as2-source');
+
+const classes = path.resolve(__dirname, '../../scripts/类定义/org/flashNight/arki/scene');
+function fixture() {
+  const context = vm.createContext({length: v => typeof v === 'string' ? v.length : 0, trace() {}});
+  const run = source => vm.runInContext(source, context);
+  run(`
+    var commits = 0, rolls = 0, choices = 0, queries = 0, admissions = 0, attaches = 0;
+    var outcome = 'committed', gateHit = true, category = 0, pending = null, stored = null;
+    var worldItems = [], failOnce = '', reenter = false;
+    var clone = v => JSON.parse(JSON.stringify(v));
+    var PersistedSnapshot = {cloneData: clone, cloneArrayData: clone,
+      sameData: (before, after) => JSON.stringify(before) === JSON.stringify(after)};
+    var _root = {
+      savePath: 'cf7_env_cf6_fixture',
+      _saveExt: {bookRun: {bookId:'cf6-sting',routeId:'type61',slot:'cf7_env_cf6_fixture',
+        seed:7,startedAt:8,planSeed:9,outcome:'active',cf6SoldierLoot:null}},
+      存档系统: {dirtyMark:false}, gameworld: {mark:{}},
+      getNextHighestDepth() { return 1; }, createEmptyMovieClip() { return {_name:'watcher'}; }
     };
-  `,c);
-  c.config=vm.runInContext('JSON.parse('+JSON.stringify(JSON.stringify({version:'fixed-v2',lootPolicy:require('./soldier-loot-policy.source.json')}))+')',c);
-  loadStaticClass(c,path.join(root,'Cf6SoldierLootRules.as'),'Cf6SoldierLootRules');
-  const api=loadStaticClass(c,path.join(root,'Cf6SoldierLoot.as'),'Cf6SoldierLoot',['PseudoRandomDistribution']);
-  vm.runInContext(`
-    _root._saveExt.bookRun.cf6SoldierLoot=Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
-    var actor={cf6UnitIdentity:'A',cf6ProfileId:'p1',cf6RosterVersion:config.version,
-      cf6LootProfile:'major_rifle_xor_pair_xor_material',cf6LootMaterial:'透镜',soldierPhase:2,soldierIsElite:true,hp:0,
-      cf6ActionRecord:{valid:true,key:'birth.A'},
+    var StageReturnFlow = {worldIdentity: world => world.mark};
+    var Cf6Type61Service = {isActive() { return true; }};
+    var BookDefinition = {get() { return {type61:{soldiers:config}}; }};
+    var Cf6SoldierActions = {actorValid: record => record.valid, context: () => ({mapId:'A19'})};
+    var ItemUtil = {isItem: name => name === '透镜'};
+    var PlayerAssetTransaction = {
+      current() { return null; }, markDirtyRequired(owner) { owner.dirtyMark = true; }
+    };
+    var DropLuckRoller = {
+      getLuckBonus() { return .2; },
+      rollDropWithContext(key, item, luck, prd) {
+        rolls++;
+        prd.state[key] = (prd.state[key] || 0) + 1;
+        return gateHit;
+      }
+    };
+    var LinearCongruentialEngine = {instance:{nextFloat() { choices++; return category; }}};
+    function PseudoRandomDistribution(state) { this.state = state; }
+    var WeaponAmmoRuntime = {quoteInventoryPacks: (rounds,reserve,capacity) => Math.ceil((rounds-reserve)/capacity)};
+    var manager = {createCollectible(name, quantity, x, z, fly, spec, receipt) {
+      attaches++;
+      if (reenter) Cf6SoldierLoot.combatDeath(actor);
+      if (failOnce === 'known' && name === 'G1111') { failOnce = ''; receipt.state = 'not_created'; return; }
+      if (failOnce === 'unknown' && name === 'MP7' && worldItems.length === 1) {
+        failOnce = ''; receipt.state = 'unknown'; throw Error('unknown attach');
+      }
+      worldItems.push({item:clone(spec.pickupItemData), x, z});
+      receipt.state = 'created';
+      if (failOnce === 'post_attach') { failOnce = ''; throw Error('post attach initialization'); }
+    }};
+    _root.pickupItemManager = manager;
+    function settle(committed) {
+      const operation = pending;
+      if (committed) stored = clone(_root._saveExt);
+      else _root._saveExt = operation.before;
+      pending = null;
+      operation.callback(committed,operation.domain);
+    }
+    var RewardStashService = {
+      lastError:'',
+      pendingOperationId() { return pending ? pending.id : ''; },
+      begin(id,origin,callback,domain) {
+        if (pending) return false;
+        pending = {id,callback,domain,before:clone(_root._saveExt)};
+        _root._saveExt = clone(_root._saveExt);
+        return true;
+      },
+      admit(items,preferInventory,owned) {
+        if (!owned) throw Error('legacy migration needs ownership');
+        admissions++;
+        const destination = preferInventory ? 'inventory' : 'stash';
+        const target = _root._saveExt[destination] || (_root._saveExt[destination] = []);
+        for (const item of items) target.push(clone(item));
+        return true;
+      },
+      end() {
+        commits++;
+        if (outcome === 'committed') { settle(true); return {success:true}; }
+        if (outcome === 'not_committed') { settle(false); return {success:false,error:'save_not_committed'}; }
+        return {success:false,error:'commit_pending'};
+      },
+      resume(id) {
+        queries++;
+        if (!pending || pending.id !== id) throw Error('different pending operation');
+        if (outcome === 'committed') settle(true);
+      },
+      cancel() { if (pending && outcome !== 'unknown') settle(false); }
+    };
+  `);
+  context.config = run('JSON.parse('+JSON.stringify(JSON.stringify({
+    version:'fixed-v2', lootPolicy:require('./soldier-loot-policy.source.json')
+  }))+')');
+  const rules = loadStaticClass(context, path.join(classes,'Cf6SoldierLootRules.as'),'Cf6SoldierLootRules');
+  const api = loadStaticClass(context, path.join(classes,'Cf6SoldierLoot.as'),'Cf6SoldierLoot',['PseudoRandomDistribution']);
+  run(`
+    var actor = {cf6UnitIdentity:'A',cf6LootProfile:'major_rifle_xor_pair_xor_material',
+      cf6LootMaterial:'透镜',soldierPhase:2,soldierIsElite:true,hp:0,
+      cf6ActionRecord:{valid:true,key:'birth.A'},_x:200,Z轴坐标:300,
       长枪:{name:'G1111',lastUpdate:1,value:{level:13,mods:[],shot:4,reloadCount:8,isRocketMode:false,__extra:{kept:1}}},
       手枪:{name:'MP7',lastUpdate:2,value:{level:13,mods:[],shot:2}},
       手枪2:{name:'MP7',lastUpdate:3,value:{level:13,mods:[],shot:7}},
-      长枪属性:{capacity:15,clipname:'步枪弹药'},手枪属性:{capacity:40,clipname:'手枪弹药'},手枪2属性:{capacity:40,clipname:'手枪弹药'}};
-  `,c);
-  // AS2 missing-property reads are permissive; seed the unbound shape explicitly.
-  api.context=vm.runInContext('({identity:{}})',c);
-  assert.equal(api.bind(c.config),true);
-  return {c,api,run:s=>vm.runInContext(s,c)};
+      长枪属性:{capacity:15,clipname:'步枪弹药'},手枪属性:{capacity:40,clipname:'手枪弹药'},
+      手枪2属性:{capacity:40,clipname:'手枪弹药'}};
+    function legacy(id,state) {
+      var l = _root._saveExt.bookRun.cf6SoldierLoot;
+      if (!l) l = _root._saveExt.bookRun.cf6SoldierLoot = Cf6SoldierLootRules.create(config.version,config.lootPolicy.version);
+      var hit = state !== 'DECIDED_MISS';
+      var header = {sourceKey:'old.'+id,unitIdentity:id,spawnIdentity:id,rosterVersion:'old',configurationFingerprint:'old'};
+      var snapshot = {primary:actor.长枪,ground:{mapId:'A19',x:200,z:300}};
+      var roll = {recorded:true,gateEvaluated:true,hit,nominalPercent:3,luckBonus:0,prdPoolKey:'old',reason:hit?'roll_hit':'roll_miss'};
+      var items = hit ? [{name:'步枪弹药',value:1,lastUpdate:1}] : [];
+      var packet = Cf6SoldierLootRules.packet(header,snapshot,hit?'longgun':'none',roll,items);
+      packet.state = state;
+      if (!Cf6SoldierLootRules.reserve(l,packet)) throw Error('invalid old fixture');
+    }
+    function death(id) { actor.cf6UnitIdentity = id; return Cf6SoldierLoot.combatDeath(actor); }
+    function tick(n) { for (let i=0;i<n;i++) Cf6SoldierLoot.tick(); }
+    function ledger() { return _root._saveExt.bookRun.cf6SoldierLoot; }
+  `);
+  // AVM1 treats missing-property reads as undefined.
+  api.context = run('({identity:{}})');
+  assert.equal(api.bind(context.config),true);
+  return {run,rules,context,api};
 }
-function death(f){assert.equal(f.api.combatDeath(f.c.actor),true);}
-function decide(f){assert.equal(f.api.prepareForTransition(),false);}
-function drain(f){for(let i=0;i<5&&!f.api.prepareForTransition();i++);}
-function status(f){return JSON.parse(JSON.stringify(f.api.status()));}
 
-test('same-source service freezes exact values, records once and atomically admits paired ammunition',()=>{
-  const f=fixture();death(f);f.c.actor.长枪.value.shot=99;
-  decide(f);assert.equal(f.c.rolls,1);assert.equal(f.c.admits,0);
-  drain(f);assert.equal(f.c.writes,2);assert.equal(f.c.admits,1);
-  const item=f.c.saved.stash[0];assert.equal(item.value.shot,4);assert.equal(item.value.isRocketMode,false);assert.equal(item.value.__extra.kept,1);
-  assert.equal(f.c.saved.stash[1].value,1);assert.equal(f.c.saved.bookRun.cf6SoldierLoot.records['u.A'].state,'OWNED');
-  death(f);drain(f);assert.equal(f.c.rolls,1);assert.equal(f.c.writes,2);assert.equal(f.c.PauseManager.count,0);
-});
-test('known decision rollback retries the frozen roll and category without extra PRD advancement',()=>{
-  const f=fixture();death(f);f.c.outcome='not_committed';decide(f);
-  assert.equal(f.c.rolls,1);assert.equal(f.c.choices,1);assert.equal(f.c._root._saveExt.bookRun.cf6SoldierLoot.packages,0);
-  f.c.outcome='committed';drain(f);
-  assert.equal(f.c.rolls,1);assert.equal(f.c.choices,1);assert.equal(f.c.saved.bookRun.cf6SoldierLoot.prd['cf6.fixed158.major_rifle_xor_pair_xor_material'],1);
-  assert.equal(f.c.saved.stash.length,2);
-});
-test('unknown decision only queries the exact operation; no second roll, write or award',()=>{
-  const f=fixture();death(f);f.c.outcome='unknown';decide(f);const id=status(f).operationId;
-  for(let i=0;i<3;i++)assert.equal(f.api.prepareForTransition(),false);
-  assert.equal(status(f).operationId,id);assert.equal(f.c.writes,1);assert.equal(f.c.rolls,1);assert.equal(f.c.admits,0);
-  f.c.outcome='committed';drain(f);assert.equal(f.c.writes,2);assert.equal(f.c.admits,1);assert.equal(f.c.rolls,1);
-});
-test('unknown admission retains its candidate and package until an exact query resolves it',()=>{
-  const f=fixture();death(f);decide(f);f.c.outcome='unknown';assert.equal(f.api.prepareForTransition(),false);
-  assert.equal(f.c.admits,1);const id=status(f).operationId;
-  f.api.prepareForTransition();assert.equal(status(f).operationId,id);assert.equal(f.c.admits,1);
-  f.c.outcome='committed';drain(f);assert.equal(f.c.admits,1);assert.equal(f.c.saved.stash.length,2);assert.equal(f.c.rolls,1);
-});
-test('known admission failure restores durable hit and retries the same equipment and ammo',()=>{
-  const f=fixture();death(f);decide(f);f.c.outcome='admission_throw';decide(f);
-  assert.equal(f.c._root._saveExt.stash,undefined);assert.equal(f.c._root._saveExt.bookRun.cf6SoldierLoot.records['u.A'].state,'DECIDED_HIT');
-  f.c.outcome='committed';drain(f);assert.equal(f.c.rolls,1);assert.equal(f.c.saved.stash.length,2);assert.equal(f.c.PauseManager.count,0);
-});
-test('miss is persisted once with no equipment or ammo fallback',()=>{
-  const f=fixture();f.c.gateHit=false;death(f);drain(f);
-  assert.equal(f.c.writes,1);assert.equal(f.c.admits,0);assert.equal(f.c.choices,0);
-  assert.equal(f.c.saved.bookRun.cf6SoldierLoot.records['u.A'].state,'DECIDED_MISS');death(f);drain(f);assert.equal(f.c.rolls,1);
-});
-test('death during shield break, retirement or foreign actor ownership cannot enter the queue',()=>{
-  for(const mutation of ['actor.soldierPhase=1','actor.cf6EncounterRetired=true','actor.cf6ActionRecord.valid=false','actor.hp=1']){
-    const f=fixture();f.run(mutation);assert.equal(f.api.combatDeath(f.c.actor),false);assert.equal(status(f).queued,0);assert.equal(f.c.rolls,0);
-  }
-});
-test('reloaded durable hit resumes admission without replaying its random gate',()=>{
-  const f=fixture();death(f);decide(f);f.api.context=f.run('({identity:{}})');f.api.captured=f.run('({})');
-  assert.equal(f.api.bind(f.c.config),true);drain(f);assert.equal(f.c.rolls,1);assert.equal(f.c.admits,1);
-});
-test('same-name sidearms remain independent and use summed ordinary reload cost',()=>{
-  const f=fixture();f.c.category=.6;death(f);drain(f);
-  const items=f.c.saved.stash;assert.equal(items.length,3);assert.equal(items[0].value.shot,2);assert.equal(items[1].value.shot,7);
-  assert.equal(items[2].value,2);assert.notEqual(items[0].value,items[1].value);
-});
-test('changed slot cannot rebind or admit an unresolved old run',()=>{
-  const f=fixture();death(f);f.c.outcome='unknown';decide(f);f.run("_root.savePath='other'");
-  assert.equal(f.api.prepareForTransition(),false);assert.equal(f.c.admits,0);assert.equal(f.c.writes,1);
+test('death freezes real item data and consumes a quota with no asset commit', () => {
+  const f=fixture();
+  assert.equal(f.run("death('A')"),true);
+  assert.equal(f.run("worldItems[0].item.value.shot"),4);
+  f.run("actor.长枪.value.shot=99");
+  assert.equal(f.run("worldItems[0].item.value.shot"),4);
+  assert.equal(f.run("worldItems[1].item.name"),"步枪弹药");
+  assert.equal(f.run("ledger().v"),3);
+  assert.equal(f.run("ledger().records['u.A'].items"),undefined);
+  assert.equal(f.run("ledger().weaponInstances"),1);
+  assert.equal(f.run("_root.存档系统.dirtyMark"),true);
+  assert.equal(f.run("commits+admissions"),0);
 });
 
-test('save success remains blocked across the two durable stages and deferred exit',()=>{
-  const f=fixture();assert.equal(f.api.blocksSaveSuccess(),false);death(f);
-  assert.equal(f.api.blocksSaveSuccess(),true);decide(f);assert.equal(f.api.blocksSaveSuccess(),true);
-  drain(f);assert.equal(f.api.blocksSaveSuccess(),false);
+test('same death reentering during attach observes the prior reservation', () => {
+  const f=fixture();
+  f.run("reenter=true; death('A'); death('A'); tick(60)");
+  assert.equal(f.run("rolls"),1);
+  assert.equal(f.run("attaches"),2);
 });
 
-test('no installed material filters that category while preserving the single weapon gate and tier',()=>{
-  const f=fixture();f.c.actor.cf6LootMaterial=null;f.c.actor.长枪.value.tier='狱火';
-  f.c.actor.cf6FirepowerProfile={gunOnly:123,nano:4};death(f);drain(f);
-  assert.equal(f.c.rolls,1);assert.equal(f.c.admits,1);
-  const packet=f.c.saved.bookRun.cf6SoldierLoot.records['u.A'];
-  assert.equal(packet.kind,'longgun');assert.equal(packet.items[0].value.tier,'狱火');
-  assert.equal(packet.items[0].value.cf6FirepowerProfile,undefined);
-  assert.equal(packet.items[0].cf6FirepowerProfile,undefined);
-  death(f);drain(f);assert.equal(f.c.rolls,1);
+test('verified zero creation retries only the missing frozen child', () => {
+  const f=fixture();
+  f.run("failOnce='known';death('A');actor.长枪.value.shot=99;tick(60)");
+  assert.equal(f.run("rolls"),1);
+  assert.equal(f.run("attaches"),3);
+  assert.equal(f.run("worldItems[1].item.value.shot"),4);
+  assert.equal(f.run("worldItems[0].item.name"),"步枪弹药");
 });
 
-test('an unknown nonempty material remains invalid instead of widening admission',()=>{
-  const f=fixture();f.c.actor.cf6LootMaterial='unknown';death(f);drain(f);
-  assert.equal(f.c.rolls,0);assert.equal(f.c.admits,0);
+test('unknown second twin creation cannot replay either twin or the summed ammo', () => {
+  const f=fixture();
+  f.run("category=.6;failOnce='unknown';death('A');tick(90)");
+  assert.equal(f.run("attaches"),3);
+  assert.equal(f.run("worldItems.length"),2);
+  assert.equal(f.run("worldItems[1].item.value"),2);
+  assert.equal(f.run("ledger().weaponInstances"),2);
 });
 
-function missUntil(f,count) {
-  f.c.gateHit=false;
-  for(let i=0;i<count;i++) {
-    f.c.actor.cf6UnitIdentity='pity-'+i;f.c.actor.cf6ActionRecord.key='birth.pity-'+i;
-    death(f);drain(f);
-  }
-}
-test('eighth evaluated death freezes one guaranteed primary and leaves seven historical misses intact',()=>{
-  const f=fixture();missUntil(f,7);
-  const before=JSON.stringify(f.c.saved.bookRun.cf6SoldierLoot.records);
-  f.c.actor.cf6UnitIdentity='eighth';f.c.actor.cf6ActionRecord.key='birth.eighth';
-  death(f);drain(f);const ledger=f.c.saved.bookRun.cf6SoldierLoot;
-  assert.equal(f.c.rolls,8);assert.equal(f.c.choices,0);assert.equal(ledger.weaponInstances,1);assert.equal(ledger.packages,1);
-  const p=ledger.records['u.eighth'];assert.equal(p.kind,'longgun');assert.equal(p.roll.reason,'first_weapon_guarantee');
-  assert.equal(p.roll.naturalHit,false);assert.equal(p.roll.eligibleOrdinal,8);
-  const old={...ledger.records};delete old['u.eighth'];assert.equal(JSON.stringify(old),before);
-  death(f);drain(f);assert.equal(f.c.rolls,8);assert.equal(f.c.admits,1);
+test('known created entity cannot replay after its initialization exception', () => {
+  const f=fixture();
+  f.run("failOnce='post_attach';death('A');tick(90)");
+  assert.equal(f.run("attaches"),2);
+  assert.equal(f.run("worldItems.length"),2);
 });
-test('unknown guarantee decision queries the same frozen operation without advancing RNG or quota twice',()=>{
-  const f=fixture();missUntil(f,7);f.c.actor.cf6UnitIdentity='unknown-eighth';f.c.actor.cf6ActionRecord.key='birth.unknown-eighth';
-  death(f);f.c.outcome='unknown';decide(f);const op=status(f).operationId;
-  f.api.prepareForTransition();assert.equal(status(f).operationId,op);assert.equal(f.c.rolls,8);assert.equal(f.c.admits,0);
-  f.c.outcome='committed';drain(f);assert.equal(f.c.rolls,8);assert.equal(f.c.admits,1);assert.equal(f.c.saved.bookRun.cf6SoldierLoot.packages,1);
+
+test('unpicked assets and retries do not carry into a new world', () => {
+  const f=fixture();
+  f.run("failOnce='known';death('A');_root.gameworld={mark:{}};worldItems=[];tick(60)");
+  assert.equal(f.run("attaches"),2);
+  assert.equal(f.run("worldItems.length"),0);
+  assert.equal(f.run("ledger().packages"),1);
+  assert.equal(f.run("commits+admissions"),0);
 });
-test('already received weapon suppresses first-weapon guarantee even after eight later misses',()=>{
-  const f=fixture();death(f);drain(f);missUntil(f,9);
-  assert.equal(f.c.rolls,10);assert.equal(f.c.saved.bookRun.cf6SoldierLoot.weaponInstances,1);
-  assert.equal(Object.values(f.c.saved.bookRun.cf6SoldierLoot.records).filter(p=>p.roll.reason==='first_weapon_guarantee').length,0);
+
+test('an intervening asset write defers generation without eating the death count on world change', () => {
+  const f=fixture();
+  f.run("pending={id:'other.owner'};death('A');_root.gameworld={mark:{}};pending=null;tick(30)");
+  assert.equal(f.run("ledger().eligibleDeaths"),1);
+  assert.equal(f.run("rolls"),1);
+  assert.equal(f.run("worldItems.length"),0);
+  assert.equal(f.run("commits+admissions"),0);
 });
-test('legacy eight-miss ledger qualifies on the next new death without revising a durable identity',()=>{
-  const f=fixture();delete f.c.config.lootPolicy.firstWeaponGuarantee;missUntil(f,8);
-  f.c.config.lootPolicy.firstWeaponGuarantee=vm.runInContext('({afterEligibleDeaths:8})',f.c);
-  const old=JSON.stringify(f.c.saved.bookRun.cf6SoldierLoot.records);
-  f.c.actor.cf6UnitIdentity='legacy-next';f.c.actor.cf6ActionRecord.key='birth.legacy-next';death(f);drain(f);
-  const ledger=f.c.saved.bookRun.cf6SoldierLoot;assert.equal(ledger.records['u.legacy-next'].roll.eligibleOrdinal,9);
-  const previous={...ledger.records};delete previous['u.legacy-next'];assert.equal(JSON.stringify(previous),old);
+
+test('eighth evaluated death guarantees a rifle after old misses and an ineligible death', () => {
+  const f=fixture();
+  f.run("gateHit=false; for(let i=0;i<7;i++)legacy('miss'+i,'DECIDED_MISS');actor.Z轴坐标=NaN;death('ineligible');actor.Z轴坐标=300;death('A')");
+  assert.equal(f.run("ledger().records['u.ineligible'].eligible"),false);
+  assert.equal(f.run("ledger().eligibleDeaths"),8);
+  assert.equal(f.run("ledger().records['u.A'].kind"),"longgun");
+  assert.equal(f.run("rolls"),1);
+  assert.equal(f.run("choices"),0);
+});
+
+test('material and weapon quotas apply on generation even when nothing is picked up', () => {
+  const f=fixture();
+  f.run("category=.99;death('A');death('B');death('C');category=0;for(let i=0;i<7;i++)death('extra'+i)");
+  assert.equal(f.run("ledger().materials"),2);
+  assert.equal(f.run("ledger().packages"),6);
+  assert.equal(f.run("worldItems.filter(x=>x.item.name==='透镜').length"),2);
+  assert.equal(f.run("commits+admissions"),0);
+});
+
+test('old hit keeps original entitlement and exact pending operation until confirmation', () => {
+  const f=fixture();
+  f.run("legacy('hit','DECIDED_HIT'); outcome='unknown'");
+  assert.equal(f.api.settleLegacyBeforeReplacement(),false);
+  const operation = f.run("pending.id");
+  assert.equal(f.api.settleLegacyBeforeReplacement(),false);
+  assert.equal(f.run("pending.id"),operation);
+  assert.equal(f.run("commits"),1);
+  f.run("tick(60); outcome='committed';tick(60)");
+  assert.equal(f.run("stored.bookRun.cf6SoldierLoot.v"),3);
+  assert.equal(f.run("stored.stash.length"),1);
+  assert.equal(f.run("stored.inventory[0].value"),1);
+  assert.equal(f.run("worldItems.length+rolls"),0);
+});
+
+test('a confirmed pre-exposure rejection preserves old state for exact future migration', () => {
+  const f=fixture();
+  f.run("legacy('hit','DECIDED_HIT');outcome='not_committed'");
+  assert.equal(f.api.settleLegacyBeforeReplacement(),false);
+  assert.equal(f.run("ledger().records['u.hit'].state"),"DECIDED_HIT");
+  assert.equal(f.run("_root._saveExt.stash"),undefined);
+  f.run("outcome='committed';tick(60)");
+  assert.equal(f.run("stored.stash.length"),1);
+});
+
+test('already owned and serialized pending states never prompt a new grant', () => {
+  const owned=fixture();
+  owned.run("legacy('owned','OWNED');gateHit=false;death('A')");
+  assert.equal(owned.run("ledger().records['u.owned'].kind"),"longgun");
+  assert.equal(owned.run("commits+admissions"),0);
+
+  const pending=fixture();
+  pending.run("legacy('pending','COMMIT_PENDING')");
+  assert.equal(pending.api.settleLegacyBeforeReplacement(),false);
+  assert.equal(pending.run("ledger().v"),2);
+  assert.equal(pending.run("commits+admissions"),0);
+});
+
+test('the compatible generation-off policy reads v2 and v3 without creating assets', () => {
+  const f=fixture();
+  f.run("legacy('miss','DECIDED_MISS');config.lootPolicy.groundDropsEnabled=false");
+  assert.equal(f.run("Cf6SoldierLootRules.normalizeLedger(ledger()).ok"),true);
+  assert.equal(f.run("death('A')"),false);
+  f.run("_root._saveExt.bookRun.cf6SoldierLoot=Cf6SoldierLootRules.toGroundLedger(ledger())");
+  assert.equal(f.run("Cf6SoldierLootRules.normalizeLedger(ledger()).ok"),true);
+  assert.equal(f.run("death('B')"),false);
+  assert.equal(f.run("rolls+commits+admissions+attaches"),0);
+});
+
+test('a reload may keep the exact old promise but may not erase it or revive it from v3', () => {
+  const f=fixture();
+  f.run("legacy('hit','DECIDED_HIT');var incoming=clone(_root._saveExt.bookRun)");
+  assert.equal(f.run("Cf6SoldierLootRules.preservesLoadedLedger(_root._saveExt.bookRun,incoming)"),true);
+  assert.equal(f.run("delete incoming.cf6SoldierLoot.records['u.hit'];Cf6SoldierLootRules.preservesLoadedLedger(_root._saveExt.bookRun,incoming)"),false);
+  f.run("incoming=clone(_root._saveExt.bookRun);Cf6SoldierLoot.settleLegacyBeforeReplacement()");
+  assert.equal(f.run("Cf6SoldierLootRules.preservesLoadedLedger(_root._saveExt.bookRun,incoming)"),false);
 });

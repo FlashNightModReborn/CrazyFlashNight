@@ -3879,6 +3879,12 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(LootContainerService.hasActiveStashedReport(cover.report.runId),"the early reward owner remains authoritative during retry");
         var retryReport:Object = StageRunSession.parallelReturnReport(fade.__stageReturnToken);
         assertTrue(retryReport != null && retryReport.runId == cover.report.runId,"retry borrows the same committed report");
+        assertTrue(cover.report.rewardStashed === true && cover.report.rewardDelivery.hasDirect === true
+                && cover.report.rewardDelivery.hasStash === false
+                && opened.report.rewardDelivery.hasDirect === true && opened.report.rewardDelivery.hasStash === false
+                && retryReport.rewardDelivery.hasDirect === true && retryReport.rewardDelivery.hasStash === false
+                && StageRunSession.testOnlySnapshot().report.rewardDelivery === undefined,
+            "one confirmed supply fact reaches transition and panel without extending the prepared report");
         transition.failed(fade); transition.begin(fade);
         var retryCover:Object = _transitionMessages[_transitionMessages.length-1];
         assertTrue(retryCover.requestId != cover.requestId && retryCover.reportHandoff && retryCover.report.runId == cover.report.runId,

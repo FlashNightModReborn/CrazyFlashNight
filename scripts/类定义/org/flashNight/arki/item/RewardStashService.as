@@ -11,12 +11,7 @@ import org.flashNight.neur.Server.SaveManager;
 class org.flashNight.arki.item.RewardStashService {
     private static var _pending:Object = null;
     private static var _sequence:Number = 0;
-    private static var _lastAdmitStats:Object = null;
     public static var lastError:String = "";
-
-    public static function lastAdmitStats():Object {
-        return _lastAdmitStats;
-    }
 
     public static function peek():Object {
         var raw:Object = _root._saveExt == null ? null : _root._saveExt.rewardInbox;
@@ -47,12 +42,11 @@ class org.flashNight.arki.item.RewardStashService {
             }
         }
         var context:Object = {source:"online_supply", reason:"supply_delivery", operationId:key};
-        if (!begin(key, context, null, null)) return {success:false, error:lastError};
+        var delivery:Object = {};
+        if (!begin(key, context, supplyResolved, delivery)) return {success:false, error:lastError};
         try {
             var item:BaseItem = BaseItem.create(packName, 1);
-            if (item == null || !admit([item.toObject()], true, true, context)) return cancel("invalid_supply_delivery");
-            var stats:Object = lastAdmitStats();
-            var stashed:Boolean = stats != null && stats.stashedCount > 0;
+            if (item == null || !admit([item.toObject()], true, true, context, delivery)) return cancel("invalid_supply_delivery");
             var kept:Array = [];
             var old:Array = peek().legacy.supplyKeys;
             for (var j:Number = 0; j < old.length; j++) {
@@ -60,8 +54,17 @@ class org.flashNight.arki.item.RewardStashService {
             }
             kept.push(key); peek().legacy.supplyKeys = kept;
             return end("supply.v2|" + key + "|" + packName,
-                {success:true, duplicate:false, batchId:key, stashed:stashed}, "reward.supply_delivery");
+                {success:true, duplicate:false, batchId:key, stashed:delivery.hasStash}, "reward.supply_delivery");
         } catch (supplyError) { return cancel("invalid_supply_delivery"); }
+    }
+
+    private static function supplyResolved(committed:Boolean, delivery:Object):Boolean {
+        if (committed) {
+            _root.发布消息(delivery.hasStash
+                ? "补给已存入暂存区，可从物品页整理。"
+                : "补给已收入背包。");
+        }
+        return true;
     }
 
     public static function nextOperationId(kind:String):String {
@@ -278,18 +281,21 @@ class org.flashNight.arki.item.RewardStashService {
 
     /** 入账时执行情报持有上限；在同一候选里处理接受量与金币折算。 */
     public static function admit(items:Array, preferInventory:Boolean,
-                                  acquired:Boolean, context:Object):Boolean {
-        return admitItems(items, preferInventory, acquired, context, false);
+                                  acquired:Boolean, context:Object, delivery:Object):Boolean {
+        return admitItems(items, preferInventory, acquired, context, false, delivery);
     }
 
-    public static function admitRestoredSettlement(items:Array, context:Object):Boolean {
+    public static function admitRestoredSettlement(items:Array, context:Object, delivery:Object):Boolean {
         // 已保存的剩余清单取得暂存所有权时逐件保留，等待玩家领取或确认清理。
-        return admitItems(items, false, true, context, true);
+        return admitItems(items, false, true, context, true, delivery);
     }
 
     private static function admitItems(items:Array, preferInventory:Boolean, acquired:Boolean,
-                                       context:Object, frozenSettlement:Boolean):Boolean {
-        _lastAdmitStats = null;
+                                       context:Object, frozenSettlement:Boolean, delivery:Object):Boolean {
+        if (delivery != null) {
+            delete delivery.hasDirect;
+            delete delivery.hasStash;
+        }
         if (_pending == null || !(items instanceof Array)) return false;
         var directContext:Object = context;
         if (context != null && typeof context.inventoryReason == "string"
@@ -300,8 +306,9 @@ class org.flashNight.arki.item.RewardStashService {
             }
             directContext.reason = String(context.inventoryReason);
         }
-        var directCount:Number = 0;
-        var stashedCount:Number = 0;
+        var hasDirect:Boolean = false;
+        var hasStash:Boolean = false;
+        var rejection:Object = {};
         var appendItems:Array = [];
         for (var i:Number = 0; i < items.length; i++) {
             var item:Object = PersistedSnapshot.cloneData(items[i]);
@@ -310,37 +317,51 @@ class org.flashNight.arki.item.RewardStashService {
             if (acquired && !frozenSettlement && ItemUtil.isInformation(String(item.name))) {
                 var info:Object = ItemUtil.planInformationAcquire(String(item.name), Number(item.value));
                 if (!info.valid) return false;
-                if (info.money > 0 && !ItemUtil.acquire([{name:"金币", value:info.money}], directContext)) return false;
+                if (info.money > 0) {
+                    if (!ItemUtil.acquire([{name:"金币", value:info.money}], directContext)) return false;
+                    hasDirect = true;
+                }
                 if (info.accepted <= 0) continue;
                 item.value = info.accepted;
             }
-            if (preferInventory && moveIntoInventory(item, acquired, directContext) != null) {
-                directCount++;
-                continue;
+            if (preferInventory) {
+                if (moveIntoInventory(item, acquired, directContext, rejection) != null) {
+                    hasDirect = true;
+                    continue;
+                }
+                // 只有当前物品在纯规划阶段确认为容量不足，才允许自动暂存。
+                if (rejection.error !== "inventory_full") return false;
             }
             // Ordinary rows are planned once per bounded admission, avoiding one whole-store scan per item.
             if (ItemUtil.isInformation(String(item.name))) {
                 if (!RewardStashStore.append(peek(), [item])) return false;
             } else appendItems.push(item);
-            stashedCount++;
+            hasStash = true;
             if (acquired) PlayerAssetTransaction.recordItems("gain", [{name:item.name,
                 value:RewardStashStore.quantity(item), isQuantity:true,
                 tier:typeof item.value == "object" ? String(item.value.tier || "") : ""}], context);
         }
         if (!RewardStashStore.append(peek(), appendItems)) return false;
-        _lastAdmitStats = {directCount:directCount, stashedCount:stashedCount};
+        if (delivery != null) {
+            delivery.hasDirect = hasDirect;
+            delivery.hasStash = hasStash;
+        }
         return true;
     }
 
     /** 完整装备写入；数字物品复用现役材料/情报/手雷/药剂 affinity 路由。返回权威落位区域名或 null。 */
-    private static function moveIntoInventory(item:Object, acquired:Boolean, context:Object):String {
+    private static function moveIntoInventory(item:Object, acquired:Boolean, context:Object,
+                                              rejection:Object):String {
         var equipment:Boolean = typeof item.value == "object";
         var request:Object = {name:String(item.name), value:equipment ? Number(item.value.level) : Number(item.value),
             ownershipDelta:acquired ? RewardStashStore.quantity(item) : 0};
-        var plan:Object = ItemUtil.require([request]);
+        var plan:Object = ItemUtil.require([request], rejection);
         if (plan == null) return null;
         var destination:String = plannedDestination(plan, request.name);
-        if (destination == null) return null;
+        if (destination == null || (equipment && destination != "背包")) {
+            if (rejection != null) rejection.error = "invalid_plan";
+            return null;
+        }
         if (!equipment) {
             if (!ItemUtil.acquire([request], context)) throw new Error("stash_inventory_write_inexact");
             return destination;
@@ -348,10 +369,9 @@ class org.flashNight.arki.item.RewardStashService {
         var slot:String = null;
         for (var key:String in plan.背包) { slot = key; break; }
         if (slot == null) return null;
-        var value:BaseItem = BaseItem.createFromObject(PersistedSnapshot.cloneData(item));
         var bag:Object = _root.物品栏.背包;
-        if (value == null || !bag.add(Number(slot), value)
-                || bag.getItem(Number(slot)) !== value) throw new Error("stash_equipment_write_inexact");
+        var value:BaseItem = BaseItem.placeFullEquipment(item, bag, Number(slot));
+        if (value == null || bag.getItem(Number(slot)) !== value) throw new Error("stash_equipment_write_inexact");
         if (acquired) PlayerAssetTransaction.recordItems("gain", [{name:item.name,
             value:1, isQuantity:true, tier:String(item.value.tier || "")}], context);
         return destination;

@@ -32,6 +32,7 @@ def main(projectiles=False,chapter=False,firepower=False):
         if not (ROOT/source).is_file():raise ValueError('Missing published source: '+source)
         consumer.IMPORTS[linkage]=source
     if chapter:
+        consumer.IMPORTS['可拾取物2']='flashswf/arts/things.swf'
         for linkage in ('敌人-CF6Wings','敌人-CF6老头人形','敌人-CF6老头机器人'):
             source=lookup[linkage].get('swf')
             if not source:raise ValueError('Unresolved chapter native actor: '+linkage)

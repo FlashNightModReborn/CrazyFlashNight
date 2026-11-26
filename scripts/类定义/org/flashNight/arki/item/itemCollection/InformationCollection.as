@@ -18,18 +18,18 @@ class org.flashNight.arki.item.itemCollection.InformationCollection extends Dict
 
     
     //添加前检测maxValues中是否存在对应键以及value是否大于最大值
-    public function add(key:String,value:Number):Boolean{
+    public function add(key:String,value:Number,placement:Object):Boolean{
         if (rejectsExitWrite()) return false;
         var maxval = getMaxValue(key);
         if(isNaN(maxval)) return false;
         if(value > maxval) value = maxval;
-        return super.add(key,value);
+        return super.add(key,value,placement);
     }
 
     //改变值后检测是否大于最大值
-    public function addValue(key:String,value:Number):Void{
+    public function addValue(key:String,value:Number,placement:Object):Void{
         if (rejectsExitWrite()) return;
-        super.addValue(key,value);
+        super.addValue(key,value,placement);
         var maxval = getMaxValue(key);
         if(items[key] > maxval) items[key] = maxval;
     }

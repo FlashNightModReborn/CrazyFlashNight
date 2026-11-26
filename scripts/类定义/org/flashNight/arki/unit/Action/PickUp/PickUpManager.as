@@ -89,11 +89,10 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             return true;
         }
 
-        if(target.cf6GroundIdentity!==undefined){
-            // The runtime owns this feature; generic pickup does not link its full combat/save graph.
-            var capturePickup:Object=_global.org.flashNight.arki.scene.Cf6SoldierGroundPickup;
-            if(typeof capturePickup.claim!="function")return false;
-            return capturePickup.claim(this,target,actor,播放拾取动画);
+        if (target.pickupItemData != null) {
+            if (actor._parent !== _root.gameworld || actor.是否为敌人 === true || actor.__playerStatProjectionBlocked === true
+                    || actor.__playerStatInitializing === true) return false;
+            return pickupWithItemData(target, 拾取者, 播放拾取动画);
         }
         var str:String = "获得";
         var itemName:String = target.物品名;
@@ -177,25 +176,94 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         } else if (lootKind == null) {
             _root.发布消息(str);
         }
+        finishPickup(target, 拾取者, 播放拾取动画);
+        return true;
+    }
+
+    /** 带物品数据的世界拾取以容器首写为准，处理写后同步监听器移动、消费或抛错。 */
+    private function pickupWithItemData(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Boolean {
+        if (org.flashNight.neur.Server.SaveManager.getInstance().hasRewardCommitPending()
+                || PlayerAssetTransaction.current() != null) return false;
+        var raw:Object = target.pickupItemData;
+        var name:String = String(raw.name);
+        if (name !== target.物品名 || !ItemUtil.isItem(name)) return false;
+        var equipment:Boolean = ItemUtil.isEquipment(name);
+        var value:Number = equipment ? Number(raw.value.level) : Number(raw.value);
+        if (!isFinite(value) || value <= 0 || (equipment && typeof raw.value != "object")) return false;
+        var witness:Object = {};
+        var context:Object = {source:"pickup", reason:"world_pickup"};
+        var worldMark:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+        var recoverDispatch:Function;
+        var transaction:Object;
+        try {
+            recoverDispatch = EventBus.getInstance().createDispatchRecoveryToken();
+            if (equipment) transaction = PlayerAssetTransaction.begin(context);
+            if (equipment) {
+                if (!拾取者 && Key.isDown(_root.组合键)) {
+                    context.reason = "quick_equip";
+                    this.拾取并装备(name, value, raw, witness);
+                }
+                if (!witness.wrote) {
+                    context.reason = "world_pickup";
+                    var bag:Object = _root.物品栏.背包;
+                    var slot:Number = Number(bag.getFirstVacancy());
+                    if (slot >= 0) BaseItem.placeFullEquipment(raw, bag, slot, witness);
+                }
+            } else {
+                ItemUtil.acquire([{name:name, value:value}], context, witness);
+            }
+        } catch (writeError) {
+            if (recoverDispatch != null) recoverDispatch();
+            if (!witness.entered
+                    && worldMark === org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld))
+                target.__pickupClaimed = false;
+            throw writeError;
+        } finally {
+            if (witness.wrote) {
+                try {
+                    if (transaction != null) {
+                        PlayerAssetTransaction.markAuthorityWrite(transaction);
+                        context.tier = String(raw.value.tier || "");
+                        try { PlayerAssetTransaction.recordEffect("gain", "equip", name, 1, context); }
+                        finally { PlayerAssetTransaction.commit(transaction); }
+                    }
+                } finally {
+                    if (worldMark === org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)
+                            && target._parent === _root.gameworld) {
+                        PickUpManager.claimOneTimePickup(target.一次性领取ID);
+                        try { finishPickup(target, 拾取者, 播放拾取动画); }
+                        catch (projectionError) {
+                            recoverDispatch();
+                            trace("[PickUpManager] committed pickup projection: " + projectionError);
+                        }
+                    }
+                }
+            } else if (transaction != null) PlayerAssetTransaction.rollback(transaction);
+        }
+        if (!witness.wrote) _root.发布消息("物品栏空间不足，无法拾取！");
+        return witness.wrote === true;
+    }
+
+    private function finishPickup(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Void {
+        var name:String = target.物品名;
         var 控制对象:MovieClip = TargetCacheManager.findHero();
-        target.gotoAndPlay("消失");
         delete this.pickupItemDict[target.index];
+        target.gotoAndPlay("消失");
         _root.soundEffectManager.playSound("拾取音效.mp3");
 
         // 发布Pickup事件
-        _root.gameworld.dispatcher.publish("Pickup", itemName);
+        _root.gameworld.dispatcher.publish("Pickup", name);
         
         if (!拾取者 && 播放拾取动画 && 控制对象.__playerStatProjectionBlocked!==true
                 && 控制对象.__playerStatInitializing!==true) {
             控制对象.拾取();
         }
-        return true;
     }
     
     /**
      * 拾取并装备物品
      */
-    public function 拾取并装备(itemName:String, value:Number):Boolean {
+    public function 拾取并装备(itemName:String, value:Number, payload:Object, placement:Object):Boolean {
         var coordinator:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
         if(coordinator.equipmentTransition()!=null) return false;
         var admission:Object=coordinator.flush("pickup_equipment_admission");
@@ -217,39 +285,66 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
                 return false;
             }
             
-            if (!装备 && use) {
-                // 装备栏为空，直接装备
-                var candidate:BaseItem=BaseItem.create(itemName,value);
-                if(!_root.物品栏.装备栏.add(use,candidate)) return false;
-            } else if (装备 && use) {
-                // 装备栏有装备，需要替换
+            if (!use) return false;
+            var inventory:Object = _root.物品栏.装备栏;
+            var mode:String = type=="武器" || use=="手雷" ? String(use) : null;
+            if (payload != null) {
+                try { return equipFullPickup(payload, inventory, use, 装备, placement); }
+                finally {
+                    if (placement.wrote) projectCommittedEquipment(inventory.getItem(use).name === itemName ? mode : null);
+                }
+            }
+            var moved:Boolean = false;
+            if (装备) {
                 var 背包:Object = _root.物品栏.背包;
                 var targetIndex:Number = 背包.getFirstVacancy();
-                
-                if (targetIndex == -1) {
-                    return false;
-                }
-                
-                // 卸下装备
-                var result:Boolean = _root.物品栏.装备栏.move(背包, use, targetIndex);
-                if (!result) {
-                    return false;
-                }
-                
-                if(!_root.物品栏.装备栏.add(use, BaseItem.create(itemName, value))) {
-                    // 卸下已完成，仍须投影这个真实变化；新物品交原调用方尝试入包。
-                    projectCommittedEquipment(null);
-                    return false;
-                }
-            } else {
+                if (targetIndex == -1) return false;
+                if (!inventory.move(背包, use, targetIndex)) return false;
+                moved = true;
+            }
+
+            if (!inventory.add(use, BaseItem.create(itemName, value))) {
+                if (moved) projectCommittedEquipment(null);
                 return false;
             }
-        } else {
+            projectCommittedEquipment(mode);
+            return true;
+        }
+        return false;
+    }
+
+    /** The new instance and any displaced equipment become visible together. */
+    private static function equipFullPickup(raw:Object, equipment:Object, use:String, previous:Object,
+                                            placement:Object):Boolean {
+        if (previous == null) return BaseItem.placeFullEquipment(raw, equipment, use, placement) != null;
+        var bag:Object = _root.物品栏.背包;
+        var slot:Number = Number(bag.getFirstVacancy());
+        if (slot < 0) return false;
+        var item:BaseItem = BaseItem.createDetachedEquipment(raw);
+        if (item == null || equipment.getItem(use) !== previous || !equipment.isAddable(use, item)
+                || bag.getItem(slot) != null) return false;
+
+        PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
+        placement.entered = true;
+        if (!bag.transactionWrite(slot, previous)) return false;
+        if (!equipment.transactionWrite(use, item)) {
+            if (equipment.getItem(use) !== previous || !bag.transactionWrite(slot, null))
+                throw new Error("pickup_equipment_rollback_unknown");
+            placement.entered = false;
             return false;
         }
-        
-        // 容器已成功，异常不能被上层当成未拾取而再次 acquire。
-        projectCommittedEquipment(type=="武器" || use=="手雷" ? String(use) : null);
+        placement.wrote = true;
+        var recoverDispatch:Function = EventBus.getInstance().createDispatchRecoveryToken();
+        try { bag.publishTransactionChange(slot, "added"); }
+        catch (bagNoticeError) {
+            recoverDispatch();
+            trace("[PickUpManager] displaced equipment notice: " + bagNoticeError);
+        }
+        try { equipment.publishTransactionChange(use, "replaced"); }
+        catch (equipNoticeError) {
+            recoverDispatch();
+            trace("[PickUpManager] new equipment notice: " + equipNoticeError);
+        }
         return true;
     }
 
@@ -291,7 +386,9 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 创建可拾取物
      */
-    public function createCollectible(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean, parameterObject:Object):Void {
+    public function createCollectible(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean,
+                                      parameterObject:Object, creation:Object):Void {
+        if (creation != null) creation.state = "not_created";
         // Lee攻入篇禁用场内拾取物创建，覆盖受击掉武器、原生帧脚本及换形态等旁路。
         // 赠送复活币直接进入本局库存，不经过场内拾取物；其他书籍、普通关卡不受影响。
         if (org.flashNight.arki.scene.LeeAssaultService.suppressesEnemyDrops()) return;
@@ -343,19 +440,23 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             }
         }
         
-        parameterObject.index = this.count;
+        var world:MovieClip = _root.gameworld;
+        if (world == null || typeof world.attachMovie != "function") return;
+        var pickupIndex:Number = this.count++;
+        parameterObject.index = pickupIndex;
         parameterObject._x = X位置;
         parameterObject._y = Y位置;
         parameterObject.物品名 = 物品名;
         parameterObject.数量 = Number(数量);
         parameterObject.在飞 = Boolean(是否飞出);
         
-        var pickupItem:MovieClip = _root.gameworld.attachMovie(
-            "可拾取物2", 
-            "可拾取物" + this.count, 
-            _root.gameworld.getNextHighestDepth(), 
-            parameterObject
+        var depth:Number = world.getNextHighestDepth();
+        if (creation != null) creation.state = "unknown";
+        var pickupItem:MovieClip = world.attachMovie(
+            "可拾取物2", "可拾取物" + pickupIndex, depth, parameterObject
         );
+        if (pickupItem == null) return;
+        if (creation != null) creation.state = "created";
         
         // 纳入深度管理器，正确参与 Y 排序
         DepthManager.instance.updateDepth(pickupItem, pickupItem._y);
@@ -367,7 +468,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             this.createPickupItemPool();
         }
         
-        this.pickupItemDict[this.count] = pickupItem;
+        this.pickupItemDict[pickupIndex] = pickupItem;
         pickupItem.焦点高亮框._visible = false;
         
         var self:PickUpManager = this;
@@ -412,8 +513,6 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         // 可拾取物内部函数
         pickupItem.itemData = _root.getItemData(物品名 === "金钱" ? "金币" : 物品名);
         pickupItem.displayName = pickupItem.itemData.displayname;
-        
-        this.count++;
     }
     
     /**

@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.scene.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
+import org.flashNight.arki.unit.Action.PickUp.PickUpManager;
 import org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
@@ -85,8 +86,7 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
         for(var n:Number=0;n<names.length;n++)_root.物品栏[names[n]]=new ArrayInventory(null,50);
         _root.收集品栏={材料:new DictCollection(null),情报:new InformationCollection(null)};
         _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"type61",slot:slot,seed:761,startedAt:93,planSeed:93,outcome:"active"}};
-        // Native actor/death/transaction integration; physical restart persistence
-        // is independently verified by the twelve-process cold probe.
+        // Native actor and world drop integration. The cold probe verifies physical saves separately.
         SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true,saveInFlight:false});
         RewardInboxService.resetForTests();
     }
@@ -96,6 +96,7 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
         for(var i:Number=0;i<book.maps.length;i++)if(book.maps[i].id==maps[index])map=book.maps[i];
         world=_root.createEmptyMovieClip("cf6ChapterWorld"+index,_root.getNextHighestDepth());_root.gameworld=world;
         world.__stageReturnWorldIdentity={};world.dispatcher=new EventDispatcher();
+        _root.pickupItemManager=new PickUpManager();
         world.createEmptyMovieClip("地图",world.getNextHighestDepth());world.地图.僵尸型敌人总个数=0;world.地图.僵尸型敌人场上实际人数=0;
         world.子弹区域=world;world.createEmptyMovieClip("效果",world.getNextHighestDepth());
         world.createEmptyMovieClip("deadbody",world.getNextHighestDepth()).layers=[null,null,{}];
@@ -287,18 +288,28 @@ class org.flashNight.arki.scene.Cf6FixedChapterNativeTest {
             lootActor.长枪.value.shot=4;lootActor.长枪.value.chapterExtension={kept:9};
             LinearCongruentialEngine.instance.nextFloat=function():Number{return 0;};
             lootActor.hp=0;lootActor.dispatcher.publish("kill",lootActor);deathDone=true;
-            for(var n:Number=0;n<4;n++)Cf6SoldierLoot.prepareForTransition();
-            var p:Object=_root._saveExt.bookRun.cf6SoldierLoot.records["u.CF6-M-XX"];
-            check(p.kind=="longgun" && p.state=="OWNED","native combat death admits one package "+p.state+" error="+Cf6SoldierLoot.lastError);
-            check(p.items[0].value.shot===4 && p.items[0].value.isRocketMode===false && p.items[0].value.chapterExtension.kept===9,"native death snapshot keeps full actual item");
-            var ammo:Number=0,backpack:Object=_root.物品栏.背包.toObject();
-            for(var bagSlot:String in backpack)if(backpack[bagSlot].name===p.consumables[0].name)ammo+=Number(backpack[bagSlot].value);
-            check(_root._saveExt.bookRun.cf6SoldierLoot.packages===1 && RewardStashService.peek().entries.length===1
-                && ammo===p.consumables[0].value,"one durable ground weapon with ordinary reload ammo in inventory");
-            var count:Number=RewardStashService.peek().entries.length;
-            lootActor.dispatcher.publish("kill",lootActor);Cf6SoldierLoot.prepareForTransition();
-            check(RewardStashService.peek().entries.length===count,"duplicate kill cannot duplicate ownership");
-            trace("[CF6_CHAPTER_DEATH] actual shield break then native kill, exact G1111 packet owned");
+            for(var n:Number=0;n<30;n++)Cf6SoldierLoot.tick();
+            var ledger:Object=_root._saveExt.bookRun.cf6SoldierLoot,p:Object=ledger.records["u.CF6-M-XX"];
+            var manager:Object=_root.pickupItemManager,dict:Object=manager.getPickupItemDict();
+            var rifle:Object,ammo:Number=0,dropCount:Number=0;
+            for(var key:String in dict){
+                var payload:Object=dict[key].pickupItemData;
+                if(payload==null)continue;
+                dropCount++;
+                if(payload.name==="G1111")rifle=payload;
+                else ammo+=Number(payload.value);
+            }
+            check(ledger.v===3 && p.kind==="longgun" && ledger.eligibleDeaths===1,
+                "actual shielded actor death reserves one legitimate world package");
+            check(rifle.value.shot===4 && rifle.value.isRocketMode===false && rifle.value.chapterExtension.kept===9,
+                "actual death snapshot reaches the ordinary pickup prefab");
+            check(dropCount>=2 && ammo>0 && ItemUtil.getTotal("G1111")===0
+                && RewardStashStore.ownedQuantity(RewardStashService.peek(),"G1111")===0,
+                "actual death leaves rifle and ordinary reload ammo unowned in the world");
+            var count:Number=manager.getCount();
+            lootActor.dispatcher.publish("kill",lootActor);
+            check(manager.getCount()===count,"duplicate native kill cannot add another pickup");
+            trace("[CF6_CHAPTER_DEATH] actual shield break then native kill, full G1111 and ammo on ground");
             beginBoss();return;
         }
         if(age>180){check(false,"native shield transition timeout");beginBoss();}
