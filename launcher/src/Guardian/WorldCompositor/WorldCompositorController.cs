@@ -1414,8 +1414,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private void UpdateWorldShakeDamageReady()
         {
             lock (_weatherCameraLock)
-                _worldShake.SetSharedDamageReady(_opaqueHudEnabled && _damageRasterScene is OpaqueHudRasterScene
-                    && DamagePresentation.IsAvailable && !_damageLegacyFallback);
+                _worldShake.SetDamageWorldAnchorState(DamagePresentation.SupportsSharedWorldTransform, _damageLegacyFallback);
         }
 
         internal void ObserveWorldShakePause(bool paused)

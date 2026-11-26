@@ -53,20 +53,7 @@ RVertex RVS(uint id:SV_VertexID) {
     float2 stage=(rCamera.xy+world*rCamera.z)/float2(1024,576);
     o.pos=float4(stage.x*2-1,1-stage.y*2,.5,1);return o;
 }
-float4 RPS(RVertex v):SV_TARGET {
-    uint at=v.item*8u;float4 primary=rI[at+1u],secondary=rI[at+2u],clock=rI[at+3u];
-    float4 meta=rI[at+4u],p0=rI[at+5u],p1=rI[at+6u],p2=rI[at+7u];
-    uint style=(uint)clock.w;float4 effect;
-    if(style>=16u && style<28u) {
-        float radius=max(secondary.w,.5);float d=length(v.q)/radius;
-        float ring=exp(-pow((d-.55)/.14,2.0));float core=exp(-d*d*4.0);
-        effect=float4(lerp(primary.rgb,float3(1,1,.9),core),saturate((ring*.45+core*.7)*p0.x*.01));
-    } else if(style==11u) {
-        effect=ShadeFlame(v.q,v.lengthWorld,secondary.w,clock.x,clock.z,primary.rgb,secondary.rgb,p0,p1,p2);
-        if(rCamera.w>2.5) {
-            effect.rgb=lerp(primary.rgb,float3(1,.55,.08),.65);effect.a*=.15;
-        }
-    } else effect=ShadeRayStyle(style,v.q,v.lengthWorld,secondary.w,clock.x,clock.z,primary.rgb,secondary.rgb,p0,p1,p2,meta,clock.y);
+float4 RayFinish(RVertex v, uint style, float4 primary, float4 meta, float4 effect) {
     float rim=style==10u?1.0:1.0-smoothstep(v.paddingWorld*.82,v.paddingWorld,abs(v.q.y));
     // These authored renderers use intensity for geometry, not a second fade.
     float opacityScale=(style==0u||style==4u||style==10u)?1.0:clamp(meta.x,0.0,2.0);
@@ -77,5 +64,78 @@ float4 RPS(RVertex v):SV_TARGET {
         float4 c=float4(color,1);color=pow(abs(saturate(float3(dot(c,rowR),dot(c,rowG),dot(c,rowB))+offset.rgb)),1/max(offset.w,.001));
     }
     return float4(color*alpha,alpha);
+}
+
+struct RayPixelItem {
+    float4 primary, secondary, clock, meta, p0, p1, p2;
+};
+
+RayPixelItem RayLoadPixelItem(uint index) {
+    uint at = index * 8u;
+    RayPixelItem item = {rI[at+1u], rI[at+2u], rI[at+3u], rI[at+4u],
+                         rI[at+5u], rI[at+6u], rI[at+7u]};
+    return item;
+}
+
+float4 RayShadeSpot(float2 q, RayPixelItem item) {
+    float d = length(q) / max(item.secondary.w, .5);
+    float ring = exp(-pow((d-.55)/.14, 2.0));
+    float core = exp(-d*d*4.0);
+    return float4(lerp(item.primary.rgb, float3(1,1,.9), core),
+                  saturate((ring*.45+core*.7)*item.p0.x*.01));
+}
+
+float4 RayFlameEffect(RVertex v, RayPixelItem item) {
+    float4 effect = ShadeFlame(v.q, v.lengthWorld, item.secondary.w, item.clock.x,
+                               item.clock.z, item.primary.rgb, item.secondary.rgb,
+                               item.p0, item.p1, item.p2);
+    if (rCamera.w > 2.5) {
+        effect.rgb = lerp(item.primary.rgb, float3(1,.55,.08), .65);
+        effect.a *= .15;
+    }
+    return effect;
+}
+
+float4 RPSFlame(RVertex v):SV_TARGET {
+    RayPixelItem item = RayLoadPixelItem(v.item);
+    return RayFinish(v, 11u, item.primary, item.meta, RayFlameEffect(v, item));
+}
+
+float4 RPSScreen(RVertex v):SV_TARGET {
+    RayPixelItem item = RayLoadPixelItem(v.item);
+    RayCtx C = RayInitCtx(v.q, v.lengthWorld, item.primary, item.secondary, item.clock, item.meta);
+    return RayFinish(v, 9u, item.primary, item.meta, RayShadeConvergence(C, item.p0, item.p1));
+}
+
+float4 RPSTesla(RVertex v):SV_TARGET {
+    RayPixelItem item = RayLoadPixelItem(v.item);
+    RayCtx C = RayInitCtx(v.q, v.lengthWorld, item.primary, item.secondary, item.clock, item.meta);
+    return RayFinish(v, 0u, item.primary, item.meta, RayShadeTesla(C, item.p0, item.p1));
+}
+
+float4 RPSOther(RVertex v):SV_TARGET {
+    RayPixelItem item = RayLoadPixelItem(v.item);
+    RayCtx C = RayInitCtx(v.q, v.lengthWorld, item.primary, item.secondary, item.clock, item.meta);
+    uint style = (uint)item.clock.w;
+    float4 effect;
+    [branch] if (style >= 16u && style < 28u)
+        effect = RayShadeSpot(v.q, item);
+    else
+        effect = ShadeRayStyleOther(style, C, item.p0, item.p1, item.p2);
+    return RayFinish(v, style, item.primary, item.meta, effect);
+}
+
+float4 RPS(RVertex v):SV_TARGET {
+    RayPixelItem item = RayLoadPixelItem(v.item);
+    RayCtx C = RayInitCtx(v.q, v.lengthWorld, item.primary, item.secondary, item.clock, item.meta);
+    uint style = (uint)item.clock.w;
+    float4 effect;
+    [branch] if (style >= 16u && style < 28u)
+        effect = RayShadeSpot(v.q, item);
+    else [branch] if (style == 11u)
+        effect = RayFlameEffect(v, item);
+    else
+        effect = ShadeRayStyle(style, C, item.p0, item.p1, item.p2);
+    return RayFinish(v, style, item.primary, item.meta, effect);
 }
 )hlsl";

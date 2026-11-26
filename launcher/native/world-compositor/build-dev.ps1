@@ -17,4 +17,6 @@ if ($LASTEXITCODE -ne 0) { throw "Native development build failed: $LASTEXITCODE
 if ($Target -eq 'selftest') {
     & (Join-Path $OutDir 'InputBridgeSelfTest.exe')
     if ($LASTEXITCODE -ne 0) { throw "Input bridge self-test failed: $LASTEXITCODE" }
+    & (Join-Path $OutDir 'WorldShakeSelfTest.exe')
+    if ($LASTEXITCODE -ne 0) { throw "World shake self-test failed: $LASTEXITCODE" }
 }

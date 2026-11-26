@@ -23,6 +23,9 @@ namespace CF7Launcher.Tests.Guardian
         [Fact]
         public void StatsMatchFrozenNativeAbi() => Assert.Equal(88, Marshal.SizeOf<NativeCompositorSession.WorldShakeStats>());
 
+        [Fact]
+        public void PresentationDiagStatsMatchesNativeAbi() => Assert.Equal(232, Marshal.SizeOf<NativeCompositorSession.PresentationDiagStats>());
+
         [Theory]
         [InlineData(0, true)]
         [InlineData(1, true)]
@@ -168,6 +171,70 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(gate.ActiveGrant > old);
             gate.Observe(new[] { Impulse(old), Impulse(gate.ActiveGrant) }, 0, 0, 1);
             Assert.Equal(gate.ActiveGrant, Assert.Single(Assert.Single(fixture.Submissions).Impulses).Grant);
+        }
+
+        [Theory]
+        [InlineData(true, false)]
+        [InlineData(true, true)]
+        [InlineData(false, false)]
+        [InlineData(false, true)]
+        public void AnyEnabledWorldAnchoredConsumerLosingReadinessRevokesTheGrant(bool damageFailsFirst, bool fallback)
+        {
+            var fixture = new GateFixture();
+            var gate = fixture.Gate;
+            gate.SetUnitLifeWorldAnchorState(enabled: true, available: true, fallback: false);
+            int old = gate.ActiveGrant;
+
+            if (damageFailsFirst)
+                gate.SetDamageWorldAnchorState(available: fallback, fallback: fallback);
+            else
+                gate.SetUnitLifeWorldAnchorState(enabled: true, available: fallback, fallback: fallback);
+
+            Assert.Equal(0, gate.ActiveGrant);
+            Assert.Equal(("native", 0), fixture.Caps[^2]);
+            Assert.Equal(("caps", 0), fixture.Caps[^1]);
+            gate.AdmitIfReady();
+            Assert.Equal(0, gate.ActiveGrant);
+
+            if (damageFailsFirst)
+            {
+                gate.SetUnitLifeWorldAnchorState(enabled: true, available: false, fallback: false);
+                gate.SetDamageWorldAnchorState(available: true, fallback: false);
+            }
+            else
+            {
+                gate.SetDamageWorldAnchorState(available: false, fallback: false);
+                gate.SetUnitLifeWorldAnchorState(enabled: true, available: true, fallback: false);
+            }
+            gate.AdmitIfReady();
+            Assert.Equal(0, gate.ActiveGrant);
+
+            gate.SetDamageWorldAnchorState(available: true, fallback: false);
+            gate.SetUnitLifeWorldAnchorState(enabled: true, available: true, fallback: false);
+            gate.AdmitIfReady();
+            Assert.True(gate.ActiveGrant > old);
+            gate.Observe(new[] { Impulse(old), Impulse(gate.ActiveGrant) }, 0, 0, 1);
+            Assert.Equal(gate.ActiveGrant, Assert.Single(Assert.Single(fixture.Submissions).Impulses).Grant);
+        }
+
+        [Fact]
+        public void UnitLifeStartsBlockingOnlyWhenEnabledAndUnready()
+        {
+            var fixture = new GateFixture();
+            var gate = fixture.Gate;
+            int old = gate.ActiveGrant;
+            Assert.True(old > 0);
+
+            gate.SetUnitLifeWorldAnchorState(enabled: false, available: false, fallback: true);
+            Assert.Equal(old, gate.ActiveGrant);
+            gate.SetUnitLifeWorldAnchorState(enabled: true, available: false, fallback: false);
+            Assert.Equal(0, gate.ActiveGrant);
+            gate.AdmitIfReady();
+            Assert.Equal(0, gate.ActiveGrant);
+
+            gate.SetUnitLifeWorldAnchorState(enabled: false, available: false, fallback: true);
+            gate.AdmitIfReady();
+            Assert.True(gate.ActiveGrant > old);
         }
 
         [Theory]

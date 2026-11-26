@@ -114,6 +114,42 @@ struct ProbeHudCostStats {
     uint64_t poolReuses,poolAllocations,cachedBytes;
 };
 static_assert(sizeof(ProbeHudCostStats)==168,"HUD cost diagnostic layout");
+// Opt-in presentation breakdown for the same sampling epoch as ProbeHudCostStats.
+// Wake counters classify each composition admitted and finished during the epoch.
+struct ProbePresentationDiagStats {
+    uint32_t size;                       // 0: sizeof == 232
+    uint32_t enabled;                    // 4
+    uint32_t retainedWorldPreBlit;       // 8
+    uint32_t retainedShakeBlitActive;    // 12
+    uint64_t completed;                  // 16
+    uint64_t activeBlitSamples;          // 24
+    uint64_t zeroBypassSamples;          // 32
+    double   worldPreBlitMsTotal;        // 40
+    double   worldPreBlitP50Ms;          // 48
+    double   worldPreBlitP95Ms;          // 56
+    double   worldPreBlitP99Ms;          // 64
+    double   shakeBlitActiveMsTotal;     // 72
+    double   shakeBlitActiveP50Ms;       // 80
+    double   shakeBlitActiveP95Ms;       // 88
+    double   shakeBlitActiveP99Ms;       // 96
+    double   shakeBlitBypassMsTotal;     // 104
+    uint64_t shakeStageCreates;          // 112
+    uint64_t shakeStageAllocFails;       // 120
+    double   shakeStageCreateCpuMsTotal; // 128
+    double   shakeStageCreateCpuMaxMs;   // 136
+    uint64_t bulletHistoryDraws;         // 144
+    uint64_t bulletBatchesUploaded;      // 152
+    uint64_t bulletUploadBytes;          // 160
+    uint64_t rayDraws;                   // 168
+    uint64_t rayBatchesUploaded;         // 176
+    uint64_t rayUploadBytes;             // 184
+    uint64_t wakeFreshSource;            // 192
+    uint64_t wakeHudVersion;             // 200
+    uint64_t wakeShake;                  // 208
+    uint64_t wakeFrozenPresenceOnly;     // 216
+    uint64_t wakeOther;                  // 224
+};
+static_assert(sizeof(ProbePresentationDiagStats) == 232, "Presentation diagnostic layout");
 static_assert(sizeof(ProbeTimingStats)==88,"Presentation timing diagnostic layout");
 struct ProbeSceneLightStats {
     uint32_t size,count,width,height;
@@ -166,6 +202,7 @@ __declspec(dllexport) int __cdecl ProbeGetHudRasterStats(void* handle, ProbeHudR
 // already queued GPU queries may finish. Neither operation resets scene state.
 __declspec(dllexport) int __cdecl ProbeSetHudCostSampling(void* handle,int enabled);
 __declspec(dllexport) int __cdecl ProbeGetHudCostStats(void* handle,ProbeHudCostStats* stats);
+__declspec(dllexport) int __cdecl ProbeGetPresentationDiagStats(void* handle, ProbePresentationDiagStats* stats);
 // Required scene-light-v1 extension; existing ABI12 record layouts are unchanged.
 // Up to 128 cached world lights, rendered in bounded batches of 16. No camera
 // in this snapshot: panning/zooming samples the existing world-space field.

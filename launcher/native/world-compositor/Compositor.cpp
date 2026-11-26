@@ -24,6 +24,7 @@
 #include <vector>
 #include <tuple>
 #include <memory>
+#include <optional>
 #include <string>
 #include "FeedbackHistory.h"
 #include "CasSourceStage.h"
@@ -78,6 +79,125 @@ struct BulletFrameSnapshot {
     int count() const noexcept { return static_cast<int>(items.size()/8); }
 };
 constexpr size_t BulletHistoryCap=8;
+
+// These buffers belong to the capture worker. Keep up to two spare buffers when
+// a batch list shrinks so small count changes can reuse existing allocations.
+void PrepareBatchBuffers(ID3D11Device* device, std::vector<com_ptr<ID3D11Buffer>>& buffers,
+        size_t neededBatches, UINT batchBytes) {
+    const size_t retainedBatches = std::max<size_t>(2, neededBatches);
+    if (buffers.size() > retainedBatches) buffers.resize(retainedBatches);
+    D3D11_BUFFER_DESC desc{};
+    desc.ByteWidth = batchBytes;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    while (buffers.size() < neededBatches) {
+        com_ptr<ID3D11Buffer> buffer;
+        check_hresult(device->CreateBuffer(&desc, nullptr, buffer.put()));
+        buffers.push_back(std::move(buffer));
+    }
+}
+
+struct BulletHistoryGpuSlot {
+    uint64_t snapshotVersion = 0;
+    int itemCount = 0;
+    std::vector<com_ptr<ID3D11Buffer>> batchBuffers;
+};
+
+class BulletHistoryGpuRing {
+public:
+    const BulletHistoryGpuSlot& Prepare(ID3D11Device* device, ID3D11DeviceContext* context,
+            const BulletFrameSnapshot& snapshot, const std::vector<std::shared_ptr<const BulletFrameSnapshot>>& history,
+            bool syncActive, uint64_t& uploads) {
+        auto& slot = syncActive ? HistorySlot(snapshot.version, history) : unsyncedSlot_;
+        const int itemCount = snapshot.count();
+        if (snapshot.version != 0 && slot.snapshotVersion == snapshot.version && slot.itemCount == itemCount) return slot;
+
+        const size_t neededBatches = (itemCount + BulletBatchCap - 1) / BulletBatchCap;
+        PrepareBatchBuffers(device, slot.batchBuffers, neededBatches, BulletBatchCap * 32);
+        float batch[BulletBatchCap * 8];
+        for (size_t b = 0; b < neededBatches; ++b) {
+            const int offset = static_cast<int>(b) * BulletBatchCap;
+            const int count = std::min(BulletBatchCap, itemCount - offset);
+            std::memcpy(batch, snapshot.items.data() + offset * 8, static_cast<size_t>(count) * 32);
+            if (count < BulletBatchCap) std::memset(batch + count * 8, 0, static_cast<size_t>(BulletBatchCap - count) * 32);
+            context->UpdateSubresource(slot.batchBuffers[b].get(), 0, nullptr, batch, 0, 0);
+            ++uploads;
+        }
+        slot.itemCount = itemCount;
+        slot.snapshotVersion = snapshot.version;
+        return slot;
+    }
+
+private:
+    BulletHistoryGpuSlot& HistorySlot(uint64_t version,
+            const std::vector<std::shared_ptr<const BulletFrameSnapshot>>& history) {
+        for (auto& slot : historySlots_) {
+            if (version != 0 && slot.snapshotVersion == version) return slot;
+        }
+        // A missing version in the bounded history guarantees a slot whose
+        // snapshot has left that history or has never been populated.
+        for (auto& slot : historySlots_) {
+            if (std::none_of(history.begin(), history.end(), [&](const auto& snapshot) {
+                    return snapshot->version == slot.snapshotVersion;
+                })) return slot;
+        }
+        throw hresult_error(E_UNEXPECTED, L"No GPU slot for retained bullet snapshot");
+    }
+
+    std::array<BulletHistoryGpuSlot, BulletHistoryCap> historySlots_{};
+    BulletHistoryGpuSlot unsyncedSlot_;
+};
+
+struct RayBucketGpu {
+    std::vector<int> batchCounts;
+    std::vector<com_ptr<ID3D11Buffer>> batchBuffers;
+};
+
+class RayBucketGpuCache {
+public:
+    void Prepare(ID3D11Device* device, ID3D11DeviceContext* context, const RayFrameState& frame,
+            uint64_t version, uint64_t& uploads) {
+        if (cachedRayVersion == version) return;
+        for (auto& indices : indices_) indices.clear();
+        bool allTesla = true;
+        for (int i = 0; i < frame.count; ++i) {
+            const int style = static_cast<int>(frame.params[i * 32 + 15]);
+            const int bucket = RayStyleBucket(style);
+            indices_[bucket].push_back(i);
+            if (bucket == RayBucketOther && style != 0) allTesla = false;
+        }
+        otherAllTesla = allTesla && !indices_[RayBucketOther].empty();
+
+        // The fixed cbuffer upload reads the full batch, including the padded tail.
+        float batch[RayBatchCap * 32];
+        for (size_t i = 0; i < buckets.size(); ++i) {
+            auto& bucket = buckets[i];
+            const auto& indices = indices_[i];
+            bucket.batchCounts.clear();
+            const size_t neededBatches = (indices.size() + RayBatchCap - 1) / RayBatchCap;
+            PrepareBatchBuffers(device, bucket.batchBuffers, neededBatches, RayBatchCap * 128);
+            bucket.batchCounts.reserve(neededBatches);
+            for (size_t b = 0; b < neededBatches; ++b) {
+                const size_t at = b * RayBatchCap;
+                const int count = static_cast<int>(std::min(indices.size() - at, static_cast<size_t>(RayBatchCap)));
+                for (int k = 0; k < count; ++k) std::memcpy(batch + k * 32, frame.params + indices[at + k] * 32, 128);
+                if (count < RayBatchCap) std::memset(batch + count * 32, 0, static_cast<size_t>(RayBatchCap - count) * 128);
+                context->UpdateSubresource(bucket.batchBuffers[b].get(), 0, nullptr, batch, 0, 0);
+                ++uploads;
+                bucket.batchCounts.push_back(count);
+            }
+        }
+        cachedRayVersion = version;
+    }
+
+    std::array<RayBucketGpu, 3> buckets;
+    bool otherAllTesla = false;
+
+private:
+    uint64_t cachedRayVersion = 0;
+    std::array<std::vector<int>, 3> indices_;
+};
+
 constexpr int CombatFxCap=512;
 constexpr int PointLightCap=16;
 constexpr int SceneLightCap=128;
@@ -199,12 +319,21 @@ private:
     std::array<std::array<std::shared_ptr<std::vector<uint8_t>>,3>,HudRasterLayerCount> layers_{};
     size_t retained_=0;
 };
+std::optional<WorldUiClipPolicy> WorldUiPolicyForHudLayer(size_t layer) noexcept {
+    if (layer == 0) return WorldUiClipPolicy::OutputOverscanZeroContentWhenShifted;
+    return std::nullopt;
+}
+
+bool UsesContentScissor(WorldUiClipPolicy policy, const PresentGeometryContext& presentGeo) noexcept {
+    return policy == WorldUiClipPolicy::AlwaysContent || presentGeo.HasShakeOffset();
+}
+
 class HudRasterGpu {
     FocusFillGpu focusGpu_;
 public:
     void Draw(ID3D11Device* device,ID3D11DeviceContext* context,
-        const std::array<HudRasterFrame,HudRasterLayerCount>& frames,int outputWidth,int outputHeight,
-        ProbeHudRasterStats& stats,FocusCounts& focusStats,int shakeDx,int shakeDy,const D3D11_VIEWPORT& contentViewport,
+        const std::array<HudRasterFrame,HudRasterLayerCount>& frames,const PresentGeometryContext& presentGeo,
+        ProbeHudRasterStats& stats,FocusCounts& focusStats,
         ID3D11RasterizerState* raster,ID3D11RasterizerState* shakeScissorRaster) {
         stats.visibleLayers=0;
         if(!frames[3].focus)focusGpu_.ClearAtlas();
@@ -222,6 +351,7 @@ public:
             target.RenderTargetWriteMask=D3D11_COLOR_WRITE_ENABLE_ALL;
             check_hresult(device->CreateBlendState(&blend,blending.put()));
         }
+        const int outputWidth=presentGeo.outputWidth, outputHeight=presentGeo.outputHeight;
         D3D11_VIEWPORT viewport{0,0,static_cast<float>(outputWidth),static_cast<float>(outputHeight),0,1};
         context->RSSetViewports(1,&viewport);
         context->VSSetShader(vertex.get(),nullptr,0);context->PSSetShader(pixel.get(),nullptr,0);
@@ -258,19 +388,20 @@ public:
                 }
                 layer.version=frame.version;
             }
-            const bool shifted=i==0 && (shakeDx!=0 || shakeDy!=0);
-            if(shifted) {
-                const auto clip=WorldShakeStage::ContentPixels(contentViewport,outputWidth,outputHeight);
-                context->RSSetScissorRects(1,&clip);
+            const auto worldPolicy=WorldUiPolicyForHudLayer(i);
+            const bool clipToContent=worldPolicy && UsesContentScissor(*worldPolicy,presentGeo);
+            if(clipToContent) {
+                context->RSSetScissorRects(1,&presentGeo.contentClip);
                 context->RSSetState(shakeScissorRaster);
             }
-            float values[8]{static_cast<float>(frame.x+(shifted?shakeDx:0)),static_cast<float>(frame.y+(shifted?shakeDy:0)),
+            const int x=frame.x+(worldPolicy?presentGeo.shakeDx:0), y=frame.y+(worldPolicy?presentGeo.shakeDy:0);
+            float values[8]{static_cast<float>(x),static_cast<float>(y),
                 static_cast<float>(frame.width),static_cast<float>(frame.height),
                 static_cast<float>(outputWidth),static_cast<float>(outputHeight),0,0};
             context->UpdateSubresource(parameters.get(),0,nullptr,values,0,0);
             auto resource=layer.resource.get();context->PSSetShaderResources(0,1,&resource);
             context->Draw(6,0);++stats.draws;
-            if(shifted)context->RSSetState(raster);
+            if(clipToContent)context->RSSetState(raster);
             if(i==3 && frame.focus && frame.focus->count) {
                 focusGpu_.Draw(device,context,frame.focus,outputWidth,outputHeight,focusStats);
                 context->VSSetShader(vertex.get(),nullptr,0);context->PSSetShader(pixel.get(),nullptr,0);
@@ -288,10 +419,28 @@ private:
     com_ptr<ID3D11Buffer> parameters;com_ptr<ID3D11BlendState> blending;
 };
 
+constexpr uint32_t HudCostSampleCap=256;
+
+void GpuCostPercentiles(std::array<double,HudCostSampleCap>& values,uint32_t count,
+        double& p50,double& p95,double& p99) {
+    if(!count)return;
+    std::sort(values.begin(),values.begin()+count);
+    auto index=[count](double percentile) {return static_cast<size_t>(std::ceil((count-1)*percentile));};
+    p50=values[index(.5)];p95=values[index(.95)];p99=values[index(.99)];
+}
+
+enum class PresentationWakeReason { FreshSource, HudVersion, Shake, FrozenPresenceOnly, Other };
+
 // Opt-in worker-only GPU intervals. Query polling never flushes or waits for
 // GPU completion. A full ring drops a measurement, never a rendering frame.
 class HudCostSampler {
 public:
+    enum class Status { Completed, Disjoint, Error, Dropped };
+    struct Sample {
+        double worldMs, hudMs, worldPreBlitMs, shakeBlitMs;
+        bool usedShakeStage;
+    };
+
     bool Started() const {return initialized_;}
     template<class Report>
     void Poll(ID3D11DeviceContext* context,Report report) {
@@ -300,32 +449,33 @@ public:
             D3D11_QUERY_DATA_TIMESTAMP_DISJOINT clock{};
             HRESULT status=context->GetData(slot.disjoint.get(),&clock,sizeof(clock),D3D11_ASYNC_GETDATA_DONOTFLUSH);
             if(status==S_FALSE)continue;
-            if(FAILED(status)) {slot.pending=false;report(slot.epoch,2,0.,0.);continue;}
-            if(clock.Disjoint || clock.Frequency==0) {slot.pending=false;report(slot.epoch,1,0.,0.);continue;}
-            uint64_t stamps[3]{};bool complete=true;
-            for(size_t i=0;i<3;i++) {
+            if(FAILED(status)) {slot.pending=false;report(slot.epoch,Status::Error,Sample{});continue;}
+            if(clock.Disjoint || clock.Frequency==0) {slot.pending=false;report(slot.epoch,Status::Disjoint,Sample{});continue;}
+            std::array<uint64_t,4> stamps{};bool complete=true;
+            for(size_t i=0;i<stamps.size();i++) {
                 status=context->GetData(slot.stamps[i].get(),&stamps[i],sizeof(uint64_t),D3D11_ASYNC_GETDATA_DONOTFLUSH);
                 if(status==S_FALSE) {complete=false;break;}
-                if(FAILED(status)) {slot.pending=false;report(slot.epoch,2,0.,0.);complete=false;break;}
+                if(FAILED(status)) {slot.pending=false;report(slot.epoch,Status::Error,Sample{});complete=false;break;}
             }
             if(!complete)continue;
             slot.pending=false;
-            if(stamps[0]>stamps[1] || stamps[1]>stamps[2]) {report(slot.epoch,2,0.,0.);continue;}
+            if(!std::is_sorted(stamps.begin(),stamps.end())) {report(slot.epoch,Status::Error,Sample{});continue;}
             double scale=1000./static_cast<double>(clock.Frequency);
-            report(slot.epoch,0,static_cast<double>(stamps[1]-stamps[0])*scale,
-                static_cast<double>(stamps[2]-stamps[1])*scale);
+            report(slot.epoch,Status::Completed,Sample{static_cast<double>(stamps[2]-stamps[0])*scale,
+                static_cast<double>(stamps[3]-stamps[2])*scale,static_cast<double>(stamps[1]-stamps[0])*scale,
+                static_cast<double>(stamps[2]-stamps[1])*scale,slot.usedShakeStage});
         }
     }
     template<class Report>
     bool Begin(ID3D11Device* device,ID3D11DeviceContext* context,uint64_t epoch,Report report) {
-        if(failed_) {report(epoch,2,0.,0.);return false;}
+        if(failed_) {report(epoch,Status::Error,Sample{});return false;}
         if(!initialized_) {
             for(auto& slot:slots_) {
                 D3D11_QUERY_DESC description{D3D11_QUERY_TIMESTAMP_DISJOINT,0};
-                if(FAILED(device->CreateQuery(&description,slot.disjoint.put()))) {failed_=true;report(epoch,2,0.,0.);return false;}
+                if(FAILED(device->CreateQuery(&description,slot.disjoint.put()))) {failed_=true;report(epoch,Status::Error,Sample{});return false;}
                 description.Query=D3D11_QUERY_TIMESTAMP;
                 for(auto& stamp:slot.stamps)
-                    if(FAILED(device->CreateQuery(&description,stamp.put()))) {failed_=true;report(epoch,2,0.,0.);return false;}
+                    if(FAILED(device->CreateQuery(&description,stamp.put()))) {failed_=true;report(epoch,Status::Error,Sample{});return false;}
             }
             initialized_=true;
         }
@@ -335,17 +485,23 @@ public:
             current_=index;next_=(index+1)%slots_.size();slot.epoch=epoch;
             context->Begin(slot.disjoint.get());context->End(slot.stamps[0].get());return true;
         }
-        report(epoch,3,0.,0.);return false;
+        report(epoch,Status::Dropped,Sample{});return false;
     }
-    void WorldComplete(ID3D11DeviceContext* context) {context->End(slots_[current_].stamps[1].get());}
+    void BeforeShakeBlit(ID3D11DeviceContext* context) {context->End(slots_[current_].stamps[1].get());}
+    void WorldComplete(ID3D11DeviceContext* context,bool usedShakeStage) {
+        auto& slot=slots_[current_];
+        context->End(slot.stamps[2].get());
+        slot.usedShakeStage=usedShakeStage;
+    }
     void Finish(ID3D11DeviceContext* context) {
-        auto& slot=slots_[current_];context->End(slot.stamps[2].get());context->End(slot.disjoint.get());slot.pending=true;
+        auto& slot=slots_[current_];context->End(slot.stamps[3].get());context->End(slot.disjoint.get());slot.pending=true;
     }
 private:
     struct Slot {
         winrt::com_ptr<ID3D11Query> disjoint;
-        std::array<winrt::com_ptr<ID3D11Query>,3> stamps;
+        std::array<winrt::com_ptr<ID3D11Query>,4> stamps;
         uint64_t epoch=0;bool pending=false;
+        bool usedShakeStage=false;
     };
     std::array<Slot,8> slots_;
     size_t current_=0,next_=0;
@@ -506,34 +662,61 @@ public:
             if(enabled) {
                 ++hudCostEpoch_;hudCostStats_=ProbeHudCostStats{sizeof(ProbeHudCostStats)};
                 hudCostNext_=0;
+                presentationDiagStats_=ProbePresentationDiagStats{sizeof(ProbePresentationDiagStats)};
             }
             hudCostSampling_=enabled;hudCostStats_.enabled=enabled?1u:0u;
+            presentationDiagStats_.enabled=hudCostStats_.enabled;
         }
         Signal();
     }
     void HudCostStats(ProbeHudCostStats& result) {
-        std::array<double,256> world{},hud{};
+        std::array<double,HudCostSampleCap> world{},hud{};
         {
             std::lock_guard guard(mutex_);result=hudCostStats_;result.cachedBytes=hudPixelCache_.Bytes();
             for(size_t i=0;i<result.retained;i++) {world[i]=hudCostValues_[i][0];hud[i]=hudCostValues_[i][1];}
         }
-        if(result.retained) {
-            std::sort(world.begin(),world.begin()+result.retained);std::sort(hud.begin(),hud.begin()+result.retained);
-            auto index=[&](double percentile) {return static_cast<size_t>(std::ceil((result.retained-1)*percentile));};
-            result.worldP50Ms=world[index(.5)];result.worldP95Ms=world[index(.95)];result.worldP99Ms=world[index(.99)];
-            result.hudP50Ms=hud[index(.5)];result.hudP95Ms=hud[index(.95)];result.hudP99Ms=hud[index(.99)];
-        }
+        GpuCostPercentiles(world,result.retained,result.worldP50Ms,result.worldP95Ms,result.worldP99Ms);
+        GpuCostPercentiles(hud,result.retained,result.hudP50Ms,result.hudP95Ms,result.hudP99Ms);
         Signal(); // Wake an idle worker to retire available queries without a GPU flush.
     }
-    void RecordHudGpuCost(uint64_t epoch,unsigned status,double world,double hud) {
+    void PresentationDiagStats(ProbePresentationDiagStats& result) {
+        std::array<double,HudCostSampleCap> worldPreBlit{},shakeBlitActive{};
+        {
+            std::lock_guard guard(mutex_);result=presentationDiagStats_;
+            std::copy_n(worldPreBlitSamples_.begin(),result.retainedWorldPreBlit,worldPreBlit.begin());
+            std::copy_n(shakeBlitActiveSamples_.begin(),result.retainedShakeBlitActive,shakeBlitActive.begin());
+        }
+        GpuCostPercentiles(worldPreBlit,result.retainedWorldPreBlit,
+            result.worldPreBlitP50Ms,result.worldPreBlitP95Ms,result.worldPreBlitP99Ms);
+        GpuCostPercentiles(shakeBlitActive,result.retainedShakeBlitActive,
+            result.shakeBlitActiveP50Ms,result.shakeBlitActiveP95Ms,result.shakeBlitActiveP99Ms);
+        Signal();
+    }
+    void RecordHudGpuCost(uint64_t epoch,HudCostSampler::Status status,const HudCostSampler::Sample& sample) {
         std::lock_guard guard(mutex_);
         if(epoch!=hudCostEpoch_)return;
-        if(status==1) {++hudCostStats_.disjoint;return;}
-        if(status==2) {++hudCostStats_.errors;return;}
-        if(status==3) {++hudCostStats_.dropped;return;}
-        ++hudCostStats_.completed;hudCostStats_.worldMsTotal+=world;hudCostStats_.hudMsTotal+=hud;
-        hudCostValues_[hudCostNext_]={world,hud};hudCostNext_=(hudCostNext_+1)%hudCostValues_.size();
-        hudCostStats_.retained=std::min(256u,hudCostStats_.retained+1);
+        if(status==HudCostSampler::Status::Disjoint) {++hudCostStats_.disjoint;return;}
+        if(status==HudCostSampler::Status::Error) {++hudCostStats_.errors;return;}
+        if(status==HudCostSampler::Status::Dropped) {++hudCostStats_.dropped;return;}
+        ++hudCostStats_.completed;hudCostStats_.worldMsTotal+=sample.worldMs;hudCostStats_.hudMsTotal+=sample.hudMs;
+        hudCostValues_[hudCostNext_]={sample.worldMs,sample.hudMs};hudCostNext_=(hudCostNext_+1)%hudCostValues_.size();
+        hudCostStats_.retained=std::min(HudCostSampleCap,hudCostStats_.retained+1);
+
+        auto& diag=presentationDiagStats_;
+        // The cumulative counts are the ring cursors, reset with the epoch.
+        worldPreBlitSamples_[diag.completed%HudCostSampleCap]=sample.worldPreBlitMs;
+        ++diag.completed;
+        diag.worldPreBlitMsTotal+=sample.worldPreBlitMs;
+        diag.retainedWorldPreBlit=std::min(HudCostSampleCap,diag.retainedWorldPreBlit+1);
+        if(sample.usedShakeStage) {
+            shakeBlitActiveSamples_[diag.activeBlitSamples%HudCostSampleCap]=sample.shakeBlitMs;
+            ++diag.activeBlitSamples;
+            diag.shakeBlitActiveMsTotal+=sample.shakeBlitMs;
+            diag.retainedShakeBlitActive=std::min(HudCostSampleCap,diag.retainedShakeBlitActive+1);
+        } else {
+            ++diag.zeroBypassSamples;
+            diag.shakeBlitBypassMsTotal+=sample.shakeBlitMs;
+        }
     }
     bool HudRaster(int layer,const void* pixels,int width,int height,int stride,int x,int y) {
         if(layer<0 || layer>=static_cast<int>(HudRasterLayerCount) || stop_)return false;
@@ -851,7 +1034,7 @@ public:
             std::memcpy(state.params+s*32,p,128);
         }
         state.count=count;
-        { std::lock_guard guard(mutex_);bulletStyles_=state;++bulletVersion_; }
+        { std::lock_guard guard(mutex_);bulletStyles_=state;++bulletStylesVersion_;++bulletVersion_; }
         Signal();return true;
     }
     bool BulletFrame(const float* items,int count,float cameraX,float cameraY,float cameraScale,
@@ -902,7 +1085,7 @@ public:
     }
     void BulletSyncStats(ProbeBulletSyncStats& result) {std::lock_guard guard(mutex_);result=bulletSyncStats_;}
     void BulletSourceStats(ProbeBulletSourceStats& result) {
-        sourceTagRequested_=true;
+        if (!sourceTagRequested_.exchange(true)) Signal();
         std::lock_guard guard(mutex_);result=bulletSourceStats_;
     }
     bool CombatFxAtlas(const uint8_t* pixels,int width,int height,int length) {
@@ -1196,8 +1379,6 @@ private:
         cb.ByteWidth = 32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletParams.put()));
         com_ptr<ID3D11Buffer> bulletStyleParams;
         cb.ByteWidth = BulletStyleCap*128; check_hresult(device->CreateBuffer(&cb, nullptr, bulletStyleParams.put()));
-        com_ptr<ID3D11Buffer> bulletItemParams;
-        cb.ByteWidth = BulletBatchCap*32; check_hresult(device->CreateBuffer(&cb, nullptr, bulletItemParams.put()));
         auto fxVsCode=CompositorShaders::FVS,fxPsCode=CompositorShaders::FPS;
         com_ptr<ID3D11VertexShader> fxVs;com_ptr<ID3D11PixelShader> fxPs;
         check_hresult(device->CreateVertexShader(fxVsCode.data,fxVsCode.size,nullptr,fxVs.put()));
@@ -1224,13 +1405,18 @@ private:
         check_hresult(device->CreateBlendState(&bd,fxBlend.put()));
         com_ptr<ID3D11Texture2D> fxTexture;com_ptr<ID3D11ShaderResourceView> fxSrv;
         com_ptr<ID3D11Texture2D> bulletTexture;com_ptr<ID3D11ShaderResourceView> bulletSrv;
-        auto rayVsCode=CompositorShaders::RVS,rayPsCode=CompositorShaders::RPS;
-        com_ptr<ID3D11VertexShader> rayVs;com_ptr<ID3D11PixelShader> rayPs;
+        auto rayVsCode=CompositorShaders::RVS;
+        auto rayPsFlameCode=CompositorShaders::RPSFlame,rayPsScreenCode=CompositorShaders::RPSScreen;
+        auto rayPsTeslaCode=CompositorShaders::RPSTesla,rayPsOtherCode=CompositorShaders::RPSOther;
+        com_ptr<ID3D11VertexShader> rayVs;
+        com_ptr<ID3D11PixelShader> rayPsFlame,rayPsScreen,rayPsTesla,rayPsOther;
         check_hresult(device->CreateVertexShader(rayVsCode.data,rayVsCode.size,nullptr,rayVs.put()));
-        check_hresult(device->CreatePixelShader(rayPsCode.data,rayPsCode.size,nullptr,rayPs.put()));
-        com_ptr<ID3D11Buffer> rayParams,rayItems;
+        check_hresult(device->CreatePixelShader(rayPsFlameCode.data,rayPsFlameCode.size,nullptr,rayPsFlame.put()));
+        check_hresult(device->CreatePixelShader(rayPsScreenCode.data,rayPsScreenCode.size,nullptr,rayPsScreen.put()));
+        check_hresult(device->CreatePixelShader(rayPsTeslaCode.data,rayPsTeslaCode.size,nullptr,rayPsTesla.put()));
+        check_hresult(device->CreatePixelShader(rayPsOtherCode.data,rayPsOtherCode.size,nullptr,rayPsOther.put()));
+        com_ptr<ID3D11Buffer> rayParams;
         cb.ByteWidth=32;check_hresult(device->CreateBuffer(&cb,nullptr,rayParams.put()));
-        cb.ByteWidth=RayBatchCap*128;check_hresult(device->CreateBuffer(&cb,nullptr,rayItems.put()));
         com_ptr<ID3D11BlendState> rayScreenBlend;
         bd.RenderTarget[0].DestBlend=D3D11_BLEND_INV_SRC_COLOR;
         check_hresult(device->CreateBlendState(&bd,rayScreenBlend.put()));
@@ -1282,16 +1468,16 @@ private:
         uint64_t appliedAtmosphere = 0;
         uint64_t appliedBullet = 0, appliedBulletSnapshot = 0;
         uint64_t appliedBulletAtlas=0;
+        uint64_t bulletStylesVersion = 0, appliedBulletStylesVersion = 0;
         std::vector<std::shared_ptr<const BulletFrameSnapshot>> bulletHistory;
         // The ~512KB frame snapshots would overflow the worker's 1MB default
         // stack together; heap-allocate once and keep the draw code unchanged.
         BulletStylesState bulletStyles;
         std::shared_ptr<const BulletFrameSnapshot> bulletFrame=std::make_shared<const BulletFrameSnapshot>();
+        BulletHistoryGpuRing bulletGpu;
         CombatFxState fxFrame;uint64_t appliedFx=0,appliedFxAtlas=0;
         auto rayFrameStore=std::make_unique<RayFrameState>();auto& rayFrame=*rayFrameStore;uint64_t appliedRay=0;
-        // Per-frame pass buckets; capacity is reserved once and reused.
-        std::vector<int> rayFlame,rayScreen,rayOther;
-        rayFlame.reserve(RayItemCap);rayScreen.reserve(RayItemCap);rayOther.reserve(RayItemCap);
+        RayBucketGpuCache rayCache;
         float weatherTime = 0;
         double lastWeatherDrawMs = 0;
         float atmosphereTime = 0;
@@ -1309,7 +1495,9 @@ private:
         };
         HudRasterGpu hudGpu;
         HudCostSampler hudCostSampler;
-        auto recordHudGpuCost=[this](uint64_t epoch,unsigned status,double world,double hud) {RecordHudGpuCost(epoch,status,world,hud);};
+        auto recordHudGpuCost=[this](uint64_t epoch,HudCostSampler::Status status,const HudCostSampler::Sample& sample) {
+            RecordHudGpuCost(epoch,status,sample);
+        };
         uint64_t appliedHudVersion=0;
         bool lightCacheValid=false,fxItemsDirty=true;
         int cachedLightCount=0;
@@ -1379,14 +1567,14 @@ private:
             bool bulletsOn = bulletFrame->count()>0 && bulletStyles.count>0 && texture;
             bool fxOn=(fxFrame.count>0 || fxFrame.lightCount>0) && fxSrv && texture;
             uint64_t observedSceneLightVersion;{std::lock_guard guard(mutex_);observedSceneLightVersion=sceneLightVersion_;}
-            // Weather animates per presented frame; keep a 30fps floor even on
-            // unpaced probe sessions so motion stays at the worker cadence.
+            // Drive time-based animation and asynchronous tag sampling even in unpaced sessions.
             uint64_t observedHudVersion;bool hudVisible,shakeNeedsFrame;
             {std::lock_guard guard(mutex_);observedHudVersion=hudVersion_;
                 hudVisible=std::any_of(hudFrames_.begin(),hudFrames_.end(),[](const auto& frame){return static_cast<bool>(frame.pixels);});
                 if(shakeEngine_.NeedsFrame())shakeEngine_.Expire(QpcMs()/1000.0);
                 shakeNeedsFrame=shakeEngine_.NeedsFrame();}
-            int paceFps = fps_>0 ? fps_ : ((shakeNeedsFrame || weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0 || vision[0]==1) ? 30 : 0);
+            int paceFps = fps_>0 ? fps_ : ((shakeNeedsFrame || weatherOn || atmosphereOn || vision[0]==1
+                || sourceTagRequested_.load() || frameTagSampler.Pending()) ? 30 : 0);
             // Preserve independent HUD animation responsiveness; static HUD does not force redraw.
             if(hudVisible && observedHudVersion!=appliedHudVersion)paceFps=60;
             if (paceFps>0) {
@@ -1476,6 +1664,7 @@ private:
             }
             RECT client{}; GetClientRect(output_, &client);
             bool fresh = static_cast<bool>(frame);
+            const bool sourceTagNeedsFrame = sourceTagRequested_.load() || frameTagSampler.Pending();
             if (!frame && (!texture || (!retryPresent && !shakeNeedsFrame && appliedPostprocess==postprocessVersion && !feedbackHistory.Pending()
                     && appliedMode == mode_.load() && !proofRequested_ && !grabRequested_
                     && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
@@ -1483,14 +1672,32 @@ private:
                     && appliedWeather==weatherVersion && !weatherOn
                     && appliedAtmosphere==atmosphereVersion && !atmosphereOn
                     && appliedBullet==bulletVersion && appliedBulletAtlas==bulletAtlasObserved
-                    && !bulletsOn && appliedRay==rayVersion && rayFrame.count==0
-                    && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn
+                    && appliedRay==rayVersion && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion
+                    && !sourceTagNeedsFrame
                     && sceneGpu.version==observedSceneLightVersion && appliedHudVersion==observedHudVersion && vision[0]==0))) {
                 previousTimingPresent=0;
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
                 continue;
+            }
+            uint64_t measuredHudEpoch=hudCostSampling_.load()?hudCostEpoch_.load():0;
+            auto presentationWake=PresentationWakeReason::Other;
+            if(measuredHudEpoch) {
+                // Classify the states at the idle gate, before applying any new versions.
+                const bool onlyFrozenPresence=!fresh && !retryPresent && !shakeNeedsFrame && appliedPostprocess==postprocessVersion
+                    && !feedbackHistory.Pending() && appliedMode==mode_.load() && !proofRequested_ && !grabRequested_
+                    && outputW==client.right && outputH==client.bottom && appliedSettings==settingsVersion
+                    && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
+                    && appliedWeather==weatherVersion && !weatherOn && appliedAtmosphere==atmosphereVersion && !atmosphereOn
+                    && appliedBullet==bulletVersion && appliedBulletAtlas==bulletAtlasObserved && appliedRay==rayVersion
+                    && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion
+                    && sceneGpu.version==observedSceneLightVersion && appliedHudVersion==observedHudVersion
+                    && vision[0]==0 && (bulletsOn || rayFrame.count>0 || fxOn);
+                if(onlyFrozenPresence && !sourceTagNeedsFrame) presentationWake=PresentationWakeReason::FrozenPresenceOnly;
+                else if(fresh) presentationWake=PresentationWakeReason::FreshSource;
+                else if(shakeNeedsFrame) presentationWake=PresentationWakeReason::Shake;
+                else if(appliedHudVersion!=observedHudVersion) presentationWake=PresentationWakeReason::HudVersion;
             }
             double start = QpcMs();
             if (frame) {
@@ -1597,7 +1804,10 @@ private:
                 // index params[0..count) and uploads zero-pad the last cbuffer
                 // batch, so stale tail bytes need no clearing.
                 if (bulletVersion_!=appliedBullet) {
-                    bulletStyles=bulletStyles_;
+                    if (bulletStylesVersion_!=bulletStylesVersion) {
+                        bulletStyles=bulletStyles_;
+                        bulletStylesVersion=bulletStylesVersion_;
+                    }
                     bulletFrame=bulletLatest_;
                     if(bulletFrame->version>appliedBulletSnapshot) {
                         bulletSyncStats_.coalescedVersions+=bulletFrame->version-appliedBulletSnapshot-1;
@@ -1644,14 +1854,15 @@ private:
                 check_hresult(device->CreateShaderResourceView(bulletTexture.get(),nullptr,bulletSrv.put()));
                 appliedBulletAtlas=bulletAtlasVersion;bulletAtlasReady_=appliedBulletAtlas;
             }
-            uint64_t measuredHudEpoch=0;bool measureHudGpu=false;
-            if(hudCostSampling_.load()) {
+            if(measuredHudEpoch) {
                 // Admit the sample before creating/issuing queries. Disabling
                 // diagnostics can then drain every already-admitted sample.
                 std::lock_guard guard(mutex_);
-                if(hudCostSampling_) {measuredHudEpoch=hudCostEpoch_;++hudCostStats_.started;measureHudGpu=true;}
+                if(hudCostSampling_ && measuredHudEpoch==hudCostEpoch_) ++hudCostStats_.started;
+                else measuredHudEpoch=0;
             }
-            if(measureHudGpu)measureHudGpu=hudCostSampler.Begin(device.get(),context.get(),measuredHudEpoch,recordHudGpuCost);
+            const bool measureHudGpu=measuredHudEpoch
+                && hudCostSampler.Begin(device.get(),context.get(),measuredHudEpoch,recordHudGpuCost);
             int clientOffX=0,clientOffY=0,fullClientW=textureW,fullClientH=textureH;
             { std::lock_guard guard(mutex_);
                 geometry_.ResolveClientForTexture(textureW,textureH,clientOffX,clientOffY,fullClientW,fullClientH);
@@ -1769,16 +1980,19 @@ private:
             }
             bool useShakeStage=false;
             D3D11_RECT shakeSamples{};
+            WorldShakeStage::AllocationSample shakeAllocation;
             if(!proof && (shakeDx!=0 || shakeDy!=0)) {
                 shakeSamples=WorldShakeStage::SamplePixels(contentViewport,viewport,w,h);
                 if(shakeSamples.left<shakeSamples.right && shakeSamples.top<shakeSamples.bottom) {
-                    useShakeStage=shakeStage.EnsureOutputSize(device.get(),w,h);
+                    useShakeStage=shakeStage.EnsureOutputSize(device.get(),w,h,measuredHudEpoch?&shakeAllocation:nullptr);
                     std::lock_guard guard(mutex_);
                     shakeHealthy_=useShakeStage;shakeRtBytes_=shakeStage.Bytes();
                     if(!useShakeStage)shakeEngine_.Clear();
                 }
             }
             if(!useShakeStage)shakeDx=shakeDy=0;
+            const PresentGeometryContext presentGeo{w,h,contentViewport,
+                WorldShakeStage::ContentPixels(contentViewport,w,h),shakeDx,shakeDy};
             com_ptr<ID3D11Texture2D> back;
             if(!useShakeStage)check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),back.put_void()));
             auto worldTexture=useShakeStage?shakeStage.Texture():back.get();
@@ -1884,36 +2098,34 @@ private:
             // cbuffer and LUT resource stay bound for the bullet grade.
             // All retained pictures use this composition's immutable style table.
             // Lazy upload keeps the zero-bullet path free of GPU updates.
-            bool bulletStylesUploaded=false;
-            auto drawBulletSnapshot=[&](const float* items,int itemCount,float cameraX,float cameraY,float cameraScale,const int* identity) {
+            uint64_t bulletDraws=0,bulletUploads=0,rayDraws=0,rayUploads=0;
+            auto drawBulletSnapshot=[&](const BulletFrameSnapshot& snapshot,const int* identity) {
+                const int itemCount=snapshot.count();
                 if(itemCount==0 || bulletStyles.count==0 || !texture || proof)return;
                 frameSync.UpdateParams(context.get(),identity,textureW,textureH,contentViewport,syncActive,!proof,
                     clientOffX,clientOffY,fullClientW,fullClientH);
                 float bp[8]{contentViewport.Width,contentViewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(itemCount),
-                    cameraX,cameraY,cameraScale,static_cast<float>(bulletStyles.count)};
-                if(!bulletStylesUploaded) {
+                    snapshot.cameraX,snapshot.cameraY,snapshot.cameraScale,static_cast<float>(bulletStyles.count)};
+                if(appliedBulletStylesVersion!=bulletStylesVersion) {
                     context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
-                    bulletStylesUploaded=true;
+                    appliedBulletStylesVersion=bulletStylesVersion;
                 }
                 context->VSSetShader(bulletVs.get(),nullptr,0); context->PSSetShader(bulletPs.get(),nullptr,0);
                 auto bulletBuffer=bulletParams.get();
                 context->VSSetConstantBuffers(1,1,&bulletBuffer); context->PSSetConstantBuffers(1,1,&bulletBuffer);
-                auto bulletStyleBuffer=bulletStyleParams.get(); auto bulletItemBuffer=bulletItemParams.get();
+                auto bulletStyleBuffer=bulletStyleParams.get();
                 context->VSSetConstantBuffers(2,1,&bulletStyleBuffer); context->PSSetConstantBuffers(2,1,&bulletStyleBuffer);
-                context->VSSetConstantBuffers(3,1,&bulletItemBuffer);
                 context->OMSetBlendState(alphaBlend.get(),nullptr,0xffffffff);
                 auto bulletResource=bulletSrv.get();auto bulletSampler=fxSampler.get();
                 context->PSSetShaderResources(2,1,&bulletResource);context->PSSetSamplers(2,1,&bulletSampler);
-                // The fixed cbuffer upload reads a full batch. The staging buffer is
-                // filled per batch and only the tail of a partial batch is zero padded.
-                float batch[BulletBatchCap*8];
-                for(int offset=0;offset<itemCount;offset+=BulletBatchCap) {
+                const auto& slot=bulletGpu.Prepare(device.get(),context.get(),snapshot,bulletHistory,syncActive,bulletUploads);
+                for(int offset=0,b=0;offset<itemCount;offset+=BulletBatchCap,++b) {
                     int count=std::min(BulletBatchCap,itemCount-offset);bp[3]=static_cast<float>(count);
                     context->UpdateSubresource(bulletParams.get(),0,nullptr,bp,0,0);
-                    std::memcpy(batch,items+offset*8,static_cast<size_t>(count)*32);
-                    if(count<BulletBatchCap)std::memset(batch+count*8,0,static_cast<size_t>(BulletBatchCap-count)*32);
-                    context->UpdateSubresource(bulletItemParams.get(),0,nullptr,batch,0,0);
+                    auto bulletItemBuffer=slot.batchBuffers[b].get();
+                    context->VSSetConstantBuffers(3,1,&bulletItemBuffer);
                     context->Draw(count*6,0);
+                    ++bulletDraws;
                 }
                 context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             };
@@ -1922,48 +2134,35 @@ private:
                 // immutable identity is drawn; never substitute a future/old bullet.
                 for(const auto& snapshot:bulletHistory) {
                     int identity[4]{snapshot->ordinaryEpoch,snapshot->ordinaryFrame,snapshot->chainEpoch,snapshot->chainFrame};
-                    drawBulletSnapshot(snapshot->items.data(),static_cast<int>(snapshot->items.size()/8),
-                        snapshot->cameraX,snapshot->cameraY,snapshot->cameraScale,identity);
+                    drawBulletSnapshot(*snapshot,identity);
                 }
-            } else drawBulletSnapshot(bulletFrame->items.data(),bulletFrame->count(),bulletFrame->cameraX,
-                bulletFrame->cameraY,bulletFrame->cameraScale,syncIdentity);
+            } else drawBulletSnapshot(*bulletFrame,syncIdentity);
             ID3D11ShaderResourceView* noSyncSource=nullptr;context->VSSetShaderResources(4,1,&noSyncSource);
+            rayCache.Prepare(device.get(),context.get(),rayFrame,appliedRay,rayUploads);
             if(rayFrame.count>0 && texture && !proof) {
-                context->VSSetShader(rayVs.get(),nullptr,0);context->PSSetShader(rayPs.get(),nullptr,0);
-                auto rp=rayParams.get(),ri=rayItems.get();
+                context->VSSetShader(rayVs.get(),nullptr,0);
+                auto rp=rayParams.get();
                 context->VSSetConstantBuffers(1,1,&rp);context->PSSetConstantBuffers(1,1,&rp);
-                context->VSSetConstantBuffers(2,1,&ri);context->PSSetConstantBuffers(2,1,&ri);
-                // Bucket source indices by the same style test RVS applies per
-                // pass (RayPassBuckets.h). Each pass uploads only the batches it
-                // actually draws; records keep their original order inside every
-                // pass and an empty pass emits no upload or draw.
-                rayFlame.clear();rayScreen.clear();rayOther.clear();
-                for(int i=0;i<rayFrame.count;i++) {
-                    int bucket=RayStyleBucket(static_cast<int>(rayFrame.params[i*32+15]));
-                    if(bucket==RayBucketFlame) rayFlame.push_back(i);
-                    else if(bucket==RayBucketScreen) rayScreen.push_back(i);
-                    else rayOther.push_back(i);
-                }
-                auto drawRayPass=[&](int pass,const std::vector<int>& bucket,ID3D11BlendState* blend) {
-                    if(bucket.empty()) return;
+                auto drawRayPass=[&](int pass,const RayBucketGpu& bucket,ID3D11PixelShader* ps,ID3D11BlendState* blend) {
+                    if(bucket.batchCounts.empty()) return;
+                    context->PSSetShader(ps,nullptr,0);
                     context->OMSetBlendState(blend,nullptr,0xffffffff);
-                    // The fixed cbuffer upload always reads a full batch; the tail stays zeroed.
-                    float batch[RayBatchCap*32];
-                    for(size_t at=0;at<bucket.size();at+=RayBatchCap) {
-                        int count=static_cast<int>(std::min(bucket.size()-at,static_cast<size_t>(RayBatchCap)));
+                    for(size_t b=0;b<bucket.batchCounts.size();++b) {
+                        const int count=bucket.batchCounts[b];
                         float params[8]{contentViewport.Width,contentViewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(count),
                             rayFrame.cameraX,rayFrame.cameraY,rayFrame.cameraScale,static_cast<float>(pass)};
-                        for(int k=0;k<count;k++) std::memcpy(batch+k*32,rayFrame.params+bucket[at+k]*32,128);
-                        if(count<RayBatchCap)std::memset(batch+count*32,0,static_cast<size_t>(RayBatchCap-count)*128);
                         context->UpdateSubresource(rayParams.get(),0,nullptr,params,0,0);
-                        context->UpdateSubresource(rayItems.get(),0,nullptr,batch,0,0);context->Draw(count*6,0);
+                        auto ri=bucket.batchBuffers[b].get();
+                        context->VSSetConstantBuffers(2,1,&ri);context->PSSetConstantBuffers(2,1,&ri);
+                        context->Draw(count*6,0);
+                        ++rayDraws;
                     }
                 };
-                // Pass/blend pairing is unchanged: 0 additive, 1 additive, 2 screen, 3 additive.
-                drawRayPass(0,rayFlame,fxBlend.get());
-                drawRayPass(1,rayOther,lightBlend.get());
-                drawRayPass(2,rayScreen,rayScreenBlend.get());
-                drawRayPass(3,rayFlame,lightBlend.get());
+                // Pass/blend pairing is unchanged: 0 flame, 1 other/tesla, 2 screen, 3 flame additive.
+                drawRayPass(0,rayCache.buckets[RayBucketFlame],rayPsFlame.get(),fxBlend.get());
+                drawRayPass(1,rayCache.buckets[RayBucketOther],rayCache.otherAllTesla?rayPsTesla.get():rayPsOther.get(),lightBlend.get());
+                drawRayPass(2,rayCache.buckets[RayBucketScreen],rayPsScreen.get(),rayScreenBlend.get());
+                drawRayPass(3,rayCache.buckets[RayBucketFlame],rayPsFlame.get(),lightBlend.get());
                 context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             }
             drawFx(fxFrame.casings,fxFrame.count-fxFrame.casings);
@@ -1980,13 +2179,14 @@ private:
                     visionVersion,nightVisionEpoch_.load(),QpcMs(),lutActive);
             } else if(!proof) nightVision.Reset();
             context->PSSetShaderResources(1,1,&empty);
-            if(useShakeStage)shakeStage.BlitToBackbuffer(context.get(),rtv.get(),w,h,contentViewport,shakeSamples,shakeDx,shakeDy);
+            if(measureHudGpu)hudCostSampler.BeforeShakeBlit(context.get());
+            if(useShakeStage)shakeStage.BlitToBackbuffer(context.get(),rtv.get(),presentGeo,shakeSamples);
+            if(measureHudGpu)hudCostSampler.WorldComplete(context.get(),useShakeStage);
             std::array<HudRasterFrame,HudRasterLayerCount> hudFrames;
             {std::lock_guard guard(mutex_);hudFrames=hudFrames_;appliedHudVersion=hudVersion_;}
             ProbeHudRasterStats hudDraw{sizeof(ProbeHudRasterStats)};
-            if(measureHudGpu)hudCostSampler.WorldComplete(context.get());
-            if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,w,h,hudDraw,focusCounts_,
-                shakeDx,shakeDy,contentViewport,raster.get(),shakeStage.ScissorRaster());
+            if(!proof)hudGpu.Draw(device.get(),context.get(),hudFrames,presentGeo,hudDraw,focusCounts_,
+                raster.get(),shakeStage.ScissorRaster());
             if(measureHudGpu)hudCostSampler.Finish(context.get());
             {std::lock_guard guard(mutex_);hudStats_.visibleLayers=hudDraw.visibleLayers;
                 hudStats_.uploads+=hudDraw.uploads;hudStats_.uploadedBytes+=hudDraw.uploadedBytes;hudStats_.draws+=hudDraw.draws;}
@@ -2044,6 +2244,27 @@ private:
                 stats_.submitMs = submit - start; stats_.presentMs = end - presentStart;
                 stats_.lastFrameQpcMs = frameQpcMs;
                 ++workStats_.compositions;
+                if(measuredHudEpoch && measuredHudEpoch==hudCostEpoch_) {
+                    auto& diag=presentationDiagStats_;
+                    switch(presentationWake) {
+                        case PresentationWakeReason::FreshSource: ++diag.wakeFreshSource; break;
+                        case PresentationWakeReason::HudVersion: ++diag.wakeHudVersion; break;
+                        case PresentationWakeReason::Shake: ++diag.wakeShake; break;
+                        case PresentationWakeReason::FrozenPresenceOnly: ++diag.wakeFrozenPresenceOnly; break;
+                        case PresentationWakeReason::Other: ++diag.wakeOther; break;
+                    }
+                    if(shakeAllocation.result==WorldShakeStage::AllocationResult::Created) {
+                        ++diag.shakeStageCreates;
+                        diag.shakeStageCreateCpuMsTotal+=shakeAllocation.createCpuMs;
+                        diag.shakeStageCreateCpuMaxMs=std::max(diag.shakeStageCreateCpuMaxMs,shakeAllocation.createCpuMs);
+                    } else if(shakeAllocation.result==WorldShakeStage::AllocationResult::Failed) ++diag.shakeStageAllocFails;
+                    diag.bulletHistoryDraws+=bulletDraws;
+                    diag.bulletBatchesUploaded+=bulletUploads;
+                    diag.bulletUploadBytes+=bulletUploads*(BulletBatchCap*32);
+                    diag.rayDraws+=rayDraws;
+                    diag.rayBatchesUploaded+=rayUploads;
+                    diag.rayUploadBytes+=rayUploads*(RayBatchCap*128);
+                }
                 postprocessStats_=postprocessWork;
                 casStageStats_=casStageWork;
                 workStats_.lightDraws+=lightDrawn?1:0;
@@ -2221,8 +2442,10 @@ private:
     std::atomic<bool> hudCostSampling_{false};
     std::atomic<uint64_t> hudCostEpoch_{0};
     ProbeHudCostStats hudCostStats_{sizeof(ProbeHudCostStats)};
-    std::array<std::array<double,2>,256> hudCostValues_{};
+    std::array<std::array<double,2>,HudCostSampleCap> hudCostValues_{};
     size_t hudCostNext_=0;
+    ProbePresentationDiagStats presentationDiagStats_{sizeof(ProbePresentationDiagStats)};
+    std::array<double,HudCostSampleCap> worldPreBlitSamples_{},shakeBlitActiveSamples_{};
     struct TimingSample { double interval,submit,present,age,at; };
     std::array<TimingSample,256> timingSamples_{};
     size_t timingNext_=0,timingCount_=0;
@@ -2308,6 +2531,7 @@ private:
     AtmosphereState atmosphere_{}; uint64_t atmosphereVersion_=0;
     WeatherStyleState weatherStyle_{}; AtmosphereStyleState atmosphereStyle_{};
     BulletStylesState bulletStyles_{}; std::shared_ptr<const BulletFrameSnapshot> bulletLatest_{std::make_shared<const BulletFrameSnapshot>()}; uint64_t bulletVersion_=0;
+    uint64_t bulletStylesVersion_=0;
     std::vector<std::shared_ptr<const BulletFrameSnapshot>> bulletHistory_;
     uint64_t bulletSnapshotVersion_=0;ProbeBulletSyncStats bulletSyncStats_{sizeof(ProbeBulletSyncStats)};
     ProbeBulletSourceStats bulletSourceStats_{sizeof(ProbeBulletSourceStats)};
@@ -2442,6 +2666,10 @@ int __cdecl ProbeSetHudCostSampling(void* handle,int enabled) {
 int __cdecl ProbeGetHudCostStats(void* handle,ProbeHudCostStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeHudCostStats))return 0;
     static_cast<Capture*>(handle)->HudCostStats(*stats);return 1;
+}
+int __cdecl ProbeGetPresentationDiagStats(void* handle,ProbePresentationDiagStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbePresentationDiagStats))return 0;
+    static_cast<Capture*>(handle)->PresentationDiagStats(*stats);return 1;
 }
 int __cdecl ProbeSetSceneLights(void* handle,const float* lights,int count,float response) {
     return handle && static_cast<Capture*>(handle)->SceneLights(lights,count,response)?1:0;

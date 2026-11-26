@@ -240,6 +240,11 @@ private:
     Counters counters_;
 };
 
+inline bool WorldShakeRequiresBackbufferClear(int32_t left, int32_t top, int32_t right, int32_t bottom,
+        int32_t outputWidth, int32_t outputHeight) noexcept {
+    return left > 0 || top > 0 || right < outputWidth || bottom < outputHeight;
+}
+
 #ifdef CF7_WORLD_SHAKE_D3D11
 #include <d3d11.h>
 #include <winrt/base.h>
@@ -247,9 +252,30 @@ private:
 #include "Compositor.h"
 #include "CasSourceStage.h"
 
+enum class WorldUiClipPolicy : uint8_t {
+    OutputOverscanZeroContentWhenShifted,
+    AlwaysContent
+};
+
+struct PresentGeometryContext {
+    int outputWidth = 0;
+    int outputHeight = 0;
+    D3D11_VIEWPORT contentViewport{};
+    D3D11_RECT contentClip{};
+    int32_t shakeDx = 0;
+    int32_t shakeDy = 0;
+    bool HasShakeOffset() const noexcept { return shakeDx != 0 || shakeDy != 0; }
+};
+
 // GPU resources belong to the capture worker.
 class WorldShakeStage {
 public:
+    enum class AllocationResult { Skipped, Reused, Created, Failed };
+    struct AllocationSample {
+        AllocationResult result = AllocationResult::Skipped;
+        double createCpuMs = 0;
+    };
+
     // Pixel centers lie in the half-open viewport. Use the same destination
     // coverage for the blit and the shifted damage layer's integer scissor.
     static D3D11_RECT ContentPixels(const D3D11_VIEWPORT& view, int width, int height) noexcept {
@@ -260,11 +286,19 @@ public:
             edge(view.TopLeftX + view.Width, width), edge(view.TopLeftY + view.Height, height)};
     }
 
-    bool EnsureOutputSize(ID3D11Device* device, int width, int height) {
-        if (allocGuard_.IsLatched(width, height)) return false;
-        if (texture_ && width == width_ && height == height_) return true;
+    bool EnsureOutputSize(ID3D11Device* device, int width, int height, AllocationSample* sample = nullptr) {
+        if (allocGuard_.IsLatched(width, height)) {
+            if (sample) *sample = {};
+            return false;
+        }
+        if (texture_ && width == width_ && height == height_) {
+            if (sample) *sample = {AllocationResult::Reused};
+            return true;
+        }
         Reset();
-        return allocGuard_.TryAllocate(device, width, height, [&] {
+        LARGE_INTEGER start{};
+        if (sample) QueryPerformanceCounter(&start);
+        const bool ready = allocGuard_.TryAllocate(device, width, height, [&] {
             D3D11_TEXTURE2D_DESC texture{};
             texture.Width = static_cast<UINT>(width);
             texture.Height = static_cast<UINT>(height);
@@ -297,6 +331,18 @@ public:
             width_ = width;
             height_ = height;
         }, [&] { Reset(); });
+        if (sample) {
+            if (ready) {
+                LARGE_INTEGER end{}, frequency{};
+                QueryPerformanceCounter(&end);
+                QueryPerformanceFrequency(&frequency);
+                *sample = {AllocationResult::Created, 1000.0 * static_cast<double>(end.QuadPart - start.QuadPart)
+                    / frequency.QuadPart};
+            } else {
+                *sample = {AllocationResult::Failed};
+            }
+        }
+        return ready;
     }
 
     static D3D11_RECT SamplePixels(const D3D11_VIEWPORT& content, const D3D11_VIEWPORT& rendered,
@@ -314,16 +360,18 @@ public:
     }
 
     void BlitToBackbuffer(ID3D11DeviceContext* context, ID3D11RenderTargetView* backbuffer,
-            int width, int height, const D3D11_VIEWPORT& content, const D3D11_RECT& samples,
-            int32_t dx, int32_t dy) const noexcept {
+            const PresentGeometryContext& presentGeo, const D3D11_RECT& samples) const noexcept {
         ID3D11ShaderResourceView* empty = nullptr;
         context->PSSetShaderResources(0, 1, &empty);
         context->OMSetRenderTargets(1, &backbuffer, nullptr);
-        const float black[]{0, 0, 0, 1};
-        context->ClearRenderTargetView(backbuffer, black);
-
-        const auto dest = ContentPixels(content, width, height);
-        const BlitParams params{dx, dy, width, height, samples.left, samples.top, samples.right - 1, samples.bottom - 1};
+        const auto& dest = presentGeo.contentClip;
+        if (WorldShakeRequiresBackbufferClear(dest.left, dest.top, dest.right, dest.bottom,
+                presentGeo.outputWidth, presentGeo.outputHeight)) {
+            const float black[]{0, 0, 0, 1};
+            context->ClearRenderTargetView(backbuffer, black);
+        }
+        const BlitParams params{presentGeo.shakeDx, presentGeo.shakeDy, presentGeo.outputWidth, presentGeo.outputHeight,
+            samples.left, samples.top, samples.right - 1, samples.bottom - 1};
         const D3D11_VIEWPORT viewport{static_cast<float>(dest.left), static_cast<float>(dest.top),
             static_cast<float>(dest.right - dest.left), static_cast<float>(dest.bottom - dest.top), 0, 1};
         context->RSSetViewports(1, &viewport);

@@ -15,8 +15,15 @@ internal static partial class Program
         byte[] atlas=new byte[8*4*4];for(int y=0;y<4;y++)for(int x=0;x<8;x++){int at=(y*8+x)*4;atlas[at+(x<4?2:0)]=255;atlas[at+3]=255;}
         session.CombatFxAtlas(atlas,8,4);await WaitFor(()=>session.CombatFxReady,session,"scene atlas");
         var draw=Solid(true);draw.MaximumLightResponse=.78f;
-        session.Matrix(Grade(.12f,.12f,.12f));session.CombatFxFrame(draw,0,0,1);
-        await WaitFor(()=>Work(session).Compositions>4,session,"scene baseline");
+        async Task DriveFrames(int count,float cx,float cy,float cs,string stage) {
+            for(int i=0;i<count;i++) {
+                var targetComp=Work(session).Compositions+1;
+                session.CombatFxFrame(draw,cx,cy,cs);
+                await WaitFor(()=>Work(session).Compositions>=targetComp,session,stage);
+            }
+        }
+        session.Matrix(Grade(.12f,.12f,.12f));
+        await DriveFrames(5,0,0,1,"scene baseline");
         var baseline=Grab(session,Path.Combine(output,"scene-baseline.png"));
         var lamps=new float[32*16];
         for(int i=0;i<32;i++) {int at=i*16;lamps[at]=100+(i%8)*110;lamps[at+1]=110+(i/8)*110;lamps[at+2]=70;
@@ -25,33 +32,32 @@ internal static partial class Program
         await WaitFor(()=>session.ReadSceneLights().Builds>=1,session,"32 scene lights");
         var first=Grab(session,Path.Combine(output,"scene-static-32.png"));
         Require(!baseline.bytes.SequenceEqual(first.bytes),"Cached scene field did not affect material pixels");
-        var stable=session.ReadSceneLights();var before=Work(session);
-        await WaitFor(()=>Work(session).Compositions>=before.Compositions+12,session,"scene reuse");
+        var stable=session.ReadSceneLights();
+        await DriveFrames(12,0,0,1,"scene reuse");
         Require(session.ReadSceneLights().Builds==stable.Builds,"Static scene rebuilt without changes");
         Require(first.bytes.SequenceEqual(Grab(session,Path.Combine(output,"scene-static-steady.png")).bytes),"Cached scene pixels changed");
         rows.Add(new{stage="static-32",count=32,builds=session.ReadSceneLights().Builds,cacheHits=session.ReadSceneLights().CacheHits,width=stable.Width,height=stable.Height,pixelsChanged=true});
-        var draws=Work(session);session.CombatFxFrame(draw,-120,-40,1.25f);
-        await WaitFor(()=>Work(session).Compositions>draws.Compositions+3,session,"scene camera");
+        await DriveFrames(4,-120,-40,1.25f,"scene camera");
         Require(session.ReadSceneLights().Builds==stable.Builds,"Camera pan/zoom rebuilt world scene field");
         var moved=Grab(session,Path.Combine(output,"scene-camera.png"));Require(!first.bytes.SequenceEqual(moved.bytes),"Scene field did not follow camera");
         rows.Add(new{stage="camera-pan-zoom",additionalSceneBuilds=0});
         draw.LightCount=1;float[] dynamic={512,288,130,1.2f,1,.4f,.2f,0,0,0,0,0,0,0,0,0,0};Array.Copy(dynamic,draw.Lights,16);
-        draws=Work(session);session.CombatFxFrame(draw,-120,-40,1.25f);
+        var draws=Work(session);session.CombatFxFrame(draw,-120,-40,1.25f);
         await WaitFor(()=>Work(session).LightDraws>draws.LightDraws,session,"scene mixed dynamic");
         Grab(session,Path.Combine(output,"scene-mixed.png"));
         draws=Work(session);draw.Lights[3]=.4f;session.CombatFxFrame(draw,-120,-40,1.25f);
         await WaitFor(()=>Work(session).LightDraws>draws.LightDraws,session,"dynamic energy");
         Require(session.ReadSceneLights().Builds==stable.Builds,"Dynamic light invalidated cached scene field");
         rows.Add(new{stage="dynamic-energy",additionalSceneBuilds=0});
-        session.Matrix(Grade(.08f,.45f,.08f));draws=Work(session);
-        await WaitFor(()=>Work(session).Compositions>draws.Compositions+3,session,"scene night palette");
+        session.Matrix(Grade(.08f,.45f,.08f));
+        await DriveFrames(4,-120,-40,1.25f,"scene night palette");
         Grab(session,Path.Combine(output,"scene-night-vision.png"));Require(session.ReadSceneLights().Builds==stable.Builds,"Palette invalidated cached scene field");
         lamps[3]=.2f;session.SceneLightField(lamps,32,.78f);
         await WaitFor(()=>session.ReadSceneLights().Builds>stable.Builds,session,"scene state change");
         rows.Add(new{stage="scene-state-update",builds=session.ReadSceneLights().Builds});
         session.SceneLightField(Array.Empty<float>(),0,.78f);draw.LightCount=0;session.Matrix(Grade(.12f,.12f,.12f));
-        draws=Work(session);session.CombatFxFrame(draw,0,0,1);
-        await WaitFor(()=>session.ReadSceneLights().Count==0 && Work(session).Compositions>draws.Compositions+3,session,"scene clear");
+        await DriveFrames(4,0,0,1,"scene clear");
+        await WaitFor(()=>session.ReadSceneLights().Count==0,session,"scene clear count");
         var cleared=Grab(session,Path.Combine(output,"scene-cleared.png"));Require(baseline.bytes.SequenceEqual(cleared.bytes),"Scene clear retained light");
         rows.Add(new{stage="scene-clear",pixelsEqual=true});
         var report=new{success=true,kind="scene-light-v1",nativeSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(module))),rows,

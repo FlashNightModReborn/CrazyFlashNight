@@ -77,9 +77,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _stop = Export<StopDelegate>("ProbeStop"); _read = Export<ReadDelegate>("ProbeGetStats");
                 _readWork=TryExport<WorkReadDelegate>("ProbeGetWorkStats");
                 _readTiming=TryExport<TimingReadDelegate>("ProbeGetTimingStats");
+                _readPresentationDiag = TryExport<PresentationDiagReadDelegate>("ProbeGetPresentationDiagStats");
                 _hudRaster=TryExport<HudRasterDelegate>("ProbeSetHudRaster");
-                _stageFocus=TryExport<FocusStageDelegate>("ProbeStageFocusFills");
-                _readFocus=TryExport<FocusReadDelegate>("ProbeGetFocusFillStats");
                 _hudRasterRects=TryExport<HudRasterRectsDelegate>("ProbeSetHudRasterRects");
                 if (_hudRasterRects != null)
                     _hudRasterRectLayerMask = TryExport<VersionDelegate>("ProbeGetHudRasterRectLayerMask")?.Invoke() ?? (1u << 3);

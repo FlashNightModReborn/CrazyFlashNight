@@ -27,7 +27,12 @@ internal static partial class Program
             Require(first.FxUploads-before.FxUploads==1,"Two sprite layers uploaded the same buffer twice");
             var original=Grab(session,Path.Combine(output,"cache-first.png"));
             var steadyStart=Work(session);
-            await WaitFor(()=>Work(session).Compositions>=steadyStart.Compositions+12,session,"static cache reuse");
+            // F04 idles when nothing changes; re-submit the identical frame 12 times to prove steady cache reuse.
+            for(int i=0;i<12;i++) {
+                var targetComp=Work(session).Compositions+1;
+                session.CombatFxFrame(draw,cameraX,cameraY,cameraScale);
+                await WaitFor(()=>Work(session).Compositions>=targetComp,session,"static cache reuse");
+            }
             var steadyEnd=Work(session);
             Require(steadyEnd.LightDraws==steadyStart.LightDraws && steadyEnd.FxUploads==steadyStart.FxUploads,"Static content still rebuilds/uploads");
             Require(steadyEnd.LightCacheHits>=steadyStart.LightCacheHits+12,"Static light field did not hit the cache");

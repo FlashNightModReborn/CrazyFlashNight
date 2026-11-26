@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -389,9 +390,18 @@ namespace CF7Launcher.Tests.Guardian
 
         private static double Percentile(List<double> values) {values.Sort();return values[(int)Math.Ceiling(values.Count*.95)-1];}
         private static void Run(Action<NativeCompositorSession,CompositionSceneHost,Form,Form> action,Size? outputSize=null,
-            TimeSpan? timeout=null,bool requireWorldFrame=true,string nativeModule=null)
+            TimeSpan? timeout=null,bool requireWorldFrame=true,string nativeModule=null,uint vendor=0)
         {
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            uint resolvedVendor=vendor;
+            string vendorSetting=Environment.GetEnvironmentVariable("CF7_TEST_GPU_VENDOR")?.Trim();
+            if(resolvedVendor==0 && !string.IsNullOrEmpty(vendorSetting))
+            {
+                bool hex=vendorSetting.StartsWith("0x",StringComparison.OrdinalIgnoreCase);
+                Assert.True(uint.TryParse(hex?vendorSetting.AsSpan(2):vendorSetting.AsSpan(),
+                    hex?NumberStyles.AllowHexSpecifier:NumberStyles.Integer,CultureInfo.InvariantCulture,out resolvedVendor),
+                    "CF7_TEST_GPU_VENDOR must be an unsigned integer or a 0x-prefixed PCI vendor ID.");
+            }
             string candidate=null;
             JObject metadata=null;
             string module;
@@ -415,17 +425,25 @@ namespace CF7Launcher.Tests.Guardian
             {
                 try
                 {
+                    var size=outputSize ?? new Size(192,128);
+                    var screen=Screen.PrimaryScreen;
+                    Rectangle area=screen.WorkingArea;
+                    if(size.Width>area.Width || size.Height>area.Height) area=screen.Bounds;
+                    Point Fit(int x,int y)=>new(
+                        Math.Clamp(x,area.Left,Math.Max(area.Left,area.Right-size.Width)),
+                        Math.Clamp(y,area.Top,Math.Max(area.Top,area.Bottom-size.Height)));
                     using var source=new Window {FormBorderStyle=FormBorderStyle.None,ShowInTaskbar=false,TopMost=true,
-                        AutoScaleMode=AutoScaleMode.None,StartPosition=FormStartPosition.Manual,Location=new Point(70,70),
-                        ClientSize=outputSize ?? new Size(192,128),BackColor=Color.FromArgb(30,80,140)};
+                        AutoScaleMode=AutoScaleMode.None,StartPosition=FormStartPosition.Manual,Location=Fit(70,70),
+                        ClientSize=size,BackColor=Color.FromArgb(30,80,140)};
                     using var output=new Window {FormBorderStyle=FormBorderStyle.None,ShowInTaskbar=false,TopMost=true,
-                        AutoScaleMode=AutoScaleMode.None,StartPosition=FormStartPosition.Manual,Location=new Point(350,70),
-                        ClientSize=outputSize ?? new Size(192,128)};
+                        AutoScaleMode=AutoScaleMode.None,StartPosition=FormStartPosition.Manual,Location=Fit(350,70),
+                        ClientSize=size};
                     source.Show();output.Show();Application.DoEvents();
                     using var scene=CompositionSceneHost.Create(output.Handle,module);
                     IntPtr visual=scene.AcquireVisual(0);
                     NativeCompositorSession world;
-                    try {world=new NativeCompositorSession(module,source.Handle,(uint)Environment.ProcessId,output.Handle,sharedWorldVisual:visual);}
+                    try {world=new NativeCompositorSession(module,source.Handle,(uint)Environment.ProcessId,output.Handle,
+                        vendor:resolvedVendor,sharedWorldVisual:visual);}
                     finally {Marshal.Release(visual);}
                     using(world)
                     {
@@ -436,13 +454,14 @@ namespace CF7Launcher.Tests.Guardian
                             PixelsUntil(world,scene,p=>Pixel(p,50,50,140,80,30),"baseline pixels");
                         }
                         action(world,scene,output,source);
+                        var final=world.Read();
                         Console.WriteLine(JsonConvert.SerializeObject(new {nativeModule=module,nativeSha256=hash,
                             buildIdentity=metadata?.Value<string>("buildIdentityHash"),closure=metadata?.Value<string>("payloadClosureHash"),
                             testCore=typeof(NativeCompositorSession).Assembly.Location,
                             testCoreSha256=Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(typeof(NativeCompositorSession).Assembly.Location))),
                             candidateCoreSha256=candidate==null ? null
                                 : Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(candidate,"runtime","CRAZYFLASHER7MercenaryEmpire.Core.dll")))),
-                            display=DisplayPowerObservation.ReadSessionState()}));
+                            adapter=final.Adapter,vendor=final.Vendor,display=DisplayPowerObservation.ReadSessionState()}));
                     }
                 }
                 catch(Exception error) {failure=error;}
@@ -469,16 +488,24 @@ namespace CF7Launcher.Tests.Guardian
         {
             int width,height;
             int status=composite?world.GrabCompositeFrame(null,out width,out height):world.GrabLatestFrame(null,out width,out height);
-            Assert.Equal(NativeCompositorSession.GrabBufferTooSmall,status);
+            if(status!=NativeCompositorSession.GrabBufferTooSmall)
+            {
+                var s=world.Read();
+                Assert.Fail($"Grab(size, composite={composite})={status}; state={s.State} err=0x{s.Error:X8} msg='{s.Message}' pres={s.Presented} recv={s.Received} size={s.Width}x{s.Height}");
+            }
             var pixels=new byte[checked(width*height*4)];
             status=composite?world.GrabCompositeFrame(pixels,out width,out height):world.GrabLatestFrame(pixels,out width,out height);
-            Assert.Equal(NativeCompositorSession.GrabOk,status);
+            if(status!=NativeCompositorSession.GrabOk)
+            {
+                var s=world.Read();
+                Assert.Fail($"Grab(pixels, composite={composite})={status}; state={s.State} err=0x{s.Error:X8} msg='{s.Message}' pres={s.Presented} recv={s.Received} size={s.Width}x{s.Height}");
+            }
             return new Frame(pixels,width,height);
         }
         private static Frame PixelsUntil(NativeCompositorSession world,CompositionSceneHost scene,Func<Frame,bool> condition,string phase)
         {
             Frame frame=default;
-            Pump(()=>{frame=Grab(world);return condition(frame);},scene,phase);return frame;
+            Pump(()=>{frame=Grab(world);if(condition(frame))return true;Thread.Sleep(20);return false;},scene,phase);return frame;
         }
         private static bool Pixel(Frame frame,int x,int y,int b,int g,int r)
         {

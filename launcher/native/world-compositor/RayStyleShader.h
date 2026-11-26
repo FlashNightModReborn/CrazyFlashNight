@@ -5,12 +5,8 @@ R"hlsl(
 // Procedural re-authoring of the AS2 renderer suite
 // (scripts/.../arki/render/renderer/*.as) as analytic beam-space SDF shading.
 //
-// Public entry:
-//   float4 ShadeRayStyle(uint style, float2 q, float lengthWorld,
-//                        float widthWorld, float ageTicks, float seed,
-//                        float3 primary, float3 secondary,
-//                        float4 p0, float4 p1, float4 p2,
-//                        float4 meta, float life);
+// Call RayInitCtx before pixel-shader control flow, then pass the context to
+// ShadeRayStyle, ShadeRayStyleOther, or the selected style directly.
 //
 // Contract:
 //   q.x        = normalized longitudinal progress [0,1] (small overshoot ok)
@@ -33,7 +29,7 @@ R"hlsl(
 //   * All per-pixel loops are bounded <= 8 iterations; heavy motifs are
 //     analytic (rings, diamonds, capsules, octagons) not ray-marched.
 //   * fwidth-based AA: assumes caller evaluates in pixel shader quads.
-//   * No textures, no discard, no cbuffer/main/SV_* -- helpers only.
+//   * No textures or cbuffer/main/SV_* -- helpers only.
 //   * Root owns bounding expansion (<=512 world px per side), blend state and
 //     endpoint lens spots; helpers emit modest local glow only.
 // ============================================================================
@@ -193,6 +189,30 @@ struct RayCtx
     float rawSeed; // bagua packs authored spine RGB24 here; others retain seed
 };
 
+RayCtx RayInitCtx(float2 q, float lengthWorld, float4 primary, float4 secondary,
+                 float4 clock, float4 meta)
+{
+    RayCtx C;
+    C.q = q;
+    C.L = max(lengthWorld, 1.0);
+    C.W = max(secondary.w, 0.75);
+    C.x = q.x * C.L;
+    C.t = clock.x;
+    C.sd = RayHash11(clock.z * 0.977 + 0.31);
+    C.aaU = max(fwidth(q.x), 1e-5);
+    C.aaX = max(fwidth(C.x), 0.30);
+    C.aaY = max(fwidth(q.y), 0.30);
+    // Validate before dispatch so FXC cannot sink gradients into divergent
+    // control flow. Every rasterized ray with finite AA passes this check.
+    clip(all(isfinite(float3(C.aaU, C.aaX, C.aaY))) ? 1.0 : -1.0);
+    C.cA = primary.rgb;
+    C.cB = secondary.rgb;
+    C.meta = meta;
+    C.life = clock.y;
+    C.rawSeed = clock.z;
+    return C;
+}
+
 // accumulate helper: rgb = emissive energy (additive-ready), a = coverage
 void RayAcc(inout float3 rgb, inout float a, float3 col, float cov, float alpha)
 {
@@ -242,9 +262,8 @@ float2 RayTeslaNode(float node, float count, float L, float jitter, float seed, 
 // Only adjacent longitudinal segments can enter this local stroke footprint.
 // Euclidean capsule distance keeps oblique lightning as thin as axial strokes;
 // vertical distance to y(x) made steep pieces into bright, broad slabs.
-float RayTeslaMainD(RayCtx C, float jitter, float count, float seed)
+float RayTeslaMainD(RayCtx C, float jitter, float count, float first, float seed)
 {
-    float first = clamp(floor(C.q.x * count) - 1.0, 0.0, count - 1.0);
     float2 A = RayTeslaNode(first, count, C.L, jitter, seed, C.t);
     float d = 1e5;
     [unroll] for (int j = 0; j < 3; j++) {
@@ -269,75 +288,118 @@ float2 RayTeslaForkNode(float node, float count, float2 start, float endU,
 
 float4 RayShadeTesla(RayCtx C, float4 p0, float4 p1)
 {
-    float intensity = clamp(C.meta.x, 0.0, 2.0);
-    float strike = exp(-max(p1.w, 0.0) * 0.9);
-    float widthEnvelope = 1.08 + 0.25 * sin(C.q.x * 27.0 - C.t * 0.6 + C.sd * 13.0);
-    float W = C.W * intensity * widthEnvelope * (1.0 + strike * 0.35);
-    float jitter = clamp(p0.x, 0.0, 160.0) * intensity;
-    // Fine kinks ride the slower spine. Local segment lookup stays three taps,
-    // so longer/more detailed channels do not add a whole-path pixel loop.
-    float segL = max(p0.y * 0.55, 12.0);
-    float count = max(2.0, ceil(C.L / segL));
-    int branches = (int)clamp(floor(p0.z), 0.0, 8.0);
-    float seed = C.sd * 37.7;
-    float dMain = RayTeslaMainD(C, jitter, count, seed);
-    float dSecond = 1e5;
-    if (branches >= 2) dSecond = RayTeslaMainD(C, jitter * 1.15, count, seed + 19.71);
-    float dFork = 1e5;
-    // Keep the existing native density ceiling: two mains and up to two forks.
-    [unroll] for (int f = 0; f < 2; f++) {
-        float hs = seed + (float)f * 13.31 + floor((C.t + 1.5) * 0.125) * 17.1;
-        if (f < branches - 2 && RayHash11(hs + 8.9) <= saturate(p0.w)) {
-            bool second = RayHash11(hs + 2.3) > 0.5;
-            float parentSeed = second ? seed + 19.71 : seed;
-            float node = 1.0 + floor(RayHash11(hs + 3.1) * (count - 1.0));
-            float2 start = RayTeslaNode(node, count, C.L, jitter * (second ? 1.15 : 1.0), parentSeed, C.t);
-            float endU = min(start.x / C.L + 0.15 + 0.15 * RayHash11(hs + 5.7), 0.95);
-            if (endU > start.x / C.L) {
-                float span = endU * C.L - start.x;
-                float forkCount = max(2.0, ceil(span / (max(segL * 0.8, 20.0) * 0.8)));
-                float first = clamp(floor((C.x - start.x) / span * forkCount) - 1.0, 0.0, forkCount - 1.0);
-                float2 A = RayTeslaForkNode(first, forkCount, start, endU, C.L, jitter, hs, C.t);
-                [unroll] for (int j = 0; j < 3; j++) {
-                    float2 B = RayTeslaForkNode(min(first + (float)j + 1.0, forkCount), forkCount,
-                                               start, endU, C.L, jitter, hs, C.t);
-                    dFork = min(dFork, RaySdSeg(float2(C.x, C.q.y), A, B)); A = B;
+    // Use one exit so FXC can prove initialization when it inlines this helper.
+    float4 result = float4(0, 0, 0, 0);
+    [unroll] do {
+        float intensity = clamp(C.meta.x, 0.0, 2.0);
+        int branches = (int)clamp(floor(p0.z), 0.0, 8.0);
+        [branch] if (branches <= 0 || intensity <= 0.0) break;
+
+        float aa = max(C.aaX, C.aaY);
+        float strike = exp(-max(p1.w, 0.0) * 0.9);
+        float radius = max(C.W * intensity * (3.0 + strike), aa * 2.0);
+        float endReachY = radius * 2.1;
+        float endReachX = endReachY / 0.65;
+        // RayEnds is zero outside [0,L]. The two corona tails together are below
+        // .000139 alpha when both normalized distances exceed 2.1.
+        [branch] if (C.x < -endReachX || C.x > C.L + endReachX)
+            break;
+        float absY = abs(C.q.y);
+        bool nearEnd = absY <= endReachY &&
+            (abs(C.x) <= endReachX || (C.meta.w > 0.5 && abs(C.x - C.L) <= endReachX));
+
+        float widthEnvelope = 1.08 + 0.25 * sin(C.q.x * 27.0 - C.t * 0.6 + C.sd * 13.0);
+        float W = C.W * intensity * widthEnvelope * (1.0 + strike * 0.35);
+        float jitter = clamp(p0.x, 0.0, 160.0) * intensity;
+        // Fine kinks ride the slower spine. Local segment lookup stays three taps,
+        // so longer/more detailed channels do not add a whole-path pixel loop.
+        float segL = max(p0.y * 0.55, 12.0);
+        float count = max(2.0, ceil(C.L / segL));
+        float first = clamp(floor(C.q.x * count) - 1.0, 0.0, count - 1.0);
+        // Only the four local nodes can enter the distance test. Their shifted
+        // progress is within [uLo,uHi], and each segment stays between its nodes.
+        float uLo = saturate((first - 0.4) / count);
+        float uHi = saturate((first + 3.4) / count);
+        float maxSin = (uLo <= 0.5 && uHi >= 0.5) ? 1.0 : max(sin(RAY_PI * uLo), sin(RAY_PI * uHi));
+        float mainReach = 1.70 * jitter * maxSin;
+        float haloWidth = max(W * 3.8, aa * 1.5);
+        // 0.38 * exp(-2.9^2) + the two corona tails stays below .00025
+        // before opacity. The stroke pads include twice the largest derivative.
+        float mainPad = max(haloWidth * 2.9, W * 1.65 + aa * 2.0);
+        float secondPad = W * 1.5 + aa * 2.0;
+        float forkWidth = W * clamp(p1.z, 0.15, 1.5);
+        float forkPad = forkWidth + aa * 2.0;
+        bool inside = C.x > 0.0 && C.x < C.L;
+        bool inMain = inside && absY <= mainReach + mainPad;
+        bool inSecond = inside && branches >= 2 && absY <= mainReach * 1.15 + secondPad;
+        bool mayHaveFork = inside && branches >= 3 && absY <= 1.70 * jitter * 1.15 + forkPad;
+        [branch] if (!nearEnd && !inMain && !inSecond && !mayHaveFork)
+            break;
+
+        float seed = C.sd * 37.7;
+        float dMain = 1e5;
+        [branch] if (inMain) dMain = RayTeslaMainD(C, jitter, count, first, seed);
+        float dSecond = 1e5;
+        [branch] if (inSecond) dSecond = RayTeslaMainD(C, jitter * 1.15, count, first, seed + 19.71);
+        float dFork = 1e5;
+        // Keep the existing native density ceiling: two mains and up to two forks.
+        [branch] if (mayHaveFork) {
+            [unroll] for (int f = 0; f < 2; f++) {
+                float hs = seed + (float)f * 13.31 + floor((C.t + 1.5) * 0.125) * 17.1;
+                [branch] if (f < branches - 2 && RayHash11(hs + 8.9) <= saturate(p0.w)) {
+                    bool second = RayHash11(hs + 2.3) > 0.5;
+                    float parentSeed = second ? seed + 19.71 : seed;
+                    float node = 1.0 + floor(RayHash11(hs + 3.1) * (count - 1.0));
+                    float2 start = RayTeslaNode(node, count, C.L, jitter * (second ? 1.15 : 1.0), parentSeed, C.t);
+                    float endU = min(start.x / C.L + 0.15 + 0.15 * RayHash11(hs + 5.7), 0.95);
+                    float endX = endU * C.L;
+                    // Each fork node lies between start.x and endX and blends
+                    // start.y with an offset bounded by jitter.
+                    [branch] if (endU > start.x / C.L && C.x >= start.x - forkPad &&
+                                 C.x <= endX + forkPad && absY <= max(abs(start.y), jitter) + forkPad) {
+                        float span = endX - start.x;
+                        float forkCount = max(2.0, ceil(span / (max(segL * 0.8, 20.0) * 0.8)));
+                        float forkFirst = clamp(floor((C.x - start.x) / span * forkCount) - 1.0, 0.0, forkCount - 1.0);
+                        float2 A = RayTeslaForkNode(forkFirst, forkCount, start, endU, C.L, jitter, hs, C.t);
+                        [unroll] for (int j = 0; j < 3; j++) {
+                            float2 B = RayTeslaForkNode(min(forkFirst + (float)j + 1.0, forkCount), forkCount,
+                                                       start, endU, C.L, jitter, hs, C.t);
+                            dFork = min(dFork, RaySdSeg(float2(C.x, C.q.y), A, B)); A = B;
+                        }
+                    }
                 }
             }
         }
-    }
-    float aa = max(C.aaX, C.aaY);
-    float3 rgb = 0.0; float a = 0.0;
-    float ends = RayEnds(C.x, aa, C.L);
-    float haloWidth = max(W * 3.8, aa * 1.5);
-    float halo = exp(-dMain * dMain / (haloWidth * haloWidth));
-    float filament = 0.60 + 0.25 * sin(C.q.x * 41.0 + C.t * 0.8 + seed);
-    // The cyan electrical palette gets a cooler corona, while non-electrical
-    // custom warm palettes retain their authored hue. The hot core stays cB.
-    float cool = saturate(min(C.cA.g, C.cA.b) - C.cA.r);
-    float3 corona = lerp(C.cA, float3(0.18, 0.28, 1.0), cool * 0.72);
-    RayAcc(rgb, a, corona, halo, 0.38 * ends);
-    RayAcc(rgb, a, lerp(C.cA, corona, 0.5), RayBand(dMain, W * 1.65, aa * 1.2), 0.50 * ends);
-    RayAcc(rgb, a, lerp(C.cA, C.cB, 0.30), RayBand(dMain, W * 0.82, aa), 0.90 * ends);
-    RayAcc(rgb, a, C.cB, RayBand(dMain, W * 0.32, aa * 0.65), (1.05 + strike * 0.25) * ends);
-    RayAcc(rgb, a, corona, RayBand(dSecond, W * 1.5, aa * 1.4), 0.32 * ends);
-    RayAcc(rgb, a, lerp(C.cA, C.cB, 0.55), RayBand(dSecond, W * 0.27, aa * 0.7), filament * ends);
-    float forkWidth = W * clamp(p1.z, 0.15, 1.5);
-    float forkPulse = sin(RAY_PI * frac((C.t + 1.5) * 0.125));
-    RayAcc(rgb, a, C.cA, RayBand(dFork, forkWidth, aa), 0.38 * forkPulse * ends);
-    RayAcc(rgb, a, C.cB, RayBand(dFork, forkWidth * 0.23, aa * 0.65), 0.70 * forkPulse * ends);
+        float3 rgb = 0.0; float a = 0.0;
+        float ends = RayEnds(C.x, aa, C.L);
+        float halo = exp(-dMain * dMain / (haloWidth * haloWidth));
+        float filament = 0.60 + 0.25 * sin(C.q.x * 41.0 + C.t * 0.8 + seed);
+        // The cyan electrical palette gets a cooler corona, while non-electrical
+        // custom warm palettes retain their authored hue. The hot core stays cB.
+        float cool = saturate(min(C.cA.g, C.cA.b) - C.cA.r);
+        float3 corona = lerp(C.cA, float3(0.18, 0.28, 1.0), cool * 0.72);
+        RayAcc(rgb, a, corona, halo, 0.38 * ends);
+        RayAcc(rgb, a, lerp(C.cA, corona, 0.5), RayBand(dMain, W * 1.65, aa * 1.2), 0.50 * ends);
+        RayAcc(rgb, a, lerp(C.cA, C.cB, 0.30), RayBand(dMain, W * 0.82, aa), 0.90 * ends);
+        RayAcc(rgb, a, C.cB, RayBand(dMain, W * 0.32, aa * 0.65), (1.05 + strike * 0.25) * ends);
+        RayAcc(rgb, a, corona, RayBand(dSecond, W * 1.5, aa * 1.4), 0.32 * ends);
+        RayAcc(rgb, a, lerp(C.cA, C.cB, 0.55), RayBand(dSecond, W * 0.27, aa * 0.7), filament * ends);
+        float forkPulse = sin(RAY_PI * frac((C.t + 1.5) * 0.125));
+        RayAcc(rgb, a, C.cA, RayBand(dFork, forkWidth, aa), 0.38 * forkPulse * ends);
+        RayAcc(rgb, a, C.cB, RayBand(dFork, forkWidth * 0.23, aa * 0.65), 0.70 * forkPulse * ends);
 
-    // Endpoint corona is decorative. It stays at the supplied muzzle/hit point;
-    // no target search, impact placement or damaging reach is inferred here.
-    float radius = max(C.W * intensity * (3.0 + strike), aa * 2.0);
-    float muzzle = length(float2(C.x * 0.65, C.q.y)) / radius;
-    float impact = length(float2((C.x - C.L) * 0.65, C.q.y)) / radius;
-    float endGlow = exp(-muzzle * muzzle * 2.0) * 0.30;
-    if (C.meta.w > 0.5) endGlow += exp(-impact * impact * 2.0) * 0.55;
-    RayAcc(rgb, a, corona, endGlow, 0.75 + strike * 0.35);
-    RayAcc(rgb, a, C.cB, exp(-muzzle * muzzle * 10.0), 0.65);
-    if (C.meta.w > 0.5) RayAcc(rgb, a, C.cB, exp(-impact * impact * 10.0), 0.95);
-    return RayOut(rgb, a, branches > 0 && intensity > 0.0 ? 1.0 : 0.0);
+        // Endpoint corona is decorative. It stays at the supplied muzzle/hit point;
+        // no target search, impact placement or damaging reach is inferred here.
+        float muzzle = length(float2(C.x * 0.65, C.q.y)) / radius;
+        float impact = length(float2((C.x - C.L) * 0.65, C.q.y)) / radius;
+        float endGlow = exp(-muzzle * muzzle * 2.0) * 0.30;
+        if (C.meta.w > 0.5) endGlow += exp(-impact * impact * 2.0) * 0.55;
+        RayAcc(rgb, a, corona, endGlow, 0.75 + strike * 0.35);
+        RayAcc(rgb, a, C.cB, exp(-muzzle * muzzle * 10.0), 0.65);
+        if (C.meta.w > 0.5) RayAcc(rgb, a, C.cB, exp(-impact * impact * 10.0), 0.95);
+        result = RayOut(rgb, a, 1.0);
+    } while (false);
+    return result;
 }
 
 // ===========================================================================
@@ -794,206 +856,239 @@ R"hlsl(
 // ===========================================================================
 float4 RayShadeConvergence(RayCtx C, float4 p0, float4 p1)
 {
-    float spread = (p0.x > 0.0) ? min(p0.x, 120.0) : 10.0;
-    float ratio  = (p0.y > 0.0) ? p0.y : 0.18;
-    int   nR     = (p0.z >= 2.0) ? (int)min(floor(p0.z), 8.0) : 5;
-    int   nN     = (p0.w >= 1.0) ? (int)min(floor(p0.w), 8.0) : 6;
-    float nSpd   = p1.x;                                     // 0 ok
-    float chS    = (p1.y > 0.0) ? p1.y : 0.9;
-
     float u = C.q.x, v = C.q.y, x = C.x, L = C.L;
-    float uu = saturate(u);
-    // AS2: focalDist = clamp(dist*ratio, 25, 80) <= dist*0.5
-    float fPx = clamp(L * ratio, 25.0, 80.0);
-    fPx = min(fPx, L * 0.5);
-    float fT = fPx / L;
-    float pulse = 1.0 + sin(C.t * 0.9) * 0.06;
-    float T = C.W * pulse;
+    // All motifs share RayEnds, which is exactly zero outside the segment.
+    float4 result = float4(0, 0, 0, 0);
+    [branch] if (x > 0.0 && x < L) {
+        float spread = (p0.x > 0.0) ? min(p0.x, 120.0) : 10.0;
+        float ratio  = (p0.y > 0.0) ? p0.y : 0.18;
+        int   nR     = (p0.z >= 2.0) ? (int)min(floor(p0.z), 8.0) : 5;
+        int   nN     = (p0.w >= 1.0) ? (int)min(floor(p0.w), 8.0) : 6;
+        float nSpd   = p1.x;                                     // 0 ok
+        float chS    = (p1.y > 0.0) ? p1.y : 0.9;
 
-    float3 rgb = 0.0;
-    float a = 0.0;
-    float3 darkSh = float3(0.0, 0.106, 0.20);              // 0x001B33
-    float3 ice    = float3(0.667, 1.0, 1.0);               // 0xAAFFFF
+        float uu = saturate(u);
+        float absV = abs(v);
+        float aa = max(C.aaX, C.aaY);
+        // AS2: focalDist = clamp(dist*ratio, 25, 80) <= dist*0.5
+        float fPx = clamp(L * ratio, 25.0, 80.0);
+        fPx = min(fPx, L * 0.5);
+        float fT = fPx / L;
+        float pulse = 1.0 + sin(C.t * 0.9) * 0.06;
+        float T = C.W * pulse;
 
-    // ---- nozzle fins: quadratic-bezier wedge petals -> focal point --------
-    if (u < fT) {
-        float s = u / fT;
-        float bez = 2.0 * s * (1.0 - s);                   // B(s) curve factor
-        for (int r = 0; r < 8; r++) {
-            if (r >= nR) break;
-            float oR = (nR > 1) ? (2.0 * (float)r / (float)(nR - 1) - 1.0)
-                                : 0.0;
-            if (abs(oR) < 0.12) continue;                  // degenerate mid fin
-            float finP = 1.0 + sin(C.t * 0.85 + (float)r * 1.7) * 0.12;
-            float hi = bez * spread * oR * 1.2 * finP;     // outer edge
-            float lo = hi * 0.4;                           // inner edge
-            float yl = min(lo, hi), yh = max(lo, hi);
-            float cov = smoothstep(yl - C.aaY, yl + C.aaY, v)
-                      * smoothstep(yh + C.aaY, yh - C.aaY, v);
-            bool outerFin = abs(oR) > 0.6;
-            RayAcc(rgb, a, outerFin ? C.cB : C.cA, cov,
-                   outerFin ? 0.42 : 0.55);
-            // white edge on outer curve
-            RayAcc(rgb, a, float3(1, 1, 1),
-                   RayBand(v - hi, 0.8, C.aaY), 0.35);
+        float3 rgb = 0.0;
+        float a = 0.0;
+        float3 darkSh = float3(0.0, 0.106, 0.20);              // 0x001B33
+        float3 ice    = float3(0.667, 1.0, 1.0);               // 0xAAFFFF
+
+        // ---- nozzle fins: quadratic-bezier wedge petals -> focal point --------
+        // The quadratic factor is at most .5 on this interval; include the
+        // outer .8px stroke and its feather beyond the furthest petal.
+        [branch] if (u < fT && absV <= spread * 1.35 + C.aaY * 2.0 + 2.0) {
+            float s = u / fT;
+            float bez = 2.0 * s * (1.0 - s);                   // B(s) curve factor
+            for (int r = 0; r < 8; r++) {
+                if (r >= nR) break;
+                float oR = (nR > 1) ? (2.0 * (float)r / (float)(nR - 1) - 1.0)
+                                    : 0.0;
+                if (abs(oR) < 0.12) continue;                  // degenerate mid fin
+                float finP = 1.0 + sin(C.t * 0.85 + (float)r * 1.7) * 0.12;
+                float hi = bez * spread * oR * 1.2 * finP;     // outer edge
+                float lo = hi * 0.4;                           // inner edge
+                float yl = min(lo, hi), yh = max(lo, hi);
+                float cov = smoothstep(yl - C.aaY, yl + C.aaY, v)
+                          * smoothstep(yh + C.aaY, yh - C.aaY, v);
+                bool outerFin = abs(oR) > 0.6;
+                RayAcc(rgb, a, outerFin ? C.cB : C.cA, cov,
+                       outerFin ? 0.42 : 0.55);
+                // white edge on outer curve
+                RayAcc(rgb, a, float3(1, 1, 1),
+                       RayBand(v - hi, 0.8, C.aaY), 0.35);
+            }
         }
-    }
 
-    // ---- spindle-chain beam (pinch at cascade nodes + focal) --------------
-    float cascade = clamp(floor(L / 90.0), 1.0, (float)nN);
-    float localT = frac(uu * (cascade + 1.0));
-    float envS = sin(RAY_PI * localT);                     // pinch at nodes
-    float fPinch = smoothstep(0.0, 0.035, abs(uu - fT));   // extra pinch @focal
-    float envP = min(envS, fPinch);
-    float post = (uu > fT && fT < 0.99) ? (uu - fT) / (1.0 - fT) : 0.0;
-    float grow = 1.0 + 0.6 * post;                         // 1.0x -> 1.6x
-    // 4-layer hyperbeam (dark sheath -> primary -> ice -> white)
-    float wm[4]; float am[4]; float pm[4];
-    wm[0] = 4.8; wm[1] = 2.4; wm[2] = 1.1; wm[3] = 0.4;
-    am[0] = 0.35; am[1] = 0.60; am[2] = 0.75; am[3] = 0.90;
-    pm[0] = 0.55; pm[1] = 0.62; pm[2] = 0.78; pm[3] = 0.88;
-    for (int L4 = 0; L4 < 4; L4++) {
-        float wL = T * lerp(1.0, 1.6, saturate(post)) * wm[L4]
-                 * (pm[L4] + (1.0 - pm[L4]) * envP);
-        float3 lc = (L4 == 0) ? darkSh : (L4 == 1) ? C.cA
-                              : (L4 == 2) ? ice : float3(1, 1, 1);
-        RayAcc(rgb, a, lc, RayBand(v, wL, C.aaY * 2.0), am[L4] * 0.7);
-    }
+        // ---- spindle-chain beam (pinch at cascade nodes + focal) --------------
+        float cascade = clamp(floor(L / 90.0), 1.0, (float)nN);
+        float post = (uu > fT && fT < 0.99) ? (uu - fT) / (1.0 - fT) : 0.0;
+        // 4-layer hyperbeam (dark sheath -> primary -> ice -> white)
+        // The sheath reaches at most 4.8 * 1.6 times T plus its AA width.
+        [branch] if (absV <= T * 7.75 + C.aaY * 2.5) {
+            float localT = frac(uu * (cascade + 1.0));
+            float envS = sin(RAY_PI * localT);                     // pinch at nodes
+            float fPinch = smoothstep(0.0, 0.035, abs(uu - fT));   // extra pinch @focal
+            float envP = min(envS, fPinch);
+            float wm[4]; float am[4]; float pm[4];
+            wm[0] = 4.8; wm[1] = 2.4; wm[2] = 1.1; wm[3] = 0.4;
+            am[0] = 0.35; am[1] = 0.60; am[2] = 0.75; am[3] = 0.90;
+            pm[0] = 0.55; pm[1] = 0.62; pm[2] = 0.78; pm[3] = 0.88;
+            for (int L4 = 0; L4 < 4; L4++) {
+                float wL = T * lerp(1.0, 1.6, saturate(post)) * wm[L4]
+                         * (pm[L4] + (1.0 - pm[L4]) * envP);
+                float3 lc = (L4 == 0) ? darkSh : (L4 == 1) ? C.cA
+                                      : (L4 == 2) ? ice : float3(1, 1, 1);
+                RayAcc(rgb, a, lc, RayBand(v, wL, C.aaY * 2.0), am[L4] * 0.7);
+            }
+        }
 
-    // ---- cascade mini-sigils + scanning cursor ---------------------------
-    float scanSpd = max(0.06, nSpd * 0.8);
-    float scanT = RayWrap(C.t * scanSpd);
-    float sigma = clamp(0.55 / (cascade + 1.0), 0.035, 0.09);
-    for (int j = 0; j < 8; j++) {
-        if ((float)j >= cascade) break;
-        float tj = ((float)j + 1.0) / (cascade + 1.0);
-        float xj = tj * L;
-        float dxj = x - xj;
-        float envj = sin(RAY_PI * tj);
-        float fBoost = exp(-((tj - fT) * (tj - fT)) / 0.03);
-        float sz = T * 7.0 * (0.55 + 0.35 * envj + 0.25 * fBoost) * chS;
-        if (sz < 2.0) continue;
-        float dT = abs(tj - scanT);
-        dT = min(dT, 1.0 - dT);
-        float w = exp(-(dT * dT) / (sigma * sigma));
-        float act = 0.35 + 0.55 * w;
-        float rot = C.t * (0.10 + (float)j * 0.05) + (float)j * 2.094;
-        float cs = cos(rot), sn = sin(rot);
-        float rx = dxj * cs + v * sn;
-        float ry = v * cs - dxj * sn;
-        // rotating diamond frame
-        float dd = abs(rx) + abs(ry) - sz;
-        RayAcc(rgb, a, C.cA, RayBand(dd, sz * 0.10 + 0.5, C.aaY), 0.45 * act);
-        // aim ring + center dot
-        float len = sqrt(dxj * dxj + v * v);
-        RayAcc(rgb, a, C.cA, RayBand(len - sz * 0.45, sz * 0.07 + 0.5, C.aaY),
-               0.55 * act);
-        RayAcc(rgb, a, C.cB, RayBand(len - sz * 0.62, sz * 0.03 + 0.5, C.aaY),
-               0.30 * act);
-        RayAcc(rgb, a, float3(1, 1, 1), RayBand(len, sz * 0.12, C.aaY), act);
-        // axis-aligned split crosshair
-        float lw = max(1.0, sz * 0.07);
-        float chH = RayBand(v, lw, C.aaY)
-                  * RaySpan(abs(dxj), sz * 0.18, sz * 0.6, C.aaX);
-        float chV = RayBand(dxj, lw, C.aaX)
-                  * RaySpan(abs(v), sz * 0.18, sz * 0.6, C.aaY);
-        RayAcc(rgb, a, float3(1, 1, 1), chH + chV, 0.5 * act);
-    }
-    // scan cursor: bright comet sweeping the beam
-    {
+        // ---- cascade mini-sigils + scanning cursor ---------------------------
+        float scanSpd = max(0.06, nSpd * 0.8);
+        float scanT = RayWrap(C.t * scanSpd);
+        float maxSigilSz = T * 7.0 * 1.15 * chS;
+        // A rotated diamond fits inside a circle of its outer L1 radius.
+        // The rings and crosshair fit inside the same padded bounds.
+        [branch] if (maxSigilSz + 0.0001 >= 2.0 && absV <= maxSigilSz * 1.15 + 2.0 + C.aaY * 2.0) {
+            float sigma = clamp(0.55 / (cascade + 1.0), 0.035, 0.09);
+            float maxSigilReach = maxSigilSz * 1.15 + 1.5 + aa * 2.0;
+            for (int j = 0; j < 8; j++) {
+                if ((float)j >= cascade) break;
+                float tj = ((float)j + 1.0) / (cascade + 1.0);
+                float xj = tj * L;
+                float dxj = x - xj;
+                [branch] if (abs(dxj) > maxSigilReach) continue;
+                float envj = sin(RAY_PI * tj);
+                float fBoost = exp(-((tj - fT) * (tj - fT)) / 0.03);
+                float sz = T * 7.0 * (0.55 + 0.35 * envj + 0.25 * fBoost) * chS;
+                float rJ = sz * 1.15 + 1.5 + aa * 2.0;
+                [branch] if (sz < 2.0 || abs(dxj) > rJ || absV > rJ) continue;
+                float dT = abs(tj - scanT);
+                dT = min(dT, 1.0 - dT);
+                float w = exp(-(dT * dT) / (sigma * sigma));
+                float act = 0.35 + 0.55 * w;
+                float rot = C.t * (0.10 + (float)j * 0.05) + (float)j * 2.094;
+                float cs = cos(rot), sn = sin(rot);
+                float rx = dxj * cs + v * sn;
+                float ry = v * cs - dxj * sn;
+                // rotating diamond frame
+                float dd = abs(rx) + abs(ry) - sz;
+                RayAcc(rgb, a, C.cA, RayBand(dd, sz * 0.10 + 0.5, C.aaY), 0.45 * act);
+                // aim ring + center dot
+                float len = sqrt(dxj * dxj + v * v);
+                RayAcc(rgb, a, C.cA, RayBand(len - sz * 0.45, sz * 0.07 + 0.5, C.aaY),
+                        0.55 * act);
+                RayAcc(rgb, a, C.cB, RayBand(len - sz * 0.62, sz * 0.03 + 0.5, C.aaY),
+                        0.30 * act);
+                RayAcc(rgb, a, float3(1, 1, 1), RayBand(len, sz * 0.12, C.aaY), act);
+                // axis-aligned split crosshair
+                float lw = max(1.0, sz * 0.07);
+                float chH = RayBand(v, lw, C.aaY)
+                          * RaySpan(abs(dxj), sz * 0.18, sz * 0.6, C.aaX);
+                float chV = RayBand(dxj, lw, C.aaX)
+                          * RaySpan(abs(v), sz * 0.18, sz * 0.6, C.aaY);
+                RayAcc(rgb, a, float3(1, 1, 1), chH + chV, 0.5 * act);
+            }
+        }
+        // scan cursor: bright comet sweeping the beam
         float cx = RayWrap(scanT) * L;
-        float cd = sqrt((x - cx) * (x - cx) + v * v);
         float cS = T * 3.2 * chS;
-        RayAcc(rgb, a, C.cA, RayGlow(cd, cS), 0.55);
-        RayAcc(rgb, a, float3(1, 1, 1), RayBand(cd, cS * 0.15, C.aaY), 0.75);
-        // forward arrow streak
-        float ax = x - (cx + cS * 0.5);
-        RayAcc(rgb, a, C.cB,
-               RayBand(v, cS * 0.12, C.aaY)
-               * RaySpan(ax, 0.0, cS * 0.7, C.aaX), 0.45);
-    }
-
-    // ---- mach pulse cones + faint matrix zigzag (post-focal) --------------
-    if (uu > fT && L - fPx > 10.0) {
-        float post01 = saturate(post);
-        // mach cones: elongated gaussian pulses drifting forward
-        for (int m = 0; m < 3; m++) {
-            float mT = RayWrap((float)m / 3.0 - C.t * nSpd * 0.8);
-            if (mT < 0.05 || mT > 0.95) continue;
-            float msc = sin(mT * RAY_PI);
-            float mx = fPx + mT * (L - fPx);
-            float ex = (x - mx) / (T * 8.0 * msc + 3.0);
-            float ey = v / (T * 5.0 * msc + 1.0);
-            RayAcc(rgb, a, lerp(C.cB, float3(1, 1, 1), 0.3),
-                   exp(-(ex * ex + ey * ey)), 0.35 * msc);
+        float cursorRadius = 4.0 * max(cS, 1e-3);
+        // The glow beyond 4 sigma contributes at most .55 * exp(-8). The
+        // circular dot uses transverse AA in both directions.
+        [branch] if (abs(x - cx) <= cursorRadius + aa * 2.0 &&
+                     absV <= cursorRadius + C.aaY * 2.0) {
+            float cd = sqrt((x - cx) * (x - cx) + v * v);
+            RayAcc(rgb, a, C.cA, RayGlow(cd, cS), 0.55);
+            RayAcc(rgb, a, float3(1, 1, 1), RayBand(cd, cS * 0.15, C.aaY), 0.75);
+            // forward arrow streak
+            float ax = x - (cx + cS * 0.5);
+            RayAcc(rgb, a, C.cB,
+                   RayBand(v, cS * 0.12, C.aaY)
+                   * RaySpan(ax, 0.0, cS * 0.7, C.aaX), 0.45);
         }
-        // matrix circuit: stepped diagonal zigzag, bounded spindle envelope
-        float zenv = sin(RAY_PI * post01);
-        float step_ = max(L / ((float)nN * 2.0), 12.0);
-        float z = frac((x - C.t * (1.25 + nSpd * 2.0) * 10.0) / step_);
-        float zoff = T * 4.2 * zenv * (abs(z * 2.0 - 1.0) * 2.0 - 1.0);
-        RayAcc(rgb, a, C.cA, RayBand(v - zoff, T * 0.9, C.aaY), 0.28);
+
+        // ---- mach pulse cones + faint matrix zigzag (post-focal) --------------
+        [branch] if (uu > fT && L - fPx > 10.0) {
+            // mach cones: elongated gaussian pulses drifting forward
+            for (int m = 0; m < 3; m++) {
+                float mT = RayWrap((float)m / 3.0 - C.t * nSpd * 0.8);
+                if (mT < 0.05 || mT > 0.95) continue;
+                float msc = sin(mT * RAY_PI);
+                float mx = fPx + mT * (L - fPx);
+                float ex = (x - mx) / (T * 8.0 * msc + 3.0);
+                float ey = v / (T * 5.0 * msc + 1.0);
+                // A skipped pulse contributes at most .35 * exp(-3.5^2).
+                [branch] if (abs(ex) < 3.5 && abs(ey) < 3.5)
+                    RayAcc(rgb, a, lerp(C.cB, float3(1, 1, 1), 0.3),
+                           exp(-(ex * ex + ey * ey)), 0.35 * msc);
+            }
+            // matrix circuit: stepped diagonal zigzag, bounded spindle envelope
+            [branch] if (absV <= T * 5.2 + C.aaY * 2.0) {
+                float zenv = sin(RAY_PI * saturate(post));
+                float step_ = max(L / ((float)nN * 2.0), 12.0);
+                float z = frac((x - C.t * (1.25 + nSpd * 2.0) * 10.0) / step_);
+                float zoff = T * 4.2 * zenv * (abs(z * 2.0 - 1.0) * 2.0 - 1.0);
+                RayAcc(rgb, a, C.cA, RayBand(v - zoff, T * 0.9, C.aaY), 0.28);
 )hlsl"
 R"hlsl(
-        RayAcc(rgb, a, float3(1, 1, 1), RayBand(v - zoff, T * 0.3, C.aaY),
-               0.35);
-    }
+                RayAcc(rgb, a, float3(1, 1, 1), RayBand(v - zoff, T * 0.3, C.aaY),
+                       0.35);
+            }
+        }
 
-    // ---- focal holo-sigil: dark iris + rotating diamond + crosshair -------
-    {
+        // ---- focal holo-sigil: dark iris + rotating diamond + crosshair -------
         float dxF = x - fPx;
         float sS = T * 5.5 * chS;
-        float rotF = C.t * 0.15;
-        float cs = cos(rotF), sn = sin(rotF);
-        float rx = dxF * cs + v * sn;
-        float ry = v * cs - dxF * sn;
-        float lenF = sqrt(dxF * dxF + v * v);
-        // iris disc (near-black -- occludes under normal blend, ~free under add)
-        RayAcc(rgb, a, float3(0.0, 0.043, 0.10),
-               1.0 - smoothstep(sS * 1.5 - C.aaY, sS * 1.5 + C.aaY, lenF), 0.5);
-        // shattered diamond frame (two arcs feel)
-        float dd = abs(rx) + abs(ry) - sS * 1.6;
-        float frame = RayBand(dd, sS * 0.10 + 0.5, C.aaY);
-        RayAcc(rgb, a, C.cA, frame, 0.65);
-        RayAcc(rgb, a, C.cB, RayBand(lenF - sS * 0.62, sS * 0.05 + 0.5, C.aaY),
-               0.4);
-        RayAcc(rgb, a, C.cA, RayBand(lenF - sS * 0.45, sS * 0.07 + 0.5, C.aaY),
-               0.6);
-        float lw = max(1.0, sS * 0.07);
-        float chH = RayBand(v, lw, C.aaY)
-                  * RaySpan(abs(dxF), sS * 0.18, sS * 0.6, C.aaX);
-        float chV = RayBand(dxF, lw, C.aaX)
-                  * RaySpan(abs(v), sS * 0.18, sS * 0.6, C.aaY);
-        RayAcc(rgb, a, float3(1, 1, 1), chH + chV, 0.75);
-        RayAcc(rgb, a, float3(1, 1, 1), RayBand(lenF, sS * 0.12, C.aaY), 0.9);
-    }
+        float focalReach = sS * 1.85 + 2.0;
+        // The outer diamond radius is 1.7 * sS + .5 + aaY.
+        [branch] if (abs(dxF) <= focalReach + aa * 2.0 && absV <= focalReach + C.aaY * 2.0) {
+            float rotF = C.t * 0.15;
+            float cs = cos(rotF), sn = sin(rotF);
+            float rx = dxF * cs + v * sn;
+            float ry = v * cs - dxF * sn;
+            float lenF = sqrt(dxF * dxF + v * v);
+            // iris disc (near-black -- occludes under normal blend, ~free under add)
+            RayAcc(rgb, a, float3(0.0, 0.043, 0.10),
+                   1.0 - smoothstep(sS * 1.5 - C.aaY, sS * 1.5 + C.aaY, lenF), 0.5);
+            // shattered diamond frame (two arcs feel)
+            float dd = abs(rx) + abs(ry) - sS * 1.6;
+            float frame = RayBand(dd, sS * 0.10 + 0.5, C.aaY);
+            RayAcc(rgb, a, C.cA, frame, 0.65);
+            RayAcc(rgb, a, C.cB, RayBand(lenF - sS * 0.62, sS * 0.05 + 0.5, C.aaY),
+                   0.4);
+            RayAcc(rgb, a, C.cA, RayBand(lenF - sS * 0.45, sS * 0.07 + 0.5, C.aaY),
+                   0.6);
+            float lw = max(1.0, sS * 0.07);
+            float chH = RayBand(v, lw, C.aaY)
+                      * RaySpan(abs(dxF), sS * 0.18, sS * 0.6, C.aaX);
+            float chV = RayBand(dxF, lw, C.aaX)
+                      * RaySpan(abs(v), sS * 0.18, sS * 0.6, C.aaY);
+            RayAcc(rgb, a, float3(1, 1, 1), chH + chV, 0.75);
+            RayAcc(rgb, a, float3(1, 1, 1), RayBand(lenF, sS * 0.12, C.aaY), 0.9);
+        }
 
-    // ---- tip shatter crosshair + directional diamond flare ----------------
-    {
+        // ---- tip shatter crosshair + directional diamond flare ----------------
         float dxE = x - L;
         float sE = T * 5.0 * chS;
-        float lenE = sqrt(dxE * dxE + v * v);
-        RayAcc(rgb, a, C.cA, RayBand(lenE - sE * 1.8, 1.5, C.aaY), 0.4);
-        // directional flares: anisotropic diamonds (|dx|/a + |v|/b = 1)
-        float fl1 = RayBand(abs(dxE) / max(sE * 4.0, 1.0)
-                            + abs(v) / max(sE * 0.35, 1.0) - 1.0,
-                            0.12, C.aaY / max(sE, 1.0));
-        float fl2 = RayBand(abs(dxE) / max(sE * 2.8, 1.0)
-                            + abs(v) / max(sE * 0.25, 1.0) - 1.0,
-                            0.12, C.aaY / max(sE, 1.0));
-        RayAcc(rgb, a, C.cA, fl1, 0.65);
-        RayAcc(rgb, a, C.cB, fl2, 0.55);
-        RayAcc(rgb, a, float3(1, 1, 1), RayBand(lenE, sE * 0.2, C.aaY), 0.9);
-        // split cross ticks
-        float chH = RayBand(v, 1.2, C.aaY)
-                  * RaySpan(abs(dxE), sE * 0.45, sE * 1.3, C.aaX);
-        float chV = RayBand(dxE, 1.2, C.aaX)
-                  * RaySpan(abs(v), sE * 0.45, sE * 1.3, C.aaY);
-        RayAcc(rgb, a, C.cB, chH + chV, 0.7);
-    }
+        float flareWidth = max(sE * 4.0, 1.0);
+        float flareAA = C.aaY / max(sE, 1.0);
+        // The longer diamond scales normalized AA back up by flareWidth in X.
+        // Its Y scale is at most max(sE,1), so the ring/crosshair pad covers Y.
+        float tipReachX = max(max(sE * 4.6, 5.0) + aa * 2.0, flareWidth * (1.12 + 2.0 * flareAA));
+        [branch] if (abs(dxE) <= tipReachX && absV <= sE * 2.0 + 3.0 + C.aaY * 2.0) {
+            float lenE = sqrt(dxE * dxE + v * v);
+            RayAcc(rgb, a, C.cA, RayBand(lenE - sE * 1.8, 1.5, C.aaY), 0.4);
+            // directional flares: anisotropic diamonds (|dx|/a + |v|/b = 1)
+            float fl1 = RayBand(abs(dxE) / flareWidth
+                                + abs(v) / max(sE * 0.35, 1.0) - 1.0,
+                                0.12, flareAA);
+            float fl2 = RayBand(abs(dxE) / max(sE * 2.8, 1.0)
+                                + abs(v) / max(sE * 0.25, 1.0) - 1.0,
+                                0.12, flareAA);
+            RayAcc(rgb, a, C.cA, fl1, 0.65);
+            RayAcc(rgb, a, C.cB, fl2, 0.55);
+            RayAcc(rgb, a, float3(1, 1, 1), RayBand(lenE, sE * 0.2, C.aaY), 0.9);
+            // split cross ticks
+            float chH = RayBand(v, 1.2, C.aaY)
+                      * RaySpan(abs(dxE), sE * 0.45, sE * 1.3, C.aaX);
+            float chV = RayBand(dxE, 1.2, C.aaX)
+                      * RaySpan(abs(v), sE * 0.45, sE * 1.3, C.aaY);
+            RayAcc(rgb, a, C.cB, chH + chV, 0.7);
+        }
 
-    float ef = RayEnds(C.x, max(2.0, C.aaX), C.L);
-    return RayOut(rgb, a, ef);
+        float ef = RayEnds(C.x, max(2.0, C.aaX), C.L);
+        result = RayOut(rgb, a, ef);
+    }
+    return result;
 }
 
 // ===========================================================================
@@ -1151,42 +1246,30 @@ float4 RayShadeFallback(RayCtx C)
 // ===========================================================================
 // public dispatch
 // ===========================================================================
-float4 ShadeRayStyle(uint style, float2 q, float lengthWorld, float widthWorld,
-                     float ageTicks, float seed, float3 primary,
-                     float3 secondary, float4 p0, float4 p1, float4 p2,
-                     float4 meta, float life)
+float4 ShadeRayStyleOther(uint style, RayCtx C, float4 p0, float4 p1, float4 p2)
 {
-    RayCtx C = (RayCtx)0;
-    C.q = q;
-    C.L = max(lengthWorld, 1.0);
-    C.W = max(widthWorld, 0.75);
-    C.x = q.x * C.L;
-    C.t = ageTicks;
-    C.sd = RayHash11(seed * 0.977 + 0.31);
-    C.aaU = max(fwidth(q.x), 1e-5);
-    C.aaX = max(fwidth(C.x), 0.30);
-    C.aaY = max(fwidth(q.y), 0.30);
-    C.cA = primary;
-    C.cB = secondary;
-    C.meta = meta;
-    C.life = life;
-    C.rawSeed = seed;
-
     // Single exit avoids FXC's inlined-return initialization ambiguity under ps_4_0 /WX.
-    float4 result=float4(0,0,0,0);
-    if (style == 0u) result=RayShadeTesla(C, p0, p1);
-    else if (style == 1u) result=RayShadePrism(C, p0);
-    else if (style == 2u) result=RayShadeRadiance(C, p0);
-    else if (style == 3u) result=RayShadeBraid(C, p0, p1, p2, 0);
-    else if (style == 4u) result=RayShadeResonance(C, p0, p1, p2);
-    else if (style == 5u) result=RayShadeWave(C, p0, p1);
-    else if (style == 6u) result=RayShadeThermal(C, p0, p1);
-    else if (style == 7u) result=RayShadeVortex(C, p0, p1);
-    else if (style == 8u) result=RayShadePlasma(C, p0, p1);
-    else if (style == 9u) result=RayShadeConvergence(C, p0, p1);
-    else if (style == 10u) result=RayShadeBagua(C, p0, p1, p2);
-    else if (style == 42u) result=float4(0,0,0,0); // retired duplicate Bagua pass
-    else result=RayShadeFallback(C);
+    float4 result;
+    [branch] if (style == 0u) result = RayShadeTesla(C, p0, p1);
+    else [branch] if (style == 1u) result = RayShadePrism(C, p0);
+    else [branch] if (style == 2u) result = RayShadeRadiance(C, p0);
+    else [branch] if (style == 3u) result = RayShadeBraid(C, p0, p1, p2, 0);
+    else [branch] if (style == 4u) result = RayShadeResonance(C, p0, p1, p2);
+    else [branch] if (style == 5u) result = RayShadeWave(C, p0, p1);
+    else [branch] if (style == 6u) result = RayShadeThermal(C, p0, p1);
+    else [branch] if (style == 7u) result = RayShadeVortex(C, p0, p1);
+    else [branch] if (style == 8u) result = RayShadePlasma(C, p0, p1);
+    else [branch] if (style == 10u) result = RayShadeBagua(C, p0, p1, p2);
+    else [branch] if (style == 42u) result = float4(0,0,0,0); // retired duplicate Bagua pass
+    else result = RayShadeFallback(C);
+    return result;
+}
+
+float4 ShadeRayStyle(uint style, RayCtx C, float4 p0, float4 p1, float4 p2)
+{
+    float4 result;
+    [branch] if (style == 9u) result = RayShadeConvergence(C, p0, p1);
+    else result = ShadeRayStyleOther(style, C, p0, p1, p2);
     return result;
 }
 
