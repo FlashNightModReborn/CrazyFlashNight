@@ -31,7 +31,7 @@ UINT gCmdMsg=0, gFillerMsg=0;
 wchar_t gStall[MAX_PATH]{}, gFocusKill[MAX_PATH]{};
 uint64_t gSeq=0;
 bool gInStall=false, gFocusKillDone=false;
-int gRenderPercent=100,gPaintTick=0;
+int gRenderHeight=0,gPaintTick=0;
 int gGeometryOffsetY=0;bool gGeometryPaint=false;
 DWORD gStallStart=0, gLastBeat=0;
 DWORD gFillerCount=0;
@@ -68,7 +68,10 @@ void MaybeFocusKill() {
 }
 void FitToParent() {
     RECT rc{}; if(gOwner && GetClientRect(gOwner,&rc) && rc.right>0 && rc.bottom>0) {
-        rc.right=MulDiv(rc.right,gRenderPercent,100);rc.bottom=MulDiv(rc.bottom,gRenderPercent,100);
+        if(gRenderHeight>0 && gRenderHeight<rc.bottom) {
+            rc.right=MulDiv(rc.right,gRenderHeight,rc.bottom);
+            rc.bottom=gRenderHeight;
+        }
         RECT me{}; GetWindowRect(gChild,&me);
         POINT tl{}; ClientToScreen(gOwner,&tl);
         if(me.left!=tl.x || me.top!=tl.y+gGeometryOffsetY || me.right-me.left!=rc.right || me.bottom-me.top!=rc.bottom)
@@ -108,11 +111,15 @@ LRESULT CALLBACK ChildProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
         PAINTSTRUCT paint{};HDC dc=BeginPaint(hwnd,&paint);RECT r{};GetClientRect(hwnd,&r);
         HBRUSH color=CreateSolidBrush(RGB(31,173,89));FillRect(dc,&r,color);DeleteObject(color);
         RECT marker{0,0,20,20};FillRect(dc,&marker,GetSysColorBrush(gPaintTick%2 ? COLOR_WINDOW : COLOR_WINDOWTEXT));
+        RECT first{27,39,31,43},second{73,57,77,61};
+        HBRUSH a=CreateSolidBrush(RGB(223,61,107)),b=CreateSolidBrush(RGB(37,191,227));
+        FillRect(dc,&first,a);FillRect(dc,&second,b);DeleteObject(a);DeleteObject(b);
         EndPaint(hwnd,&paint);return 0;
     }
     if(message==gFillerMsg) { gFillerCount++; return 0; }
     if(message==gCmdMsg) {
-        if(wp==11) {gGeometryPaint=true;gRenderPercent=static_cast<int>(lp);FitToParent();SetTimer(hwnd,71,50,nullptr);InvalidateRect(hwnd,nullptr,FALSE);return 0;}
+        if(wp==11) {gGeometryPaint=true;gRenderHeight=static_cast<int>(lp);FitToParent();SetTimer(hwnd,71,50,nullptr);InvalidateRect(hwnd,nullptr,FALSE);return 0;}
+        if(wp==13) {if(lp)SetTimer(hwnd,71,50,nullptr);else KillTimer(hwnd,71);return 0;}
         if(wp==12) {gGeometryOffsetY=static_cast<int>(lp);FitToParent();InvalidateRect(hwnd,nullptr,FALSE);return 0;}
         if(wp==10) {gHasSaved=PeekMessageW(&gSaved,gChild,RegisterWindowMessageW(L"CF7.WorldPointer.Packet.v4"),RegisterWindowMessageW(L"CF7.WorldPointer.Packet.v4"),PM_NOREMOVE)!=FALSE;Log("PEEK_SAVED present=%d msg=%u",gHasSaved,gSaved.message);return 0;}
         if(wp==9) {if(gHasSaved){Log("REPLAY_SAVED msg=%u",gSaved.message);DispatchMessageW(&gSaved);gHasSaved=false;}return 0;}

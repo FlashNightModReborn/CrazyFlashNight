@@ -37,6 +37,26 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(0, api.AttachCallCount);
         }
 
+        [Theory]
+        [InlineData(0x1000,0x1001,true)]
+        [InlineData(0x2001,0x1001,false)]
+        [InlineData(0x1000,0x2001,false)]
+        [InlineData(0x1000,0,false)]
+        public void CaptureRecoveryOnlyTakesFocusFromTheGame(int foreground,int focus,bool expected)
+        {
+            var api=new FakeFocusApi {Foreground=new IntPtr(foreground),Focused=new IntPtr(focus)};
+            api.AfterSetFocus=()=>api.Focused=api.LastFocusTarget;
+            var manager=new WindowManager(api,Flash);
+            Assert.Equal(expected,manager.SuspendFlashKeyboardForCapture(FlashRoot));
+            Assert.Equal(expected ? 1 : 0,api.SetFocusCallCount);
+            Assert.Equal(0,api.SetForegroundCallCount);
+            if(expected) {
+                Assert.True(manager.HasCaptureKeyboardFocus(FlashRoot));
+                api.Foreground=GuardianIndicator;
+                Assert.False(manager.HasCaptureKeyboardFocus(FlashRoot));
+            }
+        }
+
         [Fact]
         public void ExactFlashRootCanSatisfyPinnedRestore()
         {

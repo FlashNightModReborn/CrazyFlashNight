@@ -1738,7 +1738,8 @@ class Program
         // 实际 form.BindWindowManager / perfEngine.SetActivationState / OnKillFlash 还在后面统一装配。
         WindowManager windowManager = new WindowManager(allowForeground: workerPolicy == null && harnessPolicy == null);
         Func<bool> compositionHelpOwnsInput = () => false;
-        Func<bool> gameOwnsInput = () => true;
+        Func<bool> captureBlocksInput = () => false;
+        Func<bool> gameOwnsInput = () => !captureBlocksInput();
         SettingsTask settingsInputAuthority = null;
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
@@ -1996,10 +1997,10 @@ class Program
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
                 panelHudCompanion);
             compositionHelpOwnsInput = () => panelHost.CompositionHelpOwnsInput;
-            gameOwnsInput = () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready" && panelHost.GameOwnsInput
+            gameOwnsInput = () => !captureBlocksInput() && !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready" && panelHost.GameOwnsInput
                 && !(settingsInputAuthority?.HasUnresolvedAuthority ?? false);
             panelHost.NativeInputOwnerPresent=form.HasNativeEditFocus;
-            panelHost.ConfigureCloseFocus(windowManager,()=>!form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready"
+            panelHost.ConfigureCloseFocus(windowManager,()=>!captureBlocksInput() && !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready"
                 && !(settingsInputAuthority?.HasUnresolvedAuthority ?? false));
             form.GameInputOwnerEligible = () => gameOwnsInput();
             form.BindPanelEscapeCapture(panelHost.CaptureNativeEscapeAction);
@@ -2211,6 +2212,9 @@ class Program
             opaqueHudEnabled:workerPolicy==null && playerInfoFixtureCase==null,
             isAppActive:() => form.ActivationState.IsAppActive && !form.ActivationState.IsMinimized,
             shakeCatalog:worldShakeCatalog);
+        captureBlocksInput = () => worldCompositor.CaptureInputBlocked;
+        worldCompositor.SuspendFlashKeyboard = () => windowManager.SuspendFlashKeyboardForCapture(form.Handle);
+        worldCompositor.OwnsRecoveryFocus = () => windowManager.HasCaptureKeyboardFocus(form.Handle);
         form.AppActivationChanged += worldCompositor.SetWorldShakeAppActive;
         form.FormClosed += delegate { form.AppActivationChanged -= worldCompositor.SetWorldShakeAppActive; };
         hnOverlay.DamageLegacyFallbackChanged = worldCompositor.SetDamageLegacyFallback;
@@ -3047,7 +3051,7 @@ class Program
         socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;
         // wire v2 能力握手：每代客户端 ready 时经代际绑定发送下发一次 dialogue_caps。
         socketServer.OnClientReadyForGeneration += nativeDialogueTask.PushCapsForGeneration;
-        form.SetDialogueKeyboardSurface(nativeDialogueTask.CaptureKeyboardAction);
+        form.SetDialogueKeyboardSurface(key => captureBlocksInput() ? null : nativeDialogueTask.CaptureKeyboardAction(key));
 
         // === AI 对话内嵌插话（exe 存在即启用）===
         // 没有独立特性开关：只要 ragTerminalService 可用就构建输入浮窗、挂会话钩子与焦点门；

@@ -65,7 +65,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _hudPointer=new WorldHudPointerRouter(callback=> {
                 if(IsHandleCreated && !IsDisposed)BeginInvoke(new Action(()=> {
                     if(IsDisposed)return;
-                    FlushMove();callback();
+                    FlushMove();callback(); // Cancel still has to reach the HUD. Its queue fences stale callbacks by generation.
                 }));
             });
             Text="CF7 world composition"; FormBorderStyle=FormBorderStyle.None;
@@ -109,11 +109,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // tests can drive the envelope path without a topmost physical window.
         internal bool IntakePointer(int message,Point screen,uint mouseData)
         {
+            if(_captureBlocked)return message!=0x200;
             int bit=ButtonBit(message,mouseData);
             if(_renewing || _awaitRelease) {
                 if(IsDown(message))_physicalButtons|=bit;
                 if(IsUp(message))_physicalButtons&=~bit;
-                if(!_renewing && _readPhysicalButtons()==0){_awaitRelease=false;_physicalButtons=0;}
+                int physical=_readPhysicalButtons();
+                if(IsUp(message))physical&=~bit;
+                if(IsDown(message))physical|=bit;
+                if(!_renewing && physical==0) { _awaitRelease=false;_physicalButtons=0;_hudPointer.ObserveReleased(0); }
                 return message!=0x200;
             }
             if(_awaitFreshDown && !IsDown(message) && message!=0x200)return message!=0x200;
@@ -199,9 +203,25 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _posted=true;long generation=_workGeneration;
             BeginInvoke(new Action(()=>{if(generation==_workGeneration)Drain();}));
         }
+        private bool _captureBlocked;
+        internal void SetCaptureInputBlocked(bool blocked)
+        {
+            if(_captureBlocked==blocked)return;
+            _captureBlocked=blocked;
+            if(blocked)CancelPointer("capture_recovery");
+            else {
+                int physical=_readPhysicalButtons();
+                _awaitRelease=physical!=0;
+                _awaitFreshDown=true;
+                _hudPointer.RequireRelease(physical);
+            }
+        }
         internal void FlushMove()
         {
-            _hudPointer.ObserveReleased(_readPhysicalButtons());
+            if(_captureBlocked)return;
+            int physical=_readPhysicalButtons();
+            _hudPointer.ObserveReleased(physical);
+            if(_awaitRelease && !_renewing && physical==0) { _awaitRelease=false;_physicalButtons=0; }
             if (_draining || _renewing) return;
             // A render tick can precede the posted Drain callback. Tail motion
             // is newer than queued edges; never deliver it ahead of Down/Up.
@@ -213,7 +233,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal void Drain()
         {
             _posted=false;
-            if (_draining || _renewing || IsDisposed) return;
+            if (_captureBlocked || _draining || _renewing || IsDisposed) return;
             _draining=true;
             long generation=_workGeneration;
             try { while (generation==_workGeneration && _queue.TryDequeue(out var packet)) Deliver(packet); }
@@ -283,7 +303,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _=>"unknown" };
         internal void RefreshPointer()
         {
-            if(!Visible || IsDisposed || _renewing) return;
+            if(!Visible || IsDisposed || _renewing || _captureBlocked) return;
             Point screen=Cursor.Position;
             if(WindowFromPoint(screen)==Handle && _hudPointer.TryRoute(0x200,screen,0,_physicalButtons!=0))LeaveFlashForHud();
             else if(WindowFromPoint(screen)==Handle)

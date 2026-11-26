@@ -161,6 +161,29 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.Equal(0x124,Marshal.ReadInt32(page,80));
             } finally { UnmapViewOfFile(page); CloseHandle(mapping); }
         }
+        [Fact] public void CaptureRecoveryDiscardsQueuedInputAndRequiresANewPressAfterPhysicalRelease()
+        {
+            var sink=new FakeSink();
+            int held=1;
+            using var flash=FakeSource();
+            using var surface=new WorldCompositionSurface(()=>flash.Handle,()=>{},sink,physicalButtons:()=>held);
+            surface.Show();
+            var point=new Point(5,5);
+            surface.IntakePointer(Down,point,0);
+            surface.SetCaptureInputBlocked(true);
+            uint floor=sink.Floor;
+            surface.SetCaptureInputBlocked(true);
+            foreach(int message in new[]{Move,Down,Wheel,Up})surface.IntakePointer(message,point,0);
+            surface.FlushMove();surface.Drain();
+            Assert.Equal(floor,sink.Floor);
+            Assert.Single(sink.Sent);Assert.Equal(CancelMode,sink.Sent[0].Message);
+            surface.SetCaptureInputBlocked(false);
+            surface.IntakePointer(Down,point,0);
+            held=0; surface.IntakePointer(Up,point,0); surface.IntakePointer(Up,point,0);
+            surface.Drain();Assert.Single(sink.Sent);
+            surface.IntakePointer(Down,point,0);surface.IntakePointer(Up,point,0);surface.Drain();
+            Assert.Equal(new[]{CancelMode,Down,Up},sink.Sent.ConvertAll(p=>p.Message));
+        }
         [Fact] public void OwnerDeactivateCancelsPointerAndUnsubscribesOnDispose()
         {
             var sink=new FakeSink();

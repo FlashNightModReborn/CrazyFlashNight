@@ -21,6 +21,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly HudCostSetDelegate _setHudCostSampling;
         private readonly HudCostReadDelegate _readHudCost;
         private readonly CaptureSizeDelegate _captureSize;
+        private readonly CaptureStatusDelegate _captureStatus;
+        private readonly CommitCaptureDelegate _commitCapture;
+        private readonly RefreshCaptureDelegate _refreshCapture;
         private readonly CropDelegate _crop;
         private readonly ClientGeometryDelegate _clientGeometry;
         private readonly ModeDelegate _mode;
@@ -84,6 +87,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _setHudCostSampling=TryExport<HudCostSetDelegate>("ProbeSetHudCostSampling");
                 _readHudCost=TryExport<HudCostReadDelegate>("ProbeGetHudCostStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
+                _captureStatus=Export<CaptureStatusDelegate>("ProbeGetCaptureStatus");
+                _commitCapture=Export<CommitCaptureDelegate>("ProbeCommitCaptureViewport");
+                _refreshCapture=Export<RefreshCaptureDelegate>("ProbeRefreshCaptureItem");
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
                 _clientGeometry=TryExport<ClientGeometryDelegate>("ProbeSetClientGeometry");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
@@ -292,6 +298,45 @@ namespace CF7Launcher.Guardian.WorldCompositor
             return new System.Drawing.Size(width,height);
         }
         internal ulong CaptureGeneration {get;private set;}
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct CaptureStatus
+        {
+            internal uint Size,Version;
+            internal ulong Generation,ExtentRevision,ObservedFrames,AcceptedMapping;
+            internal ulong PresentedGeneration,PresentedExtentRevision,PresentedMapping,PresentSerial;
+            internal int Width,Height,ItemWidth,ItemHeight,PoolWidth,PoolHeight,OutputWidth,OutputHeight;
+            internal double FrameQpcMs,PresentedFrameQpcMs;
+
+            internal readonly bool HasPresentation(ulong generation,ulong extent,ulong mapping,double fence,System.Drawing.Size output)
+                => generation!=0 && extent!=0 && mapping!=0 && Width>0 && Height>0 && PresentSerial!=0
+                    && output.Width>0 && output.Height>0 && Generation==generation && ExtentRevision==extent
+                    && AcceptedMapping==mapping && PresentedMapping==mapping
+                    && PresentedGeneration==generation && PresentedExtentRevision==extent
+                    && PresentedFrameQpcMs>=fence && OutputWidth==output.Width && OutputHeight==output.Height;
+        }
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int CaptureStatusDelegate(IntPtr handle,ref CaptureStatus status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int CommitCaptureDelegate(IntPtr handle,ulong generation,ulong extent,ulong mapping,
+            int x,int y,int width,int height,int offsetX,int offsetY,int fullWidth,int fullHeight,int captureWidth,int captureHeight,double fence);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int RefreshCaptureDelegate(IntPtr handle,ulong generation,ulong extent);
+        internal CaptureStatus ReadCaptureStatus()
+        {
+            var status=new CaptureStatus {Size=(uint)Marshal.SizeOf<CaptureStatus>()};
+            if(_session==IntPtr.Zero || _captureStatus(_session,ref status)!=1 || status.Version!=1)
+                throw new InvalidOperationException("Capture status unavailable");
+            CaptureGeneration=status.Generation;
+            return status;
+        }
+        internal bool TryCommitCapture(WorldGeometrySnapshot geometry,CaptureStatus status,ulong mapping,double fence)
+        {
+            var crop=geometry.Crop;var offset=geometry.ClientOffset;var full=geometry.FullClientSize;
+            return _commitCapture(_session,status.Generation,status.ExtentRevision,mapping,crop.X,crop.Y,crop.Width,crop.Height,
+                offset.X,offset.Y,full.Width,full.Height,geometry.CaptureFrame.Width,geometry.CaptureFrame.Height,fence)==1;
+        }
+        internal bool RefreshCaptureItem(CaptureStatus status)
+            => _refreshCapture(_session,status.Generation,status.ExtentRevision)==1;
         internal void Crop(System.Drawing.Rectangle rect)
         {
             if (_session == IntPtr.Zero || _crop(_session,rect.X,rect.Y,rect.Width,rect.Height) != 1)

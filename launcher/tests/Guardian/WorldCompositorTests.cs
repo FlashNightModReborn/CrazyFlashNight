@@ -104,14 +104,13 @@ namespace CF7Launcher.Tests.Guardian {
             var error=Assert.Throws<TargetInvocationException>(()=>GeometryWait(controller,11001));
             Assert.IsType<TimeoutException>(error.InnerException);
         }
-        [Fact] public void OnGeometryChangedHandlerRestartsGeometryWaitBudget() {
+        [Fact] public void OverlappingOwnerGeometryEventsCannotExtendRecoveryBudget() {
             using var owner=new Form(); using var controller=RenderController(owner);
             GeometryWait(controller,1000);
             typeof(WorldCompositorController).GetMethod("OnGeometryChanged",BindingFlags.NonPublic|BindingFlags.Instance)
                 .Invoke(controller,new object[]{owner,EventArgs.Empty});
-            GeometryWait(controller,500000);
-            GeometryWait(controller,510000);
-            var error=Assert.Throws<TargetInvocationException>(()=>GeometryWait(controller,510001));
+            GeometryWait(controller,11000);
+            var error=Assert.Throws<TargetInvocationException>(()=>GeometryWait(controller,11001));
             Assert.IsType<TimeoutException>(error.InnerException);
         }
         [Fact] public void SourceResetDoesNotInheritGeometryWaitDeadline() {
@@ -139,21 +138,29 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.True(WorldCompositorController.TryResolveCaptureFrame(frame,window,window.Size,out resolved));
             Assert.Equal(window,resolved);
         }
-        [Fact] public void MaximizedCaptureWithoutSizingEdgesRetainsCaptionAndResolvesCrop()
+        [Fact] public void ReportedMaximizedExtentNeedsAnIndependentCaptureOrigin()
         {
             var extended=new Rectangle(0,0,1920,1040);
             var window=new Rectangle(-8,-8,1936,1056);
             var content=new Size(1922,1049);
-            Assert.True(WorldCompositorController.TryResolveCaptureFrame(extended,window,content,7,7,out var capture));
-            Assert.Equal(new Rectangle(-1,-8,1922,1049),capture);
-            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
-                new Rectangle(0,23,1920,1017),new Rectangle(0,23,1920,1017),extended,window,content,7,7,
-                out var geometry,out var reason));
-            Assert.Null(reason);
-            Assert.Equal(new Rectangle(1,31,1920,1017),geometry.Crop);
+            var viewport=new Rectangle(0,23,1920,1017);
+            Assert.False(WorldCompositorController.TryResolveGeometrySnapshot(
+                viewport,viewport,extended,window,content,out _,out var reason));
+            Assert.StartsWith("capture_bounds_pending",reason);
+
+            // Given this origin, the field example has a known crop. ContentSize alone cannot supply it.
+            var proposedFrame=new Rectangle(new Point(-1,-8),content);
+            Assert.True(WorldCompositorController.TryCalculateCrop(viewport,proposedFrame,out var crop));
+            Assert.Equal(new Rectangle(1,31,1920,1017),crop);
+        }
+        [Fact] public void OrdinaryWindowWithSizingEdgeSignatureRequiresAMeasuredFrame()
+        {
+            var extended=new Rectangle(108,108,1000,823);
+            var window=new Rectangle(100,100,1016,839);
             Assert.False(WorldCompositorController.TryResolveCaptureFrame(
-                extended,window,new Size(1922,1048),7,7,out _));
-            Assert.False(WorldCompositorController.TryResolveCaptureFrame(extended,window,content,out _));
+                extended,window,new Size(1000,831),out _));
+            Assert.True(WorldCompositorController.TryResolveCaptureFrame(extended,window,extended.Size,out var frame));
+            Assert.Equal(extended,frame);
         }
         [Fact] public void CropRejectsOutsideAndSupportsNegativeMonitorOrigin() {
             var root=new Rectangle(-1500,100,1100,750);
@@ -477,6 +484,40 @@ namespace CF7Launcher.Tests.Guardian {
             }
             throw new FileNotFoundException(WorldPresentationCatalog.RelativePath);
         }
+        [Fact] public void Issue353RequiresAUniqueMeasuredCaptureOrigin()
+        {
+            var extended=new Rectangle(0,0,1920,1040);
+            var window=new Rectangle(-8,-8,1936,1056);
+            Assert.False(WorldCompositorController.TryResolveCaptureFrame(extended,window,new Size(1922,1049),out _));
+            Assert.False(WorldCompositorController.TryResolveCaptureFrame(extended,new Rectangle(-1,-8,1920,1040),extended.Size,out _));
+            Assert.True(WorldCompositorController.TryResolveCaptureFrame(extended,extended,extended.Size,out var shared));
+            Assert.Equal(extended,shared);
+            Assert.True(WorldCompositorController.TryResolveCaptureFrame(extended,window,window.Size,out var full));
+            Assert.Equal(window,full);
+        }
+
+        [Fact] public void OnlyThePresentedTextureForTheActiveMappingCanResumeInput()
+        {
+            var size=new Size(1920,1017);
+            var status=new NativeCompositorSession.CaptureStatus {
+                Generation=8,ExtentRevision=3,AcceptedMapping=15,Width=1936,Height=1056,
+                PresentedGeneration=8,PresentedExtentRevision=3,PresentedMapping=15,PresentSerial=1,
+                OutputWidth=size.Width,OutputHeight=size.Height,FrameQpcMs=900,PresentedFrameQpcMs=500
+            };
+            bool Ready(NativeCompositorSession.CaptureStatus s) => s.HasPresentation(8,3,15,500,size);
+            Assert.Equal(120,System.Runtime.InteropServices.Marshal.SizeOf<NativeCompositorSession.CaptureStatus>());
+            Assert.True(Ready(status));
+            var old=status; old.PresentedGeneration--; Assert.False(Ready(old));
+            old=status; old.PresentedExtentRevision--; Assert.False(Ready(old));
+            old=status; old.PresentedMapping--; Assert.False(Ready(old));
+            old=status; old.Generation++; Assert.False(Ready(old));
+            old=status; old.ExtentRevision++; Assert.False(Ready(old));
+            old=status; old.AcceptedMapping=0; Assert.False(Ready(old));
+            old=status; old.PresentedFrameQpcMs=499; Assert.False(Ready(old));
+            old=status; old.OutputHeight--; Assert.False(Ready(old));
+            old=status; old.PresentSerial=0; Assert.False(Ready(old));
+            old=status; old.Width=0; Assert.False(Ready(old));
+        }
         [Fact] public void ClippedClientGeometryPreservesFullStageAlignmentAcrossTopLeftAndBottomRight() {
             var capture=new Rectangle(100,50,1024,576);
             var topLeftClippedSource=new Rectangle(98,48,1024,576);
@@ -610,8 +651,9 @@ namespace CF7Launcher.Tests.Guardian {
                     throw new InvalidOperationException($"Explicit candidate module SHA256 mismatch: expected={matchedRow[3]} actual={actualSha}");
                 IntPtr loaded=System.Runtime.InteropServices.NativeLibrary.Load(module);
                 try {
-                    if(!System.Runtime.InteropServices.NativeLibrary.TryGetExport(loaded,"ProbeSetViewportGeometry",out _))
-                        throw new InvalidOperationException($"Explicit candidate module is missing required export ProbeSetViewportGeometry: {module}");
+                    foreach(var export in new[]{"ProbeSetViewportGeometry","ProbeGetCaptureStatus","ProbeCommitCaptureViewport","ProbeRefreshCaptureItem"})
+                        if(!System.Runtime.InteropServices.NativeLibrary.TryGetExport(loaded,export,out _))
+                            throw new InvalidOperationException($"Explicit candidate module is missing required export {export}: {module}");
                 } finally {
                     System.Runtime.InteropServices.NativeLibrary.Free(loaded);
                 }
@@ -637,7 +679,7 @@ namespace CF7Launcher.Tests.Guardian {
                 if(string.IsNullOrWhiteSpace(c) || !File.Exists(c)) continue;
                 IntPtr mod=System.Runtime.InteropServices.NativeLibrary.Load(c);
                 try {
-                    if(System.Runtime.InteropServices.NativeLibrary.TryGetExport(mod,"ProbeSetViewportGeometry",out _))
+                    if(System.Runtime.InteropServices.NativeLibrary.TryGetExport(mod,"ProbeCommitCaptureViewport",out _))
                         return Path.GetFullPath(c);
                 } finally { System.Runtime.InteropServices.NativeLibrary.Free(mod); }
             }

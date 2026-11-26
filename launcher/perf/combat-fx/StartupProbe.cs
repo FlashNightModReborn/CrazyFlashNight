@@ -74,7 +74,8 @@ internal static partial class Program
         internal Rectangle Crop;
         internal double FenceMs;
         internal Size CaptureSize;
-        internal ulong Generation;
+        internal NativeCompositorSession.CaptureStatus Observation;
+        internal ulong Generation,Mapping;
         internal bool ViewportHeld;
     }
 
@@ -144,13 +145,16 @@ internal static partial class Program
                 // Production queues authored resources before capture readiness.
                 // Do not wait for shader-ready, generation 1, or Presented here:
                 // that would remove slow native initialization from the deadline.
+                session.HoldViewport();geometry.ViewportHeld=true;
                 session.CombatFxAtlas(fx);session.BulletStyles(bullets);session.Mode(0);
                 await WaitStartupReady(prefix+"/initial",session,owner,child,target,geometry,evidence,started,0,0,0);
 
                 session.Active(false);target.Hide();
                 evidence.Write(prefix+"/suspend","inactive_requested",StartupSnapshot(session,owner,child,target,geometry));
                 await WaitStartupInactive(session,child);
-                var paused=session.Read();session.ReadCaptureSize();ulong previousGeneration=session.CaptureGeneration;
+                var paused=session.Read();var inactive=session.ReadCaptureStatus();
+                ulong previousGeneration=geometry.Generation;
+                Require(inactive.Width==0 && inactive.Height==0 && inactive.AcceptedMapping==0,"Inactive capture retained valid metadata");
                 Require(!target.Visible && !StartupNative.IsWindowVisible(output),"P remained visible while inactive");
                 evidence.Write(prefix+"/suspend","counters_stopped",StartupSnapshot(session,owner,child,target,geometry));
                 started=StartupNowMs();geometry.FenceMs=started;session.Active(true);
@@ -200,7 +204,9 @@ internal static partial class Program
             Require(!targetMustBeHidden || (!target.Visible && !StartupNative.IsWindowVisible(target.Handle)),
                 phase+": P became visible before fresh-frame readiness");
             var stats=session.Read();
-            geometry.CaptureSize=session.ReadCaptureSize();geometry.Generation=session.CaptureGeneration;
+            var observation=session.ReadCaptureStatus();
+            geometry.Observation=observation; geometry.CaptureSize=new Size(observation.Width,observation.Height);
+            geometry.Generation=observation.Generation;
             Require(stats.State<2 && stats.Error>=0,"Native startup failure: "+stats.Message+" hr="+stats.Error);
             bool synchronized=SynchronizeStartup(session,owner,child,target,geometry,evidence,phase);
             double now=StartupNowMs();
@@ -210,8 +216,9 @@ internal static partial class Program
             }
             bool ready=synchronized && stats.Received>beforeReceived && stats.Presented>beforePresented
                 && stats.Width==geometry.Crop.Width && stats.Height==geometry.Crop.Height
-                && stats.LastFrameQpcMs>=geometry.FenceMs && geometry.Generation>beforeGeneration;
-            double deadlineOrigin=Math.Max(started,geometry.FenceMs);
+                && geometry.Generation>beforeGeneration && observation.HasPresentation(geometry.Generation,
+                    observation.ExtentRevision,geometry.Mapping,geometry.FenceMs,target.ClientSize);
+            double deadlineOrigin=started;
             // Match the production ten-second fresh-frame gate. Valid WGC
             // dimensions alone never reset the deadline or make capture ready.
             if(now-deadlineOrigin>StartupDeadlineMs) {
@@ -242,14 +249,16 @@ internal static partial class Program
         var origin=new Point();
         if(!StartupNative.ClientToScreen(child.Handle,ref origin))throw new InvalidOperationException("Cannot resolve child client origin");
         var source=new Rectangle(origin,client.Rectangle.Size);
-        if(!WorldCompositorController.TryResolveCaptureFrame(extended.Rectangle,window.Rectangle,geometry.CaptureSize,out var capture)
-            || !WorldCompositorController.TryCalculateCrop(source,capture,out var crop))return false;
         Rectangle bounds=child.RectangleToScreen(child.ClientRectangle);
-        if(crop!=geometry.Crop || target.Bounds!=bounds || geometry.ViewportHeld) {
-            if(!geometry.ViewportHeld)geometry.FenceMs=StartupNowMs();
-            session.Viewport(crop,geometry.FenceMs);geometry.ViewportHeld=false;geometry.Crop=crop;target.Bounds=bounds;
-            evidence.Write(phase,"viewport",new {source,capture,extended=extended.Rectangle,window=window.Rectangle,
-                wgc=geometry.CaptureSize,crop,bounds,frameFenceMs=geometry.FenceMs,captureGeneration=geometry.Generation});
+        if(!WorldCompositorController.TryResolveGeometrySnapshot(bounds,source,extended.Rectangle,window.Rectangle,
+            geometry.CaptureSize,out var snapshot,out _))return false;
+        var observed=geometry.Observation;
+        if(snapshot.Crop!=geometry.Crop || target.Bounds!=bounds || geometry.ViewportHeld || observed.AcceptedMapping!=geometry.Mapping || geometry.Mapping==0) {
+            if(!session.TryCommitCapture(snapshot,observed,geometry.Mapping+1,geometry.FenceMs))return false;
+            ++geometry.Mapping;geometry.ViewportHeld=false;geometry.Crop=snapshot.Crop;target.Bounds=bounds;
+            child.Invalidate();
+            evidence.Write(phase,"viewport",new {source,snapshot.CaptureFrame,extended=extended.Rectangle,window=window.Rectangle,
+                wgc=geometry.CaptureSize,snapshot.Crop,bounds,frameFenceMs=geometry.FenceMs,observed.Generation,observed.ExtentRevision,geometry.Mapping});
         }
         return true;
     }
@@ -257,10 +266,12 @@ internal static partial class Program
     private static object StartupSnapshot(NativeCompositorSession session,Form owner,StartupChild child,
         StartupTarget target,StartupGeometry geometry)
     {
-        var stats=session.Read();var size=session.ReadCaptureSize();
+        var stats=session.Read();var receipt=session.ReadCaptureStatus();
         return new {stats.State,stats.Error,stats.Message,stats.Adapter,stats.Received,stats.Presented,
             readyWidth=stats.Width,readyHeight=stats.Height,stats.LastFrameQpcMs,
-            captureWidth=size.Width,captureHeight=size.Height,captureGeneration=session.CaptureGeneration,
+            captureWidth=receipt.Width,captureHeight=receipt.Height,captureGeneration=receipt.Generation,receipt.ExtentRevision,
+            receipt.PresentedGeneration,receipt.PresentedExtentRevision,receipt.PresentedMapping,receipt.PresentSerial,
+            receipt.PresentedFrameQpcMs,receipt.OutputWidth,receipt.OutputHeight,receipt.ObservedFrames,
             crop=geometry.Crop,frameFenceMs=geometry.FenceMs,
             ownerVisible=owner.Visible,childVisible=child.Visible,targetVisible=target.Visible,child.PaintCount};
     }

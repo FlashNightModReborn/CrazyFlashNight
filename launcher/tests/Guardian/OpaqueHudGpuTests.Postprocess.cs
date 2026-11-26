@@ -64,9 +64,19 @@ public sealed partial class OpaqueHudGpuTests
             Pump(()=>world.Read().Received>received,scene,"fresh pattern capture");
             world.Postprocess(false,0,false);
             Pump(()=>world.ReadPostprocess().CasEnabled==0,scene,"CAS off");
-            var baseline=Grab(world);SavePostprocessFrame(baseline,Path.Combine(dir,"off.png"));
-            var input=Grab(world,false);
-            Assert.Equal(input.Width,baseline.Width);Assert.Equal(input.Height,baseline.Height);
+            Frame input=default,baseline=default;
+            Pump(()=> {
+                input=Grab(world,false);
+                // WGC can observe the GDI repaint between the background erase and the
+                // final orange marker. A source counter alone does not identify the pixels.
+                if(!Pixel(input,70*input.Width/960,475*input.Height/540,0,69,255))return false;
+                for(int p=0;p<input.Pixels.Length;p+=4)
+                    if(input.Pixels[p]==140 && input.Pixels[p+1]==80 && input.Pixels[p+2]==30)return false;
+                baseline=Grab(world);
+                return input.Width==baseline.Width && input.Height==baseline.Height
+                    && input.Pixels.AsSpan().SequenceEqual(baseline.Pixels);
+            },scene,"complete GDI pattern and identical CAS-off pixels");
+            SavePostprocessFrame(baseline,Path.Combine(dir,"off.png"));
             foreach(string quality in new[]{"HIGH","MEDIUM","LOW"}) {
                 float strength=WorldPostprocessPolicy.CasStrength(quality);
                 world.Postprocess(true,strength,false);

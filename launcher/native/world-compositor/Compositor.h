@@ -35,6 +35,15 @@ struct ProbeContentStats {
     uint32_t size, count, proofCount, width, height, maxRgbError;
     uint64_t inputHash, outputHash;
 };
+// WGC observation and the last successful submission. All fields are sampled under one lock.
+struct ProbeCaptureStatus {
+    uint32_t size, version;
+    uint64_t generation, extentRevision, observedFrames, acceptedMapping;
+    uint64_t presentedGeneration, presentedExtentRevision, presentedMapping, presentSerial;
+    int32_t width, height, itemWidth, itemHeight, poolWidth, poolHeight, outputWidth, outputHeight;
+    double frameQpcMs, presentedFrameQpcMs;
+};
+static_assert(sizeof(ProbeCaptureStatus)==120,"Capture status ABI");
 // Optional diagnostics: counts actual worker work, not GPU duration or game FPS.
 // Existing ABI 12 stats and rendering exports keep their layouts unchanged.
 struct ProbeWorkStats {
@@ -248,6 +257,11 @@ __declspec(dllexport) int __cdecl ProbeGetContentStats(void* handle, ProbeConten
 __declspec(dllexport) int __cdecl ProbeGetStats(void* handle, ProbeStats* stats);
 __declspec(dllexport) int __cdecl ProbeGetWorkStats(void* handle, ProbeWorkStats* stats);
 __declspec(dllexport) int __cdecl ProbeGetTimingStats(void* handle, ProbeTimingStats* stats);
+__declspec(dllexport) int __cdecl ProbeGetCaptureStatus(void* handle, ProbeCaptureStatus* status);
+__declspec(dllexport) int __cdecl ProbeCommitCaptureViewport(void* handle, uint64_t generation, uint64_t extentRevision,
+    uint64_t mapping, int x, int y, int width, int height, int offsetX, int offsetY, int fullWidth, int fullHeight,
+    int captureWidth, int captureHeight, double notBefore);
+__declspec(dllexport) int __cdecl ProbeRefreshCaptureItem(void* handle, uint64_t generation, uint64_t extentRevision);
 // New paired hosts require actual WGC content size.
 __declspec(dllexport) int __cdecl ProbeGetCaptureSize(void* handle, int32_t* width, int32_t* height, uint64_t* generation);
 // Diagnostic scene geometry: dimensions of the last successfully presented output.

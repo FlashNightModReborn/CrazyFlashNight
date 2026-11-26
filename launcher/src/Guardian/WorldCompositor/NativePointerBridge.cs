@@ -157,17 +157,28 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
         }
         public long EndpointConsumedSeq {get {lock(_gate)return _state?.ReadConsumedSeq() ?? -1;}}
-        internal Task<double> RepaintAsync(double after) => RepaintCore(after);
-        private async Task<double> RepaintCore(double after)
+        internal async Task<double> RepaintAsync(double after,double deadline,CancellationToken target)
         {
-            await _paintGate.WaitAsync();
+            int RemainingMs() {
+                double remaining=deadline-Stopwatch.GetTimestamp()*1000.0/Stopwatch.Frequency;
+                if(remaining<=0)throw new TimeoutException("Capture repaint deadline expired");
+                return (int)Math.Min(10000,Math.Ceiling(remaining));
+            }
+            if(!await _paintGate.WaitAsync(RemainingMs(),target))throw new TimeoutException("Capture repaint gate timed out");
             try {
+                target.ThrowIfCancellationRequested();
+                RemainingMs();
                 int ticket;
                 lock(_gate) {
                     if(_closing || _state==null)throw new InvalidOperationException("Input session closing");
                     ticket=_state.RequestPaint((long)(after*Stopwatch.Frequency/1000.0));
                 }
-                bool returned=await Task.Run(()=>SendMessageTimeout(_source,_control,new IntPtr(((long)ticket<<32)|4),new IntPtr(unchecked((long)_cookie)),2,10000,out IntPtr result)!=IntPtr.Zero && result==new IntPtr(1));
+                bool returned=await Task.Run(()=> {
+                    target.ThrowIfCancellationRequested();
+                    return SendMessageTimeout(_source,_control,new IntPtr(((long)ticket<<32)|4),new IntPtr(unchecked((long)_cookie)),
+                        2,(uint)RemainingMs(),out IntPtr result)!=IntPtr.Zero && result==new IntPtr(1);
+                },target);
+                target.ThrowIfCancellationRequested();
                 lock(_gate) {
                     if(_closing || !returned || _state==null || _state.ReadAtomic(140)!=ticket)throw new InvalidOperationException("Repaint result not confirmed for current input session");
                     return _state.ReadAtomic64(144)*1000.0/Stopwatch.Frequency;

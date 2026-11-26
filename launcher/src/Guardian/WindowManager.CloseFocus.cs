@@ -8,6 +8,19 @@ namespace CF7Launcher.Guardian
     {
         private long _focusTargetEpoch = 1;
         private Process _registeredFocusProcess;
+        internal bool HasCaptureKeyboardFocus(IntPtr owner)
+            => _focusApi.GetForegroundWindow()==owner && _focusApi.GetFocusedWindow(owner)==owner;
+        internal bool SuspendFlashKeyboardForCapture(IntPtr owner)
+        {
+            IntPtr flash=_flashHwnd;
+            if(flash==IntPtr.Zero || owner==IntPtr.Zero)return false;
+            IntPtr foreground=_focusApi.GetForegroundWindow();
+            if(foreground!=owner && foreground!=flash)return false;
+            IntPtr focus=_focusApi.GetFocusedWindow(flash);
+            if(focus!=flash && (focus==IntPtr.Zero || !_focusApi.IsChild(flash,focus)))return false;
+            _focusApi.SetFocus(owner);
+            return HasCaptureKeyboardFocus(owner);
+        }
         internal IntPtr ReadCloseForeground() { try { return _focusApi.GetForegroundWindow(); } catch { return IntPtr.Zero; } }
         internal sealed class FlashFocusTarget
         {

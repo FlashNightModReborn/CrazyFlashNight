@@ -229,8 +229,9 @@ internal static class ContentViewportRegression
             nint session=ProbeStartWorld(source.Handle,(uint)Environment.ProcessId,target.Handle,0,1);
             try{
                 Setup(session,layout);
-                Check(ProbeSetBulletFrameV2(session,Array.Empty<float>(),0,0,0,1,3,42,9,42),"empty bullets");
-                Check(ProbeSetRayFrame(session,Array.Empty<float>(),0,0,0,1),"empty rays");
+                // A coherent frame tag selects the camera from bullet history even when its item list is empty.
+                Check(ProbeSetBulletFrameV2(session,Array.Empty<float>(),0,layout.CamX,layout.CamY,layout.CamScale,3,42,9,42),"empty bullets");
+                Check(ProbeSetRayFrame(session,Array.Empty<float>(),0,layout.CamX,layout.CamY,layout.CamScale),"empty rays");
                 Check(ProbeSetCombatFxFrame(session,Array.Empty<float>(),0,0,Array.Empty<float>(),0,0,layout.CamX,layout.CamY,layout.CamScale),"empty effects");
                 byte[] baseline=await StableComposite(source,session,layout);
                 Save(baseline,layout.OW,layout.OH,Path.Combine(Output,layout.Name+"-baseline.png"));

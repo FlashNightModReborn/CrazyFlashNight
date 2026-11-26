@@ -516,9 +516,10 @@ namespace G1Fixture
             Owner.BackColor=Color.Magenta;
             _controller=new WorldCompositorController(Owner,Owner,()=>_child,()=>true,
                 text=>HostLog("notify:"+text),_opt.Root,()=>true,
-                scale=>SendMessageTimeout(_child,_cmdMsg,new IntPtr(11),new IntPtr((int)Math.Round(scale*100)),2,1000,out _),()=>{});
+                height=>SendMessageTimeout(_child,_cmdMsg,new IntPtr(11),new IntPtr(height),2,1000,out _),()=>{});
             _controller.Adopt(new WorldLightingFrame {Sequence=1,Scene=1,Ready=true,Light=7,Mode="光照",Parameters=new double[]{1,1,1,1,0,0,0,0}});
-            _controller.ApplyRenderSelection(new RenderSelection(3,.67,"LOW"),0);
+            int reducedHeight=(int)Math.Round(Owner.ClientSize.Height*.67);
+            _controller.ApplyRenderSelection(new RenderSelection(3,reducedHeight,"LOW",0),0);
             var wait=Stopwatch.StartNew();
             while(!_controller.SchedulingAllowed && wait.ElapsedMilliseconds<15000)await Task.Delay(50);
             Assert(_controller.SchedulingAllowed,"geometry_capture_ready","real production Controller + native WGC/D3D");
@@ -527,7 +528,7 @@ namespace G1Fixture
             if(_surface==null || !_surface.Visible)throw new InvalidOperationException("No visible presentation");
             var native=(NativeCompositorSession)F(_controller,"_native").GetValue(_controller);
             var stats=native.Read();
-            Assert(stats.Width==(uint)Math.Round(Owner.ClientSize.Width*.67) && stats.Width<_surface.ClientSize.Width,
+            Assert(stats.Width==(uint)Math.Round(Owner.ClientSize.Width*(double)reducedHeight/Owner.ClientSize.Height) && stats.Width<_surface.ClientSize.Width,
                 "geometry_source_is_reduced","source="+stats.Width+"x"+stats.Height+" output="+_surface.ClientSize);
             IntPtr stable=_surface.Handle;int hidden=0;
             _surface.VisibleChanged+=(_,__)=>{if(!_surface.Visible)hidden++;};
@@ -579,7 +580,7 @@ namespace G1Fixture
         }
         private async Task RunMaximizeGeometry(NativeCompositorSession native)
         {
-            _controller.ApplyRenderSelection(new RenderSelection(0,1,"MEDIUM"),0);
+            _controller.ApplyRenderSelection(new RenderSelection(0,Screen.FromControl(Owner).Bounds.Height,"MEDIUM",1),0);
             await Ready("full_scale");
             SendMessageTimeout(_child,_cmdMsg,new IntPtr(12),new IntPtr(1),2,1000,out _);
             await Task.Delay(150);
@@ -604,17 +605,135 @@ namespace G1Fixture
                 await Task.Delay(100);
                 Assert(CaptureCorner("restore-top-"+i,top:true)==Color.FromArgb(31,173,89).ToArgb(),"restore_top_row_"+i,"normal origin also restored");
             }
+            // Apply the render-height change in the same UI turn as the first maximize.
+            _controller.ApplyRenderSelection(new RenderSelection(3,540,"LOW",0),0);
+            Owner.WindowState=FormWindowState.Maximized;
+            await Ready("maximize_with_pending_drs");
+            Assert(Geometry(native).Source.Height==540,"maximized_drs_source_height","requested F height and actual capture agree");
+            await ReplayUnknownExtent(native);
+            await Ready("static_after_unknown");
+            await Task.Delay(100);
+            Assert(CaptureCorner("fresh-item-top",true)==Color.FromArgb(31,173,89).ToArgb(),"fresh_item_correct_top","same captured HWND, fixed DRS and one source wake");
+            Owner.WindowState=FormWindowState.Normal;await Ready("restore_after_recovery");
+            Owner.WindowState=FormWindowState.Maximized;await Ready("raw_maximize");
+            await CompareRawOrigins(native);
             async Task Ready(string phase) {
                 var wait=Stopwatch.StartNew();bool okay=false;
                 do {
-                    await Task.Delay(60);var g=Geometry(native);var s=native.Read();
+                    await Task.Delay(60);var g=Geometry(native);var s=native.Read();var observation=native.ReadCaptureStatus();
                     var crop=(Rectangle)F(_controller,"_crop").GetValue(_controller);
                     okay=_controller.SchedulingAllowed && g.Capture.Contains(g.Source) && crop==WorldCompositorController.CalculateCrop(g.Source,g.Capture)
-                        && s.Width==g.Source.Width && s.Height==g.Source.Height && _surface.Bounds==g.Output;
+                        && s.Width==g.Source.Width && s.Height==g.Source.Height && _surface.Bounds==g.Output
+                        && !_controller.CaptureInputBlocked && observation.HasPresentation(observation.Generation,observation.ExtentRevision,
+                            observation.AcceptedMapping,(double)F(_controller,"_requiredFrameMs").GetValue(_controller),g.Output.Size);
                 }while(!okay && wait.ElapsedMilliseconds<6000);
-                HostLog("geometry_phase="+phase+" "+Geometry(native)+" WGC="+native.ReadCaptureSize());
+                var receipt=native.ReadCaptureStatus();
+                HostLog("geometry_phase="+phase+" "+Geometry(native)+" WGC="+native.ReadCaptureSize()+" elapsedMs="+wait.ElapsedMilliseconds
+                    +" generation="+receipt.Generation+" revision="+receipt.ExtentRevision+" mapping="+receipt.PresentedMapping+" serial="+receipt.PresentSerial);
                 Assert(okay,"geometry_settled_"+phase,"live F / S crop / P agree without a second user maximize");
             }
+        }
+        private async Task CompareRawOrigins(NativeCompositorSession native)
+        {
+            // Last phase before teardown. Use the entire WGC frame as the readback ROI;
+            // neither OS rectangle supplies the origin for this measurement.
+            ((System.Windows.Forms.Timer)F(_controller,"_timer").GetValue(_controller)).Stop();
+            SendMessageTimeout(_child,_cmdMsg,new IntPtr(13),new IntPtr(1),2,1000,out _);
+            var g=Geometry(native);var previous=native.ReadCaptureStatus();
+            ulong mapping=previous.AcceptedMapping;
+            foreach(string mode in new[]{"reuse","fresh"}) {
+                native.HoldViewport();
+                if(mode=="fresh")Assert(native.RefreshCaptureItem(native.ReadCaptureStatus()),"raw_requested_new_item","same source HWND and window state");
+                var watch=Stopwatch.StartNew();
+                bool committed=false;NativeCompositorSession.CaptureStatus sample=default;
+                double fence=Stopwatch.GetTimestamp()*1000d/Stopwatch.Frequency;
+                while(watch.ElapsedMilliseconds<5000) {
+                    await Task.Delay(35);
+                    sample=native.ReadCaptureStatus();
+                    if(sample.Width==0 || mode=="fresh" && sample.Generation==previous.Generation)continue;
+                    var raw=new Rectangle(0,0,sample.Width,sample.Height);
+                    if(!committed) {
+                        var fullFrame=new WorldGeometrySnapshot(g.Output,raw,raw,raw,Point.Empty);
+                        if(!native.TryCommitCapture(fullFrame,sample,mapping+1,fence))continue;
+                        ++mapping;committed=true;
+                    }
+                    if(sample.HasPresentation(sample.Generation,sample.ExtentRevision,mapping,fence,g.Output.Size))break;
+                }
+                Assert(committed && sample.HasPresentation(sample.Generation,sample.ExtentRevision,mapping,fence,g.Output.Size),
+                    "raw_ready_"+mode,"entire raw ContentSize selected");
+                int rw=sample.Width,rh=sample.Height;byte[] pixels=new byte[checked(rw*rh*4)];
+                int result=await Task.Run(()=>native.GrabLatestFrame(pixels,out rw,out rh));
+                if(result!=NativeCompositorSession.GrabOk || rw!=sample.Width || rh!=sample.Height)
+                    throw new InvalidOperationException("Raw WGC readback failed: "+result);
+                (Point First,int Count) Locate(byte r,byte green,byte b) {
+                    Point first=Point.Empty;int count=0;
+                    for(int i=0;i<pixels.Length;i+=4) {
+                        if(pixels[i]!=b || pixels[i+1]!=green || pixels[i+2]!=r) continue;
+                        if(count++==0)first=new Point(i/4%rw,i/4/rw);
+                    }
+                    return(first,count);
+                }
+                var a=Locate(223,61,107);var b=Locate(37,191,227);
+                Point origin=new Point(g.Source.X+27-a.First.X,g.Source.Y+39-a.First.Y);
+                Point independent=new Point(g.Source.X+73-b.First.X,g.Source.Y+57-b.First.Y);
+                HostLog($"raw_origin mode={mode} gen={sample.Generation} extent={rw}x{rh} item={sample.ItemWidth}x{sample.ItemHeight} pool={sample.PoolWidth}x{sample.PoolHeight} A={a} B={b} measured={origin} predicted={g.Capture.Location} elapsedMs={watch.ElapsedMilliseconds}");
+                Assert(a.Count==16 && b.Count==16 && origin==independent && origin==g.Capture.Location,
+                    "raw_origin_"+mode,"two independent 4x4 GDI markers agree with current OS rectangle");
+            }
+        }
+        private async Task ReplayUnknownExtent(NativeCompositorSession native)
+        {
+            // Disagree only at the OS rectangle boundary. All frames, holds, item changes,
+            // commits, presentation serials and pointer packets below use the real modules.
+            var timer=(System.Windows.Forms.Timer)F(_controller,"_timer").GetValue(_controller);
+            var g=Geometry(native);
+            var absent=new Rectangle(g.Capture.X,g.Capture.Y,g.Capture.Width+19,g.Capture.Height+13);
+            var snapshot=new WorldGeometrySnapshot(g.Output,g.Source,g.Capture,WorldCompositorController.CalculateCrop(g.Source,g.Capture),Point.Empty);
+            var previous=native.ReadCaptureStatus(); var outputHandle=_surface.Handle;ulong inputSession=_bridge.SessionIdentity;
+            timer.Stop();
+            try {
+                var paintGate=(System.Threading.SemaphoreSlim)F(_bridge,"_paintGate").GetValue(_bridge);
+                await paintGate.WaitAsync();
+                try {
+                    var state=(SharedInputStateView)F(_bridge,"_state").GetValue(_bridge);
+                    int ticket=state.ReadAtomic(136);
+                    var method=_controller.GetType().GetMethod("PaintCurrentCapture",BindingFlags.NonPublic|BindingFlags.Instance);
+                    var pending=(Task<double?>)method.Invoke(_controller,new object[]{Stopwatch.GetTimestamp()*1000d/Stopwatch.Frequency});
+                    // A replacement render target must cancel work which has not acquired the paint gate.
+                    _controller.ApplyRenderSelection(new RenderSelection(3,360,"LOW",0),0);
+                    _controller.ApplyRenderSelection(new RenderSelection(3,540,"LOW",0),0);
+                    Assert(await Task.WhenAny(pending,Task.Delay(1500))==pending && await pending==null && state.ReadAtomic(136)==ticket,
+                        "superseded_repaint_never_dispatched","DRS replacement retired the queued repaint before a ticket was written");
+                } finally { paintGate.Release(); }
+                bool resolved=_controller.SynchronizeGeometry(previous,g.Output,g.Source,absent,absent);
+                var held=native.ReadCaptureStatus();
+                var holdStats=native.Read();
+                Assert(!resolved && _controller.CaptureInputBlocked && held.AcceptedMapping==0,"unknown_blocks_world_input","hold reached the real native session");
+                int inputMark=TargetIndex();
+                var center=_surface.PointToScreen(new Point(60,50));
+                _surface.IntakePointer(0x201,center,0);_surface.IntakePointer(0x202,center,0);_surface.Drain();
+                var watch=Stopwatch.StartNew();
+                long newItemObservedAt=-1;
+                while(watch.ElapsedMilliseconds<7000) {
+                    await Task.Delay(45);
+                    var sample=native.ReadCaptureStatus();
+                    _controller.SynchronizeGeometry(sample,g.Output,g.Source,absent,absent);
+                    if(sample.Generation>held.Generation && sample.Width>0) {
+                        if(newItemObservedAt<0)newItemObservedAt=watch.ElapsedMilliseconds;
+                        if(watch.ElapsedMilliseconds-newItemObservedAt>=650)break;
+                    }
+                }
+                var renewed=native.ReadCaptureStatus();
+                HostLog($"unknown_replay gen={held.Generation}->{renewed.Generation} observed={held.ObservedFrames}->{renewed.ObservedFrames} present={held.PresentSerial}->{renewed.PresentSerial} item={renewed.ItemWidth}x{renewed.ItemHeight} pool={renewed.PoolWidth}x{renewed.PoolHeight} actual={renewed.Width}x{renewed.Height}");
+                Assert(newItemObservedAt>=0 && watch.ElapsedMilliseconds-newItemObservedAt>=650 && renewed.Generation==held.Generation+1 && renewed.Width>0,"unknown_refresh_once","persistent mismatch spans both item generations");
+                Assert(renewed.ObservedFrames>held.ObservedFrames && renewed.FrameQpcMs>held.FrameQpcMs
+                    && renewed.PresentSerial==held.PresentSerial && renewed.AcceptedMapping==0
+                    && native.Read().CpuReadbacks==holdStats.CpuReadbacks,"held_observes_without_present_or_readback","actual WGC metadata advances while P retains the prior texture");
+                Assert(!native.TryCommitCapture(snapshot,previous,previous.AcceptedMapping+1,0),"retired_commit_refused","old generation cannot release the new viewport");
+                Assert(_surface.Handle==outputHandle && _bridge.SessionIdentity==inputSession && _controller.CaptureInputBlocked
+                    && !TargetSince(inputMark).Contains("LBUTTONDOWN"),"hold_preserves_endpoint_without_delivery","queued test click never reached target");
+                SendMessageTimeout(_child,_cmdMsg,new IntPtr(13),IntPtr.Zero,2,1000,out _);
+            } finally { timer.Start(); }
         }
         private async Task RunRenewals()
         {

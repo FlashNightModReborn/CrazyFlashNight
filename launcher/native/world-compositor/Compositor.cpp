@@ -760,8 +760,8 @@ public:
     void HoldViewport() {
         // Return only after any in-flight copy/Present has finished. The caller
         // can now resize its source without an old crop observing new geometry.
-        CommitGeometryTransaction(true, false, [](const ViewportGeometryState& cur, ViewportGeometryState& next) {
-            next = cur; next.held = true; return true;
+        CommitGeometryTransaction(true, false, [this](const ViewportGeometryState& cur, ViewportGeometryState& next) {
+            next = cur; next.held = true; captureStatus_.acceptedMapping=0; return true;
         });
         ++historyEpoch_; Signal();
     }
@@ -992,7 +992,33 @@ public:
         Signal();return true;
     }
     void Stats(ProbeStats& result) { std::lock_guard guard(mutex_); result = stats_; }
-    void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) { std::lock_guard guard(mutex_); width=geometry_.observedCaptureW;height=geometry_.observedCaptureH;generation=geometry_.captureGeneration; }
+    void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) {
+        std::lock_guard guard(mutex_);
+        width=captureStatus_.width; height=captureStatus_.height; generation=captureStatus_.generation;
+    }
+    void CaptureStatus(ProbeCaptureStatus& result) { std::lock_guard guard(mutex_); result=captureStatus_; }
+    bool CommitCaptureViewport(uint64_t generation,uint64_t extentRevision,uint64_t mapping,
+        int x,int y,int width,int height,int offsetX,int offsetY,int fullWidth,int fullHeight,
+        int captureWidth,int captureHeight,double notBefore) {
+        return CommitGeometryTransaction(true,true,[&](const ViewportGeometryState& cur,ViewportGeometryState& next) {
+            if (!generation || !extentRevision || !mapping || refreshItem_ || mapping<=cur.mapping
+                || generation!=captureStatus_.generation || extentRevision!=captureStatus_.extentRevision
+                || captureWidth!=captureStatus_.width || captureHeight!=captureStatus_.height) return false;
+            if (!ViewportGeometryState::TryBuildTransaction(cur,x,y,width,height,offsetX,offsetY,fullWidth,fullHeight,
+                captureWidth,captureHeight,notBefore,true,next)) return false;
+            next.mapping=mapping;
+            captureStatus_.acceptedMapping=mapping;
+            return true;
+        });
+    }
+    bool RefreshCaptureItem(uint64_t generation,uint64_t extentRevision) {
+        return CommitGeometryTransaction(true,true,[&](const ViewportGeometryState&,ViewportGeometryState& next) {
+            if (!next.held || !generation || generation!=captureStatus_.generation
+                || extentRevision!=captureStatus_.extentRevision || refreshItem_) return false;
+            refreshItem_=true;
+            return true;
+        });
+    }
     bool OutputSize(int32_t& width,int32_t& height) { std::lock_guard guard(mutex_); width=presentedOutputW_;height=presentedOutputH_;return stats_.state!=3 && width>0 && height>0; }
 
 private:
@@ -1060,7 +1086,6 @@ private:
         GraphicsCaptureItem item{nullptr};
         check_hresult(interop->CreateForWindow(source_, guid_of<GraphicsCaptureItem>(), put_abi(item)));
         auto size = item.Size();
-        { std::lock_guard guard(mutex_); geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height; }
         ValidateSize(size.Width, size.Height);
         auto pool = Direct3D11CaptureFramePool::CreateFreeThreaded(runtimeDevice,
             DirectXPixelFormat::B8G8R8A8UIntNormalized, 2, size);
@@ -1069,13 +1094,26 @@ private:
         auto frameSignature=[&] { return std::make_tuple(IsZoomed(source_)!=FALSE,
             GetWindowLongW(source_,GWL_STYLE)&(WS_CAPTION|WS_THICKFRAME),GetDpiForWindow(source_)); };
         auto sessionFrame=frameSignature();
+        auto invalidateCapture=[&] {
+            std::lock_guard presentation(presentationMutex_);
+            std::lock_guard guard(mutex_);
+            ++captureStatus_.generation;
+            captureStatus_.width=captureStatus_.height=0;
+            captureStatus_.frameQpcMs=0;
+            captureStatus_.itemWidth=captureStatus_.itemHeight=captureStatus_.poolWidth=captureStatus_.poolHeight=0;
+            captureStatus_.acceptedMapping=0;
+            if (geometry_.mapping) geometry_.held=true;
+            refreshItem_=false;
+        };
         auto startSession = [&] {
             sessionFrame=frameSignature();
             session = pool.CreateCaptureSession(item);
             if (auto cursor = session.try_as<IGraphicsCaptureSession2>()) cursor.IsCursorCaptureEnabled(false);
             if (borderless_) if (auto border = session.try_as<IGraphicsCaptureSession3>()) border.IsBorderRequired(false);
             session.StartCapture();
-            { std::lock_guard guard(mutex_); ++geometry_.captureGeneration; }
+            std::lock_guard guard(mutex_);
+            captureStatus_.itemWidth=captureStatus_.poolWidth=size.Width;
+            captureStatus_.itemHeight=captureStatus_.poolHeight=size.Height;
         };
 
         com_ptr<IDXGISwapChain1> swap;
@@ -1231,6 +1269,7 @@ private:
         float appliedSharpness=-1;
         double frameQpcMs = 0;
         State(0,S_OK,L"Starting WGC capture");
+        invalidateCapture();
         startSession();
         uint64_t appliedSettings = 0;
         // lut-set-v1 工作线程状态：纹理惰性创建，版本驱动的 UpdateSubresource（变更才上传）。
@@ -1259,6 +1298,15 @@ private:
         double lastAtmosphereDrawMs = 0;
         auto nextPresent = std::chrono::steady_clock::now();
         double previousTimingPresent=0;
+        uint64_t textureGeneration=0,textureExtentRevision=0,textureMapping=0;
+        auto resizePool=[&](auto extent) {
+            size=extent;
+            pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
+            RedrawWindow(source_,nullptr,nullptr,RDW_INVALIDATE|RDW_ALLCHILDREN);
+            std::lock_guard guard(mutex_);
+            captureStatus_.poolWidth=size.Width; captureStatus_.poolHeight=size.Height;
+            ++stats_.resizes;
+        };
         HudRasterGpu hudGpu;
         HudCostSampler hudCostSampler;
         auto recordHudGpuCost=[this](uint64_t epoch,unsigned status,double world,double hud) {RecordHudGpuCost(epoch,status,world,hud);};
@@ -1291,9 +1339,10 @@ private:
                 casSource.Reset(casStageWork);
                 previousTimingPresent=0;
                 lightCacheValid=false;
-                if (session) { session.Close(); session=nullptr; }
-                arrived.revoke();
-                pool.Close();
+                if (session) {
+                    invalidateCapture();
+                    session.Close(); session=nullptr; arrived.revoke(); pool.Close();
+                }
                 std::unique_lock lock(waitMutex_);
                 wake_.wait(lock,[this] { return stop_.load() || active_.load() || grabRequested_.load(); });
                 if (stop_) break;
@@ -1352,64 +1401,82 @@ private:
             }
             if (!ValidSource()) { State(2, S_OK, L"Source closed"); break; }
             if (!IsWindow(output_)) break;
-            if(!IsIconic(source_) && frameSignature()!=sessionFrame) {
+            bool freshItem;
+            { std::lock_guard guard(mutex_); freshItem=refreshItem_; }
+            if(!IsIconic(source_) && (freshItem || frameSignature()!=sessionFrame)) {
                 // Recreate the WGC session, not just its buffers. On this path a
                 // pool-only resize can retain the old non-client capture origin
                 // even though ContentSize already reports the maximized size.
                 // Output swapchain/texture and input HWNDs remain intact.
                 resetShakeStage(true,false);
+                invalidateCapture();
                 session.Close();session=nullptr;arrived.revoke();pool.Close();
+                if(freshItem) {
+                    item=nullptr;
+                    check_hresult(interop->CreateForWindow(source_,guid_of<GraphicsCaptureItem>(),put_abi(item)));
+                }
                 size=item.Size();ValidateSize(size.Width,size.Height);
                 pool=Direct3D11CaptureFramePool::CreateFreeThreaded(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
                 arrived=pool.FrameArrived(auto_revoke,[this](auto const&,auto const&) {Signal();});
-                startSession();continue;
+                startSession();
+                RedrawWindow(source_,nullptr,nullptr,RDW_INVALIDATE|RDW_ALLCHILDREN);
+                continue;
             }
             std::unique_lock presentation(presentationMutex_);
-            bool isViewportHeld = false;
+            auto frame=pool.TryGetNextFrame();
+            uint64_t drained=0;
+            if(frame) {
+                for(int i=0;i<2;++i) {
+                    auto newer=pool.TryGetNextFrame();
+                    if(!newer)break;
+                    frame.Close();frame=newer;++drained;
+                }
+            }
+            auto content=frame ? frame.ContentSize() : decltype(size){};
+            double incomingQpcMs=frame ? static_cast<double>(frame.SystemRelativeTime().count())/10000.0 : 0;
+            bool hasExtent=content.Width>0 && content.Height>0;
+            if(frame && hasExtent)ValidateSize(content.Width,content.Height);
+            bool held,textureStale,retryPresent;
+            uint64_t generation,extentRevision,mapping;
             {
                 std::lock_guard guard(mutex_);
-                isViewportHeld=geometry_.held;
+                if(frame) {
+                    if(content.Width!=captureStatus_.width || content.Height!=captureStatus_.height) {
+                        ++captureStatus_.extentRevision;
+                        captureStatus_.width=content.Width;captureStatus_.height=content.Height;
+                        captureStatus_.acceptedMapping=0;
+                        if(geometry_.mapping)geometry_.held=true;
+                    }
+                    captureStatus_.frameQpcMs=incomingQpcMs;
+                    ++captureStatus_.observedFrames;
+                }
+                generation=captureStatus_.generation;extentRevision=captureStatus_.extentRevision;
+                mapping=captureStatus_.acceptedMapping;held=geometry_.held;
+                textureStale=geometry_.mapping && (!mapping || textureGeneration!=generation ||
+                    textureExtentRevision!=extentRevision || textureMapping!=mapping || frameQpcMs<geometry_.notBefore);
+                retryPresent=mapping && captureStatus_.presentedMapping!=mapping;
                 if(shakeEngine_.NeedsFrame())shakeEngine_.Expire(QpcMs()/1000.0);
                 shakeNeedsFrame=shakeEngine_.NeedsFrame();
             }
-            if (isViewportHeld) {
-                if (grabRequested_.load()) ServiceGrab(device.get(),context.get(),nullptr,0,0);
-                previousTimingPresent=0;
-                // Geometry must remain observable while the host holds pixels
-                // for a resize. Waiting for a released frame here would deadlock
-                // the host's crop selection against Viewport() unholding us.
-                auto heldSize=item.Size();
-                if (heldSize.Width>0 && heldSize.Height>0 && (heldSize.Width!=size.Width || heldSize.Height!=size.Height)) {
-                    size=heldSize;
-                    pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
-                    InvalidateRect(source_,nullptr,FALSE);
-                    std::lock_guard guard(mutex_); ++stats_.resizes;
-                }
-                { std::lock_guard guard(mutex_); geometry_.observedCaptureW=heldSize.Width;geometry_.observedCaptureH=heldSize.Height; }
-                presentation.unlock();
-                std::unique_lock lock(waitMutex_);
-                wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
+            if(frame && !hasExtent) { frame.Close(); continue; }
+            // Item.Size seeds a new pool. Only actual frames resize it afterwards.
+            if(frame && (content.Width!=size.Width || content.Height!=size.Height)) {
+                frame.Close();
+                resizePool(content);
                 continue;
             }
-            auto frame = pool.TryGetNextFrame();
-            if (!frame) {
-                int expectedCapW=0,expectedCapH=0;
-                { std::lock_guard guard(mutex_); expectedCapW=geometry_.captureWidth; expectedCapH=geometry_.captureHeight; }
-                if (expectedCapW>0 && expectedCapH>0 && (size.Width!=expectedCapW || size.Height!=expectedCapH)) {
-                    auto currentSize=item.Size();
-                    if (currentSize.Width>0 && currentSize.Height>0
-                        && (currentSize.Width!=size.Width || currentSize.Height!=size.Height)) {
-                        size=currentSize;
-                        pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
-                        InvalidateRect(source_,nullptr,FALSE);
-                        std::lock_guard guard(mutex_);
-                        geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height;++stats_.resizes;
-                    }
-                }
+            if(held || (!frame && textureStale)) {
+                if(frame)frame.Close();
+                if(grabRequested_.load())ServiceGrab(device.get(),context.get(),nullptr,0,0);
+                previousTimingPresent=0;
+                presentation.unlock();
+                std::unique_lock lock(waitMutex_);
+                wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] {return stop_.load() || wakeVersion_.load()!=observedWake;});
+                continue;
             }
             RECT client{}; GetClientRect(output_, &client);
             bool fresh = static_cast<bool>(frame);
-            if (!frame && (!texture || (!shakeNeedsFrame && appliedPostprocess==postprocessVersion && !feedbackHistory.Pending()
+            if (!frame && (!texture || (!retryPresent && !shakeNeedsFrame && appliedPostprocess==postprocessVersion && !feedbackHistory.Pending()
                     && appliedMode == mode_.load() && !proofRequested_ && !grabRequested_
                     && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
                     && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
@@ -1425,48 +1492,26 @@ private:
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
                 continue;
             }
-            uint64_t drained = 0;
             double start = QpcMs();
             if (frame) {
-                // Bounded drain: never let a continuously active producer starve presentation.
-                for (int i = 0; i < 2; ++i) {
-                    auto newer = pool.TryGetNextFrame();
-                    if (!newer) break;
-                    frame.Close(); frame = newer; ++drained;
-                }
-                auto content = frame.ContentSize();
-                { std::lock_guard guard(mutex_); geometry_.observedCaptureW=content.Width;geometry_.observedCaptureH=content.Height; }
-                ValidateSize(content.Width, content.Height);
                 auto access = frame.Surface().as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
                 com_ptr<ID3D11Texture2D> sourceTexture;
                 check_hresult(access->GetInterface(__uuidof(ID3D11Texture2D), sourceTexture.put_void()));
                 D3D11_TEXTURE2D_DESC sourceDesc{}; sourceTexture->GetDesc(&sourceDesc);
-                bool changed = content.Width != size.Width || content.Height != size.Height;
                 // Resize notifications may precede a full-size backing texture. Drop that frame.
                 if (content.Width > static_cast<int>(sourceDesc.Width) || content.Height > static_cast<int>(sourceDesc.Height)) {
                     sourceTexture = nullptr; access = nullptr; frame.Close();
-                    size = content; pool.Recreate(runtimeDevice, DirectXPixelFormat::B8G8R8A8UIntNormalized, 2, size);
-                    InvalidateRect(source_, nullptr, FALSE);
-                    { std::lock_guard guard(mutex_); ++stats_.resizes; }
+                    resizePool(content);
                     continue;
                 }
                 if (sourceDesc.Format != DXGI_FORMAT_B8G8R8A8_UNORM || sourceDesc.SampleDesc.Count != 1)
                     throw hresult_error(E_INVALIDARG, L"Unexpected capture texture format");
-                double incomingQpcMs = static_cast<double>(frame.SystemRelativeTime().count()) / 10000.0;
                 RECT crop; double cropNotBefore; int cropCapW = 0, cropCapH = 0;
                 { std::lock_guard guard(mutex_); crop=geometry_.crop; cropNotBefore=geometry_.notBefore; cropCapW=geometry_.captureWidth; cropCapH=geometry_.captureHeight; }
                 // Keep the last swapchain image until a frame newer than the source
                 // resize is available. Never crop a queued old frame with new geometry.
                 if (incomingQpcMs<cropNotBefore) {
                     sourceTexture=nullptr; access=nullptr; frame.Close();
-                    auto targetSize = item.Size();
-                    if (targetSize.Width > 0 && targetSize.Height > 0
-                        && (targetSize.Width != size.Width || targetSize.Height != size.Height)) {
-                        size=targetSize;
-                        pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
-                        std::lock_guard guard(mutex_);
-                        geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height;++stats_.resizes;
-                    }
                     InvalidateRect(source_,nullptr,FALSE);
                     continue;
                 }
@@ -1474,15 +1519,6 @@ private:
                 if ((cropCapW > 0 && (content.Width != cropCapW || content.Height != cropCapH))
                     || crop.right > content.Width || crop.bottom > content.Height) {
                     sourceTexture = nullptr; access = nullptr; frame.Close();
-                    auto targetSize = item.Size();
-                    if (targetSize.Width <= 0 || targetSize.Height <= 0) targetSize = content;
-                    if (targetSize.Width > 0 && targetSize.Height > 0
-                        && (targetSize.Width != size.Width || targetSize.Height != size.Height)) {
-                        size=targetSize;
-                        pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
-                        std::lock_guard guard(mutex_);
-                        geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height;++stats_.resizes;
-                    }
                     InvalidateRect(source_,nullptr,FALSE);
                     continue;
                 }
@@ -1502,10 +1538,7 @@ private:
                 context->CopySubresourceRegion(texture.get(), 0, 0, 0, 0, sourceTexture.get(), 0, &box);
                 // Release WGC pool frame promptly. Commands on this one immediate context are ordered.
                 sourceTexture = nullptr; access = nullptr; frame.Close();
-                if (changed) {
-                    size = content; pool.Recreate(runtimeDevice, DirectXPixelFormat::B8G8R8A8UIntNormalized, 2, size);
-                    std::lock_guard guard(mutex_); ++stats_.resizes;
-                }
+                textureGeneration=generation;textureExtentRevision=extentRevision;textureMapping=mapping;
             }
             int w = client.right, h = client.bottom;
             if (w <= 0 || h <= 0 || IsIconic(output_)) {
@@ -1551,7 +1584,7 @@ private:
             uint64_t lightCaptureGeneration=0;
             bool bulletHistoryChanged=false;
             { std::lock_guard guard(mutex_);
-                lightCaptureGeneration=geometry_.captureGeneration;
+                lightCaptureGeneration=captureStatus_.generation;
                 // Keep the weather state/style and their version together. This
                 // snapshot follows capture selection under presentationMutex_, so
                 // a host repaint fence cannot present a new frame with a weather
@@ -1980,6 +2013,12 @@ private:
                 std::lock_guard guard(mutex_);
                 stats_.received += fresh ? 1 + drained : 0; stats_.superseded += drained;
                 if (present == S_OK) {
+                    captureStatus_.presentedGeneration=textureGeneration;
+                    captureStatus_.presentedExtentRevision=textureExtentRevision;
+                    captureStatus_.presentedMapping=textureMapping;
+                    captureStatus_.presentedFrameQpcMs=frameQpcMs;
+                    captureStatus_.outputWidth=w; captureStatus_.outputHeight=h;
+                    ++captureStatus_.presentSerial;
                     shakeEngine_.OnPresented(shakeDx,shakeDy,useShakeStage);
                     ++stats_.presented; presentedOutputW_=w; presentedOutputH_=h;
                     timingSamples_[timingNext_]={previousTimingPresent>0 ? end-previousTimingPresent : -1,
@@ -2193,8 +2232,7 @@ private:
         RECT crop{};
         int32_t clientOffsetX=0,clientOffsetY=0,clientWidth=0,clientHeight=0;
         int32_t captureWidth=0,captureHeight=0;
-        int32_t observedCaptureW=0,observedCaptureH=0;
-        uint64_t captureGeneration=0;
+        uint64_t mapping=0;
         double notBefore=0;
         bool held=false;
         int CroppedWidth() const noexcept { return crop.right-crop.left; }
@@ -2243,6 +2281,8 @@ private:
         }
     };
     ViewportGeometryState geometry_{};
+    ProbeCaptureStatus captureStatus_{sizeof(ProbeCaptureStatus),1};
+    bool refreshItem_=false;
     std::mutex presentationMutex_;
     std::atomic<float> sharpness_{0};
     int fps_; bool borderless_;
@@ -2413,6 +2453,19 @@ int __cdecl ProbeGetSceneLightStats(void* handle,ProbeSceneLightStats* stats) {
 int __cdecl ProbeGetCaptureSize(void* handle,int32_t* width,int32_t* height,uint64_t* generation) {
     if(!handle || !width || !height || !generation)return 0;
     static_cast<Capture*>(handle)->CaptureSize(*width,*height,*generation);return 1;
+}
+int __cdecl ProbeGetCaptureStatus(void* handle,ProbeCaptureStatus* status) {
+    if(!handle || !status || status->size!=sizeof(ProbeCaptureStatus))return 0;
+    static_cast<Capture*>(handle)->CaptureStatus(*status); return 1;
+}
+int __cdecl ProbeCommitCaptureViewport(void* handle,uint64_t generation,uint64_t extentRevision,uint64_t mapping,
+    int x,int y,int width,int height,int offsetX,int offsetY,int fullWidth,int fullHeight,
+    int captureWidth,int captureHeight,double notBefore) {
+    return handle && static_cast<Capture*>(handle)->CommitCaptureViewport(generation,extentRevision,mapping,
+        x,y,width,height,offsetX,offsetY,fullWidth,fullHeight,captureWidth,captureHeight,notBefore) ? 1 : 0;
+}
+int __cdecl ProbeRefreshCaptureItem(void* handle,uint64_t generation,uint64_t extentRevision) {
+    return handle && static_cast<Capture*>(handle)->RefreshCaptureItem(generation,extentRevision) ? 1 : 0;
 }
 void __cdecl ProbeStop(void* handle) { delete static_cast<Capture*>(handle); }
 
