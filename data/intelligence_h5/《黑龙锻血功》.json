@@ -1,0 +1,607 @@
+{
+  "schemaVersion": 1,
+  "itemName": "《黑龙锻血功》",
+  "skin": "edict",
+  "pages": [
+    {
+      "pageKey": "1_1",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "soot",
+          "x": 76,
+          "y": 72,
+          "w": 18,
+          "h": 18,
+          "rotate": -8,
+          "opacity": 0.25
+        },
+        {
+          "type": "stamp",
+          "tone": "danger",
+          "content": [
+            {
+              "type": "text",
+              "text": "黑龙堂冶魁 · 镇堂内功"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "铁炉起篇 · 冲为血海"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "黑龙堂铁骑征伐四方，所赖者非独重甲长兵，更在"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "血脉如汞、筋骨如锻"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            },
+            {
+              "type": "colorToken",
+              "token": "faction-blackiron",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "黑龙"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "堂主承教主所授祖传脉法，熔大冶铸铁之理于体内行气之中，创此《黑龙锻血功》，专修奇经"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "冲脉"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "一十有七穴。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "冲脉上灌胸膺、下渗诸阳，十二经之气血皆汇聚于此，医家号之曰“"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "血海"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "”。常人遇枪弹碎铁即溃，只因肉膜虚松、血气易泄；唯有借冲脉鼓荡气血千百次，令微丝百络尽得滋养刚韧，方是“"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "伐毛洗髓，方能成器"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "”。"
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "content": [
+            {
+              "type": "text",
+              "text": "“死了一堆人，总得有人顶上去。凡铁百炼尚可切金断玉，何况活人一身热血？”\n——黑龙堂工坊墙铭"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "锻气章 · 十七穴涌血诀"
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "content": [
+            {
+              "type": "text",
+              "text": "血海奔腾横骨起，大赫气穴鼓风箱。\n四满中注熔赤铁，盲俞商曲百炼钢。\n石关阴都锻筋膜，通谷幽门撞关防。\n步廊神封护心腑，灵墟神藏气愈昂。\n彧中俞府千钧定，刀斧难断铁脊梁。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "练功之始，先沉气至耻骨上际之"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "横骨"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，犹如炭火初埋炉底；随后挟脐两侧逐寸上鼓，连穿"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "大赫"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "气穴"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "四满"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "中注"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，并腰腹厚肌齐震一记，推血气并入脐旁"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "盲俞"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "继而逆上"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "商曲"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "石关"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "阴都"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "腹通谷"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，直叩胸腹交界重险"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "幽门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。幽门既拓，气息铺散肋间，逐层充实"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "步廊"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "神封"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "灵墟"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "神藏"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "四穴，最后凝定于锁骨下之"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "彧中"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "俞府"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。一吸一鼓，胸肋如鼓甲生铁，浑身血气滚滚不歇。"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "炉段穴群",
+            "锻血手法",
+            "血海效验"
+          ],
+          "rows": [
+            [
+              "横骨 · 大赫 · 气穴 · 四满",
+              "开马步矮桩，沉气震腹，声吐沉“哼”字。",
+              "下焦血库充盈，骤损精血而不致晕厥。"
+            ],
+            [
+              "中注 · 盲俞 · 商曲",
+              "腰胯微旋，以脐为轴推揉气浪。",
+              "脏腑气血活络，内伤淤血消散极速。"
+            ],
+            [
+              "石关 · 阴都 · 腹通谷 · 幽门",
+              "鼻吸饱满后略停一瞬，顺喉轻咽化开。",
+              "打通心腹关隘，剧战之下胸腹不闷不绞。"
+            ],
+            [
+              "步廊 · 神封 · 灵墟 · 神藏",
+              "双掌推扩或振臂拉弓，震实胸廓肋膜。",
+              "胸肋若铁甲护心，受重击而不伤心肺。"
+            ],
+            [
+              "彧中 · 俞府",
+              "耸肩复落，锁骨沉压，收劲归入浑身骨髓。",
+              "血海丰沛至极，气血暴涨而耐久力大增。"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "淬火章 · 辨脉骨与外门战纹"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "世间盗贼多窃黑龙堂秘术之皮毛，制为“"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "战纹"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "”贴附肌表以壮猛力；殊不知贴皮之物止于外窍，一如薄铁镀漆，内虚而外强。吾教正宗锻血之功，须自横骨至俞府一穴一穴以真气实打实撞开，令生机自骨髓涌入周身百骸，方称根基巩固。"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "一炼·炉红"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：行功半刻，周身肤热潮红，创口凝血较寻常快倍许，负重挥锤十里而不觉喘促。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "二炼·潮鸣"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：胸腹步廊至神藏偶发闷响如炉风嗡鸣，此乃筋骨重铸、气血自通之兆，寻常流弹擦伤难破筋膜。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "三炼·海立"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：十七穴皆实，冲脉血海奔涌、筋骨如锻而不溃。临阵之时血气如潮涌上，纵筋骨尽疲，犹能再战三百回合。"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_4",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "禁忌与堂主旁批"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "大失血勿急锻"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：战场断肢、失血过多之际，炉底无水而猛扇风箱，必致心血枯槁、昏厥亡阳，须先饮药食肉补气。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "勿贪猛力硬撞幽门"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：腹通谷上接幽门，乃气血咽喉；未先打通盲俞、石关者不可硬冲，免得呕血伤脾。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "杂脉嗡鸣勿躁"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：若身具旧伤或曾接异脉铁线，锻血期间偶觉皮肤底下嗡嗡轻响，乃正常回震，稳心收气至彧中即可，切勿乱砍乱砸。"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "handwritten",
+          "tone": "dark",
+          "voice": "rough",
+          "content": [
+            {
+              "type": "text",
+              "text": "黑龙手记：\n兄长非叫我请文书把这东西编进书里，说什么三堂以后皆为后学师表。要我说，功法哪有那么玄？无非是站稳桩、吃饱肉、把血炼浓、把骨头捶硬！\n外头那些盗贼改我这套去刻战纹，省了一半真功夫，劲儿差远了！真汉子就该从横骨一寸寸锻到俞府——体内就算偶尔嗡嗡响，照样不妨碍拎斧子劈人。"
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "tone": "archive",
+          "content": [
+            {
+              "type": "text",
+              "text": "黑龙堂工坊校本 · 血字壹号 · 工坊铁骑通用秘卷"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

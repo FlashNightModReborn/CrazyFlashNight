@@ -1,0 +1,733 @@
+{
+  "schemaVersion": 1,
+  "itemName": "《黑铁纯阳真经》",
+  "skin": "edict",
+  "pages": [
+    {
+      "pageKey": "1_1",
+      "blocks": [
+        {
+          "type": "surfaceMark",
+          "variant": "soot",
+          "x": 82,
+          "y": 6,
+          "w": 15,
+          "h": 18,
+          "rotate": 8,
+          "opacity": 0.24
+        },
+        {
+          "type": "stamp",
+          "tone": "danger",
+          "content": [
+            {
+              "type": "text",
+              "text": "总堂秘藏 · 禁私传"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "序品 · 督总诸阳与天地天息"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "任脉如深水载舟，督脉如苍龙擎天。督者，都也，行于脊背正中，循长强直上颠顶百会，复折面中龈交而止，凡二十有七穴，为周身"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "阳脉之海"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "自次祖"
+            },
+            {
+              "type": "colorToken",
+              "token": "faction-blackiron",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "中兴"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "于邛池得陨铁铸九剑，已隐闻剑鸣中有天地呼应之节律；及教主"
+            },
+            {
+              "type": "colorToken",
+              "token": "faction-blackiron",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "黑铁"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "登坛承运，合旧世祖辈所遗骨脉秘图重加厘定，始成此《黑铁纯阳真经》。凡习此经者，非独淬炼一身纯阳真气，更能在静极之时，以脊柱大龙应合天地“"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "一息约一秒有余"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "”之大钟余响，拔剑出招，皆若天地助威。"
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "content": [
+            {
+              "type": "text",
+              "text": "“苍穹浩茫茫，万劫太极长。天钟不言，而其息常存；人脊若通，自可借其余音而摧万坚。”\n——教主黑铁《纯阳真经 · 总堂讲录》"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_2",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "中品 · 三关淬阳歌诀与二十七穴路线"
+            }
+          ]
+        },
+        {
+          "type": "quote",
+          "content": [
+            {
+              "type": "text",
+              "text": "阳起长强，蛰龙初醒。\n腰俞阳关，尾闾先开；悬枢脊中，节节相映。\n中枢筋缩，至阳初明；灵台神道，如日悬旌。\n身柱陶道，夹脊双擎；大椎如釜，百脉聚星。\n哑门风府，险峻须停；脑户强间，玉枕乃通。\n后顶百会，朝天一钟；前顶囟会，上星神庭。\n印堂悬镜，素髎水沟；返入龈交，一气自圆。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "此脉二十七穴，贵在“"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "过三关、上泥丸、降鹊桥"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "”。初自尾端"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "长强"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "腰俞"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "腰阳关"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "撞开尾闾第一关，缘"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "悬枢"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "脊中"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "中枢"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "筋缩"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "而至"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "至阳"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，此为挟脊第二重门槛；复历"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "灵台"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "神道"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "身柱"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "陶道"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，汇聚手足三阳之大穴"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "大椎"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "。"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "自大椎上攻"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "哑门"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "风府"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "脑户"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，最宜如履薄冰，待玉枕一关悄然自通，即沿"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "强间"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "后顶"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "直登天顶"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "百会"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "；随即由阳转柔，分循"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "前顶"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "囟会"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "上星"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "神庭"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，经眉心"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "印堂"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，下"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "素髎"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "、"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "水沟"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "而止于上齿"
+            },
+            {
+              "type": "strong",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "龈交"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "text": "，借舌根与任脉承浆相接，是谓督脉小周天成。"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "三关要穴",
+            "炼气法度",
+            "通关效验"
+          ],
+          "rows": [
+            [
+              "尾闾关（长强 · 腰俞 · 腰阳关）",
+              "塌腰松胯，勿弓背硬撑，听尾骨微热自起。",
+              "激发肾命潜阳，脊髓勃然有承重之势。"
+            ],
+            [
+              "夹脊关（脊中 · 至阳 · 身柱）",
+              "微含两肩胛，息随背脊如珠贯索而升。",
+              "手足诸阳得主，拔刀、劈斩之势沛然莫御。"
+            ],
+            [
+              "大椎枢（身柱 · 陶道 · 大椎）",
+              "微垂颚项，勿紧绷颈筋。",
+              "一身阳气总汇于此，寒暑外邪难侵肩背。"
+            ],
+            [
+              "玉枕关（哑门 · 风府 · 脑户）",
+              "意轻如羽，切忌怒气猛冲，候其自然透入。",
+              "头目清凉，耳闻目见皆较常人敏锐三成。"
+            ],
+            [
+              "泥丸前落（百会 · 神庭 · 印堂 · 龈交）",
+              "神守印堂而不滞，随吸归口齿。",
+              "纯阳归元而不亢，内息充盈至极。"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_3",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "下品 · 炼阳合天息之法"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "任脉宜温养如春水，督脉当淬炼如铸剑：然铸剑亦分旺火、收火、淬火三候，不可一味猛进。"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "旺火通脊"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：黎明卯时面东立定，吸气时意念引纯阳自长强透尾闾、过至阳，呼气则定驻大椎，令背脊微汗如珠。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "文火透枕"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：阳气既聚大椎，乃撤去武火，改以细匀深息暗渡哑门、风府，但闻脑后如风过松林，百会渐觉微温清澄。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "钟鸣合息"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：百会通彻后，手按黑铁佩刃或静听风定之时，能觉周身气机与天地大钟暗自合拍——一击一收之间，余劲绵绵不绝，合任脉五十关窍共参，足以立定外门一切重招之基。"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "督脉二十七穴既通，真阳由背达巅、由巅降面，与任脉水火既济。虽置身死斗绝境，一息之中便能提聚纯阳罡气护持神明，外邪心魔无从近身。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "pageKey": "1_4",
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 2,
+          "content": [
+            {
+              "type": "text",
+              "text": "末品 · 走火大戒与教主朱批"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "items": [
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "头戒强冲哑门风府"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：昔有狂徒未经任脉涵养便猛催真阳直撞玉枕，致哑门血壅、风府昏厥，终身痴癫而死。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "二戒孤阳亢顶"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：若百会久热不降、印堂胀痛如裂，乃孤阳不落之兆，须即刻睁目吐浊，以意引气沿水沟、龈交归入承浆沉下。"
+              }
+            ],
+            [
+              {
+                "type": "strong",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "三戒执听天音失本"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "：督脉开后或偶闻钟鸣余响，若心生贪妄、舍人从音，必落妄境；切记以人御器、以我为主，响自响，心自定。"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "handwritten",
+          "tone": "red",
+          "content": [
+            {
+              "type": "text",
+              "text": "黑铁亲批：\n古法为根，新体为用。以器役人，不以人役器。\n昔先辈通天地之理而一夕隐去，或言其飞升，或言其妄灭；吾独取其留世骨脉之法以强门下。任督既通，乃知此身原是一口玄铁大钟——内息足，而后剑鸣可听。"
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "tone": "archive",
+          "content": [
+            {
+              "type": "text",
+              "text": "总堂藏经阁编目 · 玄字天号 · 教主秘本手录"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
