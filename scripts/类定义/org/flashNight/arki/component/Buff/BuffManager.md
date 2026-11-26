@@ -176,6 +176,7 @@ var mgr:BuffManager = new BuffManager(
 |------|------|
 | `addBuff(buff:IBuff, id?:String):String` | 添加 Buff，返回注册 ID |
 | `addBuffImmediate(buff:IBuff, id?:String):String` | 添加并**立即生效**（内部调用 `update(0)`） |
+| `addBuffStack(buff:MetaBuff, id:String):String` | 同 ID 增加一层并保留同一个 Meta/HUD 格子；同步更新模板与已注入 Pod |
 | `setPodBuffValue(id:String, value:Number):Boolean` | 原位更新 Pod 数值；update 外立即重算，update 内并入本轮脏属性重算 |
 | `addBuffs(buffs:Array, ids?:Array):Array` | **[v2.9]** 批量添加，返回 ID 数组 |
 | `removeBuff(id:String):Boolean` | 延迟移除 Buff |
@@ -187,6 +188,7 @@ var mgr:BuffManager = new BuffManager(
 - **非 update 期**：立即注册，数值等下次 `update()` 生效
 - **update 期**：进入待处理队列，本帧末尾 flush
 - **同 ID 替换**：若 id 已存在，先移除旧 buff 再注册新 buff
+- **显式叠层**：`addBuffStack` 支持 `ADD` / `PERCENT` / `MULTIPLY` 子 Pod；前两者累加数值，后者沿用乘区相加（两层 ×2 合成 ×3）。保留既有 Meta 的生命周期，不重复注册格子；结构或计算类型不一致时拒绝合并
 
 ### 4.2 Base 值操作（v2.9 新增）
 
@@ -372,7 +374,7 @@ MetaBuff 激活时，`createPodBuffsForInjection()` 生成新 PodBuff，以其 *
 | 组件 | 用途 | 可用性 |
 |------|------|--------|
 | `TimeLimitComponent(frames)` | 限时自动移除 | ✅ 稳定可用 |
-| `StackLimitComponent(max, decay)` | 层数管理 | ⚠️ 需配合同ID替换 |
+| `StackLimitComponent(max, decay)` | 层数管理 | ✅ 配合 `addBuffStack` 同步数值 |
 | `ConditionComponent(func, interval)` | 条件触发 | ⚠️ 语义受限 |
 | `CooldownComponent(frames)` | 冷却管理 | ⚠️ 不控制 Buff 存活 |
 

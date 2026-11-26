@@ -390,6 +390,88 @@ class org.flashNight.arki.component.Buff.BuffManager {
     }
 
     /**
+     * 同 ID 的 MetaBuff 叠为一层，而不是替换旧实例或另占一个 HUD 格子。
+     * ADD/PERCENT 累加数值；MULTIPLY 沿用乘区相加规则。既有 Meta 保留生命周期。
+     */
+    public function addBuffStack(buff:IBuff, buffId:String):String {
+        if (buff == null || buff.isPod() || !(buff instanceof MetaBuff) || buffId == null || buffId.length == 0) return null;
+        var incoming:MetaBuff = MetaBuff(buff);
+        if (incoming.isDestroyed() || !this._canStackMeta(incoming)) return null;
+
+        var existing:IBuff = this._byExternalId[buffId];
+        if (existing != null) {
+            return this._mergeBuffStack(existing, incoming, buffId);
+        }
+        if (this._inUpdate) {
+            this._pendingAdds.push({buff:incoming, id:buffId, stack:true});
+            return buffId;
+        }
+        return this._addBuffStackNow(incoming, buffId);
+    }
+
+    private function _addBuffStackNow(incoming:MetaBuff, buffId:String):String {
+        var existing:IBuff = this._byExternalId[buffId];
+        if (existing != null) return this._mergeBuffStack(existing, incoming, buffId);
+        incoming["__stackCount"] = 1;
+        if (incoming.hudInfo != null) incoming.hudInfo.stacks = 1;
+        return this._addBuffNow(incoming, buffId);
+    }
+
+    private function _canStackMeta(meta:MetaBuff):Boolean {
+        var count:Number = meta.getChildBuffCount();
+        if (count < 1) return false;
+        for (var i:Number = 0; i < count; i++) {
+            var pod:PodBuff = PodBuff(meta.getChildBuff(i));
+            if (pod == null) return false;
+            var calc:String = pod.getCalculationType();
+            if (calc != BuffCalculationType.ADD && calc != BuffCalculationType.PERCENT && calc != BuffCalculationType.MULTIPLY) return false;
+            var value:Number = pod.getValue();
+            if ((value - value) != 0) return false;
+        }
+        return true;
+    }
+
+    private function _mergeBuffStack(existing:IBuff, incoming:MetaBuff, buffId:String):String {
+        if (existing == null || existing.isPod() || !(existing instanceof MetaBuff)) return null;
+        var current:MetaBuff = MetaBuff(existing);
+        if (current === incoming || current.isDestroyed() || !this._canStackMeta(current)) return null;
+        var count:Number = current.getChildBuffCount();
+        if (count != incoming.getChildBuffCount()) return null;
+
+        var values:Array = [];
+        for (var i:Number = 0; i < count; i++) {
+            var oldPod:PodBuff = PodBuff(current.getChildBuff(i));
+            var newPod:PodBuff = PodBuff(incoming.getChildBuff(i));
+            if (oldPod.getTargetProperty() != newPod.getTargetProperty() || oldPod.getCalculationType() != newPod.getCalculationType()) return null;
+            var value:Number = oldPod.getValue() + newPod.getValue();
+            if (oldPod.getCalculationType() == BuffCalculationType.MULTIPLY) value--;
+            if ((value - value) != 0) return null;
+            values.push(value);
+        }
+
+        this._cancelPendingRemoval(buffId);
+        var injectedIds:Array = this._metaBuffInjections[current.getId()];
+        for (var j:Number = 0; j < count; j++) {
+            var template:PodBuff = PodBuff(current.getChildBuff(j));
+            template.setValue(values[j]);
+            if (injectedIds != null) {
+                var activePod:PodBuff = PodBuff(this._byInternalId[injectedIds[j]]);
+                if (activePod != null) {
+                    activePod.setValue(values[j]);
+                    this._markPropDirty(activePod.getTargetProperty());
+                }
+            }
+        }
+        var stacks:Number = Number(current["__stackCount"]);
+        if (!(stacks > 0)) stacks = 1;
+        current["__stackCount"] = stacks + 1;
+        if (current.hudInfo == null) current.hudInfo = incoming.hudInfo;
+        if (current.hudInfo != null) current.hudInfo.stacks = stacks + 1;
+        incoming.destroy();
+        return buffId;
+    }
+
+    /**
      * 原位更新已注册 PodBuff 的数值，并安全刷新对应属性。
      *
      * - update 外调用：通过 update(0) 立即重算，调用后可直接读取新属性值
@@ -726,7 +808,8 @@ class org.flashNight.arki.component.Buff.BuffManager {
             var len:Number = processing.length;
             for (var i:Number = 0; i < len; i++) {
                 var entry:Object = processing[i];
-                this._addBuffNow(entry.buff, entry.id);
+                if (entry.stack === true) this._addBuffStackNow(entry.buff, entry.id);
+                else this._addBuffNow(entry.buff, entry.id);
                 processing[i] = null;  // 帮助GC
             }
             processing.length = 0;

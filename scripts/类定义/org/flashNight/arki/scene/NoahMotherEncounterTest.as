@@ -9,6 +9,11 @@ import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
 import org.flashNight.arki.component.Damage.DamageManagerFactory;
 import org.flashNight.arki.component.StatHandler.DodgeHandler;
 import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
+import org.flashNight.arki.component.Buff.BuffManager;
+import org.flashNight.arki.component.Effect.HitNumberBatchProcessor;
 import org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
@@ -39,7 +44,7 @@ class org.flashNight.arki.scene.NoahMotherEncounterTest {
             u.hp=u.hp满血值=1000;u.dispatcher=new org.flashNight.neur.Event.EventDispatcher();
             api.registered(u,init);return u;
         };
-        testCapacity();testProgress();testLiquids();testRealAcidSettlement();testResistance();testLifecycle();testAudio();
+        testCapacity();testProgress();testLiquids();testRealAcidSettlement();testResistance();testLifecycle();testAudio();testCorpseMotherRage();
         loadArt();
     }
     private static function room():Void {
@@ -303,6 +308,58 @@ class org.flashNight.arki.scene.NoahMotherEncounterTest {
         room();ticks(1);check(sounds.length==1 && sounds[0]=="金属刮擦.wav","reentry gets its own fresh entrance cue");
         var play:Function=_root.播放音效;delete _root.播放音效;room();ticks(330);
         check(NoahMotherEncounter.snapshot().frame==330,"missing audio entry never blocks the encounter clock");_root.播放音效=play;
+    }
+    private static function rageUnit(enemy:Boolean,x:Number,z:Number,hp:Number):MovieClip {
+        var u:MovieClip=world.createEmptyMovieClip("rageUnit"+(++seq),world.getNextHighestDepth());
+        u.是否为敌人=enemy;u._x=x;u._y=u.Z轴坐标=z;u.hp=hp;u.hp满血值=20000;
+        u.空手攻击力=100;u.防御力=50;u.buffManager=new BuffManager(u,null);return u;
+    }
+    private static function testCorpseMotherRage():Void {
+        room();var cache:Object=TargetCacheManager;var oldFind:Function=cache.findAlliesInRadius;
+        var numbers:Object=HitNumberBatchProcessor;var oldHeal:Function=numbers.enqueueHeal;
+        numbers.enqueueHeal=function():Void {};
+        var candidates:Array=[];var queryOk:Boolean=false;
+        cache.findAlliesInRadius=function(source:Object,interval:Number,radius:Number):Array {
+            queryOk=interval==0 && radius==100;
+            var result:Array=[];
+            for(var i:Number=0;i<candidates.length;i++)if(FactionManager.areUnitsAllies(source,candidates[i]))result.push(candidates[i]);
+            return result;
+        };
+        var mother:MovieClip=rageUnit(true,1000,300,0);mother.兵种="敌人-普通尸母";
+        var near:MovieClip=rageUnit(true,1000,300,2000);
+        var edge:MovieClip=rageUnit(true,1100,300,1);
+        var diagonal:MovieClip=rageUnit(true,1060,380,1);
+        var outside:MovieClip=rageUnit(true,1101,300,1);
+        var outsideZ:MovieClip=rageUnit(true,1000,401,1);
+        var opponent:MovieClip=rageUnit(false,1000,300,100);
+        var dead:MovieClip=rageUnit(true,1000,300,0);
+        candidates=[near,edge,diagonal,outside,outsideZ,opponent,dead];
+        var affected:Number=DeathEventComponent.applyCorpseMotherRage(mother);
+        check(queryOk && affected==3,"mother death queries allies with an inclusive radius of 100");
+        check(near.hp==12000,"each trigger immediately restores up to 10000 HP");
+        check(near.空手攻击力==200 && near.防御力==100 && near.buffManager.getBuffById("尸母暴怒").hudInfo.stacks==1,"first rage stack doubles attack and defense");
+        check(edge.buffManager.getBuffById("尸母暴怒")!=null && diagonal.buffManager.getBuffById("尸母暴怒")!=null,"axis and diagonal units exactly 100 away are included");
+        check(outside.hp==1 && outsideZ.hp==1 && outside.buffManager.getActiveBuffCount()==0 && outsideZ.buffManager.getActiveBuffCount()==0,"units beyond 100 on either axis receive neither healing nor rage");
+        check(opponent.hp==100 && opponent.buffManager.getActiveBuffCount()==0,"opposite faction is excluded even at zero distance");
+        check(dead.hp==0 && dead.buffManager.getActiveBuffCount()==0,"rage never resurrects a dead ally");
+
+        var second:MovieClip=rageUnit(true,1000,300,0);second.兵种="敌人-普通尸母";second.respawn=true;
+        DeathEventComponent.onDeath(second);
+        check(near.hp==20000,"repeated triggers retain the 10000 HP heal but cap at maximum HP");
+        check(near.空手攻击力==300 && near.防御力==150 && near.buffManager.getActiveBuffCount()==1 && near.buffManager.getBuffById("尸母暴怒").hudInfo.stacks==2,"second death merges into one permanent two-stack buff");
+        var hpAfter:Number=near.hp;DeathEventComponent.onDeath(second);
+        check(near.hp==hpAfter && near.空手攻击力==300,"a duplicate death event cannot settle the same corpse twice");
+        near.buffManager.update(10000);
+        check(near.空手攻击力==300 && near.buffManager.getActiveBuffCount()==1,"rage has no expiry component");
+        var nonMother:MovieClip=rageUnit(true,1000,300,0);nonMother.兵种="敌人-普通基因虫";
+        check(DeathEventComponent.applyCorpseMotherRage(nonMother)==0 && near.buffManager.getBuffById("尸母暴怒").hudInfo.stacks==2,"other enemy kinds cannot trigger mother rage");
+
+        var friendlyMother:MovieClip=rageUnit(false,2000,300,0);friendlyMother.兵种="敌人-普通尸母";
+        var friendly:MovieClip=rageUnit(false,2000,300,10);candidates=[friendly,near];
+        check(DeathEventComponent.applyCorpseMotherRage(friendlyMother)==1 && friendly.hp==10010 && friendly.空手攻击力==200,"a friendly mother pet buffs its own faction");
+        var all:Array=[near,edge,diagonal,outside,outsideZ,opponent,dead,friendly];
+        for(var i:Number=0;i<all.length;i++)all[i].buffManager.destroy();
+        cache.findAlliesInRadius=oldFind;numbers.enqueueHeal=oldHeal;
     }
     private static function loadArt():Void {
         loaded=_root.createEmptyMovieClip("noahPublishedArt",_root.getNextHighestDepth());

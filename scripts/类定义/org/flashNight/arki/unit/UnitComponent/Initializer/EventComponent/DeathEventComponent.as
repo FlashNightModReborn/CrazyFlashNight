@@ -4,6 +4,8 @@ import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
 import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController;
+import org.flashNight.arki.unit.Action.Regeneration.HealApplier;
+import org.flashNight.arki.component.Buff.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent {
     private static function logDiagnostic(message:String):Void {
@@ -89,8 +91,41 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
         装扮2:true
     }
 
+    public static function applyCorpseMotherRage(target:MovieClip):Number {
+        if (target == null || String(target.兵种) != "敌人-普通尸母" || target.__corpseMotherRageTriggered === true) return 0;
+        target.__corpseMotherRageTriggered = true;
+
+        var allies:Array = TargetCacheManager.findAlliesInRadius(target, 0, 100);
+        var affected:Number = 0;
+        for (var i:Number = 0; i < allies.length; i++) {
+            var ally:MovieClip = allies[i];
+            if (ally == null || !(ally.hp > 0) || ally.buffManager == null || typeof ally.buffManager.addBuffStack != "function") continue;
+            var dx:Number = Number(ally._x) - Number(target._x);
+            var allyZ:Number = Number(ally.Z轴坐标);
+            var targetZ:Number = Number(target.Z轴坐标);
+            if (isNaN(allyZ)) allyZ = Number(ally._y);
+            if (isNaN(targetZ)) targetZ = Number(target._y);
+            var dz:Number = allyZ - targetZ;
+            var distanceSquared:Number = dx * dx + dz * dz;
+            if (isNaN(distanceSquared) || distanceSquared > 10000) continue;
+
+            HealApplier.applyHpCapped(ally, 10000, ally.hp满血值);
+            var rage:MetaBuff = new MetaBuff([
+                new PodBuff("空手攻击力", BuffCalculationType.MULTIPLY, 2),
+                new PodBuff("防御力", BuffCalculationType.MULTIPLY, 2)
+            ], [], 0);
+            rage.hudInfo = {name:"暴怒", description:"尸母死亡带来的永久增益；每层提高100%攻击与防御。", polarity:"benefit", stacks:1};
+            if (ally.buffManager.addBuffStack(rage, "尸母暴怒") != null) {
+                ally.buffManager.update(0);
+                affected++;
+            }
+        }
+        return affected;
+    }
+
     public static function onDeath(target:MovieClip):Void {
         if (ArmorBreakZombieController.tryIntercept(target)) return;
+        applyCorpseMotherRage(target);
         ImpactStateHandler.flushPendingDiagnostics(target);
         logDeathSnapshot(target);
         if(!target.respawn){

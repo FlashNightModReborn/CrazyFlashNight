@@ -90,14 +90,18 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
             activation:activation, mods:source.mods === true,
             activeLabel:bounded(source.activeLabel, 16), inactiveLabel:bounded(source.inactiveLabel, 16)};
     }
+    private function readStacks(buff:Object):Number {
+        var stacks:Number = Number(buff.hudInfo.stacks);
+        if (!isFinite(stacks) || stacks < 1 || stacks > 999 || stacks != Math.floor(stacks)) return 0;
+        return stacks;
+    }
     private function readInfo(buff:Object):Object {
         var source:Object = buff.hudInfo;
         var name:String = bounded(source.name, 32);
         var description:String = bounded(source.description, 96);
         var polarity:String = source.polarity;
         if (polarity != "benefit" && polarity != "harm") polarity = "neutral";
-        var stacks:Number = Number(source.stacks);
-        if (!isFinite(stacks) || stacks < 1 || stacks > 999 || stacks != Math.floor(stacks)) stacks = 0;
+        var stacks:Number = readStacks(buff);
         if (name.length == 0 && typeof buff.getChildBuffCount == "function") {
             var properties:String = "";
             var count:Number = Math.min(4, buff.getChildBuffCount());
@@ -245,13 +249,19 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
             var detailsChanged:Boolean = detailsEnabled && row != null &&
                 (row.incarnation !== incarnation || !sameDetail(row.group, entry.group) ||
                 !sameDetail(row.activation, activation) || !sameDetail(row.mods, mods));
+            var stacks:Number = entry.info == null ? 0 : readStacks(entry.buff);
+            var stacksChanged:Boolean = entry.info != null && row != null &&
+                (row.info == null || row.info.stacks !== stacks);
             if (row == null || row.id !== entry.wireId || row.timed !== timed ||
-                row.total !== total || row.remaining !== remain || detailsChanged) {
+                row.total !== total || row.remaining !== remain || detailsChanged || stacksChanged) {
                 // Copy only after the first changed row. The old array and its rows
                 // stay immutable for pending packets and forced resynchronization.
                 if (rows == null) rows = previous.slice(0, i);
                 row = {id:entry.wireId, timed:timed, total:total, remaining:remain};
-                if (entry.info != null) row.info = entry.info;
+                if (entry.info != null) {
+                    row.info = {name:entry.info.name, description:entry.info.description,
+                        polarity:entry.info.polarity, stacks:stacks};
+                }
                 if (deckDetails) {
                     var origin:Object = entry.buff.hudInfo.source;
                     if (origin != null && (origin.kind == "drug" || origin.kind == "inventory" || origin.kind == "skill")) row.source = origin;

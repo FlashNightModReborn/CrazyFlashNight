@@ -245,11 +245,16 @@ class org.flashNight.arki.hud.PlayerHudSnapshotTest {
         var before:Array = view.snapshot();
         check(before[0].info.name == "测试增益", "buff source name");
         check(before[0].info.polarity == "benefit" && before[0].info.stacks == 2, "explicit polarity and stack count");
+        buff.hudInfo.stacks = 3;
+        var stacked:Array = view.snapshot();
+        check(stacked.length == 1 && stacked[0].info.stacks == 3 && before[0].info.stacks == 2,
+            "stack growth refreshes one HUD row without mutating its previous snapshot");
         buff.hudInfo.name = "changed later";
         buff.timer.remaining = 80;
         var after:Array = view.snapshot();
         check(before[0].remaining == 90 && after[0].remaining == 80, "metadata keeps timer snapshots immutable");
-        check(after[0].info.name == "测试增益", "metadata captured at registration does not alias caller");
+        check(after[0].info.name == "测试增益" && after[0].info.stacks == 3,
+            "metadata captured at registration does not alias caller and later timer changes retain live stacks");
         var unknown:Object = timerBuff("unknown", 1, 1);
         unknown.hudInfo = {name:"中性状态", description:"", polarity:"guessed", stacks:-1};
         owner.eventDispatcher.publish("add","unknown",unknown);

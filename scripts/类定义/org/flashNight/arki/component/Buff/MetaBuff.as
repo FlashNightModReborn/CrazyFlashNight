@@ -29,7 +29,7 @@ import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 
 class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
-    // Optional display-only metadata. Never participates in calculation, lifetime, or stacking.
+    // Optional display-only metadata. Never participates in calculation or lifetime; stacks are refreshed by addBuffStack.
     public var hudInfo:Object;
     // Explicit read-only sources for opt-in grouping, event activation and injected Pod display.
     public var hudPresentation:Object;

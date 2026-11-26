@@ -68,6 +68,7 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         
         trace("\n--- Phase 4: Complex Calculation Scenarios ---");
         testStackingBuffCalculations();
+        testSingleSlotStackingBuff();
         testMultiPropertyCalculations();
         testCalculationOrderDependency();
         testRealGameCalculationScenario();
@@ -1034,6 +1035,66 @@ class org.flashNight.arki.component.Buff.test.BuffManagerTest {
         }
     }
     
+    private static function createSingleSlotStack():MetaBuff {
+        var meta:MetaBuff = new MetaBuff([
+            new PodBuff("attack", BuffCalculationType.MULTIPLY, 2),
+            new PodBuff("defense", BuffCalculationType.MULTIPLY, 2),
+            new PodBuff("flat", BuffCalculationType.ADD, 5),
+            new PodBuff("ratio", BuffCalculationType.PERCENT, 0.1)
+        ], [], 0);
+        meta.hudInfo = {name:"暴怒", description:"单格叠加测试", polarity:"benefit", stacks:1};
+        return meta;
+    }
+
+    private static function testSingleSlotStackingBuff():Void {
+        startTest("Single-slot stacking updates templates, injected Pods and HUD stacks");
+        try {
+            mockTarget = createMockTarget();
+            mockTarget.attack = 100;
+            mockTarget.defense = 50;
+            mockTarget.flat = 10;
+            mockTarget.ratio = 100;
+            var manager:BuffManager = new BuffManager(mockTarget, null);
+
+            if (manager.addBuffStack(createSingleSlotStack(), "rage") != "rage") throw new Error("First stack should register");
+            manager.update(1);
+            var first:MetaBuff = MetaBuff(manager.getBuffById("rage"));
+            assertCalculation(mockTarget.attack, 200, "First attack stack");
+            assertCalculation(mockTarget.defense, 100, "First defense stack");
+
+            if (manager.addBuffStack(createSingleSlotStack(), "rage") != "rage") throw new Error("Second stack should merge");
+            manager.update(0);
+            assertCalculation(mockTarget.attack, 300, "Second attack stack uses additive multiplier zone");
+            assertCalculation(mockTarget.defense, 150, "Second defense stack");
+            assertCalculation(mockTarget.flat, 20, "ADD values merge");
+            assertCalculation(mockTarget.ratio, 120, "PERCENT values merge");
+            if (manager.getBuffById("rage") !== first || manager.getActiveBuffCount() != 1 || manager.getAllMetaBuffs().length != 1) {
+                throw new Error("Stacks must retain one MetaBuff and one HUD slot");
+            }
+            if (first.hudInfo.stacks != 2 || first["__stackCount"] != 2) throw new Error("Stack count should be two");
+            var injected:Array = manager.getInjectedPodIds(first.getId());
+            if (injected.length != 4 || PodBuff(manager.getBuffById(injected[0])).getValue() != 3) {
+                throw new Error("Active injected Pods must receive merged values");
+            }
+            manager.update(10000);
+            assertCalculation(mockTarget.attack, 300, "Component-free stacks remain permanent");
+            if (manager.addBuffStack(new MetaBuff([new PodBuff("attack", BuffCalculationType.ADD_POSITIVE, 100)], [], 0), "rage") != null) {
+                throw new Error("Conservative calculation types cannot silently change stacking semantics");
+            }
+            assertCalculation(mockTarget.attack, 300, "Rejected stack leaves existing effect unchanged");
+            manager.removeBuff("rage");
+            var mismatched:MetaBuff = new MetaBuff([new PodBuff("attack", BuffCalculationType.MULTIPLY, 9)], [], 0);
+            if (manager.addBuffStack(mismatched, "rage") != null) throw new Error("Mismatched stack should be rejected");
+            manager.update(1);
+            if (manager.getBuffById("rage") != null) throw new Error("Rejected merge must not cancel pending removal");
+            assertCalculation(mockTarget.attack, 100, "Rejected merge preserves the requested removal");
+            manager.destroy();
+            passTest();
+        } catch (e) {
+            failTest("Single-slot stacking test failed: " + e.message);
+        }
+    }
+
     private static function testMultiPropertyCalculations():Void {
         startTest("Multi-Property Calculations");
         
