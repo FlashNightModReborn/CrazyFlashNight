@@ -3,8 +3,8 @@
 
 // 任务 conditions 派生校验的持久化正反例矩阵（回归防线）。
 // 背景：死锁/可达性校验历经四轮修复（局部规则×2 → 图环检测 → AND-OR 不动点），每轮都
-// 由复审击穿前一轮的盲区；且正式数据 conditions=0，常规 `--check` 不会执行这些分支——
-// 没有持久化反例时回归完全不可见。本矩阵把四轮全部教训固化为合成夹具。
+// 由复审击穿前一轮的盲区；正式目录不会覆盖全部条件类型和非法组合，常规 `--check`
+// 不能代替这些分支——没有持久化反例时回归完全不可见。本矩阵把教训固化为合成夹具。
 //
 // 用法：node tools/test-derive-task-conditions.js
 // 机制：每用例 = 内联合成任务数据 → 写入临时 task-dir → 跑
@@ -61,6 +61,27 @@ const CASES = [
       tasks: [task(1, 'A#1', { conditions: [{ type: 'itemOwned', params: { item: '绷带' }, target: 2, label: 'x' }] })] },
     { name: 'itemOwned count=0（containTaskItems 恒真）', expect: 'params.count must be a number >= 1',
       tasks: [task(1, 'A#1', { conditions: [{ type: 'itemOwned', params: { item: '绷带', count: 0 }, target: 1, label: 'x' }] })] },
+    // ── 经脉状态条件 ──
+    { name: 'meridianNode 合法穴位（应通过）', expect: null,
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianNode', params: { nodeId: 'ren-1' }, target: 1, label: '贯通会阴' }] })] },
+    { name: 'meridianNode 缺少 nodeId', expect: 'meridianNode params.nodeId required',
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianNode', params: {}, target: 1, label: 'x' }] })] },
+    { name: 'meridianNode target=2', expect: 'meridianNode target must be 1',
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianNode', params: { nodeId: 'ren-1' }, target: 2, label: 'x' }] })] },
+    { name: 'meridianNode 未知穴位', expect: 'meridianNode references unknown nodeId',
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianNode', params: { nodeId: 'missing-node' }, target: 1, label: 'x' }] })] },
+    { name: 'meridianLitCount 整条任脉（应通过）', expect: null,
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianLitCount', params: { meridianId: 'ren' }, target: 23, label: '贯通任脉' }] })] },
+    { name: 'meridianLitCount 全身计数（应通过）', expect: null,
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianLitCount', params: {}, target: 1, label: '贯通穴位' }] })] },
+    { name: 'meridianLitCount 未知脉络', expect: 'meridianLitCount references unknown meridianId',
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianLitCount', params: { meridianId: 'missing' }, target: 1, label: 'x' }] })] },
+    { name: 'meridianLitCount 空脉络 ID', expect: 'params.meridianId must be a non-empty string',
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianLitCount', params: { meridianId: '' }, target: 1, label: 'x' }] })] },
+    { name: 'meridianLitCount target 超节点总数', expect: 'exceeds available configured nodes 23',
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianLitCount', params: { meridianId: 'ren' }, target: 24, label: 'x' }] })] },
+    { name: 'meridianLitCount 禁 sinceAccept', expect: 'sinceAccept only valid for monotonic',
+      tasks: [task(1, 'A#1', { conditions: [{ type: 'meridianLitCount', params: {}, target: 1, label: 'x', sinceAccept: true }] })] },
     // ── 引用闭包 ──
     { name: 'taskFinished 自引用', expect: 'cannot reference itself',
       tasks: [task(1, 'A#1', { conditions: [tf(1)] })] },

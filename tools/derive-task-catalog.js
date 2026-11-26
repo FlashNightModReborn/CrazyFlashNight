@@ -28,6 +28,7 @@ const { isRuntimeAgentSource } = require('./lib/optional-agent-source.js');
 
 const projectRoot = path.resolve(__dirname, '..');
 const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
+const meridianConfigFile = path.join(projectRoot, 'data', 'meridians', 'meridians_config.json');
 const defaultTaskDir = path.join(projectRoot, 'data', 'task');
 const defaultOutput = path.join(projectRoot, 'launcher', 'web', 'modules', 'tasks', 'task-catalog.json');
 let taskDir = defaultTaskDir;            // --task-dir 可覆盖（测试夹具用，见 tools/test-derive-task-conditions.js）
@@ -76,6 +77,33 @@ function readJson(file) {
     } catch (e) {
         fail('invalid JSON in ' + file + ': ' + e.message);
     }
+}
+
+function loadMeridianIndex() {
+    const data = readJson(meridianConfigFile);
+    if (!data || !Array.isArray(data.meridians)) fail('meridian config missing top-level "meridians" array');
+    const nodes = {};
+    const meridians = {};
+    let total = 0;
+    for (let m = 0; m < data.meridians.length; m += 1) {
+        const meridian = data.meridians[m];
+        if (!meridian || typeof meridian.id !== 'string' || !meridian.id) {
+            fail('meridian config entry ' + m + ' requires a non-empty id');
+        }
+        if (meridians[meridian.id] !== undefined) fail('duplicate meridian id "' + meridian.id + '"');
+        if (!Array.isArray(meridian.nodes)) fail('meridian "' + meridian.id + '" missing nodes array');
+        meridians[meridian.id] = meridian.nodes.length;
+        for (let n = 0; n < meridian.nodes.length; n += 1) {
+            const node = meridian.nodes[n];
+            if (!node || typeof node.id !== 'string' || !node.id) {
+                fail('meridian "' + meridian.id + '" node ' + n + ' requires a non-empty id');
+            }
+            if (nodes[node.id] !== undefined) fail('duplicate meridian node id "' + node.id + '"');
+            nodes[node.id] = meridian.id;
+            total += 1;
+        }
+    }
+    return { nodes: nodes, meridians: meridians, total: total };
 }
 
 // 解析 list.xml，取出 <tagName>filename</tagName> 列表（顺序保留，镜像 ListLoader）。
@@ -148,8 +176,9 @@ function buildCatalog(rawTasks, taskTexts) {
     const tasks = {};
     const mapLabels = path.resolve(taskDir) === path.resolve(defaultTaskDir) ? require('./lib/map-domain.js').validateStaticContent(projectRoot).taskNpcLabels : null;
     // conditions 校验（任务-成就判定层共享，可选字段；设计 docs/任务成就-判定层共享-设计-2026-06-11.md §3）。
-    // economyCount 白名单惰性解析：仅当数据真用到 economyCount 才读 AchievementMetrics.as。
+    // economyCount / 经脉引用均惰性解析：只有实际使用对应条件才读取其配置真源。
     let economyCounters = null;
+    let meridianIndex = null;
     const pendingTaskRefs = []; // taskFinished 跨任务引用，全集建完后做存在性闭包（防前向引用误杀）
     const pendingChainRefs = []; // chainProgress 链引用，全集建完后校验 链存在 + target ≤ 链最大 seq（可达性）
     const chains = {};            // 有序号链：name → { seq: id }
@@ -188,6 +217,29 @@ function buildCatalog(rawTasks, taskTexts) {
                     economyCounters = parseEconomyWhitelist(metricsFile, fail);
                 }
                 validateCondition(cond, ctx + '.conditions[' + c + ']', fail, economyCounters);
+                if (cond.type === 'meridianNode' || cond.type === 'meridianLitCount') {
+                    if (meridianIndex === null) meridianIndex = loadMeridianIndex();
+                    const params = cond.params || {};
+                    const conditionCtx = ctx + '.conditions[' + c + ']';
+                    if (cond.type === 'meridianNode') {
+                        if (meridianIndex.nodes[params.nodeId] === undefined) {
+                            fail(conditionCtx + ': meridianNode references unknown nodeId "' + params.nodeId + '"');
+                        }
+                    } else {
+                        let available = meridianIndex.total;
+                        if (params.meridianId !== undefined) {
+                            available = meridianIndex.meridians[params.meridianId];
+                            if (available === undefined) {
+                                fail(conditionCtx + ': meridianLitCount references unknown meridianId "'
+                                    + params.meridianId + '"');
+                            }
+                        }
+                        if (Number(cond.target) > available) {
+                            fail(conditionCtx + ': meridianLitCount target ' + cond.target
+                                + ' exceeds available configured nodes ' + available);
+                        }
+                    }
+                }
                 // 跨任务闭包：自引用即拒；存在性/死锁等全集建完后 post-pass（防前向引用误杀）
                 if (cond.type === 'taskFinished') {
                     if (String(cond.params.taskId) === idKey) {

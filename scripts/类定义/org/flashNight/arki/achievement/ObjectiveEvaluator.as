@@ -93,6 +93,13 @@ class org.flashNight.arki.achievement.ObjectiveEvaluator {
             var total:Number = Number(ItemUtil.getTotal(p.item));
             return isNaN(total) ? 0 : total;
         }
+        if (type == "meridianNode") {
+            return org.flashNight.arki.ui.MeridianPanelService.isNodeLit(String(p.nodeId)) ? 1 : 0;
+        }
+        if (type == "meridianLitCount") {
+            var meridianId:String = p.meridianId == undefined ? "" : String(p.meridianId);
+            return org.flashNight.arki.ui.MeridianPanelService.getLitCount(meridianId);
+        }
         return 0; // 未知类型：永不达成，不抛错（AS2 无 try/finally，回调禁 throw）
     }
 }

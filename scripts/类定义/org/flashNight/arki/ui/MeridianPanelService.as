@@ -14,6 +14,7 @@
  * 情报门槛：脉络级 requiredInfo 沿用（info_missing）；穴位级 node.requiredInfo 为接口位，
  *       当前配置不给值，命中时报 node_info_missing，日后按穴分情报只改数据文件。
  * 技能强化：本期只提供接口（node.skillMod 聚合 + getSkillModifier 查询），无现役消费方。
+ * 任务判定：isNodeLit/getLitCount 只读当前角色与现役配置，不补建存档容器，孤立节点不计数。
  * 持久写：点亮为内存原子事务（扣 K 点与写点亮集之间无中断窗口），随后单次 flush；
  *         未确认落盘时按 save_pending 语义上报，不盲目重放，重试由幂等结果缓存兜底。
  */
@@ -244,6 +245,42 @@ class org.flashNight.arki.ui.MeridianPanelService {
     private static function isLit(nodeId:String):Boolean {
         var lit:Object = getLitNodes();
         return lit[nodeId] === true || lit[nodeId] == "true";
+    }
+
+    private static function peekLitNodes():Object {
+        var ext:Object = _root._saveExt;
+        if (ext == null || typeof ext != "object") return null;
+        var stored:Object = ext.meridians;
+        if (stored == null || typeof stored != "object"
+                || stored.nodes == null || typeof stored.nodes != "object") return null;
+        return stored.nodes;
+    }
+
+    /** 任务/成就判定只读接口：未就绪或未知节点一律视为未贯通，不补建存档容器。 */
+    public static function isNodeLit(nodeId:String):Boolean {
+        if (_config == null || _nodeIndex == null || nodeId == undefined || nodeId == "") return false;
+        var entry:Object = _nodeIndex[nodeId];
+        if (entry == null || entry.node == null) return false;
+        var lit:Object = peekLitNodes();
+        if (lit == null) return false;
+        return lit[nodeId] === true || lit[nodeId] == "true";
+    }
+
+    /** 只统计现役配置中的节点；空 meridianId 表示全部经脉，存档里的孤立 ID 不计数。 */
+    public static function getLitCount(meridianId:String):Number {
+        if (_config == null) return 0;
+        var lit:Object = peekLitNodes();
+        if (lit == null) return 0;
+        var count:Number = 0;
+        for (var i:Number = 0; i < _config.length; i++) {
+            if (meridianId != undefined && meridianId != "" && _config[i].id != meridianId) continue;
+            var nodes:Array = _config[i].nodes;
+            for (var n:Number = 0; n < nodes.length; n++) {
+                var nodeId:String = nodes[n].id;
+                if (lit[nodeId] === true || lit[nodeId] == "true") count++;
+            }
+        }
+        return count;
     }
 
     // ========== 收益重算 ==========
@@ -492,6 +529,11 @@ class org.flashNight.arki.ui.MeridianPanelService {
         ensureContext();
         if (_contextToken !== context) return failLight("context_changed");
         recomputeActor();
+        try {
+            if (typeof _root.是否达成任务检测 == "function") _root.是否达成任务检测();
+        } catch (taskProjectionError) {
+            trace("[Meridian] task completion projection failed after authority write");
+        }
 
         var serial:Number = org.flashNight.neur.Server.SaveManager.getInstance().fullSaveSerial();
         var saved:Boolean = false;

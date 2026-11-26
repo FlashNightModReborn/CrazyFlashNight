@@ -15,7 +15,9 @@ const OBJECTIVE_TYPES = {
     skillLevel: true,
     itemOwned: true,
     economyCount: true,
-    itemCount: true       // 任务条件轮新增：ItemUtil.getTotal 实数计数（itemOwned 是 0/1，无法做进度条）
+    itemCount: true,      // 任务条件轮新增：ItemUtil.getTotal 实数计数（itemOwned 是 0/1，无法做进度条）
+    meridianNode: true,   // 指定穴位贯通状态 0/1
+    meridianLitCount: true // 现役配置中的单脉/全身贯通节点数
 };
 
 // sinceAccept（任务接取后窗口计数）只对【单调递增】指标有意义：
@@ -83,6 +85,15 @@ function validateCondition(cond, ctx, fail, economyCounters) {
             if (typeof p.counter !== 'string' || !p.counter) fail(ctx + ': economyCount params.counter required');
             if (economyCounters && economyCounters[p.counter] !== true) {
                 fail(ctx + ': economyCount counter "' + p.counter + '" not in AchievementMetrics VALID whitelist');
+            }
+            break;
+        case 'meridianNode':
+            if (typeof p.nodeId !== 'string' || !p.nodeId) fail(ctx + ': meridianNode params.nodeId required');
+            if (target !== 1) fail(ctx + ': meridianNode target must be 1 (boolean-type, rawOf returns 0/1)');
+            break;
+        case 'meridianLitCount':
+            if (p.meridianId !== undefined && (typeof p.meridianId !== 'string' || !p.meridianId)) {
+                fail(ctx + ': meridianLitCount params.meridianId must be a non-empty string when present');
             }
             break;
         default:
