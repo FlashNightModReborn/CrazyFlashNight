@@ -17,35 +17,29 @@ namespace CF7Launcher.Guardian.WorldCompositor
             int[] rectangles, int count);
     }
 
-    internal sealed class OpaqueHudRasterScene : IWorldRasterScene, IWorldRasterDamageScene
+    internal interface ISharedWorldAnchoredScene
+    {
+        bool SupportsSharedWorldTransform { get; }
+    }
+
+    internal sealed class OpaqueHudRasterScene : IWorldRasterScene, IWorldRasterDamageScene, ISharedWorldAnchoredScene
     {
         private readonly NativeCompositorSession _native;
         private readonly int _layer;
-        private readonly bool _damageEnabled;
         internal OpaqueHudRasterScene(NativeCompositorSession native,int layer)
         {
             if(layer<0 || layer>4)throw new ArgumentOutOfRangeException(nameof(layer));
             _native=native ?? throw new ArgumentNullException(nameof(native));_layer=layer;
-            _damageEnabled = layer == 1 || (layer == 3 && Environment.GetEnvironmentVariable("CF7_FOCUS_ABC") is "B" or "C");
         }
-        public bool SupportsDamage => _damageEnabled && _native.SupportsRasterDamageFor(_layer);
-        internal bool SupportsFocus => _layer == 3 && _native.FocusFillAvailable && _focusExperiment;
-        private readonly bool _focusExperiment=Environment.GetEnvironmentVariable("CF7_FOCUS_ABC")=="C";
-        private byte[] _lastFocusAtlas;
-        internal bool StageFocus(byte[] atlas,int width,int height,int[] instances,int count)
-        {
-            if(!_native.StageFocus(ReferenceEquals(atlas,_lastFocusAtlas)?null:atlas,width,height,instances,count))return false;
-            _lastFocusAtlas=atlas;return true;
-        }
+        public bool SupportsDamage => _layer == 1 && _native.SupportsRasterDamageFor(_layer);
+        // Native applies the world offset only to the damage-number layer.
+        public bool SupportsSharedWorldTransform => _layer == 0;
         public bool TryUploadDamage(IntPtr pixels,int width,int height,int stride,int x,int y,int[] rectangles,int count)
             => _native.TrySetHudRasterRects(_layer,pixels,width,height,stride,x,y,rectangles,count);
         public void UploadHud(IntPtr pixels,int width,int height,int stride,int x,int y)
             => _native.SetHudRaster(_layer,pixels,width,height,stride,x,y);
         public void ClearHud(IntPtr transparent)
-        {
-            _native.SetHudRaster(_layer,IntPtr.Zero,0,0,0,0,0);
-            _lastFocusAtlas=null;
-        }
+            => _native.SetHudRaster(_layer,IntPtr.Zero,0,0,0,0,0);
     }
 
     internal readonly record struct WorldRasterRegion(int Width, int Height, int X, int Y, int OffsetBytes)
@@ -76,10 +70,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal event Action<Exception> Faulted;
         internal bool IsAvailable => !_disposed && _available && _scene != null;
         internal bool SupportsDamage => _scene is IWorldRasterDamageScene { SupportsDamage: true };
-        internal bool SupportsFocus => IsAvailable && _scene is OpaqueHudRasterScene { SupportsFocus: true };
-        internal Point FocusOrigin => (_currentOutputBounds?.Invoke() ?? _bounds).Location;
-        internal bool StageFocus(byte[] atlas,int width,int height,int[] instances,int count)
-            => _scene is OpaqueHudRasterScene scene && scene.StageFocus(atlas,width,height,instances,count);
+        internal bool SupportsSharedWorldTransform =>
+            IsAvailable && _scene is ISharedWorldAnchoredScene { SupportsSharedWorldTransform: true };
         private WorldRasterRegion _lastRegion;
         internal ulong Uploads { get; private set; }
         internal ulong UploadedBytes { get; private set; }
@@ -140,12 +132,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     bytes += (ulong)clipped.Width * (ulong)clipped.Height * 4;
                     count++;
                 }
-                // Cropping can leave only instanced pixels visible. A raster commit
-                // is also the publication fence for the staged instance snapshot.
-                if (count == 0 && !SupportsFocus) return true;
+                if (count == 0) return true;
                 try
                 {
-                    if (count > 0 && bytes < (ulong)region.Width * (ulong)region.Height * 4 &&
+                    if (bytes < (ulong)region.Width * (ulong)region.Height * 4 &&
                         sparse.TryUploadDamage(visiblePixels,region.Width,region.Height,stride,region.X,region.Y,rectangles,count))
                     {
                         Uploads++; UploadedBytes += bytes;

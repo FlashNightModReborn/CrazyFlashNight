@@ -31,7 +31,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly SubmitImpulses _submit;
         private readonly Func<double> _now;
         private bool _featureEnabled, _ownerFocused;
-        private bool _nativeReady, _sharedDamageReady, _sourceRunning = true, _modalClear = true;
+        private bool _nativeReady, _sourceRunning = true, _modalClear = true;
+        private bool _damageWorldAnchorReady, _unitLifeAllowsShake = true;
         private bool _sceneReady, _connectionReady, _exhausted;
         private bool _retryRevocation;
         private int _pendingGrant;
@@ -56,7 +57,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal void SetFeatureEnabled(bool enabled) => SetAdmissionCondition(ref _featureEnabled, enabled);
         internal void SetNativeReady(bool ready) => SetAdmissionCondition(ref _nativeReady, ready);
-        internal void SetSharedDamageReady(bool ready) => SetAdmissionCondition(ref _sharedDamageReady, ready);
+        internal void SetSharedDamageReady(bool ready) => SetDamageWorldAnchorState(ready, fallback: false);
+        internal void SetDamageWorldAnchorState(bool available, bool fallback)
+            => SetAdmissionCondition(ref _damageWorldAnchorReady, available && !fallback);
+        internal void SetUnitLifeWorldAnchorState(bool enabled, bool available, bool fallback)
+            => SetAdmissionCondition(ref _unitLifeAllowsShake, !enabled || (available && !fallback));
         internal void SetOwnerFocused(bool focused) => SetAdmissionCondition(ref _ownerFocused, focused);
         internal void SetSourcePaused(bool paused) => SetAdmissionCondition(ref _sourceRunning, !paused);
         internal void SetModalBlocked(bool blocked) => SetAdmissionCondition(ref _modalClear, !blocked);
@@ -107,7 +112,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal void AdmitIfReady()
         {
-            if (!_featureEnabled || !_nativeReady || !_sharedDamageReady || !_ownerFocused
+            if (!_featureEnabled || !_nativeReady || !_damageWorldAnchorReady || !_unitLifeAllowsShake || !_ownerFocused
                 || !_sourceRunning || !_modalClear || !_sceneReady || !_connectionReady
                 || ActiveGrant != 0 || _exhausted) return;
 

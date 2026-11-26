@@ -2,6 +2,7 @@
 #define NOMINMAX
 #include "Compositor.h"
 #include "WorldShakeStage.h"
+#include <cstddef>
 #include <cstdio>
 #include <limits>
 #include <utility>
@@ -10,6 +11,19 @@ static_assert(sizeof(ProbeWorldShakeStats) == 88);
 static_assert(offsetof(ProbeWorldShakeStats, lastOffsetX) == 16);
 static_assert(offsetof(ProbeWorldShakeStats, accepted) == 32);
 static_assert(offsetof(ProbeWorldShakeStats, rtBytes) == 80);
+static_assert(sizeof(ProbePresentationDiagStats) == 232);
+static_assert(offsetof(ProbePresentationDiagStats, retainedShakeBlitActive) == 12);
+static_assert(offsetof(ProbePresentationDiagStats, completed) == 16);
+static_assert(offsetof(ProbePresentationDiagStats, zeroBypassSamples) == 32);
+static_assert(offsetof(ProbePresentationDiagStats, worldPreBlitMsTotal) == 40);
+static_assert(offsetof(ProbePresentationDiagStats, shakeBlitActiveMsTotal) == 72);
+static_assert(offsetof(ProbePresentationDiagStats, shakeBlitBypassMsTotal) == 104);
+static_assert(offsetof(ProbePresentationDiagStats, shakeStageCreates) == 112);
+static_assert(offsetof(ProbePresentationDiagStats, shakeStageCreateCpuMaxMs) == 136);
+static_assert(offsetof(ProbePresentationDiagStats, bulletHistoryDraws) == 144);
+static_assert(offsetof(ProbePresentationDiagStats, rayDraws) == 168);
+static_assert(offsetof(ProbePresentationDiagStats, wakeFreshSource) == 192);
+static_assert(offsetof(ProbePresentationDiagStats, wakeOther) == 224);
 
 namespace {
 using Impulse = std::array<float, 4>;
@@ -244,6 +258,14 @@ void CustomProfiles() {
     bad = custom; bad[4] = 0.5f; Check(!engine.SetProfiles(bad.data(), 8, 14.0f), "fractional sub-1 radius rejected");
     Check(engine.ProfileCount() == 8 && engine.MaxOffsetStagePx() == 6.0f, "failed SetProfiles leaves active table intact");
 }
+
+void BackbufferClearCoverage() {
+    Check(!WorldShakeRequiresBackbufferClear(0, 0, 1920, 1080, 1920, 1080), "16:9 full coverage skips clear");
+    Check(WorldShakeRequiresBackbufferClear(0, 60, 1920, 1140, 1920, 1200), "letterbox bars require clear");
+    Check(WorldShakeRequiresBackbufferClear(320, 0, 2240, 1080, 2560, 1080), "pillarbox bars require clear");
+    Check(WorldShakeRequiresBackbufferClear(0, 0, 1920, 1079, 1920, 1080), "uncovered bottom pixel row requires clear");
+    Check(WorldShakeRequiresBackbufferClear(0, 0, 1919, 1080, 1920, 1080), "uncovered right pixel column requires clear");
+}
 }
 
 int main() {
@@ -253,6 +275,7 @@ int main() {
     AttenuationAndValidation();
     Determinism();
     CustomProfiles();
+    BackbufferClearCoverage();
     std::printf("WorldShakeSelfTest: %d/%d checks passed (ABI stats: %zu bytes)\n",
         checks - failures, checks, sizeof(ProbeWorldShakeStats));
     return failures == 0 ? 0 : 1;

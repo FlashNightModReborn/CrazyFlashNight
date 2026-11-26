@@ -576,7 +576,6 @@ namespace CF7Launcher.Guardian
             if (previous != null) previous.Dispose();
         }
 
-        private bool _focusFillWasActive;
         private void RenderToBitmapAndCommit()
         {
             if (!_ready || FrontDoorVisible || _suspendedForPanel) return;
@@ -588,26 +587,7 @@ namespace CF7Launcher.Guardian
             lock (_widgetsLock) { snapshot = _widgets.ToArray(); }
 
             int painted = 0, visible = 0;
-            CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudFocusTargetWidget focus=null;
-            if(_sharedPresentation?.SupportsFocus==true || _focusFillWasActive)
-            {
-                bool covered=false;
-                foreach(var w in snapshot)
-                {
-                    if(w is CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudFocusTargetWidget candidate)
-                        focus=candidate;
-                    else if(focus!=null && w.Visible && w.ScreenBounds.IntersectsWith(focus.ScreenBounds))
-                        covered=true; // e.g. a tooltip painted above the strip on this same layer
-                }
-                bool enabled=focus!=null && !covered && _sharedPresentation?.SupportsFocus==true;
-                if(enabled!=_focusFillWasActive)InvalidateWholeBitmap();
-                if(focus!=null)focus.PrepareGpuFill(_sharedPresentation,_hudOrigin,covered);
-                else if(_focusFillWasActive)_sharedPresentation?.StageFocus(null,0,0,Array.Empty<int>(),0);
-                _focusFillWasActive=enabled;
-            }
             using var dirty = TakeDirtyRegion(out var uploadDamage,out var clearBounds);
-            if(_focusFillWasActive)
-                uploadDamage=focus.ResidualDamage(uploadDamage,new Rectangle(0,0,_composedW,_composedH));
             if (FocusTrace.Enabled) _focusPaintGeneration++;
             using (Graphics g = Graphics.FromImage(_composedBitmap))
             {

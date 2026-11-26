@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using CF7Launcher.Guardian.HitNumbers;
 using Newtonsoft.Json.Linq;
@@ -601,6 +603,184 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void NumberOnlyModesIgnoreUnusedWorldRows(bool classic)
+        {
+            var frame = new HitNumberLayoutFrame
+            {
+                Candidate = classic ? HitNumberLayoutCandidate.ClassicScatter : HitNumberLayoutCandidate.BalancedSummary
+            };
+            HitNumberPaintItem item = MixedGlyphItem();
+            item.CombinedScale = 0.8f;
+            frame.Items.Add(item);
+            HitNumberRenderRegion numberOnly = HitNumberRenderPlanner.Plan(frame, 1600, 900);
+            frame.WorldRows.Add(new HitNumberBurstRow
+            {
+                TargetX = 35,
+                TargetY = 140,
+                AttachmentX = 950,
+                AttachmentY = 500,
+                Bounds = new RectangleF(15, 30, 950, 500)
+            });
+            HitNumberRenderRegion withRows = HitNumberRenderPlanner.Plan(frame, 1600, 900);
+
+            Assert.Equal(numberOnly.PixelBounds, withRows.PixelBounds);
+            Assert.True(withRows.PixelBounds.Width < frame.WorldRows[0].Bounds.Width * 1600f / 1024f);
+            Assert.True(withRows.PixelBounds.Height < 180);
+            AssertPaddedRenderFits(frame, withRows, classic ? HitNumberDisplayMode.Classic : HitNumberDisplayMode.Balanced);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void AnchorModesEncloseChevronAndClampedStem(bool total)
+        {
+            var frame = new HitNumberLayoutFrame
+            {
+                Candidate = total ? HitNumberLayoutCandidate.TargetTotal : HitNumberLayoutCandidate.FixedBurstStack
+            };
+            frame.WorldRows.Add(new HitNumberBurstRow
+            {
+                TargetId = "anchored",
+                TargetX = 500,
+                TargetY = 300,
+                AttachmentX = 960,
+                AttachmentY = 70,
+                Bounds = new RectangleF(5, 20, 960, 520)
+            });
+            HitNumberRenderRegion anchorOnly = HitNumberRenderPlanner.Plan(frame, 1920, 900);
+            frame.WorldRows.Add(new HitNumberBurstRow { TargetX = 80, TargetY = 80, Kind = CombatNumberKind.HealHp });
+            frame.WorldRows.Add(new HitNumberBurstRow { TargetX = 900, TargetY = 480, SuppressTargetAnchor = true });
+            Assert.Equal(anchorOnly.PixelBounds, HitNumberRenderPlanner.Plan(frame, 1920, 900).PixelBounds);
+            Assert.InRange(anchorOnly.PixelBounds.Width, 55, 90);
+            Assert.InRange(anchorOnly.PixelBounds.Height, 25, 65);
+            AssertPaddedRenderFits(frame, anchorOnly, total ? HitNumberDisplayMode.Total : HitNumberDisplayMode.Detail);
+        }
+
+        [Theory]
+        [InlineData(96f, 1f)]
+        [InlineData(96f, 0.47f)]
+        [InlineData(120f, 0.47f)]
+        [InlineData(144f, 0.47f)]
+        public void DirectPArgbMatchesGraphicsForMixedRuns(float dpi, float alpha)
+        {
+            string projectRoot = FindProjectRootForFonts();
+            if (projectRoot != null) CF7Launcher.Fonts.RuntimeFontCatalog.Configure(projectRoot);
+            var frame = new HitNumberLayoutFrame();
+            frame.Items.Add(MixedGlyphItem(alpha));
+            frame.Items.Add(new HitNumberPaintItem
+            {
+                Kind = CombatNumberKind.HealHp,
+                StageX = 560.5f,
+                StageY = 340.7f,
+                Value = 851,
+                HitCount = 1,
+                Alpha = alpha,
+                MainColorOverride = Color.MediumSeaGreen
+            });
+            HitNumberRenderRegion region = HitNumberRenderPlanner.Plan(frame, 1600, 900);
+            int width = region.PixelBounds.Width;
+            int height = region.PixelBounds.Height;
+            using var direct = new Bitmap(width + 5, height, PixelFormat.Format32bppPArgb);
+            using var blit = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
+            blit.SetResolution(dpi, dpi);
+            var context = new HitNumberPaintContext(region.LocalViewport);
+            using var painter = new HitNumberPainter();
+            HitNumberPaintStats fromGraphics;
+            using (Graphics graphics = Graphics.FromImage(blit))
+                fromGraphics = painter.Paint(graphics, frame.Items, context);
+            var bitmapBounds = new Rectangle(0, 0, direct.Width, height);
+            BitmapData data = direct.LockBits(bitmapBounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppPArgb);
+            HitNumberPaintStats fromDirect;
+            try
+            {
+                fromDirect = painter.PaintToPArgbSurface(data.Scan0, width, height, data.Stride, dpi, frame.Items, context);
+            }
+            finally
+            {
+                direct.UnlockBits(data);
+            }
+
+            Assert.Equal(fromGraphics.ItemCount, fromDirect.ItemCount);
+            Assert.Equal(fromGraphics.RunCount, fromDirect.RunCount);
+            Assert.True(HasVisiblePixel(direct));
+            Assert.False(HasVisiblePixelOnBorder(blit, 3));
+            byte[] directPixels = ReadPArgb(direct);
+            byte[] blitPixels = ReadPArgb(blit);
+            int maxDifference = 0;
+            for (int y = 0; y < height; y++)
+            {
+                int row = y * direct.Width * 4;
+                for (int x = 0; x < width * 4; x++)
+                    maxDifference = Math.Max(maxDifference, Math.Abs(directPixels[row + x] - blitPixels[y * width * 4 + x]));
+                for (int x = width * 4; x < direct.Width * 4; x++)
+                    Assert.Equal(0, directPixels[row + x]);
+            }
+            // GDI+ rounds the final PArgb blit independently when two items overlap.
+            Assert.InRange(maxDifference, 0, 2);
+            AssertPaddedRenderFits(frame, region, HitNumberDisplayMode.Detail, dpi);
+        }
+
+        private static HitNumberPaintItem MixedGlyphItem(float alpha = 1f) => new()
+        {
+            StageX = 510.4f,
+            StageY = 300.6f,
+            CombinedScale = 1.52f,
+            SemanticDensityScale = 0.55f,
+            CombinedBlur = 4f,
+            Value = -1350,
+            Packed = HitNumberPacking.Create(1 | 2 | 4 | 8 | 16 | 32 | 256, false, 32, 2),
+            EffectText = "粉碎附加",
+            CrushText = "破甲",
+            CrushEmoji = "⚡",
+            LifeSteal = 1234,
+            ShieldAbsorb = 5678,
+            HitCount = 44,
+            Alpha = alpha,
+            OutlineColorOverride = Color.DarkSlateBlue
+        };
+
+        private static void AssertPaddedRenderFits(
+            HitNumberLayoutFrame frame, HitNumberRenderRegion region, HitNumberDisplayMode mode, float dpi = 96f)
+        {
+            const int padding = 20;
+            var viewport = region.LocalViewport;
+            viewport.Offset(padding, padding);
+            using var bitmap = new Bitmap(region.PixelBounds.Width + 2 * padding,
+                region.PixelBounds.Height + 2 * padding, PixelFormat.Format32bppPArgb);
+            bitmap.SetResolution(dpi, dpi);
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            using (var painter = new HitNumberPainter())
+            using (var scenePainter = new HitNumberScenePainter())
+            {
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                scenePainter.DrawWorldRows(graphics, viewport, frame.WorldRows, mode);
+                painter.Paint(graphics, frame.Items, new HitNumberPaintContext(viewport));
+            }
+            Assert.True(HasVisiblePixel(bitmap));
+            Assert.False(HasVisiblePixelOnBorder(bitmap, padding + 3));
+        }
+
+        private static byte[] ReadPArgb(Bitmap bitmap)
+        {
+            var bounds = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData data = bitmap.LockBits(bounds, ImageLockMode.ReadOnly, PixelFormat.Format32bppPArgb);
+            try
+            {
+                int rowBytes = bitmap.Width * 4;
+                var pixels = new byte[rowBytes * bitmap.Height];
+                for (int y = 0; y < bitmap.Height; y++)
+                    Marshal.Copy(data.Scan0 + y * data.Stride, pixels, y * rowBytes, rowBytes);
+                return pixels;
+            }
+            finally
+            {
+                bitmap.UnlockBits(data);
+            }
+        }
+
+        [Theory]
         [InlineData(1, 64)]
         [InlineData(64, 64)]
         [InlineData(65, 128)]
@@ -627,6 +807,18 @@ namespace CF7Launcher.Tests.Guardian
                     Packed = HitNumberPacking.Create(0, false, 28, 0)
                 }
             };
+        }
+
+        private static string FindProjectRootForFonts()
+        {
+            var dir = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
+            while (dir != null)
+            {
+                if (System.IO.File.Exists(System.IO.Path.Combine(dir.FullName, "fonts", "fonts.xml")))
+                    return dir.FullName;
+                dir = dir.Parent;
+            }
+            return null;
         }
 
         private static bool HasVisiblePixel(Bitmap bitmap)

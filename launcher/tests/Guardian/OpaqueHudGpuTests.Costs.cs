@@ -254,7 +254,7 @@ public sealed partial class OpaqueHudGpuTests
                     {
                         if(frame%30==0)combo.OnNotchNotice("combo","DFA "+(++sequence),Color.Orange);
                         if(frame%15==0)loot.AddEvent("material","测试物资",1,"hud-cost","",direction:"gain");
-                        foreach(var widget in widgets)if(widget.Visible&&widget.WantsAnimationTick)widget.Tick(33);
+                        TickHudCostWidgets(widgets);
                         if((bool)pending.GetValue(main)){render();pending.SetValue(main,false);}
                         FreezeHudTimers(main);
                     }
@@ -335,6 +335,11 @@ public sealed partial class OpaqueHudGpuTests
             resolution=new[]{1024,576},sourceHz=30,hudTickHz=30,rows,
             boundary="Owned WGC/D3D windows and production HUD painters. Static holds all visual clocks. HUD-only animates main HUD at 30Hz and the real resource timer, with no fresh source frames. Mixed adds production bullet/effect atlases with deterministic visual snapshots, 160 snow particles, 192 bullets, 8 lights and a 30Hz source. GPU timestamps cover world/effect and HUD upload/draw spans, excluding WGC capture/Present/DWM; CPU submit samples are separate and may observe fewer events than the worker. No game FPS, physical input, weak-machine thermal qualification or game/save operations."
         },Formatting.Indented));
+    }
+
+    private static void TickHudCostWidgets(INativeHudWidget[] widgets)
+    {
+        foreach(var widget in widgets)if(widget.Visible&&widget.WantsAnimationTick)widget.Tick(33);
     }
 
     private static object CostDistribution(IReadOnlyCollection<double> source)

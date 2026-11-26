@@ -35,6 +35,8 @@ int wmain(int argc, wchar_t** argv) {
         {FrameTagDiagnosticShader,"TagPS","ps_4_0"},
         {CombatFxShader,"FVS","vs_4_0"},{CombatFxShader,"FPS","ps_4_0"},
         {RayShader,"RVS","vs_4_0"},{RayShader,"RPS","ps_4_0"},
+        {RayShader,"RPSFlame","ps_4_0"},{RayShader,"RPSScreen","ps_4_0"},
+        {RayShader,"RPSTesla","ps_4_0"},{RayShader,"RPSOther","ps_4_0"},
         {PointLightShader,"LVS","vs_4_0"},{PointLightShader,"LPS","ps_4_0"},
         {HudRasterShader,"HVS","vs_4_0"},{HudRasterShader,"HPS","ps_4_0"},
         {FocusFillShader,"FocusVS","vs_4_0"},{FocusFillShader,"FocusPS","ps_4_0"},

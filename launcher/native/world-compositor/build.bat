@@ -30,9 +30,8 @@ cl.exe %COMMON% /std:c++17 /LD InputBridge.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\Input
 if errorlevel 1 goto :failed
 cl.exe %COMMON% /std:c++17 InputBroker.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\InputBroker.obj" /Fe"%CF7_NATIVE_OUTPUT_DIR%\FlashInputBroker.exe" /link /INCREMENTAL:NO /Brepro user32.lib
 if errorlevel 1 goto :failed
-rem Opt-in self-test target: `build.bat selftest` additionally compiles the
-rem bridge's real WindowProc into a standalone harness. It is not part of the
-rem runtime closure; default invocation above is unchanged.
+rem Opt-in self-test target: compile the bridge WindowProc harness and the
+rem offline world shake engine harness. They stay outside the runtime closure.
 if /i "%~1"=="selftest" (
     if not exist "%CF7_NATIVE_OUTPUT_DIR%\selftest" mkdir "%CF7_NATIVE_OUTPUT_DIR%\selftest"
     cl.exe %COMMON% /std:c++17 /DCF7_INPUT_BRIDGE_SELFTEST /c InputBridge.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\selftest\InputBridge.obj"
@@ -40,6 +39,8 @@ if /i "%~1"=="selftest" (
     cl.exe %COMMON% /std:c++17 /DCF7_INPUT_BRIDGE_SELFTEST /c InputBridgeSelfTest.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\selftest\InputBridgeSelfTest.obj"
     if errorlevel 1 goto :failed
     cl.exe %COMMON% /std:c++17 "%CF7_NATIVE_OUTPUT_DIR%\selftest\InputBridge.obj" "%CF7_NATIVE_OUTPUT_DIR%\selftest\InputBridgeSelfTest.obj" /Fe"%CF7_NATIVE_OUTPUT_DIR%\InputBridgeSelfTest.exe" /link /INCREMENTAL:NO /Brepro user32.lib gdi32.lib dwmapi.lib
+    if errorlevel 1 goto :failed
+    cl.exe %COMMON% /std:c++20 WorldShakeSelfTest.cpp /Fo"%CF7_NATIVE_OUTPUT_DIR%\selftest\WorldShakeSelfTest.obj" /Fe"%CF7_NATIVE_OUTPUT_DIR%\WorldShakeSelfTest.exe" /link /INCREMENTAL:NO /Brepro
     if errorlevel 1 goto :failed
 )
 rem Opt-in G1 fixture target: `build.bat g1fixture` compiles the cross-process
