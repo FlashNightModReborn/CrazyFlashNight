@@ -1,5 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 import org.flashNight.arki.component.Buff.BuffManager;
+import org.flashNight.arki.component.Buff.BuffCalculationType;
+import org.flashNight.arki.component.Buff.PodBuff;
 import org.flashNight.arki.component.Buff.Effect.ElderBeamVulnerability;
 import org.flashNight.arki.component.Buff.Effect.FireControlVulnerability;
 import org.flashNight.arki.component.Damage.*;
@@ -236,6 +238,50 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest {
         t.buffManager.update(30);check(near(t.damageTakenMultiplier,1),"Titanium 171 still expires at 30 frames");
         t.removeMovieClip();
 
+        check(ElderBeamVulnerability.ID=="debuff_cf6Elder:beam","elder beam uses the purifiable external ID");
+        check(FireControlVulnerability.ID=="debuff_titanium61:fireControl","Titanium 171 uses the purifiable external ID");
+        t=target();data=bullet("beam");settle(data,actor,t,false);
+        var mark:Object=t.buffManager.getBuffById(ElderBeamVulnerability.ID);
+        check(mark!=null && mark.getPrimaryTimer().getRemaining()==180
+            && near(t.damageTakenMultiplier,1.25) && near(t.ti61CrumbleTakenMultiplier,1.25),"actual red beam starts purification at 180 frames and full strength");
+        t.buffManager.purifyDebuffs(15);
+        check(mark!=null && mark.getPrimaryTimer().getRemaining()==90 && actor.elderHasBeamMark(t,72)
+            && near(t.damageTakenMultiplier,1.25) && near(t.ti61CrumbleTakenMultiplier,1.25),"value 15 leaves 90 frames without advancing decay");
+        t.buffManager.purifyDebuffs(5);
+        check(mark!=null && mark.getPrimaryTimer().getRemaining()==60 && actor.elderHasBeamMark(t)
+            && !actor.elderHasBeamMark(t,72),"value 5 leaves a live 60-frame mark below the heavy windup requirement");
+        t.buffManager.purifyDebuffs(50);t.buffManager.update(0);
+        check(t.buffManager.getBuffById(ElderBeamVulnerability.ID)==null && !actor.elderHasBeamMark(t)
+            && t.damageTakenMultiplier==1 && t.ti61CrumbleTakenMultiplier==1,"full purification removes the mark, permission and both vulnerability multipliers");
+        var beamBehavior:Object={peak:0.25,durationFrames:180};
+        check(ElderBeamVulnerability.applyToTarget(t,beamBehavior)
+            && near(t.damageTakenMultiplier,1.25) && near(t.ti61CrumbleTakenMultiplier,1.25),"a red beam may reapply after purification");
+        mark=t.buffManager.getBuffById(ElderBeamVulnerability.ID);
+        check(ElderBeamVulnerability.applyToTarget(t,beamBehavior) && ElderBeamVulnerability.applyToTarget(t,beamBehavior)
+            && t.buffManager.getBuffById(ElderBeamVulnerability.ID)===mark
+            && near(t.damageTakenMultiplier,1.25) && near(t.ti61CrumbleTakenMultiplier,1.25),"repeat and multiple casters still refresh the same mark after purification");
+        t.buffManager.destroy();delete t.buffManager;t.removeMovieClip();
+
+        t=target();
+        var pendingBeam:Object={target:t,behavior:beamBehavior,queued:false};
+        var onTriggerRemoved:Function=function(id:String):Void {
+            if(id!="elder-beam-test-trigger")return;
+            var unit:MovieClip=this.target;
+            this.queued=ElderBeamVulnerability.applyToTarget(unit,this.behavior)
+                && unit.buffManager.getBuffById(ElderBeamVulnerability.ID)==null;
+        };
+        t.buffManager.addBuff(new PodBuff("damageTakenMultiplier",BuffCalculationType.ADD,0),"elder-beam-test-trigger");
+        t.buffManager.eventDispatcher.subscribe("remove",onTriggerRemoved,pendingBeam);
+        t.buffManager.removeBuff("elder-beam-test-trigger");t.buffManager.update(0);
+        t.buffManager.eventDispatcher.unsubscribe("remove",onTriggerRemoved,pendingBeam);
+        check(pendingBeam.queued && t.buffManager.getBuffById(ElderBeamVulnerability.ID)!=null,"removal during update queues a new red beam mark and the same update flushes it");
+        t.buffManager.update(90);
+        check(near(t.damageTakenMultiplier,1.125) && near(t.ti61CrumbleTakenMultiplier,1.125),"callback-applied red beam binds both pods and decays to half strength");
+        t.buffManager.purifyDebuffs(100);t.buffManager.update(0);
+        check(t.buffManager.getBuffById(ElderBeamVulnerability.ID)==null
+            && t.damageTakenMultiplier==1 && t.ti61CrumbleTakenMultiplier==1,"purifying the callback-applied red beam restores both bases");
+        t.buffManager.destroy();delete t.buffManager;t.removeMovieClip();
+
         t=target();actor=samples.slam.actor;actor.shield=AdaptiveShield.createDormant("slam-shield");actor.shield.setOwner(actor);
         var originalClock:Number=actor.elderClock;
         t._x=actor._x+(actor.方向=="左"?-180:180);t._y=t.Z轴坐标=actor.Z轴坐标;
@@ -255,6 +301,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest {
         check(actor.elderChooseAttack(distance,0,0,true)=="heavyBeam" && !actor.elderHasBeamMark(t),"actual unmarked slam knockback selects the continuous follow-up");
         actor.elderNextHeavyBeam=actor.elderClock+1;
         check(actor.elderChooseAttack(distance,0,0,true)=="beam","slam permission does not bypass heavy cooldown");actor.elderNextHeavyBeam=0;
+        ElderBeamVulnerability.applyToTarget(t,beamBehavior);
+        check(actor.elderHasBeamMark(t,72) && actor.elderHasSlamHeavyWindow(t,72),"actual slam target holds both permissions before purification");
+        t.buffManager.purifyDebuffs(100);t.buffManager.update(0);
+        check(!actor.elderHasBeamMark(t) && near(t.damageTakenMultiplier,1),"full purification clears red beam vulnerability from the slammed target");
+        check(actor.elderHasSlamHeavyWindow(t,72) && actor.elderChooseAttack(distance,0,0,true)=="heavyBeam",
+            "actual slam still authorizes heavy follow-up after red beam purification");
         actor.elderSlamHeavyWindow=null;
         ElderBeamVulnerability.applyToTarget(t,{peak:0.25,durationFrames:180});
         check(actor.elderChooseAttack(distance,0,0,true)=="heavyBeam","marked displaced target selects heavy follow-up");

@@ -551,7 +551,60 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         check(r.elderHasBeamMark(target) && r.elderChooseAttack(400,0,0,false)=="beam","short remaining mark cannot start an incomplete channel");
         target.buffManager.update(71);
         check(r.elderChooseAttack(400,0,0,false)=="beam","expired mark removes heavy selection");
-        r.状态改变("空手站立");r.攻击目标="无";target.removeMovieClip();
+        var beamBehavior:Object={peak:0.25,durationFrames:180};
+        var decisionChecks:Number=r.elderCombatStats.decisionChecks;
+        ElderBeamVulnerability.applyToTarget(target,beamBehavior);
+        check(r.elderHasBeamMark(target,72)===true && h.elderHasBeamMark(target,72)===true,"both loaded forms recognize the purifiable red beam mark");
+        check(r.elderChooseAttack(400,0,0,false)=="heavyBeam" && h.elderChooseAttack(400,0,0,false)=="burst",
+            "only the robot starts a heavy beam from the shared mark");
+        target.buffManager.purifyDebuffs(20);
+        var mark:Object=target.buffManager.getBuffById(ElderBeamVulnerability.ID);
+        check(mark!=null && mark.getPrimaryTimer().getRemaining()==60
+            && r.elderHasBeamMark(target)===true && h.elderHasBeamMark(target)===true
+            && r.elderHasBeamMark(target,72)===false && h.elderHasBeamMark(target,72)===false,
+            "partial purification leaves a live 60-frame mark below the heavy start threshold");
+        check(r.elderChooseAttack(400,0,0,false)=="beam","a shortened mark sends the robot back to the red beam primer");
+
+        // Isolate this channel from the original timeline case's recovery and contact counts.
+        var timelineRecord:Object=r.fixtureRecord,purifyRecord:Object=record();
+        var robotState:Object={done:r.__doneCount,recovery:r.__lastRecoveryFrame,attacks:r.elderAttackCount,
+            combo:r.elderCombo,nextBeam:r.elderNextBeam,nextHeavy:r.elderNextHeavyBeam,
+            heavyStarts:r.elderCombatStats.heavyBeamStarts,shieldSamples:r.elderCombatStats.beamShieldSamples,
+            shieldSpent:r.elderCombatStats.beamShieldSpent,shieldUnused:r.elderCombatStats.beamShieldUnused};
+        r.fixtureRecord=purifyRecord;
+        ElderBeamVulnerability.applyToTarget(target,beamBehavior);
+        // A newly selected body mounts after this callback. Drive the loaded body directly.
+        var body:MovieClip=r.man;
+        var bodyMode:String=body.elderMode;
+        var bodyToken:Object=body.elderToken;
+        r.状态=r.elderActions.heavyBeam.state;body.elderMode="attack";
+        r.elderBeginAttack(body,"heavyBeam");
+        var heavyOwner:Object=r.elderAttackOwner;
+        check(heavyOwner!=null && heavyOwner.action=="heavyBeam" && r.elderCanAct(body)
+            && r.elderHeavyTargetValid(heavyOwner) && h.elderHeavyTargetValid(heavyOwner),"continued heavy permission validates the live target identity in both loaded forms");
+        target.buffManager.purifyDebuffs(50);target.buffManager.update(0);
+        check(heavyOwner!=null && !r.elderHasBeamMark(target) && !h.elderHasBeamMark(target)
+            && !r.elderHeavyTargetValid(heavyOwner) && !h.elderHeavyTargetValid(heavyOwner),"full purification invalidates the active target without a slam window");
+        r.elderBodyTick(body);
+        if(r.man===body){body.elderMode=bodyMode;body.elderToken=bodyToken;}
+        check(r.elderAttackOwner==null && r.状态=="空手站立" && !r.刚体 && !r.免疫击退
+            && purifyRecord.done==1 && purifyRecord.shots==0,
+            "the actual heavy body tick cancels and recovers without firing after purification");
+        r.fixtureRecord=timelineRecord;r.__doneCount=robotState.done;r.__lastRecoveryFrame=robotState.recovery;
+        r.elderAttackCount=robotState.attacks;r.elderCombo=robotState.combo;
+        r.elderNextBeam=robotState.nextBeam;r.elderNextHeavyBeam=robotState.nextHeavy;
+        r.elderCombatStats.heavyBeamStarts=robotState.heavyStarts;r.elderCombatStats.beamShieldSamples=robotState.shieldSamples;
+        r.elderCombatStats.beamShieldSpent=robotState.shieldSpent;r.elderCombatStats.beamShieldUnused=robotState.shieldUnused;
+
+        r.攻击目标=target._name;
+        r.elderSlamHeavyWindow={target:target._name,identity:target.__elderActionIdentity,expires:r.elderClock+72};
+        ElderBeamVulnerability.applyToTarget(target,beamBehavior);
+        check(r.elderHasBeamMark(target,72) && r.elderHasSlamHeavyWindow(target,72),"the robot holds both permissions before the mark is purified");
+        target.buffManager.purifyDebuffs(50);target.buffManager.update(0);
+        check(!r.elderHasBeamMark(target) && r.elderHasSlamHeavyWindow(target,72)===true
+            && r.elderChooseAttack(400,0,0,false)=="heavyBeam","independent slam permission still selects heavy beam after the mark is purified");
+        r.elderSlamHeavyWindow=null;r.elderCombatStats.decisionChecks=decisionChecks;
+        r.状态改变("空手站立");r.攻击目标="无";target.buffManager.destroy();target.removeMovieClip();
         r.浮空=r.倒地=true;r.垂直速度=-6;r.elderTick();
         check(!r.浮空 && !r.倒地 && r.垂直速度==0,"robot stays grounded");
         h.浮空=true;h.elderTick();check(h.浮空===true,"human keeps standard airborne behavior");h.浮空=false;

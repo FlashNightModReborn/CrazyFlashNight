@@ -405,11 +405,11 @@
     <type>消耗品</type>
     <use>药剂</use>
     <price>6000</price>
-    <description>使用净化药剂,清除自身积累的麻痹值,获得一定额度的麻痹抵抗能力,大幅减少自身debuff持续时间,减少永久型地形伤害,缓解永久型地形负面效果。
+    <description>使用净化药剂可降低自身麻痹积累，提供麻痹抗性，并大幅缩短可净化负面状态的剩余时间。
     部分效果可叠加,效果逐步衰减。</description>
     <data>
       <effects>
-        <effect type="purify" value="50" scaleWithAlchemy="true" clearDebuffs="debuff_" />
+        <effect type="purify" value="50" scaleWithAlchemy="true" />
         <effect type="playEffect" name="净化动画" />
       </effects>
     </data>
@@ -427,7 +427,7 @@
       <formulaPrice>6000</formulaPrice>
       <marketPrice>6000</marketPrice>
       <inputDigest>fnv1a32:4365bdae</inputDigest>
-      <sourceDigest>sha256:2cd67db8976bb5208e423badc32229f4e59321786ee460afa1764664694e73bf</sourceDigest>
+      <sourceDigest>sha256:3eb2e078e04730cb6583475d2f5c79fcf0af9e31b19747cd461c4dbdf1d66d8a</sourceDigest>
       <auditRef>potion:净化药剂</auditRef>
     </balance>
   </item>

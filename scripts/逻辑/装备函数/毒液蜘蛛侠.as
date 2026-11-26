@@ -37,7 +37,7 @@ _root.装备生命周期函数.蜘蛛侠蛛丝周期 = function(反射对象, �
                 击中时触发函数:function(){
                     var 暂存敌人 = this.命中对象;
                     var childBuffs:Array = [
-                        new PodBuff("行走X速度", BuffCalculationType.MULT_POSITIVE, 0.1)
+                        new PodBuff("行走X速度", BuffCalculationType.MULT_NEGATIVE, 0.1)
                     ];
 
                     // 时间限制
@@ -46,7 +46,7 @@ _root.装备生命周期函数.蜘蛛侠蛛丝周期 = function(反射对象, �
 
                     var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
                     metaBuff.hudInfo = {name:"蜘蛛网", description:"蛛网影响下的行动限制。", polarity:"harm", stacks:0};
-                    暂存敌人.buffManager.addBuff(metaBuff, "蜘蛛网");
+                    暂存敌人.buffManager.addBuff(metaBuff, "debuff_蜘蛛网");
                     if (!this.已爆炸)
                     {
                         this.已爆炸 = true;

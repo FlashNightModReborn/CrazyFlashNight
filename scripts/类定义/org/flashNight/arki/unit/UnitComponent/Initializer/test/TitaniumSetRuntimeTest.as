@@ -917,6 +917,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
         var unit:MovieClip=makeUnit(0,0,false,false,false);
         unit.damageTakenMultiplier=1; unit.ti61CrumbleTakenMultiplier=1;
         var behavior:Object={peak:0.75,durationFrames:30};
+        check(FireControlVulnerability.ID=="debuff_titanium61:fireControl","171引导使用可净化的外部ID");
         check(FireControlVulnerability.applyToTarget(unit,behavior),"真实Buff管理器接收引导易伤");
         check(near(unit.damageTakenMultiplier,1.75) && near(unit.ti61CrumbleTakenMultiplier,1.75),"普通伤害和击溃同时达峰");
         unit.buffManager.update(15);
@@ -945,6 +946,38 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.test.TitaniumSetRuntime
         bullet.hitBehavior={type:"titaniumBloodPact",directPower:303.7};
         BulletHitEffectRegistry.prepare(bullet,{},unit);
         check(near(bullet.子弹威力,303.7) && bullet.击溃==0,"血剑多段复用独立伤害路径");
+
+        FireControlVulnerability.applyToTarget(unit,behavior);
+        unit.buffManager.purifyDebuffs(2);
+        var mark:Object=unit.buffManager.getBuffById(FireControlVulnerability.ID);
+        check(mark!=null && mark.isActive() && mark.getPrimaryTimer().getRemaining()==18,
+            "净化值2将30帧引导易伤缩至18帧且仍存活");
+        check(near(unit.damageTakenMultiplier,1.75) && near(unit.ti61CrumbleTakenMultiplier,1.75),
+            "部分净化不跳变普通伤害和击溃倍率");
+        unit.buffManager.purifyDebuffs(5);unit.buffManager.update(0);
+        check(unit.buffManager.getBuffById(FireControlVulnerability.ID)==null
+            && near(unit.damageTakenMultiplier,1) && near(unit.ti61CrumbleTakenMultiplier,1),"净化值5清除剩余引导易伤并还原两种倍率");
+        check(FireControlVulnerability.applyToTarget(unit,behavior)
+            && near(unit.damageTakenMultiplier,1.75) && near(unit.ti61CrumbleTakenMultiplier,1.75),"净化后可重新施加满幅引导易伤");
+
+        var pendingFireControl:Object={target:unit,behavior:behavior,queued:false};
+        var onFireControlRemoved:Function=function(id:String):Void {
+            if(id!=FireControlVulnerability.ID)return;
+            var target:MovieClip=this.target;
+            this.queued=FireControlVulnerability.applyToTarget(target,this.behavior)
+                && target.buffManager.getBuffById(FireControlVulnerability.ID)==null;
+        };
+        unit.buffManager.eventDispatcher.subscribe("remove",onFireControlRemoved,pendingFireControl);
+        unit.buffManager.removeBuff(FireControlVulnerability.ID);unit.buffManager.update(0);
+        unit.buffManager.eventDispatcher.unsubscribe("remove",onFireControlRemoved,pendingFireControl);
+        check(pendingFireControl.queued && unit.buffManager.getBuffById(FireControlVulnerability.ID)!=null,
+            "引导移除回调中的新易伤先入队并在同一轮update注册");
+        unit.buffManager.update(15);
+        check(near(unit.damageTakenMultiplier,1.375) && near(unit.ti61CrumbleTakenMultiplier,1.375),
+            "回调新建的引导易伤绑定两种倍率并衰减至半幅");
+        unit.buffManager.purifyDebuffs(5);unit.buffManager.update(0);
+        check(unit.buffManager.getBuffById(FireControlVulnerability.ID)==null
+            && near(unit.damageTakenMultiplier,1) && near(unit.ti61CrumbleTakenMultiplier,1),"回调新建的引导易伤可净化并还原两种倍率");
         closeUnit(unit);
     }
 

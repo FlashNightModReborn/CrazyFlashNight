@@ -117,8 +117,7 @@ class org.flashNight.arki.item.drug.effects.BuffEffect implements IDrugEffect {
         // 创建MetaBuff
         var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 
-        // 根据 buffId 与计算语义自动推导极性，供 HUD 展示与净化系统识别负面状态
-        var polarity:String = deducePolarity(buffId, calcType, value);
+        var polarity:String = (buffId != null && String(buffId).indexOf("debuff_") == 0) ? "harm" : "neutral";
         metaBuff.hudInfo = {name:ctx.itemName, description:"药剂效果，影响属性：" + property, polarity:polarity, stacks:0};
         if (ctx.hudSource != null) metaBuff.hudInfo.source = ctx.hudSource;
         var registeredId:String = buffManager.addBuff(metaBuff, buffId);
@@ -126,32 +125,6 @@ class org.flashNight.arki.item.drug.effects.BuffEffect implements IDrugEffect {
         buffManager.update(0); // 立即生效
 
         return true;
-    }
-
-    /**
-     * 推导药剂 Buff 极性（"benefit" | "harm" | "neutral"）
-     */
-    private function deducePolarity(buffId:String, calcType:String, value:Number):String {
-        if (buffId != null && buffId.indexOf("debuff_") == 0) {
-            return "harm";
-        }
-        if (calcType == BuffCalculationType.ADD_NEGATIVE || calcType == BuffCalculationType.MULT_NEGATIVE) {
-            return "harm";
-        }
-        if (calcType == BuffCalculationType.ADD_POSITIVE || calcType == BuffCalculationType.MULT_POSITIVE) {
-            return "benefit";
-        }
-        if (calcType == BuffCalculationType.ADD || calcType == BuffCalculationType.PERCENT) {
-            if (value > 0) return "benefit";
-            if (value < 0) return "harm";
-            return "neutral";
-        }
-        if (calcType == BuffCalculationType.MULTIPLY) {
-            if (value > 1) return "benefit";
-            if (value >= 0 && value < 1) return "harm";
-            return "neutral";
-        }
-        return "neutral";
     }
 
     /**

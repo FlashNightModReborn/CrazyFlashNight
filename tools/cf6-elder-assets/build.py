@@ -55,7 +55,7 @@ FORMS = {
                     'kicks':{'id':997,'state':'近战','hits':[9,26],'power':1,'damage':'物理'},
                     'slam':{'id':1007,'state':'重击','hits':[37],'power':18,'damage':'物理'},
                     'heavyBeam':{'id':19940,'sourceId':994,'windupExtra':6,'sustainExtra':36,'state':'蓄能重束','hits':[35,47,59,71],
-                        'powers':[0.5,1,1.5,2],'damage':'魔法','attribute':'波','requiresAny':['cf6Elder:beam','ownRecentSlamHit'],'beamThickness':3}}}
+                        'powers':[0.5,1,1.5,2],'damage':'魔法','attribute':'波','requiresAny':['debuff_cf6Elder:beam','ownRecentSlamHit'],'beamThickness':3}}}
 }
 
 def sha(path):

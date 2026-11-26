@@ -1324,7 +1324,7 @@ elderCrossLaneMovement=function(bullet:MovieClip):Void {
 // 红束资格只读取既有易伤；重束本身不施加或续期该标记。
 elderHasBeamMark=function(target:MovieClip,minimumFrames:Number):Boolean {
     if(!(target.hp>0) || target.buffManager==null)return false;
-    var buff:Object=target.buffManager.getBuffById("cf6Elder:beam");
+    var buff:Object=target.buffManager.getBuffById("debuff_cf6Elder:beam");
     if(buff==null || buff.isDestroyed())return false;
     var timer:Object=buff.getPrimaryTimer();
     if(timer==null)return false;

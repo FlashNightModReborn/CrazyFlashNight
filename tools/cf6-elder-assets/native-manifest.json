@@ -10,11 +10,11 @@
   "buildInputs": [
     {
       "path": "tools/cf6-elder-assets/build.py",
-      "sha256": "e552a90255942cce3dc04ab0f5710d7f4d3cc47a210db1ce26bcb0c67a8d5a78"
+      "sha256": "c1978a47cdf336503ac0821bfdff552d7607b18be1e78e085d36deeac745a78a"
     },
     {
       "path": "tools/cf6-elder-assets/ElderAI.as",
-      "sha256": "6cd761906fdd9552328eaa86633ad03e3833f3ab3e237815e519092da79a9a27"
+      "sha256": "f675a9bbd9e359013eb0fba8b24fd138ac233efa8e5cd8358eefa2db4699d80d"
     },
     {
       "path": "tools/cf6-elder-assets/ElderTransform.as",
@@ -70,11 +70,11 @@
     },
     {
       "path": "tools/asset-metrology/xfl_geometry.py",
-      "sha256": "7f2f7cbf557cb3054f056cd196bfddf65e9ae6a813204ddba3b0e5398383321b"
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
     },
     {
       "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
-      "sha256": "edc856186ae2a14ba1ebd5ed617d84666368114fa8eeb9e26e414f778c9ed5e6"
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/archive-origin.json",
@@ -154,11 +154,11 @@
     },
     {
       "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml",
-      "sha256": "6d53745e2f595b0f15c1854804f5a343dd17e06937c82e1d333019eb341ad4a7"
+      "sha256": "a63b6f25b64442c67b74d01bb328f4ab241a4e5aae60705aaf6f3e96a264e6c4"
     },
     {
       "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
-      "sha256": "a620232c8be9b3c9e64162ef00b796f78e9e297b08ec971d3d86c18dc5f97ecb"
+      "sha256": "f0040499c7158c699fd1f688af1a84ca3264081f6c1c0e5e9df4d9364bca9c64"
     },
     {
       "path": "tools/cf6-elder-assets/r8-baked/act__human__967.xml",
@@ -1197,7 +1197,7 @@
           "damage": "魔法",
           "attribute": "波",
           "requiresAny": [
-            "cf6Elder:beam",
+            "debuff_cf6Elder:beam",
             "ownRecentSlamHit"
           ],
           "beamThickness": 3
@@ -1746,18 +1746,18 @@
     },
     {
       "path": "LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
-      "sha256": "3c5cfaf2a9e648079fd6cbc287f6f6cc60a5633d743e186b197883bf84114565",
-      "bytes": 129700
+      "sha256": "162fdf4c8d39eeb738ff6cb0b3e28a0b1c44c6c5f6818f34054d215c9faa560f",
+      "bytes": 129707
     },
     {
       "path": "LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
-      "sha256": "5791bc039e32adb8a37b477f64fa7de72c60b5b07a4893bea2897c3c93e5184a",
-      "bytes": 128046
+      "sha256": "ef55e9e131043f120552d09b958f7db33b12659239c33b00be1ea9ecb31ba91a",
+      "bytes": 128053
     },
     {
       "path": "LIBRARY/Codex/老头/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材.xml",
-      "sha256": "095e1f508efa2d6be4abec2b6b455bf041de2a69ecd605273de223084b1657df",
-      "bytes": 1717251
+      "sha256": "886745200b9a4ebe68a2945ab2e3ab156ddaacb5b1b4a4aeec4583afeef709a5",
+      "bytes": 1717923
     },
     {
       "path": "LIBRARY/Codex/老头/机械爆裂/演出.xml",

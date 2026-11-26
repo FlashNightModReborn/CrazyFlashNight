@@ -7,7 +7,7 @@ import org.flashNight.arki.item.drug.DrugContext;
  * 修改_root下的全局变量。
  *
  * XML配置示例:
- * <effect type="global" key="地形伤害系数" operation="set" value="0.09"/>
+ * <effect type="global" key="某全局参数" operation="set" value="1"/>
  * <effect type="global" key="某计数器" operation="add" value="1"/>
  * <effect type="global" key="某倍率" operation="multiply" value="0.5"/>
  *

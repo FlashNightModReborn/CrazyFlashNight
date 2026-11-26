@@ -292,7 +292,7 @@
     <use>药剂</use>
     <price>1000</price>
     <description>富含蛋白质的奶,除了提供营养以外,还有少许解毒效果。
-    减少自身积累的麻痹值,获得少许的麻痹抵抗能力,小幅度减少自身debuff持续时间,少量减少永久型地形伤害,缓解永久型地形负面效果。</description>
+    降低自身麻痹积累，提供少许麻痹抗性，并小幅缩短可净化负面状态的剩余时间。</description>
     <data>
       <effects>
         <effect type="heal" hp="50" mp="50" target="self" scaleWithAlchemy="true" />
@@ -314,7 +314,7 @@
       <formulaPrice>650</formulaPrice>
       <marketPrice>1000</marketPrice>
       <inputDigest>fnv1a32:d281a1fc</inputDigest>
-      <sourceDigest>sha256:27550697a3a939602e4eeb4f4346146508d1898aff059e781f8e73bf30c8f761</sourceDigest>
+      <sourceDigest>sha256:29e8ca6b4f36fcae407ec2d8dbecae6edb85cabe9661888dbeef37442a969b53</sourceDigest>
       <auditRef>potion:奶</auditRef>
     </balance>
   </item>
