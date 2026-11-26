@@ -94,10 +94,15 @@ public sealed class NativeHudDirtyRegionTests
     }
 
     [Theory]
-    [InlineData(768)]
-    [InlineData(1024)]
-    [InlineData(1920)]
-    public void FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(int width)
+    [InlineData(768, 4, false, false)]
+    [InlineData(1024, 4, false, false)]
+    [InlineData(1920, 4, false, false)]
+    [InlineData(1920, 3, true, true)]
+    [InlineData(1920, 4, false, true)]
+    [InlineData(1920, 5, true, true)]
+    [InlineData(1920, 8, true, true)]
+    public void FocusHealthOnlyRepaintsTheChangedRowAndLeavesTheBuffRailUntouched(
+        int width, int targetCount, bool protectFirst, bool paintEachPacket)
     {
         PlayerHudMotionSettings.Configure("full");
         using var owner = new Form { AutoScaleMode = AutoScaleMode.None,
@@ -116,8 +121,10 @@ public sealed class NativeHudDirtyRegionTests
         var packet = PlayerHudStateTests.Full();
         packet["groups"]["buffs"] = new JArray(Enumerable.Range(0,10).Select(i => new JObject {
             ["id"] = "b"+i, ["timed"] = false, ["total"] = 0, ["remaining"] = 0 }));
-        var rows = new JArray(Enumerable.Range(1,4).Select(i => new JObject {
-            ["id"] = i, ["role"] = "boss", ["name"] = new string('首',32), ["hp"] = new JArray(9999,10000) }));
+        var rows = new JArray(Enumerable.Range(1,targetCount).Select(i => new JObject {
+            ["id"] = i, ["role"] = protectFirst && i == 1 ? "protect" : "boss",
+            ["name"] = new string('首',32), ["hp"] = new JArray(9999,10000) }));
+        if (targetCount == 3) rows[2]["hits"] = 12;
         packet["groups"]["focusTarget"] = rows;
         controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
         var buffs = new PlayerHudBuffWidget(anchor, controller);
@@ -133,7 +140,7 @@ public sealed class NativeHudDirtyRegionTests
         controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
         var areas = Assert.IsType<HudRepaintRegions>(damage).Bounds;
         Assert.Equal(2, areas.Length);
-        var nextRow = PlayerHudFocusTargetWidget.RowBounds(10,1,4);
+        var nextRow = PlayerHudFocusTargetWidget.RowBounds(10,1,targetCount);
         Assert.All(areas, area => Assert.True(area.Bottom < origin.Y + nextRow.Top * width / 1024f));
         Assert.All(areas, area => Assert.False(Rectangle.Inflate(buffs.ScreenBounds,6,6).IntersectsWith(area)));
         void CheckFocusOnly([System.Runtime.CompilerServices.CallerLineNumber] int stageLine = 0)
@@ -150,13 +157,15 @@ public sealed class NativeHudDirtyRegionTests
         }
         CheckFocusOnly();
         rows[0]["hp"] = new JArray(200,1000);
-        Submit(); CheckFocusOnly(); // entering the critical palette
+        Submit(); CheckFocusOnly();
+        Assert.Equal(protectFirst, focus.IsTargetCritical(1));
         focus.Tick(33); CheckFocusOnly(); // breathing
         rows[0]["hp"][0] = 0;
         Submit(); CheckFocusOnly(); // death
         rows[0]["hp"][0] = 770;
         rows[2]["hp"] = new JArray(223,1000);
-        Submit(); CheckFocusOnly(); // revival and a different card entering critical together
+        Submit(); CheckFocusOnly(); // revival and a compact card changing health together
+        Assert.False(focus.IsTargetCritical(1));
         rows[0]["hits"] = 3;
         Submit(); CheckFocusOnly();
         focus.Tick(50); CheckFocusOnly(); // combo and critical pulse in a single frame
@@ -164,9 +173,10 @@ public sealed class NativeHudDirtyRegionTests
         {
             for (int i = 0; i < rows.Count; i++)
                 rows[i]["hp"] = new JArray(maximum*(.38+i*.065),maximum);
-            Submit(); // retained damage crosses the sixteen-rectangle upload budget
+            Submit();
+            if (paintEachPacket) CheckFocusOnly();
         }
-        CheckFocusOnly();
+        if (!paintEachPacket) CheckFocusOnly(); // retained damage crosses the sixteen-rectangle upload budget
     }
 
     [Theory]

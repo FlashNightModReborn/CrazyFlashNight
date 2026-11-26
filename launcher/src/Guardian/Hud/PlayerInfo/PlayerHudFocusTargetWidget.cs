@@ -445,7 +445,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
                 _damageScratch.Add(Rectangle.Intersect(trackPx, rowPx));
             }
             if (previous != null && (changedHealth & (1 << i)) != 0)
-                _damageScratch.Add(ToPixels(ReadoutDamage(row, previous[i], _lastTargets[i], scale), viewport, scale, 2));
+                _damageScratch.Add(ToPixels(ReadoutDamage(row, previous[i], _lastTargets[i]), viewport, scale, 2));
             if ((changedHits & (1 << i)) != 0 && !Secondary(row) && _states.TryGetValue(_lastTargets[i].Id, out var st))
             {
                 var hitPx = ToPixels(HitChipBounds(row, _lastTargets[i], st), viewport, scale, 2);
@@ -508,16 +508,22 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
 
     private float ReservedWidth(PlayerHudFocusTarget target) => ReservedHpWidth(target) + 4.5f + _percentReserveWidth;
 
-    private RectangleF ReadoutDamage(RectangleF row, PlayerHudFocusTarget old, PlayerHudFocusTarget target, float scale)
+    private static (float Left, float Right) SecondaryTextEdges(RectangleF row, RectangleF portrait) =>
+        (portrait.Right + (Stacked(row) ? 2.6f : 4.5f), row.Right - (Stacked(row) ? 3f : 5f));
+
+    private static float NarrowPercentWidth(float left, float right) => Math.Min(26f, right - left);
+
+    private RectangleF ReadoutDamage(RectangleF row, PlayerHudFocusTarget old, PlayerHudFocusTarget target)
     {
         if (Secondary(row))
         {
-            var p = Portrait(row);
+            var (headerLeft, right) = SecondaryTextEdges(row, Portrait(row));
             bool stacked = Stacked(row);
-            float tx = p.Right + (stacked ? 2.6f : 4.5f);
-            float readoutSpan = row.Width >= 220f ? 128f : row.Width >= 140f ? 84f : 28f;
-            return RectangleF.FromLTRB(Math.Max(tx, row.Right - (stacked ? 3 : 5) - readoutSpan) - 2,
-                row.Y + (stacked ? 8 : 1), row.Right, row.Y + (stacked ? 19 : 16));
+            // In a cell with an HP pair, the fitted numbers also move the name's
+            // ellipsis and can toggle its HIT badge. Both old and new ink live in this header.
+            float readoutLeft = row.Width >= 140f ? headerLeft : right - NarrowPercentWidth(headerLeft, right);
+            return RectangleF.FromLTRB(readoutLeft - 2, row.Y + (stacked ? 8 : 1),
+                row.Right, row.Y + (stacked ? 19 : 16));
         }
         float reserve = ReservedWidth(target);
         float left = reserve == ReservedWidth(old) ? row.Right - 6 - reserve : Portrait(row).Right;
@@ -541,18 +547,26 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
         g.SmoothingMode = SmoothingMode.AntiAlias;
         try
         {
+            bool compactStripVisible = false;
             if (targets.Length > 2)
             {
                 var strip = new RectangleF(6, 74, ColumnWidth, 23);
-                if (clip.IsVisible(RectangleF.Inflate(strip, 1, 1)))
+                compactStripVisible = clip.IsVisible(RectangleF.Inflate(strip, 1, 1));
+                if (compactStripVisible)
                     MetalPlate(g, strip, 2, 5, 2, 2, 0x23282B, 0x111517, 0x090C0D,
                         Color.FromArgb(118, 206, 214, 212), .8f, sx, sy, tx, ty);
             }
+            // A slanted divider crosses the cell boundary. Let the strip's device clip
+            // rasterize that edge, even when the neighboring cell's content is culled.
+            using var divider = compactStripVisible && targets.Length > 3
+                ? new Pen(Color.FromArgb(56, 214, 217, 215), .8f) : null;
             for (int i = 0; i < targets.Length; i++)
             {
                 var row = RowBounds(buffCount, i, targets.Length, AllyCount);
+                if (i > 2 && divider != null)
+                    g.DrawLine(divider, row.Left + 1.5f, row.Top + 2.5f, row.Left - 1.5f, row.Bottom - 2.5f);
                 if (clip.IsVisible(RectangleF.Inflate(row, 2f, 2f)))
-                    PaintRow(g, clip, targets[i], row, scale, i, sx, sy, tx, ty);
+                    PaintRow(g, clip, targets[i], row, scale, sx, sy, tx, ty);
             }
         }
         finally
@@ -636,7 +650,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
     private static Color PercentInk(PlayerHudFocusTarget t, int band) => Rgb(band == 2 ? 0xff9c88 : band == 1 ? 0xf6cf74 :
         t.Role == "boss" ? 0xf2a094 : t.Role == "combat" ? 0xc2d8dc : 0x86e8f2);
 
-    private void PaintRow(Graphics g, Region clip, PlayerHudFocusTarget target, RectangleF row, float scale, int index,
+    private void PaintRow(Graphics g, Region clip, PlayerHudFocusTarget target, RectangleF row, float scale,
         float sx, float sy, float tx, float ty)
     {
         bool compact = Secondary(row);
@@ -661,11 +675,6 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
                 band == 2 ? 0x180b0c : boss ? 0x151012 : protect ? 0x0f1618 : 0x111416,
                 band == 2 ? 0x0c0708 : 0x090c0d,
                 rim, band == 2 ? 1.25f : boss ? 1.0f : .85f, sx, sy, tx, ty);
-        }
-        else if (index > 2 && clip.IsVisible(new RectangleF(row.Left - 2f, row.Top, 4f, row.Height)))
-        {
-            using var divider = new Pen(Color.FromArgb(56, 214, 217, 215), .8f);
-            g.DrawLine(divider, row.Left + 1.5f, row.Top + 2.5f, row.Left - 1.5f, row.Bottom - 2.5f);
         }
         var bladeRect = new RectangleF(row.X + (compact ? 2.5f : 1.3f), row.Y + (row.Top == 0 ? 1.5f : 3f),
             compact ? 2.2f : 2.1f, row.Height - (row.Top == 0 ? 4.5f : 6f));
@@ -702,8 +711,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
     {
         bool stacked = Stacked(row);
         bool boss = target.Role == "boss", combat = target.Role == "combat";
-        float left = portrait.Right + (stacked ? 2.6f : 4.5f);
-        float right = row.Right - (stacked ? 3 : 5);
+        var (left, right) = SecondaryTextEdges(row, portrait);
         string percent = PlayerHudResourceStyle.Percent(target.Hp, target.HpMax);
 
         if (row.Width >= 220f)
@@ -756,7 +764,7 @@ internal sealed partial class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, 
             return;
         }
 
-        float numberWidth = Math.Min(26, right - left);
+        float numberWidth = NarrowPercentWidth(left, right);
         if (!stacked)
         {
             var mini = new RectangleF(left, row.Y + 2.2f, 11.5f, 10f);
