@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -12,11 +13,16 @@ using CF7Launcher.Guardian.Hud.Tooltip;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Launcher.Tests.Guardian
 {
     public sealed class ModifierSurfaceTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public ModifierSurfaceTests(ITestOutputHelper output) => _output = output;
+
         [Fact]
         public void ModifierUsesNativeSurfaceWithoutWebView()
         {
@@ -277,35 +283,77 @@ namespace Launcher.Tests.Guardian
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        private static void ExpectForeground(IntPtr handle, bool activate)
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetThreadDesktop(uint threadId);
+
+        [DllImport("user32.dll", EntryPoint = "GetUserObjectInformationW", SetLastError = true)]
+        private static extern bool GetDesktopInformation(IntPtr desktop, int index, out int value,
+            int size, out uint needed);
+
+        private static string DescribeWindow(IntPtr window)
         {
-            for (int i = 0; i < 20; i++)
-            {
-                if (activate) SetForegroundWindow(handle);
-                Application.DoEvents();
-                if (GetForegroundWindow() == handle) return;
-                Thread.Sleep(10);
-                activate = false;
-            }
-            Assert.Equal(handle, GetForegroundWindow());
+            uint thread = GetWindowThreadProcessId(window, out uint pid);
+            return $"0x{window.ToInt64():X}/pid={pid}/tid={thread}";
         }
 
-        [Fact]
+        private static bool WaitForForeground(IntPtr handle)
+        {
+            var wait = Stopwatch.StartNew();
+            do
+            {
+                Application.DoEvents();
+                if (GetForegroundWindow() == handle) return true;
+                Thread.Sleep(10);
+            } while (wait.ElapsedMilliseconds < 500);
+            return GetForegroundWindow() == handle;
+        }
+
+        [SkippableFact]
         public void ModifierMouseWorkflowPreservesGameKeyboardFocus()
         {
-            using var owner = new Form { StartPosition = FormStartPosition.Manual };
-            owner.Location = new Point(-32000, -32000);
+            const string pending = "not run: panel show, search input, click, owner keyboard focus";
+            using var process = Process.GetCurrentProcess();
+            string initial = $"session={process.SessionId} testPid={process.Id} foregroundBefore={DescribeWindow(GetForegroundWindow())}";
+            Skip.IfNot(Environment.UserInteractive, $"BLOCKED non-interactive session; {initial}; {pending}");
+            using var owner = new Form { Text = "CF7 modifier focus test", ShowInTaskbar = false,
+                StartPosition = FormStartPosition.CenterScreen, ClientSize = new Size(1016, 550) };
+            uint ownerThread = GetWindowThreadProcessId(owner.Handle, out uint ownerPid);
+            Assert.Equal((uint)process.Id, ownerPid);
+            const int uoiIo = 6;
+            bool readDesktop = GetDesktopInformation(GetThreadDesktop(ownerThread), uoiIo, out int receivesInput,
+                sizeof(int), out _);
+            string context = $"{initial} owner={DescribeWindow(owner.Handle)} desktopQuery={readDesktop} receivesInput={receivesInput}";
+            Skip.IfNot(readDesktop && receivesInput != 0, $"BLOCKED inactive input desktop; {context}; {pending}");
             owner.Show();
-            owner.Activate();
+            bool requested = SetForegroundWindow(owner.Handle);
+            bool acquired = WaitForForeground(owner.Handle);
+            string activation = $"{context} SetForegroundWindow={requested} foregroundAfter={DescribeWindow(GetForegroundWindow())}";
+            _output.WriteLine(activation);
+            Skip.IfNot(acquired, $"BLOCKED initial foreground unavailable; {activation}; {pending}");
+
+            using var gameKeyTarget = new Button();
+            owner.Controls.Add(gameKeyTarget);
+            Assert.True(gameKeyTarget.Focus());
+            int returns = 0;
+            Func<bool> currentReturn = null;
             using var task = new ModifierTask(() => true, _ => true);
-            using var surface = new ModifierNativeSurface(owner, "owned", "owned", task);
+            using var surface = new ModifierNativeSurface(owner, "owned", "owned", task, restoreGameKeyboard: current =>
+            {
+                Assert.True(current());
+                currentReturn = current;
+                returns++;
+                Assert.True(gameKeyTarget.Focus());
+            });
             try
             {
-                ExpectForeground(owner.Handle, true);
                 Assert.True((bool)typeof(ModifierNativeSurface).GetProperty("ShowWithoutActivation",
                     BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface));
-                Assert.True(surface.ResumePanel(new Rectangle(-32000, -32000, 1016, 550)));
-                ExpectForeground(owner.Handle, false);
+                Assert.True(surface.ResumePanel(owner.RectangleToScreen(owner.ClientRectangle)));
+                Assert.True(WaitForForeground(owner.Handle), $"Panel show lost foreground to {DescribeWindow(GetForegroundWindow())}");
+                _output.WriteLine($"panel shown, owner foreground={DescribeWindow(owner.Handle)}");
 
                 typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(surface, new object[] { "items" });
@@ -316,15 +364,26 @@ namespace Launcher.Tests.Guardian
                 Assert.True(input.Focus());
                 Application.DoEvents();
                 Assert.True(textInputActive);
+                SendMessage(input.Handle, 0x0102 /* WM_CHAR */, (IntPtr)'q', IntPtr.Zero);
+                Assert.Equal("q", input.Text);
+                var editClick = Message.Create(input.Handle, 0x0201, (IntPtr)1, IntPtr.Zero);
+                Assert.False(surface.PreFilterMessage(ref editClick));
+                Assert.True(input.Focused);
+                Assert.Equal(0, returns);
+                _output.WriteLine($"query received q, input={DescribeWindow(input.Handle)}");
 
-                typeof(ModifierNativeSurface).GetMethod("OnMouseDown",
-                    BindingFlags.Instance | BindingFlags.NonPublic).Invoke(surface,
-                    new object[] { new MouseEventArgs(MouseButtons.Left, 1, 10, 10, 0) });
+                IntPtr point = (IntPtr)((10 << 16) | 10);
+                SendMessage(surface.Handle, 0x0201 /* WM_LBUTTONDOWN */, (IntPtr)1, point);
+                SendMessage(surface.Handle, 0x0202 /* WM_LBUTTONUP */, IntPtr.Zero, point);
                 Application.DoEvents();
                 Assert.False(textInputActive);
-                ExpectForeground(owner.Handle, false);
+                Assert.True(WaitForForeground(owner.Handle), $"Click returned foreground to {DescribeWindow(GetForegroundWindow())}");
+                Assert.Equal(1, returns);
+                Assert.True(gameKeyTarget.Focused);
+                _output.WriteLine($"click returned keyboard focus to the game child={DescribeWindow(gameKeyTarget.Handle)}");
             }
             finally { surface.SuspendPanel(); }
+            Assert.False(currentReturn());
         }
 
         private sealed class CommitObserver : ILayeredWindowCommitObserver

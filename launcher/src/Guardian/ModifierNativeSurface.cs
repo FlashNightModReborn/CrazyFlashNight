@@ -137,14 +137,16 @@ namespace CF7Launcher.Guardian
         private bool _trackingLeave;
         private bool _textInputActive;
 
+        private readonly Action<Func<bool>> _restoreGameKeyboard;
         internal event Action<bool> TextInputFocusChanged;
 
         internal ModifierNativeSurface(Form owner, string webRoot, string profileRoot, ModifierTask task,
-            string dollPortraitsDir = null)
+            string dollPortraitsDir = null, Action<Func<bool>> restoreGameKeyboard = null)
             : base(owner, owner, ModifierNativeLayout.Width, ModifierNativeLayout.Height)
         {
             _webRoot = webRoot ?? throw new ArgumentNullException(nameof(webRoot));
             _task = task ?? throw new ArgumentNullException(nameof(task));
+            _restoreGameKeyboard = restoreGameKeyboard;
             _art = new ModifierArtCatalog(webRoot);
             _iconCatalog = new LootIconCatalog(Path.Combine(webRoot, "icons"),
                 Path.Combine(webRoot, "assets", "enemy-portraits"),
@@ -257,9 +259,7 @@ namespace CF7Launcher.Guardian
             {
                 if (_disposed || _owner.IsDisposed || !_owner.Visible) return false;
                 IntPtr foreground = GetForegroundWindow();
-                if (foreground == IntPtr.Zero) return false;
-                if (foreground == Handle || foreground == _owner.Handle) return true;
-                return GetAncestor(foreground, 2) == Handle || GetAncestor(foreground, 2) == _owner.Handle;
+                return OwnsFocus(foreground);
             }
         }
 
@@ -2064,8 +2064,19 @@ namespace CF7Launcher.Guardian
         private void ReleaseTextInputFocus()
         {
             if (!_textInputActive && !HasTextInputFocus()) return;
-            try { _owner.Activate(); } catch { }
+            int generation = _sessionGeneration;
+            ReturnGameKeyboard(() => Active && generation == _sessionGeneration);
+        }
+
+        internal void ReturnGameKeyboard(Func<bool> current)
+        {
+            bool available() => !_disposed && !_owner.IsDisposed && _owner.Visible
+                && _owner.WindowState != FormWindowState.Minimized && current();
+            if (!available() || !OwnsFocus(GetForegroundWindow())) return;
+            if (GetForegroundWindow() != _owner.Handle) _owner.Activate();
             SyncTextInputFocus();
+            bool eligible() => available() && GetForegroundWindow() == _owner.Handle && !HasTextInputFocus();
+            if (eligible()) _restoreGameKeyboard?.Invoke(eligible);
         }
 
         public bool PreFilterMessage(ref Message message)
@@ -2074,11 +2085,13 @@ namespace CF7Launcher.Guardian
             bool move = message.Msg == 0x0200;
             bool down = message.Msg == 0x0201;
             if (!move && !down && message.Msg != 0x0202) return false;
-            if (down) ReleaseTextInputFocus();
+            // Native edit fields (including their clickable borders) own their own clicks.
+            if (down && Control.FromHandle(message.HWnd)?.FindForm() == _inputOverlay) return false;
             Point client;
             try { client = PointToClient(Cursor.Position); }
             catch { return false; }
             if (!ClientRectangle.Contains(client)) return false;
+            if (down && OwnsFocus(message.HWnd)) ReleaseTextInputFocus();
             Point logical = ModifierNativeLayout.ToLogical(client, ClientSize);
             if (_activeTab == "items")
             {

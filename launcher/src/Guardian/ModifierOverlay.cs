@@ -30,12 +30,12 @@ namespace CF7Launcher.Guardian
         internal event Action<bool> TextInputFocusChanged;
 
         internal ModifierOverlay(Form owner, string webRoot, string profileRoot,
-            ModifierTask task, Action sendClosed, string dollPortraitsDir)
+            ModifierTask task, Action sendClosed, string dollPortraitsDir, Action<Func<bool>> restoreGameKeyboard = null)
         {
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _sendClosed = sendClosed;
-            _surface = new ModifierNativeSurface(owner, webRoot, profileRoot, task, dollPortraitsDir);
+            _surface = new ModifierNativeSurface(owner, webRoot, profileRoot, task, dollPortraitsDir, restoreGameKeyboard);
             _surface.TextInputFocusChanged += active => TextInputFocusChanged?.Invoke(active);
             _surface.CloseRequested += OnNativeCloseRequested;
             _surface.Move += OnSurfaceMoved;
@@ -209,16 +209,15 @@ namespace CF7Launcher.Guardian
                 return;
             }
             bool restoreFocus = _surface.CanRestoreGameFocus && restoreFocusAllowed;
+            int generation = _surface.SessionGeneration;
             _pendingOpen = null;
             _instance = "";
             _token = "";
             _task.ClearPending();
             _surface.SuspendPanel();
             if (_sendClosed != null) { try { _sendClosed(); } catch { } }
-            if (restoreFocus && !_disposed && _owner.Visible && _owner.WindowState != FormWindowState.Minimized)
-            {
-                try { _owner.Activate(); } catch { }
-            }
+            if (restoreFocus)
+                _surface.ReturnGameKeyboard(() => !_disposed && !_surface.Active && generation == _surface.SessionGeneration);
         }
 
         private void OnSurfaceMoved(object sender, EventArgs e)
