@@ -35,7 +35,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossVisualProbe {
     }
     private static function loaded():Void {
         trace("[CF2_PROBE_LOADED]");
-        actor=library.attachMovie("敌人-CF2大机器人","visualTank",2);
+        actor=library.attachMovie("敌人-闪2大机器人","visualTank",2);
         trace("[CF2_PROBE_ACTOR] "+actor+" hp="+actor.hp+" identity="+actor.tankIdentity
             +" tick="+typeof actor.tankTick+" world="+actor.tankWorldValid());
         ready=true;count=0;

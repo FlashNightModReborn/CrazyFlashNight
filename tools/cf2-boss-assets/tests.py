@@ -154,15 +154,14 @@ class TankAssetTests(unittest.TestCase):
         beam_path=build.OWNER/"LIBRARY"/(build.PREFIX+"接口/技能/beam/技能_beam_接口叶.xml")
         beam_layer=build.layers(build.E.parse(str(beam_path)).getroot())[0]
         for fi in range(len(motion["技能"])):
-            expected=build.beam_box_matrix(art,motion["技能"],fi)
+            expected=build.beam_box_matrices(art,motion["技能"],fi)
             elements=build.active(beam_layer,fi).findall("x:elements/x:DOMSymbolInstance",build.NS)
+            self.assertEqual(len(elements),len(expected),fi)
             if 60<=fi<=99 or 116<=fi<=167:
-                self.assertIsNotNone(expected,fi)
-            if expected is None:
-                self.assertEqual(len(elements),0,fi)
-            else:
-                self.assertEqual(len(elements),1,fi)
-                self.assertLess(max(abs(a-b) for a,b in zip(build.matrix(elements[0]),expected)),0.00001)
+                self.assertEqual(len(expected),6,fi)
+                self.assertNotEqual(expected[0],expected[-1],fi)
+            for element,matrix in zip(elements,expected):
+                self.assertLess(max(abs(a-b) for a,b in zip(build.matrix(element),matrix)),0.00001)
 
     def test_registration_preserves_other_units(self):
         entry,unit,receipt,units=balance.expected()
@@ -181,8 +180,12 @@ class TankAssetTests(unittest.TestCase):
         parent.mkdir(parents=True,exist_ok=True)
         try:
             with tempfile.TemporaryDirectory(dir=parent) as temp:
-                build.OWNER=Path(temp)/"owner";build.OWNER.mkdir()
+                build.OWNER=Path(temp)/"owner"
                 build.MANIFEST=Path(temp)/"manifest.json"
+                build.MANIFEST.write_text(json.dumps({"outputs":[]}),"utf-8")
+                build.guard()
+                self.assertFalse(build.OWNER.exists())
+                build.OWNER.mkdir()
                 path=build.OWNER/"DOMDocument.xml";path.write_bytes(b"original")
                 build.MANIFEST.write_text(json.dumps({"outputs":[{"path":path.name,"sha256":build.sha(path)}]}),"utf-8")
                 build.guard()

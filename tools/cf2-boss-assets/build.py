@@ -186,8 +186,8 @@ def beam_layer_indices(art):
     return result
 
 
-def beam_box_matrix(art,poses,fi):
-    """Build one compact beam hitbox around the active laser sweep intersection."""
+def beam_box_matrices(art,poses,fi):
+    """Cover the active beam path with six compact contact boxes."""
     seen=set()
     rays=[]
     for li in beam_layer_indices(art):
@@ -198,8 +198,7 @@ def beam_box_matrix(art,poses,fi):
                 seen.add(key)
                 rays.append(m)
     if not rays:
-        return None
-    ground_hits=[]
+        return []
     segments=[]
     for a,b,_c,_d,tx,ty in rays:
         p1=(a*12.5+tx,b*12.5+ty)
@@ -208,23 +207,15 @@ def beam_box_matrix(art,poses,fi):
         d2=(p2[0]-845.0)**2+(p2[1]-260.0)**2
         org,tip=(p1,p2) if d1<=d2 else (p2,p1)
         segments.append((org,tip))
-        if tip[1]>org[1]+40.0:
-            t=(780.0-org[1])/(tip[1]-org[1])
-            if 0.05<=t<=1.05:
-                gx=max(-480.0,min(1550.0,org[0]+t*(tip[0]-org[0])))
-                ground_hits.append(gx)
-    if ground_hits:
-        ix_list=sorted(ground_hits)
-        if 45<=fi<=101 and len(ix_list)>1:
-            prog=max(0.0,min(1.0,(fi-60)/32.0))
-            cx=ix_list[min(len(ix_list)-1,int(round(prog*(len(ix_list)-1))))]
-        else:
-            cx=sum(ix_list)/len(ix_list)
-        return (280.0/25.0,0.0,0.0,200.0/25.0,cx,755.0)
-    org,tip=segments[0]
-    ax=max(-550.0,min(1550.0,org[0]+0.28*(tip[0]-org[0])))
-    ay=max(120.0,min(680.0,org[1]+0.28*(tip[1]-org[1])))
-    return (280.0/25.0,0.0,0.0,200.0/25.0,ax,ay)
+    org,tip=max(segments,key=lambda segment:
+                (segment[1][0]-segment[0][0])**2+(segment[1][1]-segment[0][1])**2)
+    matrices=[]
+    for index in range(6):
+        t=(index+0.5)/6.0
+        cx=org[0]+t*(tip[0]-org[0])
+        cy=org[1]+t*(tip[1]-org[1])
+        matrices.append((280.0/25.0,0.0,0.0,200.0/25.0,cx,cy))
+    return matrices
 
 
 @lru_cache(maxsize=1)
@@ -282,9 +273,10 @@ def add_port(symbols, source_label, port, layer_name, tip=I):
     poses=native_motion()[source_label]
     for fi in range(count):
         if port=="beam":
-            mat=beam_box_matrix(art,poses,fi)
-            elements=[] if mat is None else [native.instance(
-                PREFIX+"攻击矩形",matrix=mat,symbol_type="movie clip",name="point")]
+            matrices=beam_box_matrices(art,poses,fi)
+            elements=[native.instance(PREFIX+"攻击矩形",matrix=mat,symbol_type="movie clip",
+                                      name="point" if index==0 else "point"+str(index))
+                      for index,mat in enumerate(matrices)]
         else:
             rows=poses[fi].get(li,[])
             if port=="gun":
@@ -683,6 +675,8 @@ def guard():
     if not MANIFEST.exists():
         if OWNER.exists() and any(p.is_file() for p in OWNER.rglob("*")):
             raise ValueError("Refusing to adopt an existing untracked artwork workspace")
+        return
+    if not OWNER.exists():
         return
     manifest = json.loads(MANIFEST.read_text("utf-8"))
     expected = {r["path"]: r for r in manifest["outputs"]}

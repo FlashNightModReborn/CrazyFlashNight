@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大机器人/原画/待整理防具相关汇总/轮胎" symbolType="graphic" itemID="6af00000-313da025">
+  <timeline>
+    <DOMTimeline name="轮胎">
+      <layers>
+        <DOMLayer name="挡泥板" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/原画/待整理防具相关汇总/挡泥板" symbolType="graphic" loop="loop" firstFrame="0">
+                  <transformationPoint>
+                    <Point x="308.2" y="48.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="复合轮胎" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大机器人/原画/待整理防具相关汇总/复合轮胎" symbolType="graphic" loop="loop" firstFrame="0">
+                  <matrix>
+                    <Matrix tx="32.9" ty="31.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="275.05" y="77.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

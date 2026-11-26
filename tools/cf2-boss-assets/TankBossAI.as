@@ -100,6 +100,13 @@ tankSend=function(body:MovieClip,kind:String,power:Number,launcher:Number):Boole
         trace("[CF2_TANK_CONTACT_ERROR] "+this._name+" "+kind+" "+body._currentframe);
         return false;
     }
+    var points:Array=[point];
+    if(kind=="laser")for(var extraIndex:Number=1;extraIndex<6;extraIndex++){
+        var extra:MovieClip=point._parent["point"+extraIndex];
+        if(extra!=null)points.push(extra);
+    }
+    for(var contactIndex:Number=0;contactIndex<points.length;contactIndex++){
+    point=points[contactIndex];
     var world:MovieClip=_root.gameworld;
     var position:Object={x:0,y:0};
     if(kind=="grenade"){
@@ -152,6 +159,7 @@ tankSend=function(body:MovieClip,kind:String,power:Number,launcher:Number):Boole
         bullet.发射效果=kind=="cannon"?"巴雷特枪火":"枪火";
     }
     _root.子弹区域shoot传递(bullet);
+    }
     if(kind=="melee")_root.播放音效("地震1.wav");
     else if(kind=="grenade" && (launcher%2)==0)_root.播放音效("re_GL_ChinaLake.wav");
     else if(kind=="cannon")_root.播放音效("G1炮开火.wav");

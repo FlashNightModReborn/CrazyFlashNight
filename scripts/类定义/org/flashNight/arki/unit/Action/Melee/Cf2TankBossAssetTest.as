@@ -4,9 +4,12 @@ import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 import org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider;
 import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
+import org.flashNight.arki.bullet.Factory.BulletFactory;
 import org.flashNight.arki.bullet.BulletComponent.Utils.ShootingAngleCalculator;
 import org.flashNight.arki.component.Shield.AdaptiveShield;
+import org.flashNight.arki.component.Collider.ColliderFactoryRegistry;
 import org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
 /** Published author timelines; no saves, rewards, sockets or production actors. */
 class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
@@ -14,14 +17,15 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
     private static var passed:Number,failed:Number,ticks:Number,loadTicks:Number;
     private static var ready:Boolean,finished:Boolean;
     private static var cases:Array,images:Object,settled:Object,pauseFrames:Array,audioCalls:Object,fragmentPause:Object;
-    private static var link:String="敌人-CF2大机器人";
+    private static var damageTarget:MovieClip,damageCache:Object;
+    private static var link:String="敌人-闪2大机器人";
 
     private static function check(ok:Boolean,label:String):Void {
         if(ok)passed++;else{failed++;trace("[TEST_FAIL] Cf2TankBossAssetTest: "+label);}
     }
     private static function record():Object {
         return {shots:0,gun:0,cannon:0,laser:0,grenade:0,melee:0,deathBurst:0,moves:0,done:0,deathChecks:0,
-            removed:false,loops:0,lastPulse:-1,duplicateChecked:false,frames:[],pauseShots:0,cutoffShots:0,launchers:{}};
+            removed:false,loops:0,lastPulse:-1,duplicateChecked:false,frames:[],pauseShots:0,cutoffShots:0,launchers:{},pulses:{},realHits:0,realHitPulses:0,realPulseHits:{}};
     }
     public static function runAllTests():Void {
         try {
@@ -37,6 +41,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
         passed=failed=ticks=loadTicks=0;ready=finished=false;cases=[];images={};settled={};audioCalls={};
         trace("[CF2_SUITE_FACTORY] "+typeof DamageManagerFactory.Basic);
         if(DamageManagerFactory.Basic==null)DamageManagerFactory.init();
+        ColliderFactoryRegistry.init();BulletQueueProcessor.initialize();
         if(DamageManagerFactory.Basic==null)throw "Production damage factory did not initialize";
         trace("[CF2_SUITE_DAMAGE_READY]");
         if(PinkNoiseEngine.getInstance()==null)throw "Production noise source did not initialize";
@@ -53,6 +58,9 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
         _root.播放音效=function(name:String):Void {Cf2TankBossAssetTest.noteAudio(name);};_root.发布消息=function():Void {};
         _root.效果=function():Void {};_root.add2map=function():Void {};_root.add2map2=function():Void {};
         _root.初始化思考标签=function(mc:MovieClip):Void {mc.stop();mc._visible=false;};
+        damageTarget=null;damageCache=null;
+        _root.对象浅拷贝=function(source:Object):Object {var out:Object={};for(var key:String in source)out[key]=source[key];return out;};
+        TargetCacheManager.acquireEnemyCache=function():Object{return Cf2TankBossAssetTest.damageCache;};
         _root.子弹区域shoot传递=function(data:Object):Void {Cf2TankBossAssetTest.capture(data);};
         _root.初始化敌人模板=function():Void {
             this.hp=this.hp满血值=100000;this.mp=0;this.空手攻击力=100;this.等级=37;
@@ -120,7 +128,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
         var actor:MovieClip=library[data.发射者],rec:Object=actor.fixtureRecord;
         if(rec==null)return;
         var owner:Object=actor.tankOwner,kind:String=data.cf2TankKind;
-        rec.shots++;rec[kind]++;rec.frames.push(actor.man._currentframe);
+        rec.shots++;
+        var pulseKey:String=kind+"_"+owner.pulse;
+        if(rec.pulses[pulseKey]!==true){rec.pulses[pulseKey]=true;rec[kind]++;}
+        rec.frames.push(actor.man._currentframe);
         check(data.产生源==actor._name,"projectile/auxiliary actor carries its exact owning unit");
         check(data.cf6DeathBurst===undefined && data.百分比伤害===undefined && data.友军伤害!==true,"no inherited special damage");
         var bounds:Object=data.区域定位area.getBounds(library);
@@ -175,6 +186,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
                 "production angle calculator preserves visible weapon direction");
         }
         if(settled[kind]!==true){settled[kind]=true;settlement(data,actor);}
+        if(kind=="melee" || kind=="laser")productionSettlement(data,actor,rec);
         if(actor._name=="tankCase0" && !images["melee-right"])render(actor,"melee-right");
         if(actor._name=="tankCase1" && !images["gatling-right"])render(actor,"gatling-right");
         if(actor._name=="tankCase2" && !images["laser-right"])render(actor,"laser-right");
@@ -184,6 +196,35 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
         if(rec.shots<3)trace("[CF2_TANK_PORT] actor="+actor._name+" kind="+kind
             +" frame="+actor.man._currentframe+" point="+data.shootX+","+data.shootY
             +" area="+bounds.xMin+","+bounds.yMin+","+bounds.xMax+","+bounds.yMax);
+    }
+    private static function productionSettlement(source:Object,actor:MovieClip,rec:Object):Void {
+        if(damageTarget==null){
+            damageTarget=_root.cf6MakePlayerTarget(library,"tankContinuousDamageTarget",175);
+            damageTarget.createEmptyMovieClip("man",2);
+        }
+        damageTarget._x=source.shootX;damageTarget._y=actor.Z轴坐标;
+        var box:Object=source.区域定位area.getRect(library);
+        var targetArea:Object=damageTarget.area.getRect(library);
+        damageTarget._x+=(box.xMin+box.xMax-targetArea.xMin-targetArea.xMax)/2;
+        damageTarget._y+=(box.yMin+box.yMax-targetArea.yMin-targetArea.yMax)/2;
+        damageTarget.Z轴坐标=actor.Z轴坐标;
+        damageTarget.hp=damageTarget.hp满血值=10000000;
+        var targetBox:AABBCollider=new AABBCollider(0,0,0,0);targetBox.updateFromUnitArea(damageTarget);
+        damageTarget.aabbCollider=targetBox;
+        damageCache={data:[damageTarget],leftValues:[targetBox.left],rightValues:[targetBox.right],rightMaxValues:[targetBox.right]};
+        var packet:Object={};for(var key:String in source)packet[key]=source[key];
+        packet.命中率=100000;
+        BulletFactory.prepareBulletData(packet,actor);
+        var bullet:Object=BulletFactory.createBullet(packet,actor,0);
+        check(bullet!=null,"real factory accepts continuous "+source.cf2TankKind);
+        check(bullet.aabbCollider.checkCollision(targetBox,bullet.Z轴坐标-damageTarget.Z轴坐标).isColliding===true,
+            "continuous contact overlaps its target "+source.cf2TankKind);
+        BulletQueueProcessor.processQueue();
+        if(damageTarget.hp<damageTarget.hp满血值){
+            rec.realHits++;
+            var hitPulse:String=source.cf2TankKind+"_"+source.cf2TankPulse;
+            if(rec.realPulseHits[hitPulse]!==true){rec.realPulseHits[hitPulse]=true;rec.realHitPulses++;}
+        }
     }
     private static function noteAudio(name:String):Void {
         audioCalls[name]=audioCalls[name]==undefined?1:audioCalls[name]+1;
@@ -401,15 +442,16 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
                     check(u.tankMissingPort==0,"all required native ports present "+i);
                     if(c.mode=="normal" || c.mode=="blocked"){
                         check(rec.done==1,"one action completion "+i);
-                        if(c.action=="melee")check(rec.melee==3,"three heavy melee contacts "+i);
+                        if(c.action=="melee")check(rec.melee==3 && rec.realHitPulses==3,"three heavy melee contacts and real settlements "+i);
                         if(c.action=="gatling")check(rec.gun==9,"nine machine-gun projectiles "+i);
-                        if(c.action=="laser")check(rec.laser==10,"ten visible-beam pulses "+i);
+                        if(c.action=="laser")check(rec.laser==10 && rec.realHitPulses==10,"ten visible-beam pulses and real settlements "+i);
                         if(c.action=="barrage" || c.action=="mobile")check(rec.loops==3,"three complete inner cycles "+i);
                         if(c.action=="barrage" || c.action=="mobile"){
                             check(rec.grenade==30,"ten grenades per inner cycle "+i);
                             check(rec.gun==(c.action=="barrage"?36:33)
                                 && rec.cannon==(c.action=="barrage"?3:4)
                                 && rec.laser==(c.action=="barrage"?24:0),"all authored weapons participate "+i);
+                            if(c.action=="barrage")check(rec.realHitPulses==24,"every barrage beam pulse settles through the real queue "+i);
                             for(var loop:Number=1;loop<=3;loop++)for(var slot:Number=0;slot<10;slot++)
                                 check(rec.launchers[loop+"_"+slot]===true,"each authored launcher participates "+i+" "+loop+" "+slot);
                         }
@@ -491,6 +533,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf2TankBossAssetTest {
         var sounds:Array=["地震1.wav","re_MG_m249.wav","CF6_0992.mp3","G1炮开火.wav","re_GL_ChinaLake.wav","CF6_1009.mp3"];
         for(var i:Number=0;i<sounds.length;i++)check(audioCalls[sounds[i]]>0,"actual action sound callback "+sounds[i]);
         for(var i:Number=0;i<cases.length;i++)if(cases[i].actor._name!=undefined)cases[i].actor.removeMovieClip();
+        if(damageTarget!=null)damageTarget.removeMovieClip();
         loader.removeListener(listener);library.removeMovieClip();delete driver.onEnterFrame;driver.removeMovieClip();
         trace("Cf2TankBossAssetTest: "+passed+" passed, "+failed+" failed; native tank actions");
         _root.cf2TankBossComplete();
