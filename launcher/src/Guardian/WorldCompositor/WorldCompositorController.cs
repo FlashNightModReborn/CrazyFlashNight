@@ -963,6 +963,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
             Rectangle screen=_anchor.RectangleToScreen(_anchor.ClientRectangle);
             if (DwmGetWindowAttribute(_owner.Handle,9,out Rect frame,Marshal.SizeOf<Rect>())!=0) throw new InvalidOperationException("Cannot resolve capture bounds");
             if(!GetWindowRect(_owner.Handle,out Rect window))return false;
+            uint dpi=GetDpiForWindow(_owner.Handle);if(dpi==0)dpi=96;
+            int borderWidth=GetSystemMetricsForDpi(32,dpi)+GetSystemMetricsForDpi(92,dpi);
+            int borderHeight=GetSystemMetricsForDpi(33,dpi)+GetSystemMetricsForDpi(92,dpi);
             Size content=_native.ReadCaptureSize();
             if(_lastCaptureGeneration!=_native.CaptureGeneration) {
                 _lastCaptureGeneration=_native.CaptureGeneration;
@@ -979,7 +982,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // DWM and the Flash child can round their bottom edges one pixel
             // apart after a window move. Capture only the measured intersection;
             // keep rejecting larger misses instead of inventing an origin.
-            if (!TryResolveGeometrySnapshot(screen,source,frame.Rectangle,window.Rectangle,content,out WorldGeometrySnapshot geometry,out string rejectionReason))
+            if (!TryResolveGeometrySnapshot(screen,source,frame.Rectangle,window.Rectangle,content,borderWidth,borderHeight,out WorldGeometrySnapshot geometry,out string rejectionReason))
                 return RejectGeometry(rejectionReason,geometry.OutputScreen,geometry.SourceScreen,geometry.CaptureFrame);
             if(_lastGeometryRejection!=null) {
                 LogManager.Log("event=world_compositor_geometry_resumed FClient="+source+" captureFrame="+geometry.CaptureFrame+" P="+screen);
@@ -1156,12 +1159,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal static bool TryResolveGeometrySnapshot(Rectangle outputScreen,Rectangle sourceScreen,Rectangle extendedFrame,
             Rectangle windowFrame,Size captureContent,out WorldGeometrySnapshot snapshot,out string rejectionReason)
+            => TryResolveGeometrySnapshot(outputScreen,sourceScreen,extendedFrame,windowFrame,captureContent,0,0,out snapshot,out rejectionReason);
+        internal static bool TryResolveGeometrySnapshot(Rectangle outputScreen,Rectangle sourceScreen,Rectangle extendedFrame,
+            Rectangle windowFrame,Size captureContent,int borderWidth,int borderHeight,out WorldGeometrySnapshot snapshot,out string rejectionReason)
         {
-            if(!TryResolveCaptureFrame(extendedFrame,windowFrame,captureContent,out Rectangle capture)) {
+            if(!TryResolveCaptureFrame(extendedFrame,windowFrame,captureContent,borderWidth,borderHeight,out Rectangle capture)) {
                 snapshot=new WorldGeometrySnapshot(outputScreen,Rectangle.Empty,extendedFrame,Rectangle.Empty,Point.Empty);
                 rejectionReason="capture_bounds_pending content="+captureContent+" window="+windowFrame;
                 return false;
             }
+            return TryResolveGeometrySnapshot(outputScreen,sourceScreen,capture,out snapshot,out rejectionReason);
+        }
+        private static bool TryResolveGeometrySnapshot(Rectangle outputScreen,Rectangle sourceScreen,Rectangle capture,
+            out WorldGeometrySnapshot snapshot,out string rejectionReason)
+        {
             if(outputScreen.Width<1 || outputScreen.Height<1 || !capture.Contains(outputScreen)) {
                 snapshot=new WorldGeometrySnapshot(outputScreen,Rectangle.Empty,capture,Rectangle.Empty,Point.Empty);
                 rejectionReason="output_outside_capture";
@@ -1235,11 +1246,21 @@ namespace CF7Launcher.Guardian.WorldCompositor
             LogManager.Log("event=world_compositor_follow P="+screen+" visible="+_surface.Visible);
         }
         internal static bool TryResolveCaptureFrame(Rectangle extended,Rectangle window,Size content,out Rectangle frame)
+            => TryResolveCaptureFrame(extended,window,content,0,0,out frame);
+        internal static bool TryResolveCaptureFrame(Rectangle extended,Rectangle window,Size content,
+            int borderWidth,int borderHeight,out Rectangle frame)
         {
             frame=Rectangle.Empty;
             if(content.Width<=0 || content.Height<=0)return false;
             if(content==extended.Size){frame=extended;return true;}
             if(content==window.Size){frame=window;return true;}
+            // WGC can retain the caption while excluding the three sizing edges
+            // of a maximized resizable window. Its origin is measured from those
+            // edges, not guessed from the DWM frame or the output surface.
+            if(borderWidth>0 && borderHeight>0
+                && content.Width==window.Width-borderWidth*2 && content.Height==window.Height-borderHeight) {
+                frame=new Rectangle(window.Left+borderWidth,window.Top,content.Width,content.Height);return true;
+            }
             return false; // transition/unknown geometry: do not invent an origin
         }
         private void OnDpiChanged(object sender,DpiChangedEventArgs e) => OnGeometryChanged(sender,e);
@@ -1543,5 +1564,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [DllImport("user32.dll")] private static extern bool GetClientRect(IntPtr hwnd,out Rect rect);
         [DllImport("user32.dll")] private static extern bool ClientToScreen(IntPtr hwnd,ref Point point);
         [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr hwnd,out Rect rect);
+        [DllImport("user32.dll")] private static extern uint GetDpiForWindow(IntPtr hwnd);
+        [DllImport("user32.dll")] private static extern int GetSystemMetricsForDpi(int index,uint dpi);
     }
 }

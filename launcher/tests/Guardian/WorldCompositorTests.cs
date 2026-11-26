@@ -139,6 +139,22 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.True(WorldCompositorController.TryResolveCaptureFrame(frame,window,window.Size,out resolved));
             Assert.Equal(window,resolved);
         }
+        [Fact] public void MaximizedCaptureWithoutSizingEdgesRetainsCaptionAndResolvesCrop()
+        {
+            var extended=new Rectangle(0,0,1920,1040);
+            var window=new Rectangle(-8,-8,1936,1056);
+            var content=new Size(1922,1049);
+            Assert.True(WorldCompositorController.TryResolveCaptureFrame(extended,window,content,7,7,out var capture));
+            Assert.Equal(new Rectangle(-1,-8,1922,1049),capture);
+            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
+                new Rectangle(0,23,1920,1017),new Rectangle(0,23,1920,1017),extended,window,content,7,7,
+                out var geometry,out var reason));
+            Assert.Null(reason);
+            Assert.Equal(new Rectangle(1,31,1920,1017),geometry.Crop);
+            Assert.False(WorldCompositorController.TryResolveCaptureFrame(
+                extended,window,new Size(1922,1048),7,7,out _));
+            Assert.False(WorldCompositorController.TryResolveCaptureFrame(extended,window,content,out _));
+        }
         [Fact] public void CropRejectsOutsideAndSupportsNegativeMonitorOrigin() {
             var root=new Rectangle(-1500,100,1100,750);
             Assert.Equal(new Rectangle(8,40,1084,610),WorldCompositorController.CalculateCrop(new Rectangle(-1492,140,1084,610),root));
