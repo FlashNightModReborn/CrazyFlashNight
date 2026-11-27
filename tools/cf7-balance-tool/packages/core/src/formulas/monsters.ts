@@ -67,8 +67,10 @@ export function computeMonsterRow(input: MonsterInput): MonsterOutput {
   // S: 防御力MAX
   const defMax = 210 + (190 + C * D) * L * sqrtE / (J * speedMod11);
 
-  // T: 经验MIN
-  const expMin = C ** 1.15 * D ** 1.2 * 12 * growth125 / sqrtE * (D > 17 ? Math.pow(1.2, D - 15) : 1);
+  // T: 经验MIN（档次 >17 的高档加成封顶在 ×1.2^5：原式 1.2^(D-15) 在 D=25 时达 6.19 倍，
+  // 会把经验下限顶到上限之上，见 2026-11-28 方舟收割者 38700 > 36400 的倒挂）
+  const highTierExpBoost = D > 17 ? Math.min(Math.pow(1.2, D - 15), Math.pow(1.2, 5)) : 1;
+  const expMin = C ** 1.15 * D ** 1.2 * 12 * growth125 / sqrtE * highTierExpBoost;
 
   // U: 经验MAX
   const expMax = 95 + C ** 1 * D ** 1.58 * 33 * growth125 * sqrtE + (C >= 6 ? C * 200 : 0);
