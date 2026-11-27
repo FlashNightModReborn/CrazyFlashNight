@@ -132,7 +132,7 @@
             "x": 0.5,
             "y": 0.5
           },
-          "text": "一次存入所选物品。",
+          "text": "一次存入所选物品。批量存入模式会保留，可以继续选择。",
           "expected": {
             "backpack": [
               0,
@@ -144,7 +144,7 @@
               5,
               0
             ],
-            "mode": null,
+            "mode": "deposit",
             "pending": 0,
             "requests": [
               "autoTransferBatch"
