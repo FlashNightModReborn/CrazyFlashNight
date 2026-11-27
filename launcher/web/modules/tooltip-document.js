@@ -1080,7 +1080,7 @@
         if (opts.iconFootHTML) iconBlock += '<div class="flash-tt-icon-foot">' + opts.iconFootHTML + '</div>';
 
         var titleHtml = doc.titleRuns.length
-            ? '<div class="ntt-title">' + runsHtml(doc.titleRuns) + '</div>' : '';
+            ? '<div class="ntt-title">' + doc.titleRuns.map(runHtml).join('') + '</div>' : '';
         var introText = columnHtml(doc, { intro: true });
         var introColumn = titleHtml + introText;
         var descColumn = columnHtml(doc, { description: true, body: true });

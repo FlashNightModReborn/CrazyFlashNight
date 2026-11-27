@@ -1653,6 +1653,57 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void Paint_ItemTitle_StaysPlain_WhileFactionNameKeepsMark()
+        {
+            JObject payload = GunPayload("tt-title-faction-whitelist");
+            payload["document"]["title"] = "普通物品";
+            payload["document"]["rail"] = JValue.CreateNull();
+            payload["document"]["magazine"] = JValue.CreateNull();
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = "丽丽丝" }
+                    }
+                }
+            };
+            using (Control a = Anchor())
+            using (var catalog = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(FindIconsDir()))
+            using (var w = new NativeTooltipWidget(a, catalog))
+            {
+                Assert.True(w.Show(payload));
+                w.Tick(2000);
+                var plan = w.ActivePlan;
+                Rectangle placed = w.PlacedRect;
+                int lineH = plan.LineHeightIntroPx;
+                var title = new Rectangle(placed.X + plan.IntroContentLeftPx,
+                    placed.Y + plan.IntroTitleTopPx, 240, lineH);
+                var mark = new Rectangle(placed.X + plan.IntroContentLeftPx,
+                    placed.Y + plan.IntroContentTopPx, lineH, lineH);
+                using (var bmp = new Bitmap(1024, 576))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(255, 24, 26, 28));
+                    w.Paint(g, 1f, Point.Empty);
+                    int titleRed = 0, markRed = 0;
+                    for (int y = title.Top; y < title.Bottom; y++)
+                        for (int x = title.Left; x < title.Right; x++)
+                            if (bmp.GetPixel(x, y).R > 240 && bmp.GetPixel(x, y).G < 20
+                                && bmp.GetPixel(x, y).B < 20) titleRed++;
+                    for (int y = mark.Top; y < mark.Bottom; y++)
+                        for (int x = mark.Left; x < mark.Right; x++)
+                            if (bmp.GetPixel(x, y).R > 240 && bmp.GetPixel(x, y).G < 20
+                                && bmp.GetPixel(x, y).B < 20) markRed++;
+                    Assert.Equal(0, titleRed);
+                    Assert.True(markRed > 0, "简介中的丽丽丝保留 A兵团徽标");
+                }
+            }
+        }
+
+        [Fact]
         public void Paint_FactionAliases_InAcquisitionAndIntro_UseFactionColorsAndClearZombie()
         {
             string[] aNames = { "Andy Law", "Boy", "kInG", "pIg", "bLuE", "The Girl",

@@ -948,9 +948,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 NativeTooltipLayout.VisualLine.Slice slice = vl.Slices[s];
                 if (string.IsNullOrEmpty(slice.Text)) continue;
-                bool aLegion = NativeTooltipLayout.IsALegionSlice(slice);
-                bool warlord = NativeTooltipLayout.IsWarlordSlice(slice);
-                bool noah = NativeTooltipLayout.IsNoahSlice(slice);
+                bool titleLine = IsIntroTitleLine(vl);
+                bool aLegion = !titleLine && NativeTooltipLayout.IsALegionSlice(slice);
+                bool warlord = !titleLine && NativeTooltipLayout.IsWarlordSlice(slice);
+                bool noah = !titleLine && NativeTooltipLayout.IsNoahSlice(slice);
                 int markSize = Math.Max(1, (int)Math.Round(lh));
                 if (aLegion)
                 {
@@ -992,6 +993,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 }
                 cx += slice.WidthF;
             }
+        }
+
+        private bool IsIntroTitleLine(NativeTooltipLayout.VisualLine target)
+        {
+            if (ActivePlan?.IntroTitleLines == null) return false;
+            foreach (var line in ActivePlan.IntroTitleLines)
+                if (ReferenceEquals(line, target)) return true;
+            return false;
         }
 
         private static bool IsZombieSlice(NativeTooltipLayout.VisualLine.Slice slice)

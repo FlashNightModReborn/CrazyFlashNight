@@ -946,6 +946,30 @@ test('buildHtml：诺亚文案使用蓝黄徽标与浅蓝下划线', () => {
     assert(html.indexOf('ntt-noah-mark') < html.indexOf('诺亚士兵'), '诺亚徽标位于文字前');
 });
 
+test('buildHtml：物品标题始终普通，简介与商店仅按阵营白名单着色', () => {
+    const names = [
+        'A兵团', 'Andy Law', 'Boy', 'kInG', 'pIg', 'bLuE', 'The Girl',
+        'ShopGirl', 'Shop Girl', '格格巫', '丽丽丝', '小F'
+    ];
+    const doc = Doc.normalize({ version: 1, title: '普通物品', sections: [
+        { role: 'intro', runs: names.map(text => ({ text })).concat([{ text: '普通文本' }]) },
+        { role: 'sub', kind: 'acquisition', title: '获取方式', rows: names.map(name => ({
+            name, depth: 1
+        })).concat([{ name: '普通商店', depth: 1 }]) }
+    ] });
+    const html = Doc.buildHtml(doc);
+    const marks = html.match(/ntt-a-legion-mark/g) || [];
+    assert.strictEqual(marks.length, names.length * 2, '全部 A兵团别名在简介和商店中带徽标');
+    assert(html.indexOf('color:#FF0000"><u>普通物品</u>') < 0, '普通物品标题不使用红色下划线');
+    assert(html.indexOf('普通物品') < html.indexOf('ntt-a-legion-mark'), '普通标题位于第一个徽标之前');
+    for (const name of names) {
+        assert(html.indexOf('<span style="color:#FF0000"><b><u>' + name + '</u></b></span>') >= 0,
+            name + ' 商店名保留格式');
+    }
+    assert(html.indexOf('<span style="color:#FF0000"><u>普通文本</u></span>') < 0, '普通文本不添加格式');
+    assert(html.indexOf('<span style="color:#FF0000"><b><u>普通商店</u></b></span>') < 0, '普通商店不添加格式');
+});
+
 test('buildHtml：物品名使用独立居中大字号标题块', () => {
     const html = Doc.buildHtml(FULL_DOC);
     assert(html.indexOf('class="ntt-title"') >= 0, 'document.title 独立标题块');
