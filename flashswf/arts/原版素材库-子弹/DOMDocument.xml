@@ -307,10 +307,10 @@
           <Include href="特效-击中效果组/拼刀火花.xml" itemID="669d3471-0000174d" lastModified="1723624807"/>
           <Include href="特效-击中效果组/屎尘.xml" itemID="66bc6b92-0000041e" lastModified="1723624668"/>
           <Include href="特效-击中效果组/屎花.xml" itemID="66bc6ab8-000003d0" lastModified="1723624891"/>
+          <Include href="特效-击中效果组/兽化碎裂烟雾.xml" itemID="7fffffff-00112233"/>
           <Include href="特效-击中效果组/铁枪能量弹火花.xml" itemID="6870b891-000005e9" lastModified="1752222340"/>
           <Include href="特效-击中效果组/无声火花.xml" itemID="669d3422-0000173a" lastModified="1723624130"/>
           <Include href="特效-击中效果组/小烟雾.xml" itemID="669d3400-00001733" lastModified="1721648498"/>
-          <Include href="特效-击中效果组/兽化碎裂烟雾.xml" itemID="cf7a280a-00112233"/>
           <Include href="特效-击中效果组/原版空手攻击火花.xml" loadImmediate="false" itemID="67ed511c-0000056e" lastModified="1743606056"/>
           <Include href="特效-击中效果组/战术巴雷特击中特效.xml" itemID="669d344b-00001744" lastModified="1754801434"/>
           <Include href="特效-枪火组/巴雷特枪火.xml" itemID="669d3444-00001742" lastModified="1721648720"/>
@@ -632,7 +632,7 @@
           <Include href="原版素材库-子弹.xml" itemID="668b9f9e-000001f3" lastModified="1775618011"/>
           <Include href="长枪/火药燃气液压打桩机/暴君收割机/暴君收割机锯片.xml" loadImmediate="false" itemID="6922e368-00002da6" lastModified="1763949118"/>
           <Include href="子弹-持续组/电球.xml" itemID="669d343b-00001740" lastModified="1722876120"/>
-          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1762845287"/>
+          <Include href="子弹-持续组/火焰.xml" itemID="669d3404-00001734" lastModified="1795806713"/>
           <Include href="子弹-持续组/声波.xml" itemID="669d34bf-0000176e" lastModified="1722875808"/>
           <Include href="子弹-持续组/声波1.xml" itemID="669d3436-0000173f" lastModified="1722876068"/>
           <Include href="子弹-持续组/旋转冲击.xml" itemID="669d3440-00001741" lastModified="1752806839"/>
@@ -1117,6 +1117,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="4144313" publishTime="1795806587"/>
           <PublishItem publishSize="4137815" publishTime="1770555335"/>
           <PublishItem publishSize="4137816" publishTime="1770554189"/>
           <PublishItem publishSize="4137803" publishTime="1770554088"/>
@@ -1136,6 +1137,5 @@
           <PublishItem publishSize="4087116" publishTime="1763380259"/>
           <PublishItem publishSize="4086969" publishTime="1763380244"/>
           <PublishItem publishSize="4087254" publishTime="1763380148"/>
-          <PublishItem publishSize="4086958" publishTime="1763379935"/>
      </publishHistory>
 </DOMDocument>
