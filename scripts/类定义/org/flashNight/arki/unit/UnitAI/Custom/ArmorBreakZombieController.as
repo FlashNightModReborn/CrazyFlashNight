@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer;
 import org.flashNight.arki.unit.Action.Regeneration.HealApplier;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
     public static var KIND:String = "敌人-兽化改造僵尸";
@@ -9,6 +10,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
     public static var HP_MULTIPLIER:Number = 1.5;
     public static var DEFENSE_MULTIPLIER:Number = 1.5;
     public static var HEAL_AMOUNT:Number = 2000;
+    public static var BLOODY_HEAL_AMOUNT:Number = 4000;
     public static var HEAL_RADIUS:Number = 180;
     public static var SPAWN_DELAY_FRAMES:Number = 15;
     public static var INIT_TIMEOUT_FRAMES:Number = 30;
@@ -45,6 +47,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
         }
         if (target.__armorBreakUsed === true) return false;
         if (isNaN(Number(target.hp)) || Number(target.hp) > 0) return false;
+        if (!LinearCongruentialEngine.getInstance().randomCheckHalf()) return beginBloodyDeath(target);
         return begin(target);
     }
 
@@ -57,6 +60,20 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
         if (unitId > 0 && unitId != 71 && unitId != 81) return false;
         if (String(target.名字).indexOf("远古") >= 0) return false;
         return true;
+    }
+
+    private static function emitSmoke(target:MovieClip):Void {
+        if (typeof _root.效果 == "function") _root.效果("兽化碎裂烟雾", target._x, target._y, target._xscale, true);
+    }
+
+    private static function beginBloodyDeath(target:MovieClip):Boolean {
+        target.__armorBreakUsed = true;
+        emitSmoke(target);
+        try {
+            healAllies(target, BLOODY_HEAL_AMOUNT);
+        } catch (healError:Error) {
+        }
+        return false;
     }
 
     private static function begin(target:MovieClip):Boolean {
@@ -92,7 +109,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
         if (!isNaN(Number(target.Z轴坐标))) target._y = Number(target.Z轴坐标);
         target.状态 = "装甲破裂";
         target.gotoAndStop("装甲破裂");
-        if (typeof _root.效果 == "function") _root.效果("兽化碎裂烟雾", target._x, target._y, target._xscale, true);
+        emitSmoke(target);
         if (target.新版人物文字信息 != undefined) target.新版人物文字信息._visible = false;
         if (target.人物文字信息 != undefined) target.人物文字信息._visible = false;
         TargetCacheManager.removeUnit(target);
@@ -227,9 +244,11 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
         retireOld(target);
     }
 
-    public static function healAllies(center:MovieClip):Void {
+    public static function healAllies(center:MovieClip, amount:Number):Void {
         var centerZ:Number = Number(center.Z轴坐标);
         if (isNaN(centerZ)) centerZ = Number(center._y);
+        var healAmount:Number = Number(amount);
+        if (isNaN(healAmount)) healAmount = HEAL_AMOUNT;
         var allies:Array = TargetCacheManager.findAlliesInCircle2D(center, 5, Number(center._x), centerZ, HEAL_RADIUS, null);
         if (allies == null) return;
         for (var i:Number = 0; i < allies.length; i++) {
@@ -237,7 +256,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
             if (ally == null || ally == center) continue;
             if (isNaN(Number(ally.hp)) || Number(ally.hp) <= 0) continue;
             if (isNaN(Number(ally.hp满血值)) || Number(ally.hp) >= Number(ally.hp满血值)) continue;
-            HealApplier.applyHpCapped(ally, HEAL_AMOUNT, Number(ally.hp满血值));
+            HealApplier.applyHpCapped(ally, healAmount, Number(ally.hp满血值));
         }
     }
 
