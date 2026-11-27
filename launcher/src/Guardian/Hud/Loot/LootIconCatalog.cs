@@ -212,6 +212,40 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
         }
 
+        /// <summary>诺亚蓝黄行高徽标：使用可编辑 SVG，独立缓存。</summary>
+        internal bool TryGetNoahMark(out LootIconFrames frames)
+        {
+            frames = null;
+            lock (_gate)
+            {
+                const string cacheKey = "noah:blue-yellow";
+                Bitmap thumb;
+                if (_frameCache.TryGet(cacheKey, out thumb))
+                {
+                    frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                    return true;
+                }
+                string path = Path.GetFullPath(Path.Combine(
+                    _iconsDir, "..", "assets", "logos", "noah-emblem.svg"));
+                if (!File.Exists(path)) return false;
+                try
+                {
+                    thumb = RenderSvg(path, ThumbSize, "#7EB6FF");
+                }
+                catch
+                {
+                    return false;
+                }
+                if (!_frameCache.TryAdd(cacheKey, thumb))
+                {
+                    thumb.Dispose();
+                    return false;
+                }
+                frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                return true;
+            }
+        }
+
         /// <summary>成功时 out 帧集（共享位图，调用方不得 Dispose）。任何失败返回 false。</summary>
         internal bool TryGet(string iconName, out LootIconFrames frames)
         {
@@ -380,6 +414,16 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 string path = Path.GetFullPath(Path.Combine(
                     _iconsDir, "..", "assets", "logos", "warlord-emblem.svg"));
                 return File.Exists(path) ? RenderSvg(path, px) : null;
+            });
+        }
+
+        internal Bitmap TryGetNoahDetail(int size)
+        {
+            return GetDetail("detail:noah:blue-yellow|", size, px =>
+            {
+                string path = Path.GetFullPath(Path.Combine(
+                    _iconsDir, "..", "assets", "logos", "noah-emblem.svg"));
+                return File.Exists(path) ? RenderSvg(path, px, "#7EB6FF") : null;
             });
         }
 

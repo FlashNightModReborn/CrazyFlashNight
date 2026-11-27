@@ -260,6 +260,28 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             }
         }
 
+        [Fact]
+        public void TryGetNoahMark_RendersBlueAndYellowEmblem()
+        {
+            using (var catalog = new LootIconCatalog(FindIconsDir()))
+            {
+                LootIconCatalog.LootIconFrames frames;
+                Assert.True(catalog.TryGetNoahMark(out frames));
+                Assert.NotNull(frames.First);
+                bool hasBlue = false, hasYellow = false;
+                for (int y = 0; y < frames.First.Height; y++)
+                    for (int x = 0; x < frames.First.Width; x++)
+                    {
+                        Color pixel = frames.First.GetPixel(x, y);
+                        if (pixel.A < 200) continue;
+                        if (pixel.B > 180 && pixel.B > pixel.R * 1.2) hasBlue = true;
+                        if (pixel.R > 200 && pixel.G > 200 && pixel.B < 180) hasYellow = true;
+                    }
+                Assert.True(hasBlue, "诺亚徽标应有蓝色圆形底");
+                Assert.True(hasYellow, "诺亚徽标应有淡黄色闪电");
+            }
+        }
+
         private static byte[] PixelsOf(Bitmap bmp)
         {
             BitmapData data = bmp.LockBits(

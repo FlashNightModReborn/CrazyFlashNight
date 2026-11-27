@@ -1598,6 +1598,61 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void Paint_NoahText_InsertsBlueYellowMarkAndUnderline()
+        {
+            JObject payload = GunPayload("tt-noah");
+            payload["document"]["rail"] = JValue.CreateNull();
+            payload["document"]["magazine"] = JValue.CreateNull();
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = "诺亚士兵" }
+                    }
+                }
+            };
+            using (Control a = Anchor())
+            using (var catalog = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(FindIconsDir()))
+            using (var w = new NativeTooltipWidget(a, catalog))
+            {
+                Assert.True(w.Show(payload));
+                w.Tick(2000);
+                var plan = w.ActivePlan;
+                Rectangle placed = w.PlacedRect;
+                int lineH = plan.LineHeightIntroPx;
+                var mark = new Rectangle(placed.X + plan.IntroContentLeftPx,
+                    placed.Y + plan.IntroContentTopPx, lineH, lineH);
+                var underline = new Rectangle(mark.Right + 2, mark.Bottom - 3, 96, 3);
+                using (var bmp = new Bitmap(1024, 576))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(255, 24, 26, 28));
+                    w.Paint(g, 1f, Point.Empty);
+                    int blue = 0, yellow = 0, underlineBlue = 0;
+                    for (int y = mark.Top; y < mark.Bottom; y++)
+                        for (int x = mark.Left; x < mark.Right; x++)
+                        {
+                            Color pixel = bmp.GetPixel(x, y);
+                            if (pixel.B > 180 && pixel.B > pixel.R * 1.2) blue++;
+                            if (pixel.R > 200 && pixel.G > 200 && pixel.B < 180) yellow++;
+                        }
+                    for (int y = underline.Top; y < underline.Bottom; y++)
+                        for (int x = underline.Left; x < underline.Right; x++)
+                        {
+                            Color pixel = bmp.GetPixel(x, y);
+                            if (pixel.B > 180 && pixel.B > pixel.R * 1.2) underlineBlue++;
+                        }
+                    Assert.True(blue > 0, "诺亚应有蓝色行高徽标");
+                    Assert.True(yellow > 0, "诺亚徽标应保留淡黄色闪电");
+                    Assert.True(underlineBlue > 0, "诺亚文字应带浅蓝下划线");
+                }
+            }
+        }
+
+        [Fact]
         public void Paint_FactionAliases_InAcquisitionAndIntro_UseFactionColorsAndClearZombie()
         {
             string[] aNames = { "Andy Law", "Boy", "kInG", "pIg", "bLuE", "The Girl",
