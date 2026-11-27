@@ -10,14 +10,18 @@ using SkiaSharp;
 
 namespace CF7Launcher.Guardian.WorldCompositor
 {
-    // The XFL-derived catalog is the single visual whitelist for the first
-    // ordinary / gun-chain bullet batch. Loading it does not transfer display
-    // ownership; a later paired native capability must explicitly do so.
+    // The XFL-derived whitelist describes visuals. The paired native capability
+    // transfers display ownership after the catalog and atlas are ready.
     internal sealed class BulletVisualCatalog
     {
-        internal const string RelativePath = "data/combat_visuals/bullet_styles.v1.json";
+        internal const string RelativePath = "data/combat_visuals/bullet_styles.v2.json";
+        internal const string AtlasPath = "data/combat_visuals/bullets-atlas.v2.png";
         internal const string SourceSwf = "flashswf/arts/原版素材库-子弹.swf";
-        internal const string AtlasPath = "data/combat_visuals/bullets-atlas.png";
+        private static readonly Dictionary<string, (string Swf, string Library)> Sources = new(StringComparer.Ordinal)
+        {
+            ["stock"] = (SourceSwf, "flashswf/arts/原版素材库-子弹/LIBRARY/"),
+            ["mist"] = ("flashswf/arts/new/雾人整合特效.swf", "flashswf/arts/new/雾人整合特效/LIBRARY/"),
+        };
         private readonly Dictionary<string, BulletVisualStyle> _ordinary;
         private readonly Dictionary<string, BulletVisualStyle> _chainUnits;
         private readonly HashSet<string> _gunPrefixes;
@@ -61,14 +65,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (bytes.Length > 256 * 1024) throw new InvalidDataException("Bullet catalog exceeds budget");
             using JsonDocument document = JsonDocument.Parse(bytes, new JsonDocumentOptions { MaxDepth = 12 });
             JsonElement root = document.RootElement;
-            Fields(root, "schema", "generator", "generatorSha256", "sourceSwf",
-                "sourceSwfSha256", "sources", "gunChainPrefixes", "styles", "tools", "atlas");
-            if (String(root.GetProperty("schema")) != "cf7-combat-bullet-styles.v1"
-                || String(root.GetProperty("generator")) != "tools/combat-bullet-visuals/build.py"
-                || String(root.GetProperty("sourceSwf")) != SourceSwf)
+            Fields(root, "schema", "generator", "generatorSha256",
+                "sources", "gunChainPrefixes", "styles", "tools", "atlas");
+            if (String(root.GetProperty("schema")) != "cf7-combat-bullet-styles.v2"
+                || String(root.GetProperty("generator")) != "tools/combat-bullet-visuals/build.py")
                 throw new InvalidDataException("Unsupported bullet visual catalog identity");
             Hex(root.GetProperty("generatorSha256"));
-            Hex(root.GetProperty("sourceSwfSha256")); // Provenance verified by the generator.
 
             JsonElement sources = root.GetProperty("sources");
             if (sources.ValueKind != JsonValueKind.Array || sources.GetArrayLength() < 4
@@ -79,11 +81,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
             {
                 Fields(source, "path", "sha256");
                 string name = String(source.GetProperty("path"));
-                if (!name.StartsWith("flashswf/arts/原版素材库-子弹/LIBRARY/", StringComparison.Ordinal)
-                    || name.Contains("..", StringComparison.Ordinal) || !sourceNames.Add(name))
+                if (!SafeSourcePath(name) || !Sources.Values.Any(library => library.Swf == name
+                        || (name.StartsWith(library.Library, StringComparison.Ordinal)
+                            && name.EndsWith(".xml", StringComparison.Ordinal)))
+                    || !sourceNames.Add(name))
                     throw new InvalidDataException("Invalid bullet visual source identity");
                 Hex(source.GetProperty("sha256"));
             }
+            if (Sources.Values.Any(library => !sourceNames.Contains(library.Swf)))
+                throw new InvalidDataException("Missing published bullet source");
 
             JsonElement rawTools = root.GetProperty("tools");
             if (rawTools.ValueKind != JsonValueKind.Array || rawTools.GetArrayLength() < 5
@@ -139,14 +145,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var unitNames = new HashSet<string>(StringComparer.Ordinal);
             foreach (JsonElement item in styleItems.EnumerateArray())
             {
-                Fields(item, "id", "ordinaryLinkage", "gunChainUnitLinkage", "visual");
+                Fields(item, "id", "sourceKey", "ordinaryLinkage", "gunChainUnitLinkage",
+                    "ordinarySource", "gunChainUnitSource", "visual");
                 string id = String(item.GetProperty("id"));
+                string sourceKey = String(item.GetProperty("sourceKey"));
+                if (!Sources.TryGetValue(sourceKey, out var library))
+                    throw new InvalidDataException("Unknown bullet visual source library");
                 string ordinary = OptionalString(item.GetProperty("ordinaryLinkage"));
                 string unit = OptionalString(item.GetProperty("gunChainUnitLinkage"));
                 if (!ids.Add(id) || (ordinary == null && unit == null)
                     || (ordinary != null && !ordinaryNames.Add(ordinary))
                     || (unit != null && (!unitNames.Add(unit) || !unit.StartsWith("单元体-", StringComparison.Ordinal))))
                     throw new InvalidDataException("Duplicate or invalid bullet visual style");
+                CheckSourceBinding(item.GetProperty("ordinarySource"), ordinary, library.Library, sourceNames);
+                CheckSourceBinding(item.GetProperty("gunChainUnitSource"), unit, library.Library, sourceNames);
                 JsonElement visual = item.GetProperty("visual");
                 string kind = String(visual.GetProperty("kind"));
                 if (kind == "triangle")
@@ -216,6 +228,19 @@ namespace CF7Launcher.Guardian.WorldCompositor
             Marshal.Copy(bitmap.GetPixels(), pixels, 0, pixels.Length);
             return new BulletVisualCatalog(Convert.ToHexString(SHA256.HashData(bytes)), styles, prefixes,
                 atlasWidth, atlasHeight, pixels);
+        }
+
+        private static bool SafeSourcePath(string path) =>
+            !path.Contains('\\') && !path.Contains(':')
+            && path.Split('/').All(part => part.Length > 0 && part != "." && part != "..");
+
+        private static void CheckSourceBinding(JsonElement value, string linkage, string library, HashSet<string> sources)
+        {
+            string path = OptionalString(value);
+            if ((linkage == null) != (path == null)
+                || (path != null && (!path.StartsWith(library, StringComparison.Ordinal)
+                    || Path.GetFileName(path) != linkage + ".xml" || !sources.Contains(path))))
+                throw new InvalidDataException("Invalid bullet visual source binding");
         }
 
         private static void Fields(JsonElement value, params string[] names)

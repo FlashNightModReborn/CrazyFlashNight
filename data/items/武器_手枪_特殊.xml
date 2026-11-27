@@ -71,7 +71,7 @@
         <interval>250</interval>
         <singleshoot>true</singleshoot>
         <velocity>40</velocity>
-        <bullet>普通子弹</bullet>
+        <bullet>精制普通子弹</bullet>
         <sound>planb.wav</sound>
         <muzzle>紧凑手枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -97,7 +97,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:62faa159</inputDigest>
+            <inputDigest>fnv1a32:a260e40b</inputDigest>
             <auditRef>weapon:退路:data</auditRef>
           </data>
         </profiles>

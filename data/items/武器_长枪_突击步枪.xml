@@ -126,7 +126,7 @@
       <diffusion>4</diffusion>
       <interval>200</interval>
       <velocity>50</velocity>
-      <bullet>普通子弹</bullet>
+      <bullet>加强普通子弹</bullet>
       <sound>g3sg.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -152,7 +152,7 @@
           <formula>1</formula>
           <status>unresolved</status>
           <displayEligible>false</displayEligible>
-          <inputDigest>fnv1a32:c9f322a3</inputDigest>
+          <inputDigest>fnv1a32:ca8821a3</inputDigest>
           <auditRef>weapon:HKG3:data</auditRef>
         </data>
       </profiles>
@@ -1057,7 +1057,7 @@
       <diffusion>3</diffusion>
       <interval>85</interval>
       <velocity>50</velocity>
-      <bullet>普通子弹</bullet>
+      <bullet>精制普通子弹</bullet>
       <sound>re_Rifle_xm8.wav</sound>
       <muzzle>突击步枪枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -1083,7 +1083,7 @@
           <formula>1</formula>
           <status>confirmed</status>
           <displayEligible>true</displayEligible>
-          <inputDigest>fnv1a32:d7dcddeb</inputDigest>
+          <inputDigest>fnv1a32:e740b309</inputDigest>
           <auditRef>weapon:HK33KA3:data</auditRef>
         </data>
       </profiles>
@@ -1423,7 +1423,7 @@
       <diffusion>3</diffusion>
       <interval>85</interval>
       <velocity>50</velocity>
-      <bullet>普通子弹</bullet>
+      <bullet>加强普通子弹</bullet>
       <sound>re_Rifle_xm8.wav</sound>
       <muzzle>突击步枪枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -1449,7 +1449,7 @@
           <formula>1</formula>
           <status>confirmed</status>
           <displayEligible>true</displayEligible>
-          <inputDigest>fnv1a32:37aa2e1d</inputDigest>
+          <inputDigest>fnv1a32:7dced659</inputDigest>
           <auditRef>weapon:HK33A2:data</auditRef>
         </data>
       </profiles>

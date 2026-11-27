@@ -16,8 +16,8 @@ Lady 冰喷等透明判定保留原弹种，由施放者传 `lightBinding`、`li
 
 `scripts/run-dynamic-light-profiles-tests.ps1` 验证 Flash 实际发射、素材阶段、脉冲与坏输入。`tools/combat-fx-assets/verify_light_authoring.py` 用安装的 Flash Player 20 重放同一个测试 SWF，并核对仅变更 XML 后的对照。接线改变需要重新发布 asLoader 或对应美术 SWF。
 
-`bullet_styles.v1.json` 与 `bullets-atlas.png` 由 `tools/combat-bullet-visuals/build.py` 从
-`flashswf/arts/原版素材库-子弹` 的 XFL 真源和已发布 SWF 确定性派生。不要手改目录或图片。
+`bullet_styles.v2.json` 与 `bullets-atlas.v2.png` 由 `tools/combat-bullet-visuals/build.py` 从
+原版子弹库、雾人整合特效的 XFL 真源和已发布 SWF 确定性派生。已部署的旧 Host 仍从 v1 目录及旧图集加载。
 
 ```powershell
 python tools/combat-bullet-visuals/build.py

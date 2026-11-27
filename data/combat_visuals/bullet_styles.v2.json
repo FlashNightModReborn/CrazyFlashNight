@@ -1,0 +1,785 @@
+{
+  "schema": "cf7-combat-bullet-styles.v2",
+  "generator": "tools/combat-bullet-visuals/build.py",
+  "generatorSha256": "65caf1d07371c892082a581cea01e615f7ebd65453ba43eb942b9b032bfd51e6",
+  "sources": [
+    {
+      "path": "flashswf/arts/new/雾人整合特效.swf",
+      "sha256": "bb3aa7bf2608c2f79456af1e171496a051a7f9c309e80c94077dab555c8d004f"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/Symbol 6.xml",
+      "sha256": "ce8ada7d3db652d3754feccc87d0a350d2c2c7dae9e78e68a3de982cd1d5d563"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰冷子弹/冰冷普通子弹.xml",
+      "sha256": "d30872c7ac88efcab03b06cc45afcf876976317c483640523671ced3d0cbd273"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰冷子弹/冰冷轨迹.xml",
+      "sha256": "fda284f399d716830d220b20154c2b962126b31f9123835856b13592eff74b24"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰冷子弹/单元体-冰冷普通子弹.xml",
+      "sha256": "37bdb81bdb10b07f777ef1ce1190f4b8f7069eb1b97f983e22c8ae139733cd96"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/新能量子弹/单元体-能量普通子弹.xml",
+      "sha256": "f3241d313b5b86397cceb6c2e185ec565e7dc073438c5614e47fb507b02653d2"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/新能量子弹/能量子弹area.xml",
+      "sha256": "89931e875f6fdc3db79ac742c958bd5722c0ab1ec37d0bcb4632beefaf6dd2e1"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/新能量子弹/能量弹头.xml",
+      "sha256": "df14b3169a104101e162411c6a625bd4ea88e260851f09cd65b6867bb5d354f1"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/新能量子弹/能量普通子弹.xml",
+      "sha256": "deb390a6a6f309cd5cfc2e4eb8c7e0730bbe46056f25e89de017b432a764c5f2"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/新能量子弹/能量轨迹.xml",
+      "sha256": "8431b6d2c2c4f5945ec0be35a56ae340ca76f8df48797b93bc62dc103201f7eb"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰子弹/单元体-烈焰普通子弹.xml",
+      "sha256": "6651780fb80efec09df9d941dc2cd044903c43ad75fe0863f3f98b63ac70e6f1"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰子弹/烈焰普通子弹.xml",
+      "sha256": "cda9b34133195a41220874ece6a5f8eec94fc97c1fa2f0f8047bda5a8dcf28da"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰子弹/烈焰轨迹.xml",
+      "sha256": "cc63f6c7d561b8254e7fe37d9726e75c236f8033a3d975d4be0eff8a2e5468f3"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/精制子弹/单元体-精制普通子弹.xml",
+      "sha256": "e44e54dc9a6e281621b8e334cdd20a4db8fa1b42509f9e1978e89930d876319d"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/精制子弹/精制普通子弹.xml",
+      "sha256": "b1b0066f9f0444043b212ba14f02fd863639c06e4f9dac0b3c10556cbdddb06e"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹.swf",
+      "sha256": "524e9455d40c7ee6d908ac32b8d005246a4acd1de38f47c2eb1897d6fba14901"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/Symbol 721.xml",
+      "sha256": "6e851424c01d468cfa9d9a9503ba7262b7c4eb80fb69bc676ac409f14db34fdb"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/Symbol 722.xml",
+      "sha256": "b8bee0cca3c8e1ec3e7bb4027c9438dffb5791b4446c149183f17945e00e0759"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/加强普通子弹.xml",
+      "sha256": "2323ff87742b27a9dd7806e3589aaee6978dfa022e0fc0223a7daf3be6b24e73"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/无壳穿刺子弹.xml",
+      "sha256": "5ce8b6582cb56145634eeb5e3e0f9ce08a57eab01ab162a81b901333412ae0d3"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/普通无壳子弹.xml",
+      "sha256": "c4fae261909afb435140daefbc23eb6f181d918077232fbecf3d5c648e57c692"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/次级穿刺子弹.xml",
+      "sha256": "595854170d003418f9084467b51833dae62611b058188351bc4acc23b2495832"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/穿刺子弹.xml",
+      "sha256": "475574f7ea04df4de90e1979b8f9b7ce3327e9483650e33b6e3b4375c8fd3f93"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-炮弹与爆炸组/普通子弹.xml",
+      "sha256": "017c0efa6d74a093c17b81aaf824d69d93d69f633473b6159bc81d80be0d0386"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 12.xml",
+      "sha256": "6925c069b496069b3b82d331789e9eda7abb0b913cdd214bbd7f7cb1843c00cb"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 13.xml",
+      "sha256": "adee0c2a546d9f80e685d620d2b3fc4499ad143d4547fc8b092373386dd373b8"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 694.xml",
+      "sha256": "e74b56671d6659651ef7c82f1e99d809481d8830cef02b22e7c714da0eb2f1e2"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 721.xml",
+      "sha256": "86e5d5612b88277b2291774c11e5eed5c4f5cbe1690bf7f2df9a9cd2edc20489"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 722.xml",
+      "sha256": "6227fa8d257d99bc1c4b48b5cc9b4be1ea1051ed7960a89e3e45b373cecbc1b4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/加强子弹基底.xml",
+      "sha256": "13341a1e974cee6cb712e785330ccbd3957ffa81373baee45b4282141de89e2d"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-加强普通子弹.xml",
+      "sha256": "22295cc41ae663b4f48d6e1fb80c3cdc2646181a82d868a3cb54158d57398bb4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-无壳穿刺子弹.xml",
+      "sha256": "a56c53d00937509da1696b2cf955ccafdd18340061ac249389414b39cfb44b03"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-普通子弹.xml",
+      "sha256": "6c54fa6d875d0bb09fc29fad6a5004ba3d5fc4dd662ef2151ca44f733b9706b5"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-普通无壳子弹.xml",
+      "sha256": "0386b4aac8e54f53465fe1b852f62b03059a3cbd43c829842e0dd310ddbe4831"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-次级穿刺子弹.xml",
+      "sha256": "318ee67f015d70ae0ca6772472261ed1eec8843ff70e8c1a7a6368af31474b6c"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-穿刺子弹.xml",
+      "sha256": "f0920971b48d2f2f1dde6259f5d6602ff0aac75750de3340a2aa933869dd8595"
+    }
+  ],
+  "gunChainPrefixes": [
+    "横向联弹",
+    "横向机枪联弹",
+    "横向手枪联弹",
+    "纵向联弹",
+    "纵向机枪联弹",
+    "纵向手枪联弹"
+  ],
+  "tools": [
+    {
+      "path": "tools/combat-bullet-visuals/build.py",
+      "sha256": "65caf1d07371c892082a581cea01e615f7ebd65453ba43eb942b9b032bfd51e6"
+    },
+    {
+      "path": "tools/combat-fx-assets/build.py",
+      "sha256": "037a4d86d263622550110768a45cd39588b78b4e9a37e0b0147a5fce79c62985"
+    },
+    {
+      "path": "tools/combat-fx-assets/source_recipes.py",
+      "sha256": "eddd57a2fe94107ce8f8711526c6a816a473053d56d067d409b919e84211f3a9"
+    },
+    {
+      "path": "tools/combat-bullet-visuals/BulletSpriteExporter.java",
+      "sha256": "67bbfef21474a0cdca128c017bb71f6b50ec06678d20159913e9768134ee521c"
+    },
+    {
+      "path": "tools/swf-audit/swfscan.py",
+      "sha256": "fd58563745f75c8781b09d522401f20c2a8c4bd64d9aa4a48d6352830251f0a6"
+    },
+    {
+      "path": "tools/ffdec/ffdec.jar",
+      "sha256": "7f75b47152d955be5ccc853eb259a1a7910ea9a0bd2b41cf9b9085bcfb003952"
+    },
+    {
+      "path": "tools/ffdec/lib/JavactiveX.jar",
+      "sha256": "8c8d643077b93e1d792b32415703ae3800c4689bce05bb3700cae20c26f86631"
+    },
+    {
+      "path": "tools/ffdec/lib/LZMA.jar",
+      "sha256": "2604dab00935023b183d82d9a5c5198ae34d40112c7524e75be20e4528798e95"
+    },
+    {
+      "path": "tools/ffdec/lib/avi.jar",
+      "sha256": "7b8da48be20447ca3a840ae1136541841e1a44915a6edf924d83529362bd40ff"
+    },
+    {
+      "path": "tools/ffdec/lib/cmykjpeg.jar",
+      "sha256": "0ae56cee0cca3f2c54593b08dd2f450f6f8fea5dd9054b9949b9f08f34e98b5a"
+    },
+    {
+      "path": "tools/ffdec/lib/ddsreader.jar",
+      "sha256": "b64bd5bbb4bad9092c4f4109795c41ce513b24f1fad9f6886492d976482b1603"
+    },
+    {
+      "path": "tools/ffdec/lib/decimal.jar",
+      "sha256": "feeb9f89f44cd6a921a9a4701358c8c63e3e677424fb2953ddba6e15872c0e91"
+    },
+    {
+      "path": "tools/ffdec/lib/ffdec_lib.jar",
+      "sha256": "49e4da602a9000e3556c788a9653312a7b1e2ec0a7c6b8ff9e075c6b67b03630"
+    },
+    {
+      "path": "tools/ffdec/lib/flacomdoc.jar",
+      "sha256": "bc8e8812ce7ccb2d57778e57303813a102b6006957078d1c72efa86b085fce4c"
+    },
+    {
+      "path": "tools/ffdec/lib/flamingo-6.2.jar",
+      "sha256": "5baee0ef62342a53952116548aa3434db5b629af76c9a267d8c23b34db3a479c"
+    },
+    {
+      "path": "tools/ffdec/lib/flashdebugger.jar",
+      "sha256": "af5970aa5369df733993ccffa03c77665222648fb8f0074f877570be24ea482a"
+    },
+    {
+      "path": "tools/ffdec/lib/gif.jar",
+      "sha256": "e81c505f104689d4e8d4da2cba09db0a7a8c02c7f8d19de6ed194d8d2cff09bd"
+    },
+    {
+      "path": "tools/ffdec/lib/gifreader.jar",
+      "sha256": "2afdcb18d174476ef1e8550acb902ad0e998d6d6bbfb493bba4e7e6c5817f45b"
+    },
+    {
+      "path": "tools/ffdec/lib/gnujpdf.jar",
+      "sha256": "741cd74bebb53304afbff86ab45d317addea19a2208b03a32893a5062ffd736a"
+    },
+    {
+      "path": "tools/ffdec/lib/jansi-2.4.0.jar",
+      "sha256": "6cd91991323dd7b2fb28ca93d7ac12af5a86a2f53279e2b35827b30313fd0b9f"
+    },
+    {
+      "path": "tools/ffdec/lib/jargs.jar",
+      "sha256": "d488f6c10690597b93767af3b1c35018f02770790e5e3822871ac09f332386c7"
+    },
+    {
+      "path": "tools/ffdec/lib/jlayer-1.0.2.jar",
+      "sha256": "8631233f34ed2e2d2631e14e006b44401f4b1a17ef95a5647cd6d84b9e78f82b"
+    },
+    {
+      "path": "tools/ffdec/lib/jna-3.5.1.jar",
+      "sha256": "3f8889f51d570a26f3ac2c1323e6be828bb73eb5e66cf25e979eb5b109d92021"
+    },
+    {
+      "path": "tools/ffdec/lib/jna-platform-3.5.1.jar",
+      "sha256": "b0b30404f6a9e29d4d9a7b53fd47322e7137cab3846fd5f149d5589fc68c2126"
+    },
+    {
+      "path": "tools/ffdec/lib/jpacker.jar",
+      "sha256": "4eaba3e39d3e8d0eb242534d56bda72b1bbca6599aa949a7876ff6fc2cbfce52"
+    },
+    {
+      "path": "tools/ffdec/lib/jsyntaxpane-0.9.5.jar",
+      "sha256": "bb87a40f4a502171fe7dc9bb7d9482cdf06860248ae4478cf80d07f108eb8b3c"
+    },
+    {
+      "path": "tools/ffdec/lib/minimal-json-0.9.5.jar",
+      "sha256": "69ff84463d1d7cc5cfdb8baf2b6e5f7af153d351bf0dbee3bbc8916247afac74"
+    },
+    {
+      "path": "tools/ffdec/lib/miterstroke.jar",
+      "sha256": "becca6da411463f872f69f48de2dc50d53974b888da09bae0b27096b9d4d1663"
+    },
+    {
+      "path": "tools/ffdec/lib/nellymoser.jar",
+      "sha256": "bf12eb3a4c793e66b4e0c917aaa4091a6bd2b9da446c357f600f2da36f3c36e0"
+    },
+    {
+      "path": "tools/ffdec/lib/sfntly.jar",
+      "sha256": "40c9a46afc02479096e68275eb9f40f72ca3e9944d687856b600684dc9acbef7"
+    },
+    {
+      "path": "tools/ffdec/lib/substance-6.2.jar",
+      "sha256": "376b6ccb53860a78934c92fc732d5c7dc7964aa5dbd8616dba1dead3493cb362"
+    },
+    {
+      "path": "tools/ffdec/lib/substance-flamingo-6.2.jar",
+      "sha256": "1c4b4427bef2943ac81ed35fd475736287bce53120274f6ac353f5c0e48c7549"
+    },
+    {
+      "path": "tools/ffdec/lib/tablelayout.jar",
+      "sha256": "133759470163a1abc3e0b6bbba6c5e6037eac785d313dd229c6adac3a5f013fe"
+    },
+    {
+      "path": "tools/ffdec/lib/tga.jar",
+      "sha256": "43d6c7b688953ddc8a7c513b31c63b1597154e917d4e8222581fb7952c5af463"
+    },
+    {
+      "path": "tools/ffdec/lib/treetable.jar",
+      "sha256": "bfdcb1e2c0947f947fa750780fbd8c137b0a2cdc1439632200f815bf44ea2d5a"
+    },
+    {
+      "path": "tools/ffdec/lib/trident-6.2.jar",
+      "sha256": "b4726f518ccdb40b8da1fac4d78a741b736afd433d903c76f62b7a01090a63f9"
+    },
+    {
+      "path": "tools/ffdec/lib/ttf.jar",
+      "sha256": "f106e70c0e20fe1dbb3964291f0ccbabe081872c4c2db45a624763fb82ea1c45"
+    },
+    {
+      "path": "tools/ffdec/lib/vlcj-4.7.3.jar",
+      "sha256": "3f8e3233809932e9a02e0f0de79a34e0544f8a3c4b779bdcca1e3ce13eee3cea"
+    },
+    {
+      "path": "tools/ffdec/lib/vlcj-natives-4.7.0.jar",
+      "sha256": "47c300792c248f8708095430136a3aeb7def4695e8d7527d21651973049ea36f"
+    }
+  ],
+  "styles": [
+    {
+      "id": "plain",
+      "sourceKey": "stock",
+      "ordinaryLinkage": "普通子弹",
+      "gunChainUnitLinkage": "单元体-普通子弹",
+      "ordinarySource": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-炮弹与爆炸组/普通子弹.xml",
+      "gunChainUnitSource": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-普通子弹.xml",
+      "visual": {
+        "verticesPx": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            25.25,
+            -0.9
+          ],
+          [
+            25.25,
+            0.9
+          ]
+        ],
+        "fill": "#FFFFCC",
+        "glow": null,
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0,
+        "kind": "triangle"
+      }
+    },
+    {
+      "id": "enhanced",
+      "sourceKey": "stock",
+      "ordinaryLinkage": "加强普通子弹",
+      "gunChainUnitLinkage": "单元体-加强普通子弹",
+      "ordinarySource": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/加强普通子弹.xml",
+      "gunChainUnitSource": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-加强普通子弹.xml",
+      "visual": {
+        "verticesPx": [
+          [
+            -9.377878,
+            -0.45
+          ],
+          [
+            32.757597,
+            -1.951859
+          ],
+          [
+            32.757597,
+            1.051859
+          ]
+        ],
+        "fill": "#FEE99A",
+        "glow": {
+          "color": "#FFFF99",
+          "blurX": 8.0,
+          "blurY": 8.0
+        },
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0,
+        "kind": "triangle"
+      }
+    },
+    {
+      "id": "pierce",
+      "sourceKey": "stock",
+      "ordinaryLinkage": "穿刺子弹",
+      "gunChainUnitLinkage": null,
+      "ordinarySource": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/穿刺子弹.xml",
+      "gunChainUnitSource": null,
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          210,
+          2,
+          182,
+          20
+        ],
+        "offsetPx": [
+          -0.5,
+          -6.5
+        ],
+        "sizePx": [
+          91.0,
+          10.0
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "secondary-pierce",
+      "sourceKey": "stock",
+      "ordinaryLinkage": "次级穿刺子弹",
+      "gunChainUnitLinkage": null,
+      "ordinarySource": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/次级穿刺子弹.xml",
+      "gunChainUnitSource": null,
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          750,
+          74,
+          131,
+          3
+        ],
+        "offsetPx": [
+          -7.0,
+          -2.0
+        ],
+        "sizePx": [
+          65.5,
+          1.5
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "caseless-pierce",
+      "sourceKey": "stock",
+      "ordinaryLinkage": "无壳穿刺子弹",
+      "gunChainUnitLinkage": null,
+      "ordinarySource": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/无壳穿刺子弹.xml",
+      "gunChainUnitSource": null,
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          396,
+          2,
+          182,
+          20
+        ],
+        "offsetPx": [
+          -0.5,
+          -6.5
+        ],
+        "sizePx": [
+          91.0,
+          10.0
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "pierce-chain",
+      "sourceKey": "stock",
+      "ordinaryLinkage": null,
+      "gunChainUnitLinkage": "单元体-穿刺子弹",
+      "ordinarySource": null,
+      "gunChainUnitSource": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-穿刺子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          2,
+          74,
+          182,
+          19
+        ],
+        "offsetPx": [
+          -1.95,
+          -4.95
+        ],
+        "sizePx": [
+          91.0,
+          9.5
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "secondary-pierce-chain",
+      "sourceKey": "stock",
+      "ordinaryLinkage": null,
+      "gunChainUnitLinkage": "单元体-次级穿刺子弹",
+      "ordinarySource": null,
+      "gunChainUnitSource": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-次级穿刺子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          885,
+          74,
+          131,
+          3
+        ],
+        "offsetPx": [
+          -0.25,
+          -1.05
+        ],
+        "sizePx": [
+          65.5,
+          1.5
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "caseless-pierce-chain",
+      "sourceKey": "stock",
+      "ordinaryLinkage": null,
+      "gunChainUnitLinkage": "单元体-无壳穿刺子弹",
+      "ordinarySource": null,
+      "gunChainUnitSource": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-无壳穿刺子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          188,
+          74,
+          182,
+          19
+        ],
+        "offsetPx": [
+          -1.95,
+          -4.95
+        ],
+        "sizePx": [
+          91.0,
+          9.5
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "refined",
+      "sourceKey": "mist",
+      "ordinaryLinkage": "精制普通子弹",
+      "gunChainUnitLinkage": null,
+      "ordinarySource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/精制子弹/精制普通子弹.xml",
+      "gunChainUnitSource": null,
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          374,
+          74,
+          122,
+          12
+        ],
+        "offsetPx": [
+          -35.7,
+          -3.0
+        ],
+        "sizePx": [
+          61.0,
+          6.0
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "ice",
+      "sourceKey": "mist",
+      "ordinaryLinkage": "冰冷普通子弹",
+      "gunChainUnitLinkage": "单元体-冰冷普通子弹",
+      "ordinarySource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰冷子弹/冰冷普通子弹.xml",
+      "gunChainUnitSource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰冷子弹/单元体-冰冷普通子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          763,
+          2,
+          176,
+          20
+        ],
+        "offsetPx": [
+          -54.85,
+          -5.2
+        ],
+        "sizePx": [
+          88.0,
+          10.0
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "fire",
+      "sourceKey": "mist",
+      "ordinaryLinkage": "烈焰普通子弹",
+      "gunChainUnitLinkage": "单元体-烈焰普通子弹",
+      "ordinarySource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰子弹/烈焰普通子弹.xml",
+      "gunChainUnitSource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰子弹/单元体-烈焰普通子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          582,
+          2,
+          177,
+          20
+        ],
+        "offsetPx": [
+          -55.25,
+          -5.25
+        ],
+        "sizePx": [
+          88.5,
+          10.0
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "energy",
+      "sourceKey": "mist",
+      "ordinaryLinkage": "能量普通子弹",
+      "gunChainUnitLinkage": "单元体-能量普通子弹",
+      "ordinarySource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/新能量子弹/能量普通子弹.xml",
+      "gunChainUnitSource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/新能量子弹/单元体-能量普通子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          2,
+          2,
+          204,
+          68
+        ],
+        "offsetPx": [
+          -52.35,
+          -17.15
+        ],
+        "sizePx": [
+          102.0,
+          34.0
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "caseless",
+      "sourceKey": "stock",
+      "ordinaryLinkage": "普通无壳子弹",
+      "gunChainUnitLinkage": null,
+      "ordinarySource": "flashswf/arts/原版素材库-子弹/LIBRARY/子弹-普通与穿刺组/普通无壳子弹.xml",
+      "gunChainUnitSource": null,
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          626,
+          74,
+          58,
+          5
+        ],
+        "offsetPx": [
+          -6.2,
+          -2.0
+        ],
+        "sizePx": [
+          29.0,
+          2.5
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "caseless-chain",
+      "sourceKey": "stock",
+      "ordinaryLinkage": null,
+      "gunChainUnitLinkage": "单元体-普通无壳子弹",
+      "ordinarySource": null,
+      "gunChainUnitSource": "flashswf/arts/原版素材库-子弹/LIBRARY/联弹/单元体-普通无壳子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          688,
+          74,
+          58,
+          5
+        ],
+        "offsetPx": [
+          0.5,
+          -1.25
+        ],
+        "sizePx": [
+          29.0,
+          2.5
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    },
+    {
+      "id": "refined-chain",
+      "sourceKey": "mist",
+      "ordinaryLinkage": null,
+      "gunChainUnitLinkage": "单元体-精制普通子弹",
+      "ordinarySource": null,
+      "gunChainUnitSource": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/精制子弹/单元体-精制普通子弹.xml",
+      "visual": {
+        "kind": "sprite",
+        "atlasRectPx": [
+          500,
+          74,
+          122,
+          11
+        ],
+        "offsetPx": [
+          -35.7,
+          -2.75
+        ],
+        "sizePx": [
+          61.0,
+          5.5
+        ],
+        "registrationPx": [
+          0,
+          0
+        ],
+        "frameIndex": 0
+      }
+    }
+  ],
+  "atlas": {
+    "path": "data/combat_visuals/bullets-atlas.v2.png",
+    "sha256": "5e92cf9a57606a19aa6a525ddecf62e4eb9deadf8ee033cf92732d99fbe0cb4f",
+    "width": 1024,
+    "height": 96,
+    "scale": 2,
+    "pillowVersion": "12.2.0"
+  }
+}

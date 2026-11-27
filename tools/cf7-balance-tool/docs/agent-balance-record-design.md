@@ -193,6 +193,8 @@ dualWield, pierce, damageType, shotgun, magPrice, weightLayers, category, formul
 
 两种 digest 都是防漂移门，不替代来源证据或 Git 审计。
 
+武器更换 `bullet` 时重新计算两种 digest，并复核随弹种变化的规则证据。只改共享弹种的 `continuationChance` 时，概率由 `data/items/bullets_cases.xml` 及枪式模板派生验证。武器字段、技能及生命周期保持相同时，沿用该形态的摘要与既有公式输入。
+
 ## 6. 可复现施工流程
 
 1. 冻结 `workbookVersion → SHA` 映射、sheet/cell 和公式版本。

@@ -907,7 +907,7 @@
         <diffusion>2</diffusion>
         <interval>100</interval>
         <velocity>35</velocity>
-        <bullet>普通子弹</bullet>
+        <bullet>精制普通子弹</bullet>
         <sound>PP2000.wav</sound>
         <muzzle>冲锋枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -933,7 +933,7 @@
             <formula>1</formula>
             <status>confirmed</status>
             <displayEligible>true</displayEligible>
-            <inputDigest>fnv1a32:b74180f0</inputDigest>
+            <inputDigest>fnv1a32:33dfb6ca</inputDigest>
             <auditRef>weapon:vactorPP-7400U:data</auditRef>
           </data>
         </profiles>
@@ -958,7 +958,7 @@
         <diffusion>3</diffusion>
         <interval>85</interval>
         <velocity>35</velocity>
-        <bullet>普通子弹</bullet>
+        <bullet>精制普通子弹</bullet>
         <sound>PP2000.wav</sound>
         <muzzle>冲锋枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -984,7 +984,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:50530744</inputDigest>
+            <inputDigest>fnv1a32:9090982a</inputDigest>
             <auditRef>weapon:vactorPP-7400U长枪托:data</auditRef>
           </data>
         </profiles>
@@ -1081,8 +1081,8 @@
         <diffusion>3</diffusion>
         <interval>300</interval>
         <velocity>35</velocity>
-        <bullet>纵向手枪联弹-普通子弹</bullet>
-        <bulletrename>普通子弹</bulletrename>
+        <bullet>纵向手枪联弹-精制普通子弹</bullet>
+        <bulletrename>精制普通子弹</bulletrename>
         <sound>m93R.wav</sound>
         <muzzle>冲锋枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -1108,7 +1108,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:3d308b19</inputDigest>
+            <inputDigest>fnv1a32:d7a8fa7f</inputDigest>
             <auditRef>weapon:M93R:data</auditRef>
           </data>
         </profiles>

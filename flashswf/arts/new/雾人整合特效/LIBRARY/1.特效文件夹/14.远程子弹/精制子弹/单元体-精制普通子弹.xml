@@ -1,0 +1,41 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/14.远程子弹/精制子弹/单元体-精制普通子弹" itemID="6b08d6c7-00010001" linkageExportForAS="true" linkageIdentifier="单元体-精制普通子弹" lastModified="1795741383" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="单元体-精制普通子弹">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.79998779296875" tx="-4.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-19.45" y="0.2" />
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.083770751953125" d="0.005462646484375" tx="20.45" />
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.101960784313725" />
+                        <GradientEntry color="#FFFF7F" alpha="0.847058823529412" ratio="0.262745098039216" />
+                        <GradientEntry color="#CC0000" alpha="0.101960784313725" ratio="0.564705882352941" />
+                        <GradientEntry color="#330000" alpha="0.0509803921568627" ratio="0.796078431372549" />
+                        <GradientEntry color="#FF6600" alpha="0" ratio="1" />
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!492 72S2|-681 -3!-681 -3|492 -69!492 -69[685 2 492 72" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

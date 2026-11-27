@@ -19,7 +19,7 @@ LIBRARIES = runpy.run_path(str(HERE / "source_recipes.py"))["SOURCE_LIBRARIES"]
 OUTPUT = ROOT / "data/combat_visuals"
 SCRATCH = ROOT / "tmp/combat-visual-publication"
 EFFECTS = (HERE / "build.py", OUTPUT / "effects.v1.json", OUTPUT / "effects-atlas.png")
-BULLETS = (ROOT / "tools/combat-bullet-visuals/build.py", OUTPUT / "bullet_styles.v1.json", OUTPUT / "bullets-atlas.png")
+BULLETS = (ROOT / "tools/combat-bullet-visuals/build.py", OUTPUT / "bullet_styles.v2.json", OUTPUT / "bullets-atlas.v2.png")
 
 
 def sha(data):
@@ -89,21 +89,29 @@ def run(script, check=False):
 
 
 def published_hash(catalog, relative):
-    if "sourceSwfSha256" in catalog:
-        return catalog["sourceSwfSha256"]
     return next(row["sha256"] for row in catalog["sources"] if row["path"] == relative)
 
 
 def replace_source(catalog, relative, new_hash):
-    if "sourceSwfSha256" in catalog:
-        catalog["sourceSwfSha256"] = new_hash
-    else:
-        next(row for row in catalog["sources"] if row["path"] == relative)["sha256"] = new_hash
+    next(row for row in catalog["sources"] if row["path"] == relative)["sha256"] = new_hash
 
 
 def consumed_frames_match(library, catalog, atlas, bullets=False):
     """Compare only this SWF's finite native frames against their verified packed pixels."""
     from PIL import Image
+
+    if bullets:
+        render = runpy.run_path(str(BULLETS[0]))["rasterize_sprites"]
+        frames = render(catalog["styles"], (library["key"],))
+        with Image.open(atlas) as packed:
+            for (index, _), (image, offset) in frames.items():
+                visual = catalog["styles"][index]["visual"]
+                x, y, w, h = visual["atlasRectPx"]
+                if offset != visual["offsetPx"] or image.size != (w, h):
+                    return False
+                if image.tobytes() != packed.crop((x, y, x + w, y + h)).convert("RGBA").tobytes():
+                    return False
+        return bool(frames)
 
     helper = runpy.run_path(str(HERE / "build.py"))
     swf = ROOT / library["swf"]
@@ -111,30 +119,18 @@ def consumed_frames_match(library, catalog, atlas, bullets=False):
     expected = {}
     borders = {}
     plan = []
-    if bullets:
-        exporter = ROOT / "tools/combat-bullet-visuals/BulletSpriteExporter.java"
-        zoom = catalog["atlas"]["scale"]
-        for index, style in enumerate(catalog["styles"]):
-            visual = style["visual"]
-            if visual["kind"] != "sprite":
-                continue
-            linkage = style["ordinaryLinkage"] or style["gunChainUnitLinkage"]
-            plan.append(f"{index}\t{names[linkage]}\t0")
-            expected[index, 0] = visual["atlasRectPx"], visual["offsetPx"]
-            borders[index] = 2
-    else:
-        exporter = HERE / "CombatSpriteExporter.java"
-        zoom = catalog["pixelsPerUnit"]
-        for recipe, style in zip(catalog["recipe"], catalog["styles"]):
-            if recipe["sourceKey"] != library["key"]:
-                continue
-            index = recipe["index"]
-            borders[index] = int(recipe["renderMode"] in ("padded", "nested-scaled"))
-            frames = sorted({frame for variant in recipe["variants"] for frame in variant})
-            plan.append("\t".join([str(index), str(names[recipe["renderLinkage"]]),
-                                  ",".join(map(str, frames)), recipe["renderChild"] or "-", recipe["renderMode"]]))
-            for frame in style["frames"]:
-                expected[index, frame["sourceFrame"]] = frame["rect"], frame["offset"]
+    exporter = HERE / "CombatSpriteExporter.java"
+    zoom = catalog["pixelsPerUnit"]
+    for recipe, style in zip(catalog["recipe"], catalog["styles"]):
+        if recipe["sourceKey"] != library["key"]:
+            continue
+        index = recipe["index"]
+        borders[index] = int(recipe["renderMode"] in ("padded", "nested-scaled"))
+        frames = sorted({frame for variant in recipe["variants"] for frame in variant})
+        plan.append("\t".join([str(index), str(names[recipe["renderLinkage"]]),
+                              ",".join(map(str, frames)), recipe["renderChild"] or "-", recipe["renderMode"]]))
+        for frame in style["frames"]:
+            expected[index, frame["sourceFrame"]] = frame["rect"], frame["offset"]
     if not expected:
         return False
     classpath = os.pathsep.join(map(str, (ROOT / "tools/ffdec/lib/*", ROOT / "tools/ffdec/ffdec.jar")))
@@ -157,8 +153,6 @@ def consumed_frames_match(library, catalog, atlas, bullets=False):
                     image = source.convert("RGBA")
                     box = image.getbbox()
                     border = borders[key[0]]
-                    if box is None and bullets:
-                        return False
                     if box is not None and (box[0] < border or box[1] < border
                             or box[2] > image.width - border or box[3] > image.height - border):
                         return False
@@ -168,8 +162,6 @@ def consumed_frames_match(library, catalog, atlas, bullets=False):
                     else:
                         image = image.crop(box)
                     registration = [int(xmin) / 20 + box[0] / zoom, int(ymin) / 20 + box[1] / zoom]
-                    if bullets:
-                        registration = [round(v, 6) for v in registration]
                     if registration != offset or image.size != (w, h):
                         return False
                     if image.tobytes() != packed.crop((x, y, x + w, y + h)).convert("RGBA").tobytes():
@@ -223,7 +215,7 @@ def refresh(path, xfl):
     library = next((row for row in LIBRARIES if row["swf"] == relative), None)
     if library is None:
         return
-    consumers = [EFFECTS, BULLETS] if library["key"] == "stock" else [EFFECTS]
+    consumers = [EFFECTS, BULLETS] if library["key"] in ("stock", "mist") else [EFFECTS]
     with publication_lock():
         refresh_consumers(library, path, relative, consumers, xfl)
 

@@ -1,9 +1,10 @@
 # 子弹原生表现目录
 
-`build.py` 保留普通、加强普通两种原有三角样式，并从现役
-`flashswf/arts/原版素材库-子弹.swf` 导出穿刺、次级穿刺、无壳穿刺的飞行外观。
-单发与联弹单元的注册点、嵌套矩阵、颜色和滤镜不同，分别占用目录中的样式，不能强行复用。
-XFL 是美术编辑源。用仓库的 CS6 入口发布原版子弹库时，会同时检查子弹外观和战斗特效的两个目录。只有替换成品 SWF 时，可调用 `python tools/combat-fx-assets/after_publish.py --swf flashswf/arts/原版素材库-子弹.swf` 完成两份派生。
+`build.py` 从原版子弹与雾人整合特效两套已发布的 SWF 生成原生白名单，XFL 是两套库的编辑源。
+普通、加强普通保留三角样式。穿刺、次级穿刺、无壳穿刺、精制普通、普通无壳的直射与联弹单元各用自己的样式。
+冰冷、烈焰和能量普通弹的直射与单元只在裁切 RGBA、尺寸与偏移全部相等时共享样式。
+用仓库的 CS6 入口发布任一库时，会同时检查子弹和战斗特效的派生目录。替换成品 SWF 时，用
+`python tools/combat-fx-assets/after_publish.py --swf <实际 SWF 路径>` 刷新对应消费者。
 
 ```powershell
 python -B -X utf8 tools/combat-bullet-visuals/build.py
@@ -12,18 +13,19 @@ python -B -X utf8 tools/combat-bullet-visuals/build.py --check
 
 完整生成复用战斗特效工具的导出 ID/JDK 定位，使用本目录的 `BulletSpriteExporter.java`、
 已安装的 Java/FFDec 和 Python/Pillow；不执行帧脚本，不修改 SWF，不安装工具。只读取零基第 0 帧，保留原来的
-渐变、注册点与透明度。`area` 的 Symbol 13 → Symbol 12 链必须是无可见修饰的全透明矩形，
-否则拒绝生成。联弹内嵌的次级穿刺不会收到组命中回调，不能将单弹爆炸阶段套给视觉单元。
+渐变、注册点与透明度。原版库的 Symbol 13 → Symbol 12 和雾人库已审阅的 `area` 符号均须全透明。
+联弹内嵌的次级穿刺不会收到组命中回调，单弹爆炸阶段仍归直接弹。
 
 细长联弹单元没有碰撞 area 撑开外框，直接使用 FFDec `FrameExporter` 的几何边界会裁掉
 原有 GlowFilter。专用导出器以明确的外扩画布调用同一 FFDec 渲染器，任何非透明像素触达
 画布边缘即拒绝生成；外扩仅改变光栅视口，不修改源符号。生成后再按实际 alpha 裁切并保留偏移。
 
-`bullet_styles.v1.json` 前两个索引保持不变；2–4 是三种单弹，5–7 是对应联弹单元。
+`bullet_styles.v2.json` 保留前八个索引。前两个是普通与加强普通，2–4 是三种穿刺单弹，5–7 是对应联弹单元。
 无对应消费方的 `ordinaryLinkage` / `gunChainUnitLinkage` 为 `null`。
 三角样式使用 `kind: triangle` 和原顶点；精细外观使用 `kind: sprite`、图集矩形、
-裁切偏移和源单位尺寸。`bullets-atlas.png` 每两个像素对应一个 Flash 单位，带双线性采样隔离边。
-构建端核对 XFL、源 SWF、生成器、FFDec 与导出器的摘要。运行时核对实际 PNG 摘要、图片尺寸、矩形、比例和映射唯一性，再启用原生子弹外观。
+裁切偏移和源单位尺寸。`bullets-atlas.v2.png` 每两个像素对应一个 Flash 单位，带双线性采样隔离边。
+构建端核对 XFL、源 SWF、生成器、FFDec 与导出器的摘要。运行时核对来源与链接绑定、实际 PNG 摘要、
+图片尺寸、矩形、比例和映射唯一性，再启用原生子弹外观。已部署的旧 Host 读取原 v1 目录和图集，新 Host 使用 v2 配对资源。
 
 `--check` 只检查配方、闭包、PNG 头/体积和派生元数据，不重绘，也不证明游戏观感。
 实际尺寸与体积读取本轮输出，不复制成长期性能结论。GPU 只接管表现，AS2 的碰撞、预算、
@@ -34,8 +36,9 @@ python -B -X utf8 tools/combat-bullet-visuals/build.py --check
 以及真穿刺消失阶段的碰撞窗口仍由原时间轴提供。预算加载、结算段数累计和严格超预算删除
 保留现有实现。本阶段不宣称完成穿刺 MC 去除。
 
-定向验证：`scripts/run-pierce-bullet-tests.ps1` 使用真实发布素材的旧/新路径并排对照帧号、
-碰撞区域、回调状态和销毁时点；`BulletVisualCatalogTests` 验证纹理、映射与拒绝畸形目录。
+定向验证用 `scripts/run-half-pierce-tests.ps1` 检查普通弹续穿、实际联弹导出与属性派生。
+`scripts/run-pierce-bullet-tests.ps1` 使用真实发布素材的旧/新路径并排对照帧号、碰撞区域、回调状态和销毁时点。
+`BulletVisualCatalogTests` 验证纹理、映射与畸形输入拒绝。
 CS6 编译与实际 GPU 运行由主控排队，不并行争用同机测试资源。
 
 ## 穿刺等价适配核对（2026-09-28）

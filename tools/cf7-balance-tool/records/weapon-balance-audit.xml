@@ -496,8 +496,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:ede06aa9</inputDigest>
-      <sourceDigest>sha256:c8c4eed9a45af02050ff9bf1c4da7c74f82369a1e28ed32afd12158b6c307513</sourceDigest>
+      <inputDigest>fnv1a32:03805ae9</inputDigest>
+      <sourceDigest>sha256:84f2e6cc13d1844ed97754c6335152ab075d4c2cafb80bf09bf0522c8b642da0</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -515,12 +515,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=加强普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_手枪_突击步枪.xml#item=战术-QBZ-192/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_突击步枪.xml#item=战术-QBZ-192/data;bullet=加强普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -1451,8 +1451,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:37aa2e1d</inputDigest>
-      <sourceDigest>sha256:c1278fa826abfd46138d4b395e5a5df4778d8cbeba782c956ed4d21ef6f115d0</sourceDigest>
+      <inputDigest>fnv1a32:7dced659</inputDigest>
+      <sourceDigest>sha256:258590d8fc1540480f50275598cdc364857190e2fccc58ff371f318e571932ae</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.crafting</code>
@@ -1470,12 +1470,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=加强普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_长枪_突击步枪.xml#item=HK33A2/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_突击步枪.xml#item=HK33A2/data;bullet=加强普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -1543,8 +1543,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:d7dcddeb</inputDigest>
-      <sourceDigest>sha256:f90e4f820ee65eacbfb959fb3695fe59ccd0bc3752f52796159f9ac6c7a3890d</sourceDigest>
+      <inputDigest>fnv1a32:e740b309</inputDigest>
+      <sourceDigest>sha256:9d17f08a7265766aac137544d5c1915320dd62c09883e55dfbf4059d3ae2e1b8</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -1562,12 +1562,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=精制普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_长枪_突击步枪.xml#item=HK33KA3/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_突击步枪.xml#item=HK33KA3/data;bullet=精制普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -2465,8 +2465,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:09dc1117</inputDigest>
-      <sourceDigest>sha256:c26ea0a182cea76306504926883909d0e50ab3fea44cce42bb52a4b2e88036b5</sourceDigest>
+      <inputDigest>fnv1a32:4db51075</inputDigest>
+      <sourceDigest>sha256:683833edd07a83e92656b58b0d52b1ddba087fb4b772daf858244250f940811c</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -2484,12 +2484,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=精制普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_长枪_冲锋枪.xml#item=PP1901/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_长枪_冲锋枪.xml#item=PP1901/data;bullet=精制普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -2741,8 +2741,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:6f872f4c</inputDigest>
-      <sourceDigest>sha256:afc400b42b883debf1e9c2b7d4bb0c4602c27c4a35b529c2f3d3126fbac7ef1a</sourceDigest>
+      <inputDigest>fnv1a32:387da68a</inputDigest>
+      <sourceDigest>sha256:a5ae5f3cf5fc399cff004b050a48f184ebb993b94415e2e935e0a2dc1bf15104</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -2760,12 +2760,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=精制普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_手枪_突击步枪.xml#item=QBZ-192/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_突击步枪.xml#item=QBZ-192/data;bullet=精制普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -2833,8 +2833,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:408f2fc4</inputDigest>
-      <sourceDigest>sha256:ed3d314946868848f9b372c73a279f51848bf41a179841967d67bbd0a4b7f9cf</sourceDigest>
+      <inputDigest>fnv1a32:8584a17e</inputDigest>
+      <sourceDigest>sha256:8ff0ba4d45f7710b30ac4df063cbff36002419a1b7f2044def71f7e630c9d050</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -2852,12 +2852,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=精制普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_手枪_手枪.xml#item=SIGP210/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_手枪.xml#item=SIGP210/data;bullet=精制普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -3017,8 +3017,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:ddaf67d9</inputDigest>
-      <sourceDigest>sha256:24e12de2f93a1bb4ab7dc39b1a2e68584ae6ab5f14a4ba1f1b10aa801149322a</sourceDigest>
+      <inputDigest>fnv1a32:0196e6fb</inputDigest>
+      <sourceDigest>sha256:9e4186124ef040e12fa4a229c642e6a44b63a7000e99fe3cf8e5080e81dfbe9a</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -3036,12 +3036,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=精制普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_手枪_手枪.xml#item=Type92G/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_手枪.xml#item=Type92G/data;bullet=精制普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -3109,8 +3109,8 @@
       <formula>1</formula>
       <status>confirmed</status>
       <displayEligible>true</displayEligible>
-      <inputDigest>fnv1a32:b74180f0</inputDigest>
-      <sourceDigest>sha256:cc9733a8ef4036845fda869160b52fb9ee2fc43bc7dc7f4ddd6c5b9b85dd5c9a</sourceDigest>
+      <inputDigest>fnv1a32:33dfb6ca</inputDigest>
+      <sourceDigest>sha256:0f0329b87f98280f53bf3d8a0ed96ea2b21436ca5396a05724c26c435454be2f</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -3128,12 +3128,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=精制普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=vactorPP-7400U/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=vactorPP-7400U/data;bullet=精制普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -3201,8 +3201,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:50530744</inputDigest>
-      <sourceDigest>sha256:66b15f69847b4cf820f9db7e3264cd7eb78e6053be8cd34d2b69533f58c896cb</sourceDigest>
+      <inputDigest>fnv1a32:9090982a</inputDigest>
+      <sourceDigest>sha256:073f9e0375565edca0a3bd24ed620b12d67632c1dde455b6e5d3230b99df4ebd</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.high-price</code>
@@ -3220,12 +3220,12 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>data/items/bullets_cases.xml#bullet=普通子弹</evidenceRef>
+          <evidenceRef>data/items/bullets_cases.xml#bullet=精制普通子弹</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
           <target>input.damageType</target>
-          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=vactorPP-7400U长枪托/data;bullet=普通子弹;damagetype-override=absent</evidenceRef>
+          <evidenceRef>data/items/武器_手枪_冲锋枪.xml#item=vactorPP-7400U长枪托/data;bullet=精制普通子弹;damagetype-override=absent</evidenceRef>
         </ref>
         <ref>
           <id>WBR-SHOT-001</id>
@@ -4309,7 +4309,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -4342,7 +4342,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:Glock 18:data_ice</auditRef>
@@ -4377,7 +4377,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -4410,7 +4410,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:MAC10:data</auditRef>
@@ -4785,7 +4785,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -4818,7 +4818,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:MP40:data_ice</auditRef>
@@ -4853,7 +4853,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -4886,7 +4886,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:MP5战术版:data</auditRef>
@@ -5044,8 +5044,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:3d308b19</inputDigest>
-      <sourceDigest>sha256:636fc7cd0c7401d7f7c33308c6b9bd30dbd3a9fbc1964260352830280c0e8f71</sourceDigest>
+      <inputDigest>fnv1a32:d7a8fa7f</inputDigest>
+      <sourceDigest>sha256:dca1844dc850aebc854733aadec8c3dd11736ce92b924d0d5cd1855ebbf76fb5</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -5063,7 +5063,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=纵向手枪联弹-普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=精制普通子弹；由枪式联弹模板从单元体派生25% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -5096,7 +5096,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；split 语义待裁定；无获取渠道；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:UZI战术版:data</auditRef>
@@ -5403,7 +5403,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -5436,7 +5436,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:LS06:data</auditRef>
@@ -6089,7 +6089,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=纵向联弹-能量普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=能量普通子弹；由枪式联弹模板从单元体派生50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -6122,7 +6122,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:极品UZI的KING版:data</auditRef>
@@ -6973,7 +6973,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -7006,7 +7006,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:韦森686:data_ice</auditRef>
@@ -7041,7 +7041,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -7074,7 +7074,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:N99:data</auditRef>
@@ -7702,8 +7702,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:ee68870e</inputDigest>
-      <sourceDigest>sha256:4d3b5471a0f3a7f68d843f04ee33fcea3c6c1f34423c5fc8c2a6304941e52ab7</sourceDigest>
+      <inputDigest>fnv1a32:b15bf4ba</inputDigest>
+      <sourceDigest>sha256:9134646b00d2d1231c152101dbda20a0578308dc77b0914742e6ef57259843f7</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -7721,7 +7721,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=普通子弹；默认非穿刺=1待复核</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=加强普通子弹；默认非穿刺=1待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -9092,7 +9092,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -9125,7 +9125,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:MK23手枪:data_ice</auditRef>
@@ -9160,7 +9160,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -9193,7 +9193,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:m9:data</auditRef>
@@ -9772,7 +9772,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -9805,7 +9805,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:Beretta90TWO:data_ice</auditRef>
@@ -9840,7 +9840,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -9873,7 +9873,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:TTI 2011 Combat Master:data</auditRef>
@@ -9976,7 +9976,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -10009,7 +10009,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:TTI 2011 Combat Master:data_ice</auditRef>
@@ -10044,7 +10044,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -10077,7 +10077,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:TTI Glock 19:data</auditRef>
@@ -10297,8 +10297,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:62faa159</inputDigest>
-      <sourceDigest>sha256:c808e9c387b49c5e0ca326bbeaa5103b4eb84af7f07e8830f7849eab9b2344a6</sourceDigest>
+      <inputDigest>fnv1a32:a260e40b</inputDigest>
+      <sourceDigest>sha256:645d352bf4a68ef248b56ce9406c2305ce7a462a92fcec9313548cafa8e4e1da</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.unverified</code>
@@ -10316,7 +10316,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=普通子弹；默认非穿刺=1待复核</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=精制普通子弹；默认非穿刺=1待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -11119,8 +11119,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:f9f1cfd5</inputDigest>
-      <sourceDigest>sha256:5dcb15355fab9b3218518ca5849cf44e046a12f1123da7d978bf052ea3e4d226</sourceDigest>
+      <inputDigest>fnv1a32:f9641688</inputDigest>
+      <sourceDigest>sha256:ebe112f844ebe7c6f26a7134dcc7e782115b0fba982d116793e6ece78297f7be</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -11138,7 +11138,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=精制普通子弹；由枪式联弹模板从单元体派生25% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -11171,7 +11171,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:无枪托ZUX197:data</auditRef>
@@ -12554,8 +12554,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:10bd0d7f</inputDigest>
-      <sourceDigest>sha256:3c1984c8f82baf00f4734032f209e897250c6e87d8d38f458c4c74f34c8f4958</sourceDigest>
+      <inputDigest>fnv1a32:945aa1f1</inputDigest>
+      <sourceDigest>sha256:82856ff9ef0ddabe48db7dd39116daab5a03e35f3c0fb7a29fde0ae2b01c5856</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -12573,7 +12573,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=普通子弹；默认非穿刺=1待复核</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=精制普通子弹；默认非穿刺=1待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -19051,7 +19051,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -19084,7 +19084,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:53式步骑枪:data_ice</auditRef>
@@ -19119,7 +19119,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -19152,7 +19152,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:Sniper:data</auditRef>
@@ -20280,8 +20280,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:c9f322a3</inputDigest>
-      <sourceDigest>sha256:5c850d9a3f7e211a2634af35e5ce72d82d824377eea0fdf7b27bc66f05ee4408</sourceDigest>
+      <inputDigest>fnv1a32:ca8821a3</inputDigest>
+      <sourceDigest>sha256:b757b4bc406a9ead93b14e7e5e843cf9c888b7025767d854a33a79e926542339</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -20299,7 +20299,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=普通子弹；默认非穿刺=1待复核</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=加强普通子弹；默认非穿刺=1待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -20503,7 +20503,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -20536,7 +20536,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:M4A1:data_ice</auditRef>
@@ -20571,7 +20571,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -20604,7 +20604,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:FAMAS:data</auditRef>
@@ -20775,7 +20775,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -20808,7 +20808,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:AUG:data_ice</auditRef>
@@ -20843,7 +20843,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -20876,7 +20876,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:FN F2000:data</auditRef>
@@ -21115,7 +21115,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -21148,7 +21148,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:AK74:data_ice</auditRef>
@@ -21183,7 +21183,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -21216,7 +21216,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:M4A1改:data</auditRef>
@@ -21659,7 +21659,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=烈焰普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=烈焰普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -21692,7 +21692,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:HK416:data_ice</auditRef>
@@ -21727,7 +21727,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=冰冷普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=冰冷普通子弹；为直接弹配置50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-002</id>
@@ -21760,7 +21760,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:TTI TR1:data</auditRef>
@@ -23445,7 +23445,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=纵向联弹-普通无壳子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=普通无壳子弹；由枪式联弹模板从单元体派生50% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -23478,7 +23478,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；多获取路径层级待裁定；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；split 语义待裁定；多获取路径层级待裁定；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:非规格步枪:data</auditRef>
@@ -24854,8 +24854,8 @@
       <formula>1</formula>
       <status>unresolved</status>
       <displayEligible>false</displayEligible>
-      <inputDigest>fnv1a32:9f85c023</inputDigest>
-      <sourceDigest>sha256:2bb3c40e03bb28f2195293d210f9150dd5667e502ffafe19d0cbad2ee73e9bb6</sourceDigest>
+      <inputDigest>fnv1a32:e7453a6a</inputDigest>
+      <sourceDigest>sha256:338caa03347216c52af8f4280e136d72e0421367c8177d2be41a81ba4e3b8a45</sourceDigest>
       <budgetBreakdown>
         <entry>
           <code>acquisition.gold-standard</code>
@@ -24873,7 +24873,7 @@
         <ref>
           <id>WBR-PIERCE-001</id>
           <target>input.pierce</target>
-          <evidenceRef>UNRESOLVED: bullets_cases.xml 未找到 bullet=横向联弹-普通子弹；pierce=1 为默认占位</evidenceRef>
+          <evidenceRef>UNRESOLVED: data/items/bullets_cases.xml#bullet=精制普通子弹；由枪式联弹模板从单元体派生25% 概率续穿，公式 pierce=1 待复核</evidenceRef>
         </ref>
         <ref>
           <id>WBR-DMG-001</id>
@@ -24906,7 +24906,7 @@
           <evidenceRef>0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx#枪械!Q1;formula=1</evidenceRef>
         </ref>
       </ruleRefs>
-      <note>机械派生登记（首批存量迁移）；bullet 未见于 bullets_cases；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
+      <note>机械派生登记（首批存量迁移）；普通弹概率续穿已配置；split 语义待裁定；全部输入待人工复核后方可 confirmed</note>
     </record>
     <record>
       <auditRef>weapon:白火铳:data</auditRef>

@@ -737,7 +737,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudgetTest {
     private static function verifyAdditionalAmmo(index:Number):Void {
         var family:Number = 5 + index;
         var zone:Number = [1, 0, 0, 2][index];
-        var expected:Number = [25, 25, 25, 50][index];
+        var expected:Number = [25, 50, 50, 50][index];
         var gun:Object = guns[family];
         world.子弹区域 = assetZones[zone];
         var control:Object = runScene(family, 100 + index, 64, "anti-control");
@@ -755,6 +755,26 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudgetTest {
             + " front=" + control.front + "/" + test.front + " rear=" + control.rear + "/" + test.rear
             + " damage=" + test.rearHP + " deep=" + test.deep + " wrong=" + test.wrong;
         traces.push(detail); trace(detail);
+    }
+
+    private static function verifyOrdinaryFamilyExports():Void {
+        var names:Array = ["精制普通子弹", "冰冷普通子弹", "烈焰普通子弹", "能量普通子弹", "普通无壳子弹"];
+        var tiers:Array = [25, 50, 50, 50, 50];
+        for (var i:Number = 0; i < names.length; i++) {
+            var name:String = names[i];
+            var tier:Number = tiers[i];
+            var zone:MovieClip = assetZones[i == 4 ? 0 : 1];
+            var unit:MovieClip = zone.attachMovie("单元体-" + name, "scope359Unit", zone.getNextHighestDepth());
+            check(unit != undefined && unit._parent === zone && unit.area == undefined,
+                name + " published visual-only chain unit");
+            if (unit != undefined) unit.removeMovieClip();
+            check(BulletInitializer.getAttributeData(name).continuationChance == tier
+                && BulletInitializer.getAttributeData("横向联弹-" + name).continuationChance == tier
+                && BulletInitializer.getAttributeData("纵向手枪联弹-" + name).continuationChance == tier,
+                name + " direct and derived gun-chain tier");
+            var detail:String = "[I359_AMMO] bullet=" + name + " tier=" + tier;
+            traces.push(detail); trace(detail);
+        }
     }
 
     private static function advance():Void {
@@ -785,7 +805,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.HalfPierceBudgetTest {
                 if (extraCase == 0) verifyLynx();
                 else if (extraCase <= 12) verifyT181Magazine(extraCase - 1);
                 else if (extraCase <= 16) verifyAdditionalAmmo(extraCase - 13);
-                else { finish(); return; }
+                else { verifyOrdinaryFamilyExports(); finish(); return; }
                 runIndex++;
                 return;
             }

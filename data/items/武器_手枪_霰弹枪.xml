@@ -242,8 +242,8 @@
         <interval>350</interval>
         <singleshoot>true</singleshoot>
         <velocity>50</velocity>
-        <bullet>横向联弹-普通子弹</bullet>
-        <bulletrename>普通子弹</bulletrename>
+        <bullet>横向联弹-精制普通子弹</bullet>
+        <bulletrename>精制普通子弹</bulletrename>
         <sound>re_shotgun_725.wav</sound>
         <muzzle>霰弹枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -269,7 +269,7 @@
             <formula>1</formula>
             <status>unresolved</status>
             <displayEligible>false</displayEligible>
-            <inputDigest>fnv1a32:f9f1cfd5</inputDigest>
+            <inputDigest>fnv1a32:f9641688</inputDigest>
             <auditRef>weapon:ASSKICKER:data</auditRef>
           </data>
         </profiles>

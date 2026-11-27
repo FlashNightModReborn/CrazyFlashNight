@@ -214,7 +214,7 @@
             <material>无壳</material>
         </chainUnit>
         <attribute>
-            <continuationChance>25</continuationChance>
+            <continuationChance>50</continuationChance>
         </attribute>
     </bullet>
     <bullet>
@@ -332,6 +332,9 @@
     </bullet>
     <bullet>
         <name>精制普通子弹</name>
+        <chainUnit>
+            <material>普通</material>
+        </chainUnit>
         <attribute>
             <continuationChance>25</continuationChance>
         </attribute>
@@ -676,7 +679,22 @@
             <yOffset>0</yOffset>
         </shell>
         <attribute>
+            <continuationChance>50</continuationChance>
             <hitMark>灼烧弹坑</hitMark>
+        </attribute>
+    </bullet>
+    <bullet>
+        <name>冰冷普通子弹</name>
+        <chainUnit/>
+        <attribute>
+            <continuationChance>50</continuationChance>
+        </attribute>
+    </bullet>
+    <bullet>
+        <name>烈焰普通子弹</name>
+        <chainUnit/>
+        <attribute>
+            <continuationChance>50</continuationChance>
         </attribute>
     </bullet>
     <bullet>

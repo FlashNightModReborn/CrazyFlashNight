@@ -345,6 +345,7 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 </Pickups>
 ```
 
+<a id="projectile-continuation"></a>
 ### 子弹首次有效命中后的续穿概率 `<continuationChance>`
 
 在 `data/items/bullets_cases.xml` 的 `<bullet><attribute>` 内填写百分数，允许值为 `0`、`25`、`50`、`75`、`100`。缺省或填 `0` 表示关闭续穿。其他值在加载时按关闭处理，专项测试会报告数据中的非法配置。联弹模板的 `attributeOverride` 使用相同的五档规则。普通直射弹和已对象化的枪式横纵联弹消费此字段；枪式联弹按最终全名使用既有的模板与单元体属性派生，显式组合属性优先。换弹种的配件和技能以发射时的最终弹种为准。
@@ -516,7 +517,7 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 联弹子弹名格式为 `"{模板前缀}-{单元体}"`（如 `横向联弹-普通子弹`），其弹壳/属性配置在 `bullets_cases.xml` 按全名查表。组合配置由两层声明在加载期派生（`ChainBulletConfigResolver`，挂在 `InfoLoader` 聚合之后、回调分发之前）：
 
 - **模板层** `<chainTemplate>`：`prefix`（联弹前缀）+ 可选 `shell`（`xOffset`/`yOffset`/`simulationMethod` + `casingMap` 的 `entry: material→casing` 矩阵，弹壳按**武器机匣**决定：机枪系→重机枪弹壳族、手枪系→手枪弹壳族，横/纵散布方向不影响弹壳）+ 可选 `attributeOverride`（**仅替换单元体已声明的键**，如横向系霰弹式发射 pierceLimit 特判 2）。
-- **单元体层**：在单元体自身 `<bullet>` 条目内声明 `<chainUnit><material>能量|加强|普通|无壳</material></chainUnit>`；材质未命中模板 casingMap（如 `无壳`）则该组合不派生弹壳。
+- **单元体层**：在单元体自身 `<bullet>` 条目内声明 `<chainUnit><material>能量|加强|普通|无壳</material></chainUnit>`；材质未命中模板 casingMap（如 `无壳`）则该组合不派生弹壳。只需派生属性时可写 `<chainUnit/>`，例如冰冷、烈焰普通子弹。实际挂载的 `单元体-…` 由素材库导出。
 - **合并契约**：显式 `"模板-单元体"` 条目始终优先，派生仅补缺（shellData/attributeData 按各自键独立判断）；movement 配置不可派生，必须显式（如 `横向拖尾追踪联弹-普通无壳子弹`）。
 - **审计**：物品+配件数据就绪后，递归扫描全部 `bullet` 键（覆盖 `data`/`data_ice`/`data_fire` 等变体、lifecycle、skill、配件 stats/skill），未声明模板/单元体或弹壳未解析发服务器告警。**边界**：AS2 代码内嵌子弹名不在审计范围（新增时人工核对）；配件词缀经 `PropertyOperators.mergeString` 前缀保留拼接动态合成组合——后缀必须是已声明单元体，任意已声明模板组合即被全量派生覆盖。
 - **武器补弹参数** `<fillrate>`（武器 `<data>` 内，可选；2026-06-12 起普及化为默认行为）：**缺省/`auto` = 默认**——纵向联弹按本次实际射击间隔（含枪械师点按/连按修正、配件改装后的运行时射速）生成整数分数 `分子=霰弹值-1`、`分母=ceil(间隔毫秒/每帧毫秒)`，通过 Bresenham 累加器在调度器有效间隔的第 `分母` 个更新 tick 补完；同 tick 内与下一发调度的先后顺序不作保证。高射速（有效间隔 1 tick，如 XM214）一帧补完；低射速（如磁稳贯穿弹改装后 interval 300ms+）率<1 隔帧补弹，2,3,2,… 的不均匀帧分布是预期行为。**正数 = 显式每帧补弹率**：允许小数，执行时向上定点化为 `ceil(fillrate×4096)/4096`，最小有效正数为 `1/4096`；低于该精度的配置仍按 `1/4096` 执行。技能等不经 WeaponFireCore 的直调路径无间隔戳 → 回退每帧 1 发旧行为。

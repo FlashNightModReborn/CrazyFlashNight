@@ -13,7 +13,7 @@ namespace CF7Launcher.Tests.Guardian
         public void TwoSharedTrianglesAndSixPiercingSpritesRetainTheirAuthoredRegistration()
         {
             var catalog = BulletVisualCatalog.Load(ProjectRoot());
-            Assert.Equal(8, catalog.Styles.Count);
+            Assert.Equal(15, catalog.Styles.Count);
             Assert.Equal(6, catalog.GunChainPrefixes.Count);
             Assert.True(catalog.TryOrdinary("普通子弹", out var plain));
             Assert.True(catalog.TryOrdinary("加强普通子弹", out var enhanced));
@@ -55,12 +55,48 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(catalog.TryGunChain("横向拖尾联弹-普通子弹", out _));
         }
 
+        [Fact]
+        public void NewOrdinaryFamiliesUseSharedOrSeparateSpritesAccordingToRegistration()
+        {
+            var catalog = BulletVisualCatalog.Load(ProjectRoot());
+            string[] shared = { "冰冷普通子弹", "烈焰普通子弹", "能量普通子弹" };
+            for (int i = 0; i < shared.Length; i++)
+            {
+                Assert.True(catalog.TryOrdinary(shared[i], out var ordinary));
+                Assert.Same(catalog.Styles[9 + i], ordinary);
+                Assert.True(ordinary.IsSprite);
+                foreach (string prefix in catalog.GunChainPrefixes)
+                {
+                    Assert.True(catalog.TryGunChain(prefix + "-" + shared[i], out var chain));
+                    Assert.Same(ordinary, chain);
+                }
+            }
+            Assert.True(catalog.TryOrdinary("普通无壳子弹", out var caseless));
+            Assert.True(catalog.TryGunChain("纵向联弹-普通无壳子弹", out var caselessChain));
+            Assert.Same(catalog.Styles[12], caseless);
+            Assert.Same(catalog.Styles[13], caselessChain);
+            Assert.NotEqual(caseless.Sprite.OffsetX, caselessChain.Sprite.OffsetX);
+            Assert.True(catalog.TryOrdinary("精制普通子弹", out var refined));
+            Assert.Same(catalog.Styles[8], refined);
+            foreach (string prefix in catalog.GunChainPrefixes)
+            {
+                Assert.True(catalog.TryGunChain(prefix + "-精制普通子弹", out var refinedChain));
+                Assert.Same(catalog.Styles[14], refinedChain);
+                Assert.NotEqual(refined.Sprite.OffsetY, refinedChain.Sprite.OffsetY);
+            }
+            Assert.False(catalog.TryGunChain("横向拖尾追踪联弹-普通无壳子弹", out _));
+            Assert.False(catalog.TryOrdinary("普通微波子弹", out _));
+        }
+
         [Theory]
         [InlineData("rect")]
         [InlineData("scale")]
         [InlineData("unmapped")]
         [InlineData("duplicate")]
         [InlineData("atlas-hash")]
+        [InlineData("cross-source")]
+        [InlineData("source-binding")]
+        [InlineData("missing-source-swf")]
         public void SpriteCatalogRejectsBrokenGeometryIdentityAndAtlasIntegrity(string mutation)
         {
             string root = ProjectRoot();
@@ -81,6 +117,13 @@ namespace CF7Launcher.Tests.Guardian
                 if (mutation == "unmapped") style["ordinaryLinkage"] = null;
                 if (mutation == "duplicate") style["ordinaryLinkage"] = "普通子弹";
                 if (mutation == "atlas-hash") document["atlas"]["sha256"] = new string('0', 64);
+                if (mutation == "cross-source") document["styles"][8]["sourceKey"] = "stock";
+                if (mutation == "source-binding") style["ordinarySource"] = document["styles"][3]["ordinarySource"].GetValue<string>();
+                if (mutation == "missing-source-swf")
+                {
+                    JsonArray sources = document["sources"].AsArray();
+                    sources.Remove(sources.Single(source => source["path"].GetValue<string>().EndsWith("/雾人整合特效.swf", StringComparison.Ordinal)));
+                }
                 File.WriteAllText(catalogPath, document.ToJsonString());
                 Assert.Throws<InvalidDataException>(() => BulletVisualCatalog.Load(fixture));
             }

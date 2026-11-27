@@ -434,7 +434,7 @@
       <diffusion>3</diffusion>
       <interval>75</interval>
       <velocity>55</velocity>
-      <bullet>普通子弹</bullet>
+      <bullet>精制普通子弹</bullet>
       <sound>mpx.wav</sound>
       <muzzle>冲锋枪枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -460,7 +460,7 @@
           <formula>1</formula>
           <status>unresolved</status>
           <displayEligible>false</displayEligible>
-          <inputDigest>fnv1a32:10bd0d7f</inputDigest>
+          <inputDigest>fnv1a32:945aa1f1</inputDigest>
           <auditRef>weapon:TTI MPX:data</auditRef>
         </data>
       </profiles>
@@ -484,7 +484,7 @@
       <diffusion>4</diffusion>
       <interval>85</interval>
       <velocity>30</velocity>
-      <bullet>普通子弹</bullet>
+      <bullet>精制普通子弹</bullet>
       <sound>pp19.wav</sound>
       <muzzle>冲锋枪枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -510,7 +510,7 @@
           <formula>1</formula>
           <status>confirmed</status>
           <displayEligible>true</displayEligible>
-          <inputDigest>fnv1a32:09dc1117</inputDigest>
+          <inputDigest>fnv1a32:4db51075</inputDigest>
           <auditRef>weapon:PP1901:data</auditRef>
         </data>
       </profiles>

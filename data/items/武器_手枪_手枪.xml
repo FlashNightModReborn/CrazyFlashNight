@@ -1160,7 +1160,7 @@
         <diffusion>1</diffusion>
         <interval>150</interval>
         <velocity>40</velocity>
-        <bullet>普通子弹</bullet>
+        <bullet>精制普通子弹</bullet>
         <sound>re_pistol_m1911.wav</sound>
         <muzzle>紧凑手枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -1186,7 +1186,7 @@
             <formula>1</formula>
             <status>confirmed</status>
             <displayEligible>true</displayEligible>
-            <inputDigest>fnv1a32:408f2fc4</inputDigest>
+            <inputDigest>fnv1a32:8584a17e</inputDigest>
             <auditRef>weapon:SIGP210:data</auditRef>
           </data>
         </profiles>
@@ -1210,7 +1210,7 @@
         <diffusion>3</diffusion>
         <interval>150</interval>
         <velocity>25</velocity>
-        <bullet>普通子弹</bullet>
+        <bullet>精制普通子弹</bullet>
         <sound>usp_unsil-1.wav</sound>
         <muzzle>紧凑手枪枪火</muzzle>
         <bullethit>火花</bullethit>
@@ -1236,7 +1236,7 @@
             <formula>1</formula>
             <status>confirmed</status>
             <displayEligible>true</displayEligible>
-            <inputDigest>fnv1a32:ddaf67d9</inputDigest>
+            <inputDigest>fnv1a32:0196e6fb</inputDigest>
             <auditRef>weapon:Type92G:data</auditRef>
           </data>
         </profiles>
