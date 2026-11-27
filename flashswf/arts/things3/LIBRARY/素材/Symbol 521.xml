@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 521" itemID="6577faef-000014dd" lastModified="1770223586" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 521" itemID="6577faef-000014dd" lastModified="1795806277" lastUniqueIdentifier="10">
   <timeline>
-    <DOMTimeline name="Symbol 521" currentFrame="240">
+    <DOMTimeline name="Symbol 521" currentFrame="69">
       <layers>
-        <DOMLayer name="Labels Layer" color="#D174B9">
+        <DOMLayer name="Labels Layer" color="#D174B9" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -10,7 +10,29 @@
             <DOMFrame index="1" name="a0" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" duration="101" keyMode="9728">
+            <DOMFrame index="2" duration="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
+_root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
+_root.效果("黄色音符",_parent._x,_parent._y,100);
+_root.效果("灯光增幅",_parent._x,_parent._y,100);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="64" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 吉他主攻防，附带较弱加血
+_root.敌人函数.吉他攻防增益(_parent, 0.117, 0.049);
+_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 600);
+]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="103" name="a1" labelType="name" keyMode="9728">
@@ -78,31 +100,125 @@ gotoAndPlay(_parent.近战招式);
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="34" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+function 喷火攻击(倍率,Z轴攻击范围)
+{
+	子弹属性 = _root.子弹属性初始化(this.攻击点);
+
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 5;
+	子弹属性.子弹散射度 = 1;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 = _parent.空手攻击力 * 倍率;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = Z轴攻击范围;
+	子弹属性.击倒率 = 30;
+
+	//子弹属性.最小霰弹值 = 3;
+
+	子弹属性.伤害类型 = "破击";
+	子弹属性.魔法伤害属性 = "热";
+
+	子弹属性.区域定位area = this.攻击点;
+
+	子弹属性.lightBinding = "area.heat";
+	子弹属性.lightCastId = {};
+	子弹属性.lightSourceSlot = 480;
+	子弹属性.lightFacing = _parent.方向 == "左" ? -1 : 1;
+	_root.子弹区域shoot传递(子弹属性);
+}]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.敌人函数.摇滚防御提升(_parent, 0.13, 10);
-_root.敌人函数.摇滚攻击提升(_parent, 0.038, 5);
-_root.效果("黄色音符",_parent._x,_parent._y,100);
-_root.效果("灯光增幅",_parent._x,_parent._y,100);
-]]></script>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" duration="3" keyMode="9728">
+            <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="39" keyMode="9728">
+            <DOMFrame index="37" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 吉他主攻防，附带较弱加血
-_root.敌人函数.吉他攻防增益(_parent, 0.117, 0.049);
-_root.敌人函数.摇滚集体加血(_parent, "键盘集体加血", 50, 900, 600);
-]]></script>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="40" duration="62" keyMode="9728">
+            <DOMFrame index="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="53" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="56" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="63" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="66" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[喷火攻击(0.8,30);]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="102" keyMode="9728">
@@ -621,672 +737,90 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="35" keyMode="9728">
+            <DOMFrame index="35" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-132.55" centerPoint3DY="185.35">
+                <DOMSymbolInstance libraryItemName="素材/透明元件" name="攻击点" centerPoint3DX="-57.95" centerPoint3DY="177.25">
                   <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-145.05" ty="172.85"/>
+                    <Matrix a="8.99624633789063" d="2.73887634277344" tx="-68.45" ty="152.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.6" y="-12.6"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
+            <DOMFrame index="37" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
+            <DOMFrame index="39" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-153.55" centerPoint3DY="175.35">
+                <DOMSymbolInstance libraryItemName="素材/透明元件" name="攻击点" centerPoint3DX="-57.95" centerPoint3DY="177.25">
                   <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-166.05" ty="162.85"/>
+                    <Matrix a="12.7237243652344" d="2.73887634277344" tx="-115.25" ty="152.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.6" y="-12.6"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="38" keyMode="9728">
+            <DOMFrame index="41" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="39" keyMode="9728">
+            <DOMFrame index="42" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-216.55" centerPoint3DY="167.95">
+                <DOMSymbolInstance libraryItemName="素材/透明元件" name="攻击点" centerPoint3DX="-57.95" centerPoint3DY="157.25">
                   <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-229.05" ty="155.45"/>
+                    <Matrix a="14.9587097167969" d="3.69364929199219" tx="-144" ty="144.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.6" y="-12.6"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
+            <DOMFrame index="46" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" keyMode="9728">
+            <DOMFrame index="47" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-262.55" centerPoint3DY="165.35">
+                <DOMSymbolInstance libraryItemName="素材/透明元件" name="攻击点" centerPoint3DX="-79.05" centerPoint3DY="125.45">
                   <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-275.05" ty="152.85"/>
+                    <Matrix a="15.5845794677734" d="4.73114013671875" tx="-173.35" ty="125.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.6" y="-12.65"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="43" keyMode="9728">
+            <DOMFrame index="57" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="44" keyMode="9728">
+            <DOMFrame index="58" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-229.55" centerPoint3DY="165.35">
+                <DOMSymbolInstance libraryItemName="素材/透明元件" name="攻击点" centerPoint3DX="-79.05" centerPoint3DY="125.45">
                   <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-242.05" ty="152.85"/>
+                    <Matrix a="13.5829772949219" d="4.73114013671875" tx="-147.5" ty="125.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.6" y="-12.65"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="45" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="47" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-288.55" centerPoint3DY="140.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-301.05" ty="127.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="48" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-142.55" centerPoint3DY="147.5">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-155.05" ty="135"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="51" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="53" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-313.5" centerPoint3DY="121.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-326" ty="108.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="56" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-267.55" centerPoint3DY="125.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-280.05" ty="112.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="57" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="59" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-148.55" centerPoint3DY="125.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-161.05" ty="112.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="61" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-256.55" centerPoint3DY="148.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-269.05" ty="135.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="62" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="63" keyMode="9728">
+            <DOMFrame index="63" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-207.55" centerPoint3DY="147.35">
+                <DOMSymbolInstance libraryItemName="素材/透明元件" name="攻击点" centerPoint3DX="-108.05" centerPoint3DY="112.45">
                   <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-220.05" ty="134.85"/>
+                    <Matrix a="10.94384765625" d="5.28607177734375" tx="-143.4" ty="119.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.6" y="-12.65"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="66" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-225.55" centerPoint3DY="190.55">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-238.05" ty="178.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="67" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="69" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-178.55" centerPoint3DY="167.95">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-191.05" ty="155.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -1421,681 +955,33 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#B697B0">
+        <DOMLayer name="Layer 4" color="#B697B0" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-53.55" centerPoint3DY="165.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-66.05" ty="152.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
+            <DOMFrame index="37" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-96.55" centerPoint3DY="175.35">
+                <DOMSymbolInstance libraryItemName="素材/透明元件" name="攻击点" centerPoint3DX="-61" centerPoint3DY="170.5">
                   <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-109.05" ty="162.85"/>
+                    <Matrix a="9.19891357421875" d="3.09806823730469" tx="-74.4" ty="150.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point x="12.6" y="-12.6"/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-            <DOMFrame index="38" keyMode="9728">
-              <elements/>
             </DOMFrame>
             <DOMFrame index="39" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-108.55" centerPoint3DY="167.95">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-121.05" ty="155.45"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="42" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-192.55" centerPoint3DY="156.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-205.05" ty="143.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="43" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="44" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-146.55" centerPoint3DY="162.5">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-159.05" ty="150"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="45" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="47" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-196.55" centerPoint3DY="147.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-209.05" ty="134.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="48" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-38.55" centerPoint3DY="139.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-51.05" ty="126.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="51" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="53" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-245.55" centerPoint3DY="125.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-258.05" ty="112.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="56" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-199.55" centerPoint3DY="127.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-212.05" ty="114.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="57" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="59" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-70.55" centerPoint3DY="125.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-83.05" ty="112.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="61" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-177.55" centerPoint3DY="128.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-190.05" ty="115.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="62" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="63" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-128.55" centerPoint3DY="127.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-141.05" ty="114.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="66" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-146.55" centerPoint3DY="170.55">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-159.05" ty="158.05"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="67" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="69" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-105.55" centerPoint3DY="87.7">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-118.05" ty="75.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="70" duration="170" keyMode="9728">
+            <DOMFrame index="40" duration="200" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="240" duration="7" name="烈炎炮" labelType="name" keyMode="9728">
@@ -2160,681 +1046,15 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#DECC3A">
+        <DOMLayer name="Layer 5" color="#DECC3A" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="15.25" centerPoint3DY="149.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="2.75" ty="137.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="37" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-20.75" centerPoint3DY="158.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-33.25" ty="146.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="38" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="39" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="15.25" centerPoint3DY="149.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="2.75" ty="137.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="40" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="42" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-96.75" centerPoint3DY="161.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-109.25" ty="149.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="43" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="44" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-40.75" centerPoint3DY="154.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-53.25" ty="142.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="45" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="47" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-89.75" centerPoint3DY="150.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-102.25" ty="138.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="48" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="50" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="21.25" centerPoint3DY="134.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="8.75" ty="122.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="51" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="53" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-177.75" centerPoint3DY="127.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-190.25" ty="115.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="54" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="56" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-120.75" centerPoint3DY="125.35">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-133.25" ty="112.85"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="57" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="59" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="12.25" centerPoint3DY="118.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-0.25" ty="106.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="60" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="61" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-108.75" centerPoint3DY="112.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-121.25" ty="100.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="62" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="63" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-59.75" centerPoint3DY="111.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-72.25" ty="99.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="64" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="66" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="-77.75" centerPoint3DY="154.8">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-90.25" ty="142.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="67" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="69" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="素材/近战子弹" centerPoint3DX="24.25" centerPoint3DY="100.6">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="11.75" ty="88.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   声音 = "";
-   霰弹值 = 5;
-   子弹散射度 = 5;
-   发射效果 = "";
-   子弹种类 = "近战子弹";
-   子弹威力 = _parent._parent.空手攻击力 * 0.3;
-   子弹速度 = 0;
-   击中地图效果 = "";
-   Z轴攻击范围 = 30;
-   击倒率 = 30;
-   击中后子弹的效果 = "空手攻击火花";
-   if(_parent._parent.是否为敌人 == true)
-   {
-      子弹敌我属性 = false;
-   }
-   else
-   {
-      子弹敌我属性 = true;
-   }
-   var myPoint = {x:this._x,y:this._y};
-   _parent.localToGlobal(myPoint);
-   _root.gameworld.globalToLocal(myPoint);
-   shootX = myPoint.x;
-   shootY = myPoint.y;
-   _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._parent._name,shootX,shootY,_parent._parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="70" duration="68" keyMode="9728">
+            <DOMFrame index="36" duration="102" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="138" keyMode="9728">
@@ -3274,7 +1494,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#8B3DB9">
+        <DOMLayer name="Layer 6" color="#8B3DB9" locked="true">
           <frames>
             <DOMFrame index="0" duration="237" keyMode="9728">
               <elements>
@@ -3813,7 +2033,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#56E79B">
+        <DOMLayer name="Layer 7" color="#56E79B" locked="true">
           <frames>
             <DOMFrame index="0" duration="138" keyMode="9728">
               <elements/>
@@ -4348,7 +2568,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#8876FB">
+        <DOMLayer name="Layer 8" color="#8876FB" locked="true">
           <frames>
             <DOMFrame index="0" duration="39" keyMode="9728">
               <elements/>
@@ -5081,7 +3301,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#8A45F5">
+        <DOMLayer name="Layer 9" color="#8A45F5" locked="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -5139,7 +3359,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
                     <Edge fillStyle0="2" fillStyle1="1" edges="
 !-686 2880|-695 2882!-695 2882|-693 2879!-693 2879|-686 2880"/>
                     <Edge fillStyle1="1" edges="
-!-3848 2780|-3830 2700!-3830 2700|-3727 2837!-3727 2837[-3727 2865 -3791 2865!-3791 2865|-3815 2860!-3815 2860[-3848 2833 -3848 2780!-3290 2673[-3203 2746 -3203 2782!-3203 2782[-3203 2815 -3305 2815!-3305 2815[-3351 2815 -3379 2801!-3379
+!-3830 2700|-3727 2837!-3727 2837[-3727 2865 -3791 2865!-3791 2865|-3815 2860!-3815 2860[-3848 2833 -3848 2780!-3848 2780|-3830 2700!-3290 2673[-3203 2746 -3203 2782!-3203 2782[-3203 2815 -3305 2815!-3305 2815[-3351 2815 -3379 2801!-3379
  2801|-3396 2777!-3396 2777[-3407 2755 -3407 2727!-3407 2727[-3388 2571 -3388 2545!-3388 2545[-3381 2597 -3290 2673"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
 !-3382 2750[-3382 2667 -3337 2667!-3337 2667|-3241 2735!-3241 2735[-3241 2745 -3281 2772!-3281 2772[-3320 2798 -3331 2798!-3331 2798[-3382 2798 -3382 2750"/>
@@ -5201,19 +3421,19 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
                     </FillStyle>
                   </fills>
                   <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-2884 3450|-2806 3561!-2806 3561[-2771 3605 -2705 3605!-2705 3605[-2606 3605 -2622 3550!-2622 3550[-2583 3580 -2583 3632!-2583 3632[-2583 3663 -2666 3665!-2666 3665|-2771 3660!-2771 3660|-3115 3687!-3115 3687|-3115 3685!-3115 3685[-2986
+ 3684 -2890 3455!-2890 3455[-2884 3455 -2884 3450"/>
                     <Edge fillStyle0="1" edges="
 !-3515 3742|-2437 3697!-2437 3697[-2440 3686 -2449 3674!-2449 3674[-2468 3648 -2468 3635!-2468 3635[-2468 3578 -2420 3545!-2420 3545[-2477 3536 -2530 3487!-2530 3487[-2578 3442 -2567 3403!-2567 3403[-2591 3426 -2635 3486!-2635 3486[-2672
  3535 -2711 3535!-2711 3535[-2757 3535 -2801 3475!-2801 3475[-2849 3407 -2849 3310!-2849 3310|-2836 3226!-2836 3226[-2852 3241 -2963 3420!-2963 3420[-3075 3602 -3092 3615!-3092 3615|-3117 3605!-3117 3605[-3181 3514 -3181 3435!-3181 3435
 [-3323 3577 -3370 3594!-3370 3594|-3603 3605!-3603 3605[-3801 3605 -3833 3585!-3833 3585[-3876 3557 -3891 3507!-3891 3507[-3907 3460 -3935 3445!-3935 3445[-3935 3455 -3948 3455!-3948 3455|-3994 3551!-3994 3551[-4042 3636 -4088 3635!-4088
  3635[-4169 3632 -4233 3648!-4233 3648[-4285 3662 -4299 3686!-4299 3686[-4271 3733 -4259 3741!-4259 3741[-4225 3765 -4114 3765!-4114 3765|-3667 3748"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!-3667 3748|-3765 3735!-3765 3735|-4049 3702!-4049 3702[-4023 3688 -3990 3658!-3990 3658[-3939 3613 -3931 3595!-3931 3595|-3842 3665!-3842 3665|-3746 3675!-3746 3675|-3678 3665!-3678 3665|-3608 3655!-3608 3655|-3448 3675!-3448 3675[-3433
- 3675 -3333 3630!-3333 3630[-3236 3586 -3203 3565!-3203 3565[-3160 3685 -3116 3685!-3116 3685|-3115 3687!-3115 3687|-3152 3690!-3152 3690|-3324 3695!-3324 3695[-3352 3696 -3515 3742"/>
-                    <Edge fillStyle1="2" edges="
-!-3515 3742|-3667 3748"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="
-!-3115 3687|-3115 3685!-3115 3685[-2986 3684 -2890 3455!-2890 3455[-2884 3455 -2884 3450!-2884 3450|-2806 3561!-2806 3561[-2771 3605 -2705 3605!-2705 3605[-2606 3605 -2622 3550!-2622 3550[-2583 3580 -2583 3632!-2583 3632[-2583 3663 -2666
- 3665!-2666 3665|-2771 3660!-2771 3660|-3115 3687"/>
+                    <Edge fillStyle0="2" edges="
+!-3667 3748|-3515 3742"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="
+!-3515 3742[-3352 3696 -3324 3695!-3324 3695|-3152 3690!-3152 3690|-3115 3687!-3115 3687|-3116 3685!-3116 3685[-3160 3685 -3203 3565!-3203 3565[-3236 3586 -3333 3630!-3333 3630[-3433 3675 -3448 3675!-3448 3675|-3608 3655!-3608 3655|-3678
+ 3665!-3678 3665|-3746 3675!-3746 3675|-3842 3665!-3842 3665|-3931 3595!-3931 3595[-3939 3613 -3990 3658!-3990 3658[-4023 3688 -4049 3702!-4049 3702|-3765 3735!-3765 3735|-3667 3748"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5230,21 +3450,21 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="
-!-2907 3676[-2876 3705 -2821 3706!-2821 3706|-3028 3725!-3028 3725[-3121 3725 -3191 3705!-3191 3705[-3230 3694 -3275 3690!-3275 3690[-3236 3665 -3189 3609!-3189 3609[-3145 3558 -3133 3523!-3133 3523[-3129 3562 -3089 3592!-3089 3592[-3043
- 3626 -2977 3635!-2977 3635[-2946 3639 -2907 3676"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
 !-3171 3658[-3139 3630 -3139 3605!-3139 3605[-3125 3629 -3000 3680!-3000 3680|-3171 3658"/>
                     <Edge fillStyle1="1" edges="
-!-2507 3535[-2503 3548 -2502 3617!-2502 3617[-2490 3683 -2430 3705!-2430 3705[-2449 3733 -2471 3740!-2471 3740|-2532 3745!-2532 3745|-2627 3740!-2627 3740[-2664 3732 -2702 3703!-2702 3703[-2672 3692 -2604 3633!-2604 3633[-2529 3569 -2507
- 3535"/>
+!-3191 3705[-3230 3694 -3275 3690!-3275 3690[-3236 3665 -3189 3609!-3189 3609[-3145 3558 -3133 3523!-3133 3523[-3129 3562 -3089 3592!-3089 3592[-3043 3626 -2977 3635!-2977 3635[-2946 3639 -2907 3676!-2907 3676[-2876 3705 -2821 3706!-2821
+ 3706|-3028 3725!-3028 3725[-3121 3725 -3191 3705"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
 !-2564 3630|-2558 3630!-2558 3630[-2558 3644 -2520 3710!-2520 3710|-2552 3710!-2552 3710[-2572 3700 -2603 3700!-2603 3700|-2564 3630"/>
                     <Edge fillStyle1="1" edges="
-!-4229 3575[-4198 3592 -4178 3615!-4178 3615[-4118 3596 -4037 3475!-4037 3475[-4005 3542 -3968 3593!-3968 3593[-3893 3692 -3782 3645!-3782 3645|-3769 3645!-3769 3645[-3810 3676 -3959 3705!-3959 3705[-4112 3735 -4242 3735!-4242 3735[-4285
- 3735 -4371 3711!-4371 3711[-4332 3693 -4293 3656!-4293 3656[-4248 3612 -4229 3575"/>
+!-2502 3617[-2490 3683 -2430 3705!-2430 3705[-2449 3733 -2471 3740!-2471 3740|-2532 3745!-2532 3745|-2627 3740!-2627 3740[-2664 3732 -2702 3703!-2702 3703[-2672 3692 -2604 3633!-2604 3633[-2529 3569 -2507 3535!-2507 3535[-2503 3548 -2502
+ 3617"/>
                     <Edge fillStyle0="1" fillStyle1="2" edges="
 !-4123 3659|-4054 3616!-4054 3616[-4056 3629 -4046 3645!-4046 3645[-4032 3666 -4033 3675!-4033 3675|-4123 3687!-4123 3687|-4181 3693!-4181 3693|-4123 3659"/>
+                    <Edge fillStyle1="1" edges="
+!-4229 3575[-4198 3592 -4178 3615!-4178 3615[-4118 3596 -4037 3475!-4037 3475[-4005 3542 -3968 3593!-3968 3593[-3893 3692 -3782 3645!-3782 3645|-3769 3645!-3769 3645[-3810 3676 -3959 3705!-3959 3705[-4112 3735 -4242 3735!-4242 3735[-4285
+ 3735 -4371 3711!-4371 3711[-4332 3693 -4293 3656!-4293 3656[-4248 3612 -4229 3575"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5620,7 +3840,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#DAE64B">
+        <DOMLayer name="Layer 10" color="#DAE64B" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -6542,7 +4762,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#52FCF4">
+        <DOMLayer name="Layer 11" color="#52FCF4" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -7512,7 +5732,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#F89AEE">
+        <DOMLayer name="Layer 12" color="#F89AEE" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -35660,7 +33880,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#FECFB8">
+        <DOMLayer name="Layer 13" color="#FECFB8" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -36240,7 +34460,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#03AFD7">
+        <DOMLayer name="Layer 14" color="#03AFD7" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -36850,7 +35070,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#69F2D9">
+        <DOMLayer name="Layer 15" color="#69F2D9" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -37355,7 +35575,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 16" color="#B647FB">
+        <DOMLayer name="Layer 16" color="#B647FB" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -37950,7 +36170,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#F1C7F5">
+        <DOMLayer name="Layer 17" color="#F1C7F5" locked="true">
           <frames>
             <DOMFrame index="0" duration="27" keyMode="9728">
               <elements/>
@@ -38440,7 +36660,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 18" color="#70F6D7">
+        <DOMLayer name="Layer 18" color="#70F6D7" locked="true">
           <frames>
             <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
@@ -39059,7 +37279,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#D4DD21">
+        <DOMLayer name="Layer 19" color="#D4DD21" locked="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -39774,7 +37994,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 20" color="#95D7A8">
+        <DOMLayer name="Layer 20" color="#95D7A8" locked="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -40237,7 +38457,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#2CEDA1">
+        <DOMLayer name="Layer 21" color="#2CEDA1" locked="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -41015,7 +39235,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 22" color="#CF2EDF">
+        <DOMLayer name="Layer 22" color="#CF2EDF" locked="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -41514,7 +39734,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#2BEBD4">
+        <DOMLayer name="Layer 23" color="#2BEBD4" locked="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -42229,7 +40449,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 24" color="#9B8884">
+        <DOMLayer name="Layer 24" color="#9B8884" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -42761,7 +40981,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 25" color="#BEB24E">
+        <DOMLayer name="Layer 25" color="#BEB24E" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -43632,7 +41852,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 26" color="#8DA27D">
+        <DOMLayer name="Layer 26" color="#8DA27D" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -44449,7 +42669,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 27" color="#AE21F8">
+        <DOMLayer name="Layer 27" color="#AE21F8" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -45014,7 +43234,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 28" color="#6968E2">
+        <DOMLayer name="Layer 28" color="#6968E2" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -45579,7 +43799,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 29" color="#8D56AF">
+        <DOMLayer name="Layer 29" color="#8D56AF" locked="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -46042,7 +44262,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 30" color="#2B99F6">
+        <DOMLayer name="Layer 30" color="#2B99F6" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -46778,7 +44998,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 31" color="#F8972A">
+        <DOMLayer name="Layer 31" color="#F8972A" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -47299,7 +45519,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 32" color="#B49D47">
+        <DOMLayer name="Layer 32" color="#B49D47" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -47990,7 +46210,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 33" color="#2FC5B9">
+        <DOMLayer name="Layer 33" color="#2FC5B9" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -48171,7 +46391,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 34" color="#C26279">
+        <DOMLayer name="Layer 34" color="#C26279" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -48394,7 +46614,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 35" color="#CFC9C8">
+        <DOMLayer name="Layer 35" color="#CFC9C8" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -48575,7 +46795,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 36" color="#E3D9F6">
+        <DOMLayer name="Layer 36" color="#E3D9F6" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -48756,7 +46976,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 37" color="#F8FF6D">
+        <DOMLayer name="Layer 37" color="#F8FF6D" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -48937,7 +47157,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#F9DD5D">
+        <DOMLayer name="Layer 38" color="#F9DD5D" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -49118,7 +47338,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#BFEF56">
+        <DOMLayer name="Layer 39" color="#BFEF56" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -49299,7 +47519,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 40" color="#A77BAF">
+        <DOMLayer name="Layer 40" color="#A77BAF" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -49522,7 +47742,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 41" color="#68CA8E">
+        <DOMLayer name="Layer 41" color="#68CA8E" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -49703,7 +47923,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 42" color="#DFB813">
+        <DOMLayer name="Layer 42" color="#DFB813" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -49884,7 +48104,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#40D677">
+        <DOMLayer name="Layer 43" color="#40D677" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -50065,7 +48285,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 44" color="#22AAB8">
+        <DOMLayer name="Layer 44" color="#22AAB8" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -50246,7 +48466,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 45" color="#C3A7C6">
+        <DOMLayer name="Layer 45" color="#C3A7C6" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -50427,7 +48647,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 46" color="#33D4B0">
+        <DOMLayer name="Layer 46" color="#33D4B0" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -50608,7 +48828,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 47" color="#CC96F1">
+        <DOMLayer name="Layer 47" color="#CC96F1" locked="true">
           <frames>
             <DOMFrame index="0" duration="86" keyMode="9728">
               <elements/>
@@ -50789,7 +49009,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 48" color="#C3EC6B">
+        <DOMLayer name="Layer 48" color="#C3EC6B" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -51480,7 +49700,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 49" color="#8DF616">
+        <DOMLayer name="Layer 49" color="#8DF616" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -52171,7 +50391,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 50" color="#87F392">
+        <DOMLayer name="Layer 50" color="#87F392" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -52550,7 +50770,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#FB1FD9">
+        <DOMLayer name="Layer 51" color="#FB1FD9" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -52941,7 +51161,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 52" color="#A850C3">
+        <DOMLayer name="Layer 52" color="#A850C3" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -53272,7 +51492,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 53" color="#E75BFB">
+        <DOMLayer name="Layer 53" color="#E75BFB" locked="true">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements>
@@ -53471,7 +51691,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 54" color="#9402F9">
+        <DOMLayer name="Layer 54" color="#9402F9" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -53754,7 +51974,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 55" color="#9A9657">
+        <DOMLayer name="Layer 55" color="#9A9657" locked="true">
           <frames>
             <DOMFrame index="0" duration="103" keyMode="9728">
               <elements>
@@ -53785,7 +52005,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 56" color="#BBCD1A">
+        <DOMLayer name="Layer 56" color="#BBCD1A" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -54116,7 +52336,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 57" color="#1799EC">
+        <DOMLayer name="Layer 57" color="#1799EC" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -54423,7 +52643,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 58" color="#4EA5C2">
+        <DOMLayer name="Layer 58" color="#4EA5C2" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -54754,7 +52974,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 59" color="#54EEAC">
+        <DOMLayer name="Layer 59" color="#54EEAC" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -55457,7 +53677,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 60" color="#B9E446">
+        <DOMLayer name="Layer 60" color="#B9E446" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -56160,7 +54380,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 61" color="#4CF16E">
+        <DOMLayer name="Layer 61" color="#4CF16E" locked="true">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -56851,7 +55071,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#C7ADD7">
+        <DOMLayer name="Sound Layer 0" color="#C7ADD7" locked="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -56864,7 +55084,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#CC9572">
+        <DOMLayer name="Sound Layer 1" color="#CC9572" locked="true">
           <frames>
             <DOMFrame index="0" duration="24" keyMode="9728">
               <elements/>
@@ -56877,7 +55097,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 2" color="#3CF1EF">
+        <DOMLayer name="Sound Layer 2" color="#3CF1EF" locked="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -56890,7 +55110,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 3" color="#A3D5B0">
+        <DOMLayer name="Sound Layer 3" color="#A3D5B0" locked="true">
           <frames>
             <DOMFrame index="0" duration="113" keyMode="9728">
               <elements/>
@@ -56903,7 +55123,7 @@ _root.敌人函数.摇滚集体加血(_parent, "主唱集体加血", 100, 900, 6
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 4" color="#C340E6">
+        <DOMLayer name="Sound Layer 4" color="#C340E6" locked="true">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements/>
