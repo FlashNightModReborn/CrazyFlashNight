@@ -94,20 +94,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEve
     public static function applyCorpseMotherRage(target:MovieClip):Number {
         if (target == null || String(target.兵种) != "敌人-普通尸母" || target.__corpseMotherRageTriggered === true) return 0;
         target.__corpseMotherRageTriggered = true;
+        if (typeof _root.效果 == "function") _root.效果("兽化碎裂烟雾", target._x, target._y, target._xscale, true);
 
-        var allies:Array = TargetCacheManager.findAlliesInRadius(target, 0, 100);
+        var targetZ:Number = Number(target.Z轴坐标);
+        if (isNaN(targetZ)) targetZ = Number(target._y);
+        var allies:Array = TargetCacheManager.findAlliesInCircle2D(target, 0, Number(target._x), targetZ, ArmorBreakZombieController.HEAL_RADIUS, null);
         var affected:Number = 0;
         for (var i:Number = 0; i < allies.length; i++) {
             var ally:MovieClip = allies[i];
             if (ally == null || !(ally.hp > 0) || ally.buffManager == null || typeof ally.buffManager.addBuffStack != "function") continue;
-            var dx:Number = Number(ally._x) - Number(target._x);
-            var allyZ:Number = Number(ally.Z轴坐标);
-            var targetZ:Number = Number(target.Z轴坐标);
-            if (isNaN(allyZ)) allyZ = Number(ally._y);
-            if (isNaN(targetZ)) targetZ = Number(target._y);
-            var dz:Number = allyZ - targetZ;
-            var distanceSquared:Number = dx * dx + dz * dz;
-            if (isNaN(distanceSquared) || distanceSquared > 10000) continue;
 
             HealApplier.applyHpCapped(ally, 10000, ally.hp满血值);
             var rage:MetaBuff = new MetaBuff([

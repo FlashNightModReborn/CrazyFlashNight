@@ -227,8 +227,10 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController {
         retireOld(target);
     }
 
-    private static function healAllies(center:MovieClip):Void {
-        var allies:Array = TargetCacheManager.findAlliesInRadius(center, 5, HEAL_RADIUS);
+    public static function healAllies(center:MovieClip):Void {
+        var centerZ:Number = Number(center.Z轴坐标);
+        if (isNaN(centerZ)) centerZ = Number(center._y);
+        var allies:Array = TargetCacheManager.findAlliesInCircle2D(center, 5, Number(center._x), centerZ, HEAL_RADIUS, null);
         if (allies == null) return;
         for (var i:Number = 0; i < allies.length; i++) {
             var ally:MovieClip = allies[i];

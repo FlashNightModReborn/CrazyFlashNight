@@ -30,10 +30,14 @@ class org.flashNight.arki.scene.NoahMotherEncounterTest {
     private static var saved:Object;
     private static var hits:Array;
     private static var sounds:Array;
+    private static var effects:Array;
     public static function runAllTests():Void {
         saved={world:_root.gameworld,hero:_root.控制目标,pause:_root.暂停,transition:_root.场景转换中,
-            spawn:_root.加载游戏世界人物,sound:_root.播放音效};
+            spawn:_root.加载游戏世界人物,sound:_root.播放音效,effect:_root.效果};
         _root.播放音效=function(id:String):Void {org.flashNight.arki.scene.NoahMotherEncounterTest.recordSound(id);};
+        _root.效果=function(kind:String,x:Number,y:Number,scale:Number,force:Boolean):Void {
+            org.flashNight.arki.scene.NoahMotherEncounterTest.effects.push({kind:kind,x:x,y:y,scale:scale,force:force});
+        };
         _root.暂停=false;_root.场景转换中=false;_root.控制目标="hero";
         StageManager.getInstance().isFailed=false;StageManager.instance.isFinished=false;
         _root.加载游戏世界人物=function(id:String,name:String,depth:Number,init:Object):MovieClip {
@@ -315,40 +319,46 @@ class org.flashNight.arki.scene.NoahMotherEncounterTest {
         u.空手攻击力=100;u.防御力=50;u.buffManager=new BuffManager(u,null);return u;
     }
     private static function testCorpseMotherRage():Void {
-        room();var cache:Object=TargetCacheManager;var oldFind:Function=cache.findAlliesInRadius;
+        room();effects=[];var cache:Object=TargetCacheManager;var oldFind:Function=cache.findAlliesInCircle2D;
         var numbers:Object=HitNumberBatchProcessor;var oldHeal:Function=numbers.enqueueHeal;
         numbers.enqueueHeal=function():Void {};
         var candidates:Array=[];var queryOk:Boolean=false;
-        cache.findAlliesInRadius=function(source:Object,interval:Number,radius:Number):Array {
-            queryOk=interval==0 && radius==100;
+        cache.findAlliesInCircle2D=function(source:Object,interval:Number,cx:Number,cy:Number,radius:Number):Array {
+            queryOk=interval==0 && cx==1000 && cy==300 && radius==180;
             var result:Array=[];
-            for(var i:Number=0;i<candidates.length;i++)if(FactionManager.areUnitsAllies(source,candidates[i]))result.push(candidates[i]);
+            for(var i:Number=0;i<candidates.length;i++){
+                var dx:Number=candidates[i]._x-cx;var dz:Number=candidates[i].Z轴坐标-cy;
+                if(FactionManager.areUnitsAllies(source,candidates[i]) && dx*dx+dz*dz<=radius*radius)result.push(candidates[i]);
+            }
             return result;
         };
         var mother:MovieClip=rageUnit(true,1000,300,0);mother.兵种="敌人-普通尸母";
         var near:MovieClip=rageUnit(true,1000,300,2000);
-        var edge:MovieClip=rageUnit(true,1100,300,1);
+        var edge:MovieClip=rageUnit(true,1180,300,1);
         var diagonal:MovieClip=rageUnit(true,1060,380,1);
-        var outside:MovieClip=rageUnit(true,1101,300,1);
-        var outsideZ:MovieClip=rageUnit(true,1000,401,1);
+        var outside:MovieClip=rageUnit(true,1181,300,1);
+        var outsideZ:MovieClip=rageUnit(true,1000,481,1);
         var opponent:MovieClip=rageUnit(false,1000,300,100);
         var dead:MovieClip=rageUnit(true,1000,300,0);
         candidates=[near,edge,diagonal,outside,outsideZ,opponent,dead];
         var affected:Number=DeathEventComponent.applyCorpseMotherRage(mother);
-        check(queryOk && affected==3,"mother death queries allies with an inclusive radius of 100");
+        check(queryOk && affected==3,"mother death queries allies within an inclusive 2D circle of radius 180");
+        check(effects.length==1 && effects[0].kind=="兽化碎裂烟雾" && effects[0].x==1000 && effects[0].y==300
+            && effects[0].scale==100 && effects[0].force===true,"mother death emits the shared green armor-break smoke once");
         check(near.hp==12000,"each trigger immediately restores up to 10000 HP");
         check(near.空手攻击力==200 && near.防御力==100 && near.buffManager.getBuffById("尸母暴怒").hudInfo.stacks==1,"first rage stack doubles attack and defense");
-        check(edge.buffManager.getBuffById("尸母暴怒")!=null && diagonal.buffManager.getBuffById("尸母暴怒")!=null,"axis and diagonal units exactly 100 away are included");
-        check(outside.hp==1 && outsideZ.hp==1 && outside.buffManager.getActiveBuffCount()==0 && outsideZ.buffManager.getActiveBuffCount()==0,"units beyond 100 on either axis receive neither healing nor rage");
+        check(edge.buffManager.getBuffById("尸母暴怒")!=null && diagonal.buffManager.getBuffById("尸母暴怒")!=null,"axis and diagonal units inside the 180-radius circle are included");
+        check(outside.hp==1 && outsideZ.hp==1 && outside.buffManager.getActiveBuffCount()==0 && outsideZ.buffManager.getActiveBuffCount()==0,"units beyond 180 on either axis receive neither healing nor rage");
         check(opponent.hp==100 && opponent.buffManager.getActiveBuffCount()==0,"opposite faction is excluded even at zero distance");
         check(dead.hp==0 && dead.buffManager.getActiveBuffCount()==0,"rage never resurrects a dead ally");
 
         var second:MovieClip=rageUnit(true,1000,300,0);second.兵种="敌人-普通尸母";second.respawn=true;
         DeathEventComponent.onDeath(second);
+        check(effects.length==2,"a different mother corpse also emits the green smoke");
         check(near.hp==20000,"repeated triggers retain the 10000 HP heal but cap at maximum HP");
         check(near.空手攻击力==300 && near.防御力==150 && near.buffManager.getActiveBuffCount()==1 && near.buffManager.getBuffById("尸母暴怒").hudInfo.stacks==2,"second death merges into one permanent two-stack buff");
         var hpAfter:Number=near.hp;DeathEventComponent.onDeath(second);
-        check(near.hp==hpAfter && near.空手攻击力==300,"a duplicate death event cannot settle the same corpse twice");
+        check(near.hp==hpAfter && near.空手攻击力==300 && effects.length==2,"a duplicate death event cannot settle the same corpse twice or replay its smoke");
         near.buffManager.update(10000);
         check(near.空手攻击力==300 && near.buffManager.getActiveBuffCount()==1,"rage has no expiry component");
         var nonMother:MovieClip=rageUnit(true,1000,300,0);nonMother.兵种="敌人-普通基因虫";
@@ -388,7 +398,7 @@ class org.flashNight.arki.scene.NoahMotherEncounterTest {
         mc.noahPose("空闲",1,0,"",0);mc._xscale=mc._yscale=72;mc._y=120;
         NoahMotherEncounter.teardown();if(world!=null)world.removeMovieClip();
         _root.gameworld=saved.world;_root.控制目标=saved.hero;_root.暂停=saved.pause;
-        _root.场景转换中=saved.transition;_root.加载游戏世界人物=saved.spawn;_root.播放音效=saved.sound;
+        _root.场景转换中=saved.transition;_root.加载游戏世界人物=saved.spawn;_root.播放音效=saved.sound;_root.效果=saved.effect;
         trace("NoahMotherEncounterTest Tests Passed: "+passed);
         trace("NoahMotherEncounterTest Tests Failed: "+failed);
         trace("NoahMotherEncounterTest Native Asset Loaded: true");
