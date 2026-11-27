@@ -1,0 +1,6 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.beastVariantAssetComplete = function():Void {
+    trace("FocusedTestRunId beast-variant Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId beast-variant Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.BeastVariantAssetTest.runAllTests();
