@@ -124,6 +124,54 @@ if (_parent.手枪2属性.power && _parent.__手枪搓招启用枪2)
 
 子弹敌我属性 = _parent.是否为敌人 == true ? false : true;
 
+function 手枪换弹()
+{
+	手枪射击许可 = false;
+	if (_parent._name == _root.控制目标)
+	{
+		if (_root.singleSubmit(使用弹夹名称, 1, {source:"reload", reason:"death_bloom", mergeScope:"operation"}))
+		{
+			_parent.手枪.value.shot = 0;
+			手枪射击许可 = true;
+		}
+	}
+	else
+	{
+		_parent.手枪.value.shot = 0;
+		手枪射击许可 = true;
+	}
+}
+function 手枪2换弹()
+{
+	手枪2射击许可 = false;
+	if (_parent._name == _root.控制目标)
+	{
+		if (_root.singleSubmit(使用弹夹名称_2, 1, {source:"reload", reason:"death_bloom", mergeScope:"operation"}))
+		{
+			_parent.手枪2.value.shot = 0;
+			手枪2射击许可 = true;
+		}
+	}
+	else
+	{
+		_parent.手枪2.value.shot = 0;
+		手枪2射击许可 = true;
+	}
+}
+
+if (手枪射击许可 && _parent.手枪.value.shot >= 弹夹容量)
+{
+	手枪射击许可 = false;
+	手枪换弹();
+}
+
+if (手枪2射击许可 && _parent.手枪2.value.shot >= 弹夹容量_2)
+{
+	手枪2射击许可 = false;
+	手枪2换弹();
+}
+
+
 
 ]]></script>
               </Actionscript>
@@ -210,6 +258,12 @@ onClipEvent (enterFrame) {
         换向计时器 = 0;
     }
     
+    // 余弹不足一次扣弹（非霰弹枪按联弹发数扣）：开火前就得能把弹夹换掉，否则弹夹会停在
+    // 「不够一次扣弹、也永远不触发换弹」的死角。手枪换弹 内有 singleSubmit + 许可互锁，无夹不刷屏。
+    if (_parent.手枪射击许可 && _parent._parent.手枪.value.shot + _parent.单发消耗 > _parent.弹夹容量) {
+        _parent.手枪换弹();
+    }
+    
     // ========== 手枪1射击逻辑 ==========
     if (_parent.手枪射击许可 && 
         当前已持续帧1 >= _parent.手枪射击间隔帧 && 
@@ -218,6 +272,11 @@ onClipEvent (enterFrame) {
         (_parent.手枪发数上限 <= 0 || 手枪1已发 < _parent.手枪发数上限)) {
         
         _parent._parent.手枪.value.shot += _parent.单发消耗;
+        
+        // 检查换弹：剩余不够一次扣弹也换（否则弹夹停在死角）
+        if (_parent._parent.手枪.value.shot + _parent.单发消耗 > _parent.弹夹容量) {
+            _parent.手枪换弹();
+        }
         
         
         // 更新UI子弹数
@@ -305,6 +364,10 @@ onClipEvent (enterFrame) {
 
     }
     
+    if (_parent.手枪2射击许可 && _parent._parent.手枪2.value.shot + _parent.单发消耗_2 > _parent.弹夹容量_2) {
+        _parent.手枪2换弹();
+    }
+    
     // ========== 手枪2射击逻辑 ==========
     if (_parent.手枪2射击许可 && 
         当前已持续帧2 >= _parent.手枪射击间隔帧_2 && 
@@ -313,6 +376,11 @@ onClipEvent (enterFrame) {
         (_parent.手枪发数上限_2 <= 0 || 手枪2已发 < _parent.手枪发数上限_2)) {
         
         _parent._parent.手枪2.value.shot += _parent.单发消耗_2;
+        
+        // 检查换弹（手枪2 路同上）
+        if (_parent._parent.手枪2.value.shot + _parent.单发消耗_2 > _parent.弹夹容量_2) {
+            _parent.手枪2换弹();
+        }
         
         
         // 更新UI子弹数
