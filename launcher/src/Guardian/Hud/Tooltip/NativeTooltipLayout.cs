@@ -345,6 +345,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 internal bool Underline;
                 internal int? FontSize;
                 internal string FontFace;
+                internal NativeTooltipFaction Faction;
                 internal int WidthPx;
                 /// <summary>含 letter-spacing 的精确宽（物理 px 浮点），绘制推进用。</summary>
                 internal float WidthF;
@@ -537,7 +538,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 return s.PaintOverride == null && s.Color == (run != null ? run.Color : null)
                     && s.Bold == font.Bold && s.Italic == font.Italic
                     && s.Underline == font.Underline
-                    && s.FontSize == font.FontSize && s.FontFace == font.FontFace;
+                    && s.FontSize == font.FontSize && s.FontFace == font.FontFace
+                    && s.Faction == (run != null ? run.Faction : NativeTooltipFaction.None);
             }
 
             /// <summary>追加字符的行宽增量（浮点，含 letter-spacing）：
@@ -575,6 +577,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         Underline = font.Underline,
                         FontSize = font.FontSize,
                         FontFace = font.FontFace,
+                        Faction = run != null ? run.Faction : NativeTooltipFaction.None,
                         WidthF = cw,
                         WidthPx = (int)Math.Round(cw)
                     });
@@ -676,7 +679,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     if (last != null && last.PaintOverride == null && s.PaintOverride == null && last.Color == s.Color
                         && last.Bold == s.Bold && last.Italic == s.Italic
                         && last.Underline == s.Underline
-                        && last.FontSize == s.FontSize && last.FontFace == s.FontFace)
+                        && last.FontSize == s.FontSize && last.FontFace == s.FontFace
+                        && last.Faction == s.Faction)
                     {
                         last.Text += s.Text;
                         last.WidthF += s.WidthF;
@@ -777,7 +781,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 Text = s.Text, PaintOverride = s.PaintOverride, Color = s.Color, Bold = s.Bold, Italic = s.Italic,
                 Underline = s.Underline, FontSize = s.FontSize, FontFace = s.FontFace,
-                WidthPx = s.WidthPx, WidthF = s.WidthF
+                Faction = s.Faction, WidthPx = s.WidthPx, WidthF = s.WidthF
             };
         }
 
@@ -897,6 +901,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     else
                         content.AddRange(row.Runs);
                     if (child) content.AddRange(row.Runs);
+                    content = ExpandFactionRuns(content);
                     int rowTextW = Math.Max(1, textW - indent - (child ? iconPx + iconGap : 0));
                     List<VisualLine> wrapped = WrapRuns(content, rowTextW, measure, lh);
                     for (int j = 0; j < wrapped.Count; j++)
@@ -955,7 +960,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 }
                 if (runs.Count > 0 && !EndsWithBreak(runs)) runs.Add(BreakRun());
                 if (empty) runs.Add(BreakRun());
-                else runs.AddRange(s.Runs);
+                else runs.AddRange(ExpandFactionRuns(s.Runs));
             }
             return runs;
         }
@@ -1730,38 +1735,74 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             return Math.Max(line.IconRect.Right, width);
         }
 
-        private static readonly System.Text.RegularExpressions.Regex ANamePattern =
+        private static readonly System.Text.RegularExpressions.Regex FactionNamePattern =
             new System.Text.RegularExpressions.Regex(
-                @"A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase
-                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
-        private static readonly System.Text.RegularExpressions.Regex WarlordNamePattern =
-            new System.Text.RegularExpressions.Regex(
-                @"军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b",
+                @"(A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b)|(军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b)|(诺亚|Noah)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase
                 | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
+        private static List<NativeTooltipRun> ExpandFactionRuns(IList<NativeTooltipRun> source)
+        {
+            var output = new List<NativeTooltipRun>();
+            if (source == null) return output;
+            foreach (NativeTooltipRun run in source)
+            {
+                if (run == null || string.IsNullOrEmpty(run.Text))
+                {
+                    output.Add(run);
+                    continue;
+                }
+                var matches = FactionNamePattern.Matches(run.Text);
+                if (matches.Count == 0)
+                {
+                    output.Add(run);
+                    continue;
+                }
+                int from = 0;
+                foreach (System.Text.RegularExpressions.Match match in matches)
+                {
+                    if (match.Index > from)
+                        output.Add(CopyRun(run, run.Text.Substring(from, match.Index - from),
+                            NativeTooltipFaction.None));
+                    NativeTooltipFaction faction = match.Groups[1].Success
+                        ? NativeTooltipFaction.ALegion
+                        : match.Groups[2].Success ? NativeTooltipFaction.Warlord : NativeTooltipFaction.Noah;
+                    output.Add(CopyRun(run, match.Value, faction));
+                    from = match.Index + match.Length;
+                }
+                if (from < run.Text.Length)
+                    output.Add(CopyRun(run, run.Text.Substring(from), NativeTooltipFaction.None));
+            }
+            return output;
+        }
+
+        private static NativeTooltipRun CopyRun(NativeTooltipRun source, string text,
+            NativeTooltipFaction faction)
+        {
+            var run = new NativeTooltipRun(text, source.Color, source.Bold,
+                source.Italic, source.Underline, source.FontSize, source.FontFace);
+            run.Faction = faction;
+            if (faction == NativeTooltipFaction.None) return run;
+            run.Color = faction == NativeTooltipFaction.ALegion ? Color.FromArgb(255, 0, 0)
+                : faction == NativeTooltipFaction.Warlord ? Color.FromArgb(255, 255, 224)
+                : Color.FromArgb(126, 182, 255);
+            run.Underline = true;
+            return run;
+        }
+
         internal static bool IsALegionSlice(VisualLine.Slice slice)
         {
-            if (slice.Color.HasValue && slice.Color.Value.R == 255
-                && slice.Color.Value.G == 0 && slice.Color.Value.B == 0) return true;
-            return ANamePattern.IsMatch(slice.Text ?? "");
+            return slice.Faction == NativeTooltipFaction.ALegion;
         }
 
         internal static bool IsWarlordSlice(VisualLine.Slice slice)
         {
-            return WarlordNamePattern.IsMatch(slice.Text ?? "");
+            return slice.Faction == NativeTooltipFaction.Warlord;
         }
-
-        private static readonly System.Text.RegularExpressions.Regex NoahNamePattern =
-            new System.Text.RegularExpressions.Regex(
-                @"诺亚|Noah",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase
-                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
         internal static bool IsNoahSlice(VisualLine.Slice slice)
         {
-            return NoahNamePattern.IsMatch(slice.Text ?? "");
+            return slice.Faction == NativeTooltipFaction.Noah;
         }
 
 
@@ -1943,10 +1984,11 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (hasName)
                     nameRuns.Add(new NativeTooltipRun(inlineEffect ? row.Name + "：" : row.Name, null, true));
                 if (singleFlow) nameRuns.AddRange(row.Runs);
+                nameRuns = ExpandFactionRuns(nameRuns);
                 var nameLines = WrapRuns(nameRuns,
                     acquisitionNoWrap ? int.MaxValue / 4 : nameTextW, measure, lh);
                 var effectLines = singleFlow ? new List<VisualLine>()
-                    : WrapRuns(row.Runs, Math.Max(1, nameTextW - effectIndent), measure, lh);
+                    : WrapRuns(ExpandFactionRuns(row.Runs), Math.Max(1, nameTextW - effectIndent), measure, lh);
                 int nameH = SumHeight(nameLines, lh);
                 int effectH = SumHeight(effectLines, lh);
                 int blockGap = nameH > 0 && effectH > 0 ? effectGap : 0;

@@ -865,11 +865,12 @@ test('CSS：彩色粗体继承、统一侧栏估宽与深灰背景', () => {
     assert(css.indexOf('rgba(32, 32, 32, 0.76)') >= 0, '主框和子框使用深灰半透明背景');
 });
 
-test('buildHtml：A兵团相关文案前插入徽标并加下划线', () => {
+test('buildHtml：A兵团关键词前插入徽标，普通前后文不跟着着色', () => {
     const doc = Doc.normalize({ version: 1, sections: [
         { role: 'intro', runs: [
             { text: '普通红字', color: '#B22222' },
-            { text: 'A兵团士兵', color: '#ff0000' },
+            { text: '纯红普通文本', color: '#FF0000' },
+            { text: 'A兵团士兵' },
             { text: 'AndyLaw', color: '#FF0000' },
             { text: 'Andy Law' },
             { text: 'Andy套装' },
@@ -878,16 +879,20 @@ test('buildHtml：A兵团相关文案前插入徽标并加下划线', () => {
     ] });
     const html = Doc.buildHtml(doc);
     const marks = html.match(/ntt-a-legion-mark/g) || [];
-    assert.strictEqual(marks.length, 5, '预设红字与明确 A兵团内容均有徽标');
-    assert(html.indexOf('<u>A兵团士兵</u>') >= 0, 'A兵团红字带下划线');
-    assert(html.indexOf('<u>AndyLaw</u>') >= 0, 'AndyLaw 红字带下划线');
-    assert(html.indexOf('<span style="color:#FF0000"><u>Andy Law</u></span>') >= 0,
-        '未着色 Andy Law 也带红色下划线');
-    assert(html.indexOf('<span style="color:#FF0000"><u>Andy套装</u></span>') >= 0,
-        '单独 Andy 也有徽标');
+    assert.strictEqual(marks.length, 5, '只有明确关键词有徽标，纯红文本不触发');
+    assert(html.indexOf('<span style="color:#FF0000"><u>A兵团</u></span>士兵') >= 0,
+        'A兵团带下划线，士兵保持普通文本');
+    assert(html.indexOf('<span style="color:#FF0000"><u>Andy</u></span>'
+        + '<span style="color:#FF0000">Law</span>') >= 0, 'AndyLaw 只给 Andy 加下划线');
+    assert(html.indexOf('<span style="color:#FF0000"><u>Andy</u></span> Law') >= 0,
+        'Andy Law 的空格与 Law 保持普通文本');
+    assert(html.indexOf('<span style="color:#FF0000"><u>Andy</u></span>套装') >= 0,
+        'Andy 后的套装保持普通文本');
     assert(html.indexOf('<span style="color:#FF0000"><u>安迪烙</u></span>') >= 0,
         '安迪烙也有徽标');
-    assert(html.indexOf('ntt-a-legion-mark') < html.indexOf('A兵团士兵'), '徽标在文字前');
+    assert(html.indexOf('ntt-a-legion-mark') < html.indexOf('<u>A兵团</u>'), '徽标在关键词前');
+    assert(html.indexOf('<span style="color:#FF0000">纯红普通文本</span>') >= 0,
+        '纯红普通文本保留原色但不加下划线');
     assert(html.indexOf('普通红字') < html.indexOf('ntt-a-legion-mark'), '其他红色系不插徽标');
 });
 
@@ -897,8 +902,9 @@ test('buildHtml：军阀文案使用黑黄徽标与淡金色下划线', () => {
     ] });
     const html = Doc.buildHtml(doc);
     assert(html.indexOf('ntt-warlord-mark') >= 0, '军阀内容带黑黄徽标');
-    assert(html.indexOf('<span style="color:#FFFFE0"><u>军阀士兵</u></span>') >= 0,
-        '军阀文字使用 #FFFFE0 下划线');
+    assert(html.indexOf('<span style="color:#FFFFE0"><u>军阀</u></span>'
+        + '<span style="color:#00FFFF">士兵</span>') >= 0,
+        '仅军阀关键词使用 #FFFFE0 下划线，士兵保留原格式');
 });
 
 test('阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰，丧尸取消特殊色', () => {
@@ -918,8 +924,9 @@ test('阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰
     assert.strictEqual(aMarks.length, aliases.length, '每个来源 NPC 都有 A兵团徽标');
     assert.strictEqual(warlordMarks.length, warlords.length, '每个军阀别名都有军阀徽标');
     for (const name of aliases) {
-        assert(html.indexOf('<span style="color:#FF0000"><b><u>' + name + '</u></b></span>') >= 0,
-            name + ' 来源行使用红色下划线');
+        const keyword = name === 'Andy Law' ? 'Andy' : name;
+        assert(html.indexOf('<span style="color:#FF0000"><b><u>' + keyword + '</u></b></span>') >= 0,
+            name + ' 来源行仅给关键词使用红色下划线');
     }
     for (const name of warlords) {
         assert(html.indexOf('<span style="color:#FFFFE0"><u>' + name + '</u></span>') >= 0,
@@ -939,11 +946,29 @@ test('buildHtml：诺亚文案使用蓝黄徽标与浅蓝下划线', () => {
     const html = Doc.buildHtml(doc);
     const marks = html.match(/ntt-noah-mark/g) || [];
     assert.strictEqual(marks.length, 2, '诺亚与 Noah 均带蓝黄徽标');
-    assert(html.indexOf('<span style="color:#7EB6FF"><u>诺亚士兵</u></span>') >= 0,
-        '诺亚文字使用浅蓝下划线');
-    assert(html.indexOf('<span style="color:#7EB6FF"><u>Noah Clone</u></span>') >= 0,
-        'Noah 英文别名使用浅蓝下划线');
-    assert(html.indexOf('ntt-noah-mark') < html.indexOf('诺亚士兵'), '诺亚徽标位于文字前');
+    assert(html.indexOf('<span style="color:#7EB6FF"><u>诺亚</u></span>'
+        + '<span style="color:#00FFFF">士兵</span>') >= 0,
+        '仅诺亚关键词使用浅蓝下划线，士兵保留原格式');
+    assert(html.indexOf('<span style="color:#7EB6FF"><u>Noah</u></span> Clone') >= 0,
+        'Noah 英文别名使用浅蓝下划线，Clone 保持普通文本');
+    assert(html.indexOf('ntt-noah-mark') < html.indexOf('<u>诺亚</u>'), '诺亚徽标位于关键词前');
+});
+
+test('buildHtml：长简介只标记关键词，不扩散到整段', () => {
+    const prefix = '由于实用性考虑，';
+    const suffix = '对自己的毒药也开发了成本更低的稀释版本。';
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: prefix + '丽丽丝' + suffix }] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    assert.strictEqual((html.match(/ntt-a-legion-mark/g) || []).length, 1,
+        '长段中每个关键词只插入一个徽标');
+    assert(html.indexOf(prefix + '<span class="ntt-a-legion-mark"') >= 0,
+        '关键词前的简介保持普通文本');
+    assert(html.indexOf('<span style="color:#FF0000"><u>丽丽丝</u></span>' + suffix) >= 0,
+        '关键词后的长简介保持普通文本');
+    assert(html.indexOf('<span style="color:#FF0000"><u>' + prefix) < 0,
+        '整段不得包进红色下划线');
 });
 
 test('buildHtml：物品标题始终普通，简介与商店仅按阵营白名单着色', () => {
@@ -963,8 +988,9 @@ test('buildHtml：物品标题始终普通，简介与商店仅按阵营白名�
     assert(html.indexOf('color:#FF0000"><u>普通物品</u>') < 0, '普通物品标题不使用红色下划线');
     assert(html.indexOf('普通物品') < html.indexOf('ntt-a-legion-mark'), '普通标题位于第一个徽标之前');
     for (const name of names) {
-        assert(html.indexOf('<span style="color:#FF0000"><b><u>' + name + '</u></b></span>') >= 0,
-            name + ' 商店名保留格式');
+        const keyword = name === 'Andy Law' ? 'Andy' : name;
+        assert(html.indexOf('<span style="color:#FF0000"><b><u>' + keyword + '</u></b></span>') >= 0,
+            name + ' 商店名仅给关键词保留格式');
     }
     assert(html.indexOf('<span style="color:#FF0000"><u>普通文本</u></span>') < 0, '普通文本不添加格式');
     assert(html.indexOf('<span style="color:#FF0000"><b><u>普通商店</u></b></span>') < 0, '普通商店不添加格式');

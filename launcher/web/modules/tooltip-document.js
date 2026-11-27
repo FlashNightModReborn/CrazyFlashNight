@@ -793,11 +793,7 @@
         return inner;
     }
 
-    function isALegionRun(run) {
-        if (!run || !run.text) return false;
-        if (typeof run.color === 'string' && run.color.toUpperCase() === '#FF0000') return true;
-        return /A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b/i.test(run.text);
-    }
+    var factionNamePattern = /(A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b)|(军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b)|(诺亚|Noah)/gi;
 
     function aLegionMarkHtml() {
         return '<span class="ntt-a-legion-mark" aria-hidden="true">'
@@ -806,9 +802,10 @@
             + '</svg></span>';
     }
 
-    function isWarlordRun(run) {
-        return run && run.text
-            && /军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b/i.test(run.text);
+    function slicedRunHtml(run, text) {
+        return runHtml({ text: text, color: isZombieRun(run) ? null : run.color,
+            bold: run.bold, italic: run.italic, underline: run.underline,
+            fontSize: run.fontSize, fontFace: run.fontFace });
     }
 
     function warlordMarkHtml() {
@@ -823,8 +820,11 @@
             + '</svg></span>';
     }
 
-    function isNoahRun(run) {
-        return run && run.text && /诺亚|Noah/i.test(run.text);
+    function factionRunHtml(run, text, faction) {
+        return runHtml({ text: text,
+            color: faction === 'noah' ? '#7EB6FF' : faction === 'warlord' ? '#FFFFE0' : '#FF0000',
+            bold: run.bold, italic: run.italic, underline: true,
+            fontSize: run.fontSize, fontFace: run.fontFace });
     }
 
     function noahMarkHtml() {
@@ -850,24 +850,23 @@
         var out = '';
         for (var i = 0; i < runs.length; i++) {
             var run = runs[i];
-            var aLegion = isALegionRun(run);
-            var warlord = isWarlordRun(run);
-            var noah = isNoahRun(run);
-            if (aLegion) out += aLegionMarkHtml();
-            if (warlord) out += warlordMarkHtml();
-            if (noah) out += noahMarkHtml();
-            if (warlord || aLegion || noah) {
-                out += runHtml({ text: run.text,
-                    color: noah ? '#7EB6FF' : warlord ? '#FFFFE0' : '#FF0000', bold: run.bold,
-                    italic: run.italic, underline: true,
-                    fontSize: run.fontSize, fontFace: run.fontFace });
-            } else if (isZombieRun(run)) {
-                out += runHtml({ text: run.text, color: null, bold: run.bold,
-                    italic: run.italic, underline: run.underline,
-                    fontSize: run.fontSize, fontFace: run.fontFace });
-            } else {
-                out += runHtml(run);
+            var from = 0;
+            var found = false;
+            var match;
+            factionNamePattern.lastIndex = 0;
+            while ((match = factionNamePattern.exec(run.text)) !== null) {
+                found = true;
+                if (match.index > from) {
+                    out += slicedRunHtml(run, run.text.substring(from, match.index));
+                }
+                var faction = match[1] ? 'aLegion' : match[2] ? 'warlord' : 'noah';
+                out += faction === 'aLegion' ? aLegionMarkHtml()
+                    : faction === 'warlord' ? warlordMarkHtml() : noahMarkHtml();
+                out += factionRunHtml(run, match[0], faction);
+                from = match.index + match[0].length;
             }
+            if (!found) out += slicedRunHtml(run, run.text);
+            else if (from < run.text.length) out += slicedRunHtml(run, run.text.substring(from));
         }
         return out;
     }

@@ -1523,6 +1523,43 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void FactionKeywords_SplitMixedRuns_WithoutRedColorHeuristic()
+        {
+            JObject payload = GunPayload("tt-faction-keyword-boundaries");
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = "前丽丽丝后\n" },
+                        new JObject { ["text"] = "纯红说明", ["color"] = "#FF0000" }
+                    }
+                }
+            };
+            var plan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(payload), FixedMeasure, 15, 1f, 1024, 576);
+            var slices = plan.IntroBodyLines.SelectMany(line => line.Slices).ToArray();
+            Assert.Equal(new[] { "前", "丽丽丝", "后", "纯红说明" },
+                slices.Select(slice => slice.Text).ToArray());
+            var keyword = slices.Single(slice => slice.Text == "丽丽丝");
+            Assert.True(NativeTooltipLayout.IsALegionSlice(keyword));
+            Assert.True(keyword.Underline);
+            Assert.Equal(Color.FromArgb(255, 0, 0), keyword.Color.Value);
+            foreach (var plain in slices.Where(slice => slice.Text == "前" || slice.Text == "后"))
+            {
+                Assert.False(NativeTooltipLayout.IsALegionSlice(plain));
+                Assert.False(plain.Underline);
+                Assert.Null(plain.Color);
+            }
+            var red = slices.Single(slice => slice.Text == "纯红说明");
+            Assert.False(NativeTooltipLayout.IsALegionSlice(red));
+            Assert.False(red.Underline);
+            Assert.Equal(Color.FromArgb(255, 0, 0), red.Color.Value);
+        }
+
+        [Fact]
         public void Paint_FactionText_InsertsMarksAndUnderlines()
         {
             JObject payload = GunPayload("tt-factions");

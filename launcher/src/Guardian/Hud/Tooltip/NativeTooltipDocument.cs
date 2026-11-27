@@ -32,6 +32,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         Sub
     }
 
+    internal enum NativeTooltipFaction
+    {
+        None,
+        ALegion,
+        Warlord,
+        Noah
+    }
+
     /// <summary>
     /// 已展开的样式 run。Text 为纯文本（内联标记已解析为样式键），
     /// '\n' 保留为硬换行（run 内可出现，布局时按行切分——切分/分片必须
@@ -50,6 +58,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         public bool Underline;
         public int? FontSize;
         public string FontFace;
+        internal NativeTooltipFaction Faction;
 
         public NativeTooltipRun() { }
         public NativeTooltipRun(string text, Color? color, bool bold)
