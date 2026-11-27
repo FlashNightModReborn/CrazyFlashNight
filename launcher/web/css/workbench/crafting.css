@@ -451,12 +451,35 @@
     gap:6px;
     width:100%;
 }
+.crafting-detail-view[data-preview-state="updating"] .crafting-detail-body {
+    opacity:.72;
+    transition:opacity var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.crafting-material-relocate-btn {
+    min-height:24px;
+    padding:0 7px;
+    border-color:var(--wb-accent);
+    color:var(--wb-accent);
+    font:600 11px/1 "Microsoft YaHei",sans-serif;
+    white-space:nowrap;
+}
+.crafting-organizer-gap-banner {
+    padding:5px 10px;
+    border-bottom:1px solid var(--wb-line);
+    border-left:3px solid var(--wb-accent);
+    background:var(--wb-accent-soft);
+    color:var(--wb-text);
+    font:600 11px/1.35 "Microsoft YaHei",sans-serif;
+}
 .crafting-material-search-row {
     display:grid;
-    grid-template-columns:minmax(90px,1fr) auto auto;
+    grid-template-columns:minmax(0,1fr) auto;
     align-items:center;
-    gap:6px;
+    gap:5px 6px;
     min-width:0;
+}
+.crafting-material-search-row .crafting-material-filters {
+    grid-column:1 / -1;
 }
 .crafting-material-sort { align-self:stretch; }
 .crafting-material-sort .workbench-dropdown-trigger {
@@ -1545,3 +1568,25 @@
     --wb-scrollbar-thumb-border:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-border-12); --wb-scrollbar-thumb-hover:var(--wb-crafting-crafting-panel-data-crafting-category-wb-scrollbar-thumb-hover-12);
 }
 .crafting-panel[data-crafting-category="大学装备"] .crafting-recipe-card { border-radius:6px 6px 2px 2px; }
+
+.crafting-material-head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+}
+.crafting-material-head h3 {
+    margin:0;
+}
+.crafting-battlebox-toggle {
+    flex:0 0 auto;
+    min-height:24px;
+    padding:2px 8px;
+    font-size:11px;
+    line-height:1.25;
+}
+.crafting-battlebox-toggle[aria-checked="true"] {
+    border-color:var(--wb-accent);
+    color:var(--wb-accent);
+    background:var(--wb-accent-soft);
+}

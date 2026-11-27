@@ -116,6 +116,19 @@
             _activeController.resetToList();
             return;
         }
+        // 伙伴 / 战宠 / 机械共用 PetTeamController 与同一份 snapshot/petLib，原位切换无闪白无重拉
+        if (!initial && PET_TABS[_activeTab] && PET_TABS[tab] && _activeController === PetTeamController && typeof PetTeamController.switchRoster === 'function') {
+            _activeTab = tab;
+            _lastTab = tab;
+            var inlineTabs = _tabsEl.querySelectorAll('.team-tab');
+            for (var k = 0; k < inlineTabs.length; k++) {
+                var isAct = inlineTabs[k].dataset.tab === tab;
+                inlineTabs[k].classList.toggle('team-tab-active', isAct);
+                inlineTabs[k].setAttribute('aria-current', isAct ? 'true' : 'false');
+            }
+            PetTeamController.switchRoster(tab, candidateFor(tab));
+            return;
+        }
         // teardown 前记录焦点是否在 tab 条内：旧 controller onClose 会销毁承载 _tabsEl 的
         // Shell，焦点掉 BODY；新 Shell 重建后按 WAI tabs 惯例把焦点还到「新激活」tab。
         // 程序化切换（initial 打开 / 候选路由）时 activeElement 本就不在 tabs 内，不触发恢复。

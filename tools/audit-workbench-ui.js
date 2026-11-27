@@ -929,6 +929,7 @@ var moduleThresholds = {
     // 控制器仅保留 item-use 组合/锁态 seam，协议与换面编排均已拆分。
     'launcher/web/modules/character-build.js':640,
     'launcher/web/modules/inventory-tuning-scope.js':200,
+    'launcher/web/modules/inventory-workbench-loadout-tuning.js':620,
     'launcher/web/modules/inventory-storage-workbench.js':960,
     'launcher/web/modules/inventory-workbench-preparation-menu.js':440,
     'launcher/web/modules/crafting-inventory-organizer.js':200,
@@ -1161,9 +1162,8 @@ if (exists(registryRel)) {
         'modules/equipment-tuning-loadout-lifecycle.js',
         'modules/equipment-tuning-source-marker.js',
         'modules/equipment-tuning-view.js',
-        'modules/inventory-tuning-scope.js'
-    ];
-    var buildFeatureOrder = [
+        'modules/inventory-tuning-scope.js',
+        'modules/character-build/character-build-drug-controls.js',
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
         'modules/character-build/character-build-session-contract.js',
@@ -1171,6 +1171,16 @@ if (exists(registryRel)) {
         'modules/character-build-session.js',
         'modules/loadout-picker/loadout-picker-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
+        'modules/character-build/character-build-customization.js',
+        'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-cooldown-channel.js',
+        'modules/character-build/character-build-stash-transport.js',
+        'modules/character-build/character-build-item-use.js',
+        'modules/character-build/character-build-stash-authority.js',
+        'modules/inventory-workbench-loadout-tuning.js'
+    ];
+    var buildFeatureOrder = [
+        'modules/character-appearance-preview.js',
         'modules/character-build/character-build-tuning-ports.js',
         'modules/character-build/character-build-candidate-tooltip.js',
         'modules/loadout-picker/loadout-picker-candidate-state.js',
@@ -1191,11 +1201,7 @@ if (exists(registryRel)) {
         'modules/character-build/character-build-pose.js',
         'modules/character-build/character-build-candidate-eligibility.js',
         'modules/character-build/character-build-projection.js',
-        'modules/character-build/character-build-transport.js',
-        'modules/character-build/character-build-stash-transport.js',
-        'modules/character-build/character-build-item-use.js',
         'modules/character-build/character-build-item-use-channel.js',
-        'modules/character-build/character-build-stash-authority.js',
         'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js'
     ];

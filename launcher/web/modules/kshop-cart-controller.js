@@ -171,6 +171,7 @@
             probeAccept:function(offer) { return self.probeAccept(offer); },
             onCartSinkClick:function() { self.onCartSinkClick(); },
             onCheckout:function() { self.openSettlement(); },
+            onQuickCheckout:function() { self.quickCheckout(); },
             render:function() { self.render(); if (options.renderPurchased) options.renderPurchased(); }
         });
         return this._composition.view;
@@ -277,6 +278,10 @@
     };
 
     CartController.prototype._commitCart = function(next) {
+        this._cartRevision = (this._cartRevision || 0) + 1;
+        this._previewRevision++;
+        this._previewBusy = false;
+        this._preview = null;
         this._intent.replaceCart(next);
         this.render();
         this._intent.markDirty();
@@ -325,9 +330,17 @@
             return row;
         }
         var subtotal = Number(item.price) * cartItem.qty;
+        var stackable = this._state.isStackable(item);
+        var qtyHtml = stackable
+            ? '<span class="kshop-cart-qty kshop-cart-stepper">'
+                + '<button class="kshop-cart-step-btn" type="button" data-step="-1" aria-label="减少 1">−</button>'
+                + '<b>×' + cartItem.qty + '</b>'
+                + '<button class="kshop-cart-step-btn" type="button" data-step="1" aria-label="增加 1">+</button>'
+                + '</span>'
+            : '<span class="kshop-cart-qty"><b>×' + cartItem.qty + '</b></span>';
         row.innerHTML = '<span class="kshop-cart-thumb">' + this._intent.iconHtml(item.icon, 'kshop-row-icon') + '</span>'
             + '<span class="kshop-cart-copy"><b class="kshop-cart-name">' + this._intent.escapeHtml(item.displayname) + '</b><small>K ' + item.price + ' / 件</small></span>'
-            + '<span class="kshop-cart-qty"><b>×' + cartItem.qty + '</b></span>'
+            + qtyHtml
             + '<span class="kshop-cart-sub">' + subtotal + '</span>'
             + '<button class="kshop-cart-remove-btn" type="button" data-audio-cue="back">×</button>';
         return row;
@@ -338,13 +351,21 @@
         var item = this._state.findCatalogItem(Number(row.getAttribute('data-idx')));
         if (item) Workbench.EntityTile.bindActivation(row, {
             itemName:item.displayname,
-            label:'查看商品详情；移除操作使用行内按钮',
+            label:'查看商品详情；数量与移除操作使用行内按钮',
             inspectable:true,
             actionable:true,
             onActivate:function() {
                 if (self._intent.inspect) self._intent.inspect(Number(row.getAttribute('data-idx')), row);
             }
         });
+        var stepButtons = row.querySelectorAll('.kshop-cart-step-btn');
+        for (var s = 0; s < stepButtons.length; s++) {
+            stepButtons[s].addEventListener('click', function(event) {
+                event.stopPropagation();
+                var step = Number(event.currentTarget.getAttribute('data-step')) || 0;
+                if (step) self.adjust(Number(row.getAttribute('data-idx')), step, false);
+            });
+        }
         var remove = row.querySelector('.kshop-cart-remove-btn');
         if (remove) {
             remove.setAttribute('aria-label', '从购物车移除'
@@ -358,10 +379,59 @@
 
     CartController.prototype.openSettlement = function() {
         if (!this._settlement || !this._cart().length || !this._state.canStartWrite()) return;
+        if (this._previewBusy) {
+            this._previewRevision++;
+            this._previewBusy = false;
+            this._previewQueued = false;
+        }
         var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
         if (A && typeof A.cue === 'function') A.cue('open');
         this._settlement.show();
         this.requestPreview();
+    };
+
+    CartController.prototype.quickCheckout = function() {
+        if (!this._cart().length || !this._state.canStartWrite() || this._previewBusy) return;
+        if (!this._intent.openQuickCheckoutModal) { this.openSettlement(); return; }
+        var self = this;
+        this._previewBusy = true;
+        var revision = ++this._previewRevision;
+        var cartRev = this._cartRevision || 0;
+        this._intent.requestShop('checkoutPreview', {v:1, cart:this.buildPayload()}, function(resp) {
+            if (revision !== self._previewRevision || cartRev !== (self._cartRevision || 0)) return;
+            self._previewBusy = false;
+            if (!validPreview(resp)) {
+                if (self._settlement) {
+                    self._settlement.show();
+                    self._settlement.setError(self._intent.errorMessage('checkout', resp && resp.error));
+                }
+                return;
+            }
+            if (!resp.canCommit) {
+                if (self._settlement) {
+                    self._settlement.show();
+                    self._preview = resp;
+                    self._settlement.setPreview(resp);
+                }
+                return;
+            }
+            self._preview = resp;
+            self._intent.openQuickCheckoutModal(resp, function() {
+                if (cartRev !== (self._cartRevision || 0)
+                        || !self._preview || self._preview.checkoutToken !== resp.checkoutToken) {
+                    self._intent.toast('购物车已变动，请重新结账。', 'warning');
+                    return;
+                }
+                var token = self._preview.checkoutToken;
+                self._preview = null;
+                self._intent.commitCheckout(token);
+            }, function() {
+                if (!self._settlement || cartRev !== (self._cartRevision || 0)) return;
+                self._settlement.show();
+                self._preview = resp;
+                self._settlement.setPreview(resp);
+            });
+        });
     };
 
     CartController.prototype.closeSettlement = function() {

@@ -1006,4 +1006,49 @@ test('Crafting commit binds every equipment receipt field to the frozen prototyp
     }
 });
 
+test('Crafting BattleBox opt-in validates snapshot flag, requirement routes, acceptedPlan echo, and delivery exclusion', () => {
+    const snap = snapshotResponse();
+    snap.battleBoxAccessible = true;
+    assert.strictEqual(Runtime.validateBusinessResponse(snap,
+        {cmd:'snapshot',metadata:{payload:{v:1,category:'武器合成'}}}),true);
+    const badSnap = clone(snap);
+    badSnap.battleBoxAccessible = 'yes';
+    assert.strictEqual(Runtime.validateBusinessResponse(badSnap,
+        {cmd:'snapshot',metadata:{payload:{v:1,category:'武器合成'}}}),false);
+
+    for (const bbKind of ['battlebox','bag_and_battlebox','drug_and_battlebox','bag_drug_and_battlebox']) {
+        const preview = routedPreviewResponse({material:bbKind,delivery:'bag',mode:'insert',slot:3});
+        preview.useBattleBox = true;
+        preview.acceptedPlan.useBattleBox = true;
+        assert.strictEqual(Runtime.validateBusinessResponse(preview,
+            {cmd:'preview',metadata:{payload:{recipeIndex:0,craftCount:1,useBattleBox:true}}}),true,bbKind);
+        const commit = commitResponse(preview);
+        assert.strictEqual(Runtime.validateBusinessResponse(commit,{cmd:'commit'}),true,bbKind);
+    }
+
+    const drift = routedPreviewResponse({material:'battlebox',delivery:'bag',mode:'insert',slot:3});
+    drift.useBattleBox = true;
+    assert.strictEqual(Runtime.validateBusinessResponse(drift,
+        {cmd:'preview',metadata:{payload:{recipeIndex:0,craftCount:1,useBattleBox:true}}}),false);
+
+    const badDelivery = routedPreviewResponse({material:'battlebox',delivery:'battlebox',mode:'insert',slot:0});
+    badDelivery.useBattleBox = true;
+    badDelivery.acceptedPlan.useBattleBox = true;
+    assert.strictEqual(Runtime.validateBusinessResponse(badDelivery,
+        {cmd:'preview',metadata:{payload:{recipeIndex:0,craftCount:1,useBattleBox:true}}}),false);
+
+    const optOutBbRoute = routedPreviewResponse({material:'battlebox',delivery:'bag',mode:'insert',slot:3});
+    assert.strictEqual(Runtime.validateBusinessResponse(optOutBbRoute,
+        {cmd:'preview',metadata:{payload:{recipeIndex:0,craftCount:1}}}),false);
+
+    const planFlagOnly = routedPreviewResponse({material:'bag',delivery:'bag',mode:'insert',slot:3});
+    planFlagOnly.acceptedPlan.useBattleBox = true;
+    assert.strictEqual(Runtime.validateBusinessResponse(planFlagOnly,
+        {cmd:'preview',metadata:{payload:{recipeIndex:0,craftCount:1}}}),false);
+
+    const drugInsert = routedPreviewResponse({material:'bag',delivery:'drug',mode:'insert',slot:2});
+    assert.strictEqual(Runtime.validateBusinessResponse(drugInsert,
+        {cmd:'preview',metadata:{payload:{recipeIndex:0,craftCount:1}}}),true);
+});
+
 console.log('Crafting runtime identity boundary ' + passed + '/' + passed + ' passed');

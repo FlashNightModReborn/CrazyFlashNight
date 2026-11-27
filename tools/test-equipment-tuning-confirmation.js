@@ -35,13 +35,12 @@ test('player-facing choices and persistent boundary use the decided language', (
         '批量、连锁与卸下全部始终需要确认'
     );
     const help = Confirmation.helpDetail();
-    assert.ok(help.includes('逐次确认'));
-    assert.ok(help.includes('单件快捷'));
+    assert.ok(help.includes('直接生效'));
     assert.ok(help.includes(Confirmation.BOUNDARY_TEXT));
     assert.ok(!help.includes('安全 / 快速'));
     const spec = Confirmation.helpSpec();
     assert.strictEqual(spec.kind, 'equipment-tuning-help');
-    assert.ok(spec.message.includes('不会解锁配件能力'));
+    assert.ok(spec.message.includes('不会改变当前状态'));
     assert.ok(spec.detail.includes(Confirmation.BOUNDARY_TEXT));
 });
 

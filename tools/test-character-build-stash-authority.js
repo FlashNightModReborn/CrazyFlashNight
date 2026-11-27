@@ -333,4 +333,47 @@ check('finalize on a borrowed authority is a no-op for the session owner', funct
         'borrowed finalize must not issue a second loadout finalize');
 });
 
+check('acquireSession opens headless loadout session without item_use traffic and shares generation with stash', function() {
+    const run = harness();
+    const sessions = [];
+    run.authority.acquireSession(handle => sessions.push(handle));
+    assert.strictEqual(run.sent.length, 1);
+    assert.strictEqual(run.sent[0].domain, 'loadout');
+    assert.strictEqual(run.sent[0].cmd, 'snapshot');
+    run.router.handleResponse(commonFields(run.sent[0], {payload:snapshotPayload()}));
+    assert.strictEqual(sessions.length, 1);
+    assert.strictEqual(sessions[0].headless, true);
+    assert.strictEqual(sessions[0].generation, 3);
+    assert.strictEqual(typeof sessions[0].session.subscribe, 'function');
+    assert.strictEqual(run.sent.filter(m => m.domain === 'item_use').length, 0,
+        'standalone loadout session open must not issue item_use requests');
+    const stashHandles = [];
+    run.authority.acquire(handle => stashHandles.push(handle));
+    assert.strictEqual(stashHandles.length, 1);
+    assert.strictEqual(stashHandles[0].generation, 3,
+        'subsequent stash acquire reuses the same headless loadout generation');
+    assert.strictEqual(run.sent.filter(m => m.cmd === 'snapshot').length, 1);
+    run.authority.destroy();
+});
+
+check('acquireSession borrows live Build sessionAuthority without opening a second generation', function() {
+    const fakeSession = {getState:() => 'idle', getSessionGeneration:() => 17};
+    const fakeMutations = {isPending:() => false};
+    const build = {
+        sessionAuthority:function() {
+            return {session:fakeSession, mutations:fakeMutations, panelInstanceId:'panel.workbench.7', generation:17};
+        }
+    };
+    const run = harness({build:build});
+    const sessions = [];
+    run.authority.acquireSession(handle => sessions.push(handle));
+    assert.strictEqual(sessions.length, 1);
+    assert.strictEqual(sessions[0].headless, false);
+    assert.strictEqual(sessions[0].session, fakeSession);
+    assert.strictEqual(sessions[0].mutations, fakeMutations);
+    assert.strictEqual(sessions[0].generation, 17);
+    assert.strictEqual(run.sent.length, 0);
+    run.authority.destroy();
+});
+
 process.stdout.write('CharacterBuild stash authority: ' + passed + ' checks passed\n');

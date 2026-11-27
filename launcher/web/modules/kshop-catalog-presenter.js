@@ -218,7 +218,10 @@
             itemName:item ? item.displayname : '',
             label:card.getAttribute('aria-label') || '',
             selected:this._state.getSelectedIdx && this._state.getSelectedIdx() === idx,
+            inspectable:!!item,
+            actionable:!!item && !this.isLocked(item) && item.type !== '非卖品' && !isAtLimit(item),
             disabled:!item || this.isLocked(item) || item.type === '非卖品' || isAtLimit(item),
+            onBlocked:function() { self._explainBlockedCard(item); },
             onActivate:function(event) { self._activateCard(event); }
         });
         var addButton = card.querySelector('.kshop-add-btn');
@@ -230,11 +233,26 @@
         }
     };
 
+    CatalogPresenter.prototype._explainBlockedCard = function(item) {
+        if (!item) return;
+        var reason = item.type === '非卖品' ? '该商品为非卖品，暂不支持购买。'
+            : isAtLimit(item) ? '该商品已达持有上限，暂时无法继续购买。'
+            : this.isLocked(item) ? '需要达到 Lv.' + item.level + ' 才能购买“' + item.displayname + '”。'
+            : '';
+        if (reason && this._intent.toast) this._intent.toast(reason, 'warning');
+        var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+        if (A && typeof A.cue === 'function') A.cue('illegal');
+    };
+
     CatalogPresenter.prototype._activateCard = function(event) {
         if (event.target.closest && event.target.closest('button')) return;
         if (this._intent.consumeDragClick && this._intent.consumeDragClick()) return;
         var item = this.find(Number(event.currentTarget.getAttribute('data-idx')));
-        if (!item || this.isLocked(item) || item.type === '非卖品' || isAtLimit(item)) return;
+        if (!item) return;
+        if (this.isLocked(item) || item.type === '非卖品' || isAtLimit(item)) {
+            this._explainBlockedCard(item);
+            return;
+        }
         if (this._intent.select) this._intent.select(item, event.currentTarget);
         if (!this._state.canEdit || !this._state.canEdit()) return;
         if (this._intent.dispatchAdd) this._intent.dispatchAdd(item, 'single_click');

@@ -30,7 +30,7 @@ var BartendingPanel = (function() {
     var _audioLog = [];
     var _revealed = false;
     var _matched = null, _preview = null;
-    var _busy = false, _previewBusy = false, _generation = 0;
+    var _busy = false, _previewBusy = false, _generation = 0, _previewSeq = 0;
     var _commitFeedback = null;
 
     var TOTAL_SLOT_MAX = 20;
@@ -277,7 +277,7 @@ var BartendingPanel = (function() {
 
     function mount(shellEl, deps) {
         _host = deps;
-        _generation++;
+        _generation++; _previewSeq++;
         stopShakeTimerOnly();
         _snapshot = null; _spec = null; _specFailed = false;
         _materials = null; _materialsBusy = false; _materialsFailed = false;
@@ -295,7 +295,7 @@ var BartendingPanel = (function() {
     }
 
     function unmount() {
-        _generation++;
+        _generation++; _previewSeq++;
         stopShakeTimerOnly();
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _spec = null; _preview = null;
@@ -396,6 +396,7 @@ var BartendingPanel = (function() {
 
     function resetMix() {
         stopShakeTimerOnly();
+        _previewSeq++; _previewBusy = false;
         _shaking = false;
         _shakeElapsedMs = 0;
         _shakeStepAccumMs = 0;
@@ -723,14 +724,15 @@ var BartendingPanel = (function() {
 
     function requestPreview() {
         if (!_matched || _busy) return;
+        var seq = ++_previewSeq;
         _previewBusy = true; renderStation();
         var generation = _generation;
         var recipeIndex = _matched.recipe.recipeIndex;
         var techniqueSig = _matched.technique ? JSON.stringify(_matched.technique) : '';
         var payload = {category:'调酒', recipeIndex:recipeIndex, craftCount:1};
         if (_matched.technique) payload.technique = _matched.technique;
-        _host.request('preview', payload, function(response) {
-            if (generation !== _generation || !_el) return;
+        var callId = _host.request('preview', payload, function(response) {
+            if (generation !== _generation || seq !== _previewSeq || !_el) return;
             _previewBusy = false;
             if (!_matched || Number(_matched.recipe.recipeIndex) !== Number(recipeIndex)) return;
             var current = _matched.technique ? JSON.stringify(_matched.technique) : '';
@@ -743,6 +745,27 @@ var BartendingPanel = (function() {
             }
             renderStation();
         });
+        if (!callId && seq === _previewSeq) {
+            _previewBusy = false;
+            _preview = null;
+            _commitFeedback = errorMessage('disconnected');
+            renderStation();
+        }
+    }
+
+    function onBattleBoxChanged() {
+        if (_busy || !_el) return false;
+        _previewSeq++;
+        _commitFeedback = null;
+        if (_revealed && _matched) {
+            if (_preview) _preview = Object.assign({}, _preview, {canCommit:false, craftToken:''});
+            requestPreview();
+        } else {
+            _preview = null;
+            _previewBusy = false;
+            renderStation();
+        }
+        return true;
     }
 
     function commit() {
@@ -779,6 +802,7 @@ var BartendingPanel = (function() {
 
     function unsealIfRevealed() {
         if (_revealed) {
+            _previewSeq++; _previewBusy = false;
             _revealed = false;
             _mix.shake = 'none';
             _matched = null;
@@ -1698,7 +1722,7 @@ var BartendingPanel = (function() {
         var confirm = document.createElement('button');
         confirm.type = 'button';
         confirm.className = 'bart-confirm';
-        confirm.textContent = _busy ? '调制中…' : '上酒';
+        confirm.textContent = _busy ? '调制中…' : _previewBusy ? '核算中…' : '上酒';
         var committable = _revealed && !!_matched && !!_preview && _preview.canCommit && !_busy && !_previewBusy;
         confirm.disabled = !committable;
         if (!committable) confirm.setAttribute('aria-disabled', 'true');
@@ -1930,7 +1954,9 @@ var BartendingPanel = (function() {
         mount:mount,
         unmount:unmount,
         refresh:refresh,
+        onBattleBoxChanged:onBattleBoxChanged,
         advanceShake:function(ms) { advanceShakeInternal(ms); },
+        isCommitting:function() { return _busy; },
         isBusy:function() { return _busy || _previewBusy; },
         debugState:function() { return {
             filter:{tab:_filter.tab, value:_filter.value},

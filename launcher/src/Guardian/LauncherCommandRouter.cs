@@ -5753,7 +5753,9 @@ namespace CF7Launcher.Guardian
                         != null
                     || _preparationChildReturn.Pending
                     || (_equipmentTuningTask != null
-                        && _equipmentTuningTask.HasBoundPanel))
+                        && _equipmentTuningTask.HasBoundPanel)
+                    || (_characterBuildTask != null
+                        && _characterBuildTask.HasBoundPanel))
                 {
                     return false;
                 }

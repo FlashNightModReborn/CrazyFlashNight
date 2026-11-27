@@ -497,10 +497,13 @@
 
         if (state === 'default') {
             var title = document.getElementById('arena-detail-title');
-            expect('default state keeps decision empty', !!title && title.textContent === '选择挑战'
-                && !!document.querySelector('#arena-opponents .arena-decision-empty'),
+            expect('default state auto-selects first card', !!title && title.textContent.indexOf('段位 1') >= 0
+                && cards[0] && cards[0].getAttribute('aria-selected') === 'true'
+                && !document.querySelector('#arena-opponents .arena-decision-empty'),
                 title && title.textContent);
-            expect('default state commit disabled', !!commitBtn && commitBtn.disabled);
+            expect('default state commit ready for first card', !!commitBtn && !commitBtn.disabled
+                && !!commitStatus && commitStatus.textContent.indexOf('押金') >= 0,
+                commitStatus && commitStatus.textContent);
         } else if (state === 'selected') {
             expect('exactly one card selected', document.querySelectorAll('#arena-grid .arena-card[aria-selected="true"]').length === 1);
             expect('selected state commit ready with economy summary', !!commitBtn && !commitBtn.disabled

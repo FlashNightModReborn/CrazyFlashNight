@@ -1016,8 +1016,8 @@
 }
 .arena-custom-side-config-load {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 78px;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) 52px 52px 52px;
+    gap: 5px;
 }
 .arena-custom-side-config-actions {
     display: grid;
@@ -1074,6 +1074,38 @@
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 2px;
+}
+.arena-custom-code-drawer {
+    border: 1px solid var(--wb-line-soft);
+    background: color-mix(in srgb, var(--wb-surface) 72%, var(--wb-bg));
+}
+.arena-custom-code-summary {
+    padding: 5px 8px;
+    color: var(--wb-muted);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+.arena-custom-code-summary:hover {
+    color: var(--wb-text);
+}
+.arena-custom-code-drawer-body {
+    display: grid;
+    gap: 6px;
+    padding: 6px 8px 8px;
+    border-top: 1px solid var(--wb-line-soft);
+}
+.arena-custom-rename-input {
+    width: 100%;
+    height: 30px;
+    margin-top: 4px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    border: 1px solid var(--wb-line);
+    background: var(--wb-bg);
+    color: var(--wb-text);
+    font-size: 12px;
 }
 .arena-custom-code-input {
     width: 100%;

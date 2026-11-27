@@ -424,26 +424,63 @@
 }
 .kshop-workbench .workbench-status {
     min-width:72px;
-    padding:4px 7px;
+    padding:4px 8px;
 }
-.kshop-workbench .workbench-status[data-state="ready"] {
-    width:24px;
-    min-width:24px;
-    height:24px;
-    padding:0;
-    box-sizing:border-box;
+.kshop-workbench .workbench-status[data-state="idle"],
+.kshop-workbench .workbench-status[data-state="ready"] { display:none; }
+.kshop-claim-batch-bar {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 7px;
+    background:color-mix(in srgb,var(--wb-surface) 92%,var(--wb-bg));
+    border-bottom:1px solid var(--wb-line-soft);
+}
+.kshop-claim-batch-bar[hidden] { display:none; }
+.kshop-claim-batch-btn,
+.kshop-claim-all-btn {
+    flex:0 0 auto;
+    min-height:24px;
+    padding:0 9px;
+    color:var(--wb-bg);
+    background:var(--wb-accent);
+    border:1px solid color-mix(in srgb,var(--wb-accent) 70%,var(--wb-text));
+    font:700 11px/1 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+}
+.kshop-claim-all-btn {
+    color:var(--wb-text);
+    background:var(--wb-surface-2);
+    border-color:var(--wb-line);
+}
+.kshop-claim-all-btn:hover:not(:disabled) {
+    color:var(--wb-bg);
+    background:var(--wb-accent);
+    border-color:var(--wb-focus);
+}
+.kshop-claim-batch-btn:hover:not(:disabled) {
+    background:var(--wb-focus);
+}
+.kshop-claim-batch-btn:disabled,
+.kshop-claim-all-btn:disabled {
+    opacity:.38;
+    cursor:not-allowed;
+}
+.kshop-claim-batch-hint {
+    min-width:0;
     overflow:hidden;
-    color:transparent;
-    background:transparent;
-    border-color:transparent;
-    font-size:0;
+    color:var(--wb-muted);
+    font:11px/1.25 "Microsoft YaHei",sans-serif;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
-.kshop-workbench .workbench-status[data-state="ready"]::before {
-    display:block;
-    margin:0;
-    font-size:10px;
-    line-height:22px;
-    text-align:center;
+.kshop-claim-check {
+    flex:0 0 auto;
+    width:14px;
+    height:14px;
+    margin:0 6px 0 2px;
+    accent-color:var(--wb-accent);
+    cursor:pointer;
 }
 .kshop-workbench .workbench-metric {
     min-width:62px;
@@ -459,7 +496,7 @@
 }
 .kshop-workbench .workbench-slot { grid-template-rows:minmax(0,1fr); }
 .kshop-workbench .workbench-flow-rail { gap:0; }
-.kshop-workbench .workbench-flow-arrow { width:22px; height:22px; font-size:19px; line-height:19px; }
+.kshop-workbench .workbench-flow-arrow { width:14px; height:22px; font-size:15px; line-height:18px; }
 .kshop-workbench .workbench-view-chrome { padding:5px 8px; gap:1px 6px; }
 .kshop-workbench .workbench-view-title { line-height:1.2; }
 .kshop-catalog-view .workbench-view-chrome,
@@ -484,6 +521,7 @@
     pointer-events:none;
     transition:opacity var(--wb-motion-micro) var(--wb-ease-standard);
 }
+.kshop-workbench .inventory-slot-card:hover .inventory-discard-btn,
 .kshop-workbench .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
 .kshop-workbench .inventory-slot-card:focus-within .inventory-discard-btn,
 .kshop-workbench .inventory-discard-btn:focus-visible {
@@ -541,6 +579,56 @@
 }
 .kshop-workbench .kshop-cart-drop-target.has-items .kshop-drop-glyph { font-size:17px; }
 .kshop-workbench .kshop-cart-drop-target.has-items .kshop-drop-copy small { display:none; }
+.kshop-workbench .kshop-order-view:not(.kshop-has-purchased) { grid-template-rows:minmax(0,1fr); }
+.kshop-workbench .kshop-purchased-section[hidden] { display:none; }
+.kshop-workbench .kshop-cart-drop-target:not(.has-selection) { display:none; }
+.kshop-workbench .kshop-order-view.kshop-dragging .kshop-cart-drop-target { display:flex; }
+.kshop-workbench .kshop-cart-stepper {
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    margin-left:4px;
+}
+.kshop-workbench .kshop-cart-stepper b { min-width:22px; text-align:center; }
+.kshop-workbench .kshop-cart-step-btn {
+    display:grid;
+    place-items:center;
+    width:20px;
+    height:20px;
+    padding:0;
+    color:var(--wb-text);
+    background:var(--wb-surface-2);
+    border:1px solid var(--wb-line);
+    font:700 11px/1 Consolas,monospace;
+    cursor:pointer;
+}
+.kshop-workbench .kshop-cart-step-btn:hover:not(:disabled) {
+    color:var(--wb-bg);
+    background:var(--wb-accent);
+    border-color:var(--wb-focus);
+}
+.kshop-workbench .kshop-cart-step-btn:disabled { opacity:.35; cursor:not-allowed; }
+.kshop-workbench .kshop-cart-footer-actions {
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    flex:0 0 auto;
+}
+.kshop-workbench .kshop-checkout-detail-btn {
+    padding:6px 8px;
+    color:var(--wb-text);
+    background:var(--wb-surface-2);
+    border:1px solid var(--wb-line);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+}
+.kshop-workbench .kshop-checkout-detail-btn:hover:not(:disabled) {
+    color:var(--wb-focus);
+    border-color:var(--wb-focus);
+}
+.kshop-workbench .kshop-checkout-detail-btn:disabled { opacity:.35; cursor:not-allowed; }
+.kshop-workbench .workbench-metric[data-capacity-state="full"] b { color:var(--wb-semantic-danger); }
+.kshop-workbench .workbench-metric[data-capacity-state="near-full"] b { color:var(--wb-semantic-warning); }
 
 /* K 点商城二级结算：权威预览后原子扣款并直接交付；旧待领取仅兼容历史存档。 */
 .kshop-settling .workbench-body { visibility:hidden; pointer-events:none; }

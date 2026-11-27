@@ -341,6 +341,7 @@ function Get-Cf7ProductionChecks {
         'modules\equipment-tuning-loadout-lifecycle.js',
         'modules\equipment-tuning-source-marker.js',
         'modules\equipment-tuning-view.js', 'modules\inventory-tuning-scope.js',
+        'modules\inventory-workbench-loadout-tuning.js',
         'modules\inventory-storage-workbench.js',
         'modules\inventory-workbench-feature-loader.js',
         'modules\crafting-inventory-organizer.js',

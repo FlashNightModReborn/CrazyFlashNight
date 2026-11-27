@@ -359,7 +359,7 @@ var EquipmentTuningView = (function() {
         this._diagnosticSequence = 0;
         panelInstanceId = EquipmentTuningRuntime.safeToken(panelInstanceId);
         if (!panelInstanceId) {
-            this._status = 'Host 面板实例无效';
+            this._status = '面板会话无效，请重新打开';
             this.render({preserveScroll:false});
             return false;
         }
@@ -415,44 +415,18 @@ var EquipmentTuningView = (function() {
         this._quickCommitIntent = null;
         this._modIntent = null;
         this._mux.closeSession();
-        this._panelInstanceId = '';
-        this._viewSessionId = '';
-        this._source = null;
-        this._sourceItem = null;
-        this._target = null;
-        this._targetItem = null;
-        this._snapshot = null;
-        this._preview = null;
-        this._previewDiagnostic = null;
-        this._previewIntentKey = '';
-        this._invalidateTooltipAuthority(false);
-        this._busy = false;
-        this._inventoryWriteHandle = null;
-        this._readPending = false;
-        this._detaching = false;
-        this._needsReconcile = false;
-        this._lastCommitCallId = '';
-        this._refreshRetryRequired = false;
-        this._refreshRetryPending = false;
-        this._refreshReconcileCallId = '';
-        this._refreshChanged = false;
-        this._loadoutBarrier = null;
-        this._conversionCandidates = [];
-        this._conversionLoading = false;
-        this._conversionError = '';
-        this._modFilterPath = defaultModFilterPath();
-        this._replaceCandidateKey = '';
-        this._replaceCandidateName = '';
-        this._resetInfoPanel();
-        this._quickCommitIntent = null;
-        this._modIntent = null;
-        this._previewFocusIntent = null;
-        this._detailScrollAnchor = null;
-        this._interactionAnnouncement = '';
-        this._clearCustomizationMode();
-        this._status = '调制会话已关闭';
-        this._emit();
-        this.render({preserveScroll:false});
+        this._panelInstanceId = ''; this._viewSessionId = '';
+        this._source = this._sourceItem = this._target = this._targetItem = this._snapshot = this._preview = this._previewDiagnostic = null;
+        this._previewIntentKey = ''; this._invalidateTooltipAuthority(false);
+        this._busy = false; this._inventoryWriteHandle = null; this._readPending = false; this._detaching = false;
+        this._needsReconcile = false; this._lastCommitCallId = '';
+        this._refreshRetryRequired = false; this._refreshRetryPending = false;
+        this._refreshReconcileCallId = ''; this._refreshChanged = false; this._loadoutBarrier = null;
+        this._conversionCandidates = []; this._conversionLoading = false; this._conversionError = '';
+        this._modFilterPath = defaultModFilterPath(); this._replaceCandidateKey = ''; this._replaceCandidateName = '';
+        this._resetInfoPanel(); this._quickCommitIntent = this._modIntent = this._previewFocusIntent = this._detailScrollAnchor = null;
+        this._interactionAnnouncement = ''; this._clearCustomizationMode();
+        this._status = '调制会话已关闭'; this._emit(); this.render({preserveScroll:false});
     };
 
     TuningView.prototype.destroy = function() {
@@ -493,7 +467,7 @@ var EquipmentTuningView = (function() {
         var self = this;
         this._detaching = true;
         this._readPending = true;
-        this._status = '正在撤销调制令牌';
+        this._status = '正在结束调制状态';
         this._emit();
         this.render();
         var callId = this._mux.request('detach', {}, function(response) {
@@ -518,6 +492,18 @@ var EquipmentTuningView = (function() {
             callback(false, {success:false, error:'not_sent'});
         }
         return !!callId;
+    };
+
+    TuningView.prototype.clearSelection = function() {
+        if (!this._source || !this.canClose()) return false;
+        this._closeInspector(); this._setConversionProjection(false);
+        if (this._enhancePreviewTimer) clearTimeout(this._enhancePreviewTimer);
+        this._enhancePreviewTimer = 0; this._queuedEnhanceLevel = null;
+        this._previewPendingOperation = ''; this._previewIntentKey = ''; this._previewPendingGeneration = 0;
+        this._source = this._sourceItem = this._target = this._targetItem = this._snapshot = this._preview = this._previewDiagnostic = null;
+        this._replaceCandidateKey = ''; this._replaceCandidateName = ''; this._quickCommitIntent = this._modIntent = null;
+        this._resetInfoPanel(); this._clearCustomizationMode();
+        this._status = '请选择左侧装备'; this._emit(); this.render({preserveScroll:false}); return true;
     };
 
     TuningView.prototype.handleInventorySelection = function(slot) {
@@ -549,7 +535,7 @@ var EquipmentTuningView = (function() {
         this._quickCommitIntent = null;
         this._modIntent = null;
         this._needsReconcile = !!recoveryCallId;
-        this._status = recoveryCallId ? '正在用新位置完成未知提交对账' : '正在读取权威调制状态';
+        this._status = recoveryCallId ? '正在确认上次调制结果' : '正在读取调制状态';
         this._emit();
         this.render({preserveScroll:false});
         this.requestSnapshot(recoveryCallId);
@@ -576,7 +562,7 @@ var EquipmentTuningView = (function() {
         this._quickCommitIntent = null;
         this._modIntent = null;
         if (!tuningSourceSupports(normalized, this._operation)) this._operation = 'enhance';
-        this._status = '正在读取当前槽位的权威调制状态';
+        this._status = '正在读取当前槽位的调制状态';
         this._emit();
         this.render({preserveScroll:false});
         this.requestSnapshot();
@@ -635,7 +621,7 @@ var EquipmentTuningView = (function() {
         this._previewPendingGeneration = 0;
         this._quickCommitIntent = null;
         this._modIntent = null;
-        this._status = this._stickyErrorStatus || (reconcileAfterCallId ? '正在对账未知提交' : '正在同步调制状态');
+        this._status = this._stickyErrorStatus || (reconcileAfterCallId ? '正在确认上次操作结果' : '正在同步调制状态');
         this._readPending = true;
         this.render();
         var callId = this._mux.request('snapshot', payload, function(response, entry) {
@@ -645,7 +631,7 @@ var EquipmentTuningView = (function() {
             if (resumeCallId) {
                 self._lastCommitCallId = resumeCallId;
                 self._needsReconcile = true;
-                self._status = '正在恢复上次中断的提交对账';
+                self._status = '正在恢复上次中断的结果确认';
                 self._emit();
                 self.render();
                 self.requestSnapshot(resumeCallId);
@@ -669,7 +655,7 @@ var EquipmentTuningView = (function() {
             } else {
                 self._needsReconcile = !!reconcileAfterCallId || !!(response && response.requiresReconcile);
                 self._status = reconcileAfterCallId && response && response.success === true
-                    ? '权威快照尚未越过未知提交' : errorMessage(response && response.error, response);
+                    ? '尚未确认上次操作结果，请稍候重试' : errorMessage(response && response.error, response);
             }
             if (reconcileAfterCallId) {
                 self._recordDiagnostic('reconcile_adopted', {
@@ -922,7 +908,7 @@ var EquipmentTuningView = (function() {
                 self._needsReconcile = true;
                 self._lastCommitCallId = barrierId;
                 self._setModIntentPhase('uncertain');
-                self._status = '提交结果不明确，正在刷新并对账';
+                self._status = '提交结果尚未确认，正在刷新状态';
                 if (!self._finishInventoryWrite(inventoryWrite, true, function(refreshResult) {
                     self._afterInventoryRefresh(barrierId, true, refreshResult);
                 })) return;

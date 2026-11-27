@@ -21,10 +21,10 @@ $focusedRun = @{
         'scripts\引擎\引擎_lsy_战宠系统.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^PetLiveCombatProjectionTest Tests Passed: 16\r?$'
+        '(?m)^PetLiveCombatProjectionTest Tests Passed: 25\r?$'
         '(?m)^PetLiveCombatProjectionTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'PetLiveCombatProjectionTest 16/16 passed'
+    SuccessSummary = 'PetLiveCombatProjectionTest 25/25 passed'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

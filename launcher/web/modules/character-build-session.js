@@ -45,7 +45,7 @@
         this._onCandidateAuthorityReset =
             typeof options.onCandidateAuthorityReset === 'function'
                 ? options.onCandidateAuthorityReset : noop;
-        this._candidateScope = 'compatible';
+        this._candidateScope = 'compatible'; this._subs = {};
         this._destroyed = false;
         this._resetSessionState();
         this._hostEvents = options.hostEvents || hostEvents;
@@ -70,6 +70,7 @@
 
     CharacterBuildSession.prototype._emit = function(reason) {
         this._onState(this._state, reason || '', this.debugState());
+        var list = this._subs && this._subs[reason]; if (list) list.slice().forEach(function(fn) { try { fn(); } catch (_) {} });
     };
 
     CharacterBuildSession.prototype._basePayload = function() { return {v:1, sessionGeneration:this._sessionGeneration}; };
@@ -713,9 +714,11 @@
         this.close();
         if (this._hostEvents) this._hostEvents.off('character_build_retry_available', this._onShutdownReturned);
         if (this._mux && this._mux.destroy) this._mux.destroy();
-        this._destroyed = true;
+        this._destroyed = true; this._subs = {};
         return true;
     };
+
+    CharacterBuildSession.prototype.subscribe = function(evt, fn) { if (typeof fn !== 'function') return noop; (this._subs[evt] || (this._subs[evt] = [])).push(fn); var self = this; return function() { self._subs[evt] = (self._subs[evt] || []).filter(function(cb) { return cb !== fn; }); }; };
 
     CharacterBuildSession.prototype.canClose = function() {
         return this._state === 'finalized' && !this._liveRefreshDirty

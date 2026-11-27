@@ -83,7 +83,7 @@ function audit(){
   if(/\(i\s*-\s*1\)\s*\*\s*\(i\s*-\s*1\)|smith.*0\.05/i.test(tuningSource))throw new Error('Web must not reproduce equipment formulas');
   if(!hasAll(tuningSource,['reconcileAfterCallId','_refreshRetryRequired'])
       ||!hasAll(writeLifecycle,['retryInventoryRefresh','this._completeWrite','authoritativeSnapshot'])
-      ||!hasAll(workbench,['completeWrite:function(operation, needsRefresh, callback)','_coordinator.completeExternalWrite(operation, needsRefresh, callback)']))throw new Error('unknown-write reconcile or inventory refresh recovery missing');
+      ||!hasAll(workbench,['completeWrite:function(operation, needsRefresh, callback, snapshots)','completeExternalWrite(operation, snapshots, callback, needsRefresh)','_coordinator.completeExternalWrite(operation, !!needsRefresh, callback)']))throw new Error('unknown-write reconcile or inventory refresh recovery missing');
 
   const buildProfile=between(workbench,'function buildProfileDOM','function switchView');
   const switchView=between(workbench,'function switchView','function finishViewSwitch');
@@ -212,10 +212,8 @@ function audit(){
     "'modules/equipment-tuning-loadout-lifecycle.js'",
     "'modules/equipment-tuning-source-marker.js'",
     "'modules/equipment-tuning-view.js'",
-    "'modules/inventory-tuning-scope.js'"
-  ];
-  const buildFeatureClosure=[
-    "'modules/character-appearance-preview.js'",
+    "'modules/inventory-tuning-scope.js'",
+    "'modules/character-build/character-build-drug-controls.js'",
     "'modules/character-build/character-build-mutation.js'",
     "'modules/character-build/character-build-drug-layout.js'",
     "'modules/character-build/character-build-session-contract.js'",
@@ -223,6 +221,14 @@ function audit(){
     "'modules/character-build-session.js'",
     "'modules/loadout-picker/loadout-picker-action-view.js'",
     "'modules/character-build/character-build-tuning-adapter.js'",
+    "'modules/character-build/character-build-customization.js'",
+    "'modules/character-build/character-build-transport.js'",
+    "'modules/character-build/character-build-item-use.js'",
+    "'modules/character-build/character-build-stash-authority.js'",
+    "'modules/inventory-workbench-loadout-tuning.js'"
+  ];
+  const buildFeatureClosure=[
+    "'modules/character-appearance-preview.js'",
     "'modules/character-build/character-build-tuning-ports.js'",
     "'modules/character-build/character-build-candidate-tooltip.js'",
     "'modules/loadout-picker/loadout-picker-candidate-state.js'",
@@ -242,8 +248,6 @@ function audit(){
     "'modules/character-build/character-build-pose.js'",
     "'modules/character-build/character-build-candidate-eligibility.js'",
     "'modules/character-build/character-build-projection.js'",
-    "'modules/character-build/character-build-transport.js'",
-    "'modules/character-build/character-build-item-use.js'",
     "'modules/character-build/character-build-item-use-channel.js'",
     "'modules/character-build/character-build-candidate-channel.js'",
     "'modules/character-build.js'"

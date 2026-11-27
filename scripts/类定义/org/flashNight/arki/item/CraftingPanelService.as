@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.item.ItemUtil;
+﻿import org.flashNight.arki.item.BaseItem;
+import org.flashNight.arki.item.ItemUtil;
 
 import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.InventoryPanelService;
@@ -8,6 +9,7 @@ import org.flashNight.arki.item.PlayerAssetTransaction;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.gesh.object.PersistedSnapshot;
 import org.flashNight.gesh.string.StringUtils;
 
 /**
@@ -192,15 +194,19 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (commandName == "tooltip") return executeTooltip(params);
         if (commandName == "setPlan") {
             _busy = true;
-            var planResult:Object = ProcurementPlanService.setPlan(params);
-            _busy = false;
-            return planResult;
+            try {
+                return ProcurementPlanService.setPlan(params);
+            } finally {
+                _busy = false;
+            }
         }
         if (commandName != "commit") return fail("unsupported_cmd");
         _busy = true;
-        var result:Object = executeCommit(params);
-        _busy = false;
-        return result;
+        try {
+            return executeCommit(params);
+        } finally {
+            _busy = false;
+        }
     }
 
     private static function executeSnapshot(params:Object):Object {
@@ -221,10 +227,14 @@ class org.flashNight.arki.item.CraftingPanelService {
                 category, recipes[i], i, procurementSources, ownedIndex);
             if (projected != null) catalog.push(projected);
         }
-        return {success:true, v:1, category:category, gender:buildGender(), recipes:catalog,
+        var snapshot:Object = {success:true, v:1, category:category, gender:buildGender(), recipes:catalog,
             balance:buildBalance(), skills:buildSkills(),
             procurement:ProcurementPlanService.buildPlanSummary(),
             note:categoryNote(category)};
+        if (params != null && params.supportsBattleBox === true) {
+            snapshot.battleBoxAccessible = InventoryPanelService.getAccessibleCapacity("战备箱") > 0;
+        }
+        return snapshot;
     }
 
     private static function executeMaterials(params:Object):Object {
@@ -425,8 +435,12 @@ class org.flashNight.arki.item.CraftingPanelService {
             chosenTechnique = matchTechnique(declared, params.technique);
             if (chosenTechnique == null) return fail("technique_mismatch");
         }
+        if (params.useBattleBox != undefined && typeof params.useBattleBox != "boolean") {
+            return fail("invalid_payload");
+        }
+        var useBattleBox:Boolean = params.useBattleBox === true;
         var plan:Object = buildPlan(category, recipeIndex, resolved.recipe, craftCount, true,
-            null, null, chosenTechnique);
+            null, null, chosenTechnique, useBattleBox);
         if (!plan.success) return plan;
         if (plan.canCommit) {
             _planSeq++;
@@ -463,8 +477,9 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (!resolved.success || recipeSignature(resolved.recipe) != String(plan.recipeSignature)) {
             return fail("stale_state");
         }
+        var useBattleBox:Boolean = plan.useBattleBox === true;
         var current:Object = buildPlan(category, Number(plan.recipeIndex), resolved.recipe,
-            Number(plan.craftCount), false, null, null, plan.technique);
+            Number(plan.craftCount), false, null, null, plan.technique, useBattleBox);
         if (!current.success || current.stateSignature != String(plan.stateSignature)) return fail("stale_state");
         if (!current.canCommit) return fail(String(current.blockingError || "stale_state"));
         // 配方、进阶配置与产物投影都必须在首次写入前与预览冻结计划完全一致。
@@ -472,18 +487,28 @@ class org.flashNight.arki.item.CraftingPanelService {
 
         var bag:Object = _root.物品栏.背包;
         var drugs:Object = _root.物品栏.药剂栏;
+        var battleBox:Object = _root.物品栏.战备箱;
         var materials:Object = _root.收集品栏.材料;
         var intelligence:Object = _root.收集品栏.情报;
         var saveExt:Object = _root._saveExt;
         var procurementPlansExists:Boolean = saveExt != undefined && saveExt != null
             && saveExt.hasOwnProperty("procurementPlans");
+        var drugLoadoutExists:Boolean = saveExt != undefined && saveExt != null
+            && saveExt.hasOwnProperty("drugLoadout");
+        var battleBoxTouched:Object = useBattleBox ? {} : null;
         var backup:Object = {bag:bag.toObject(), drugs:drugs.toObject(),
+            battleBoxOwner:battleBox, battleBoxTouched:battleBoxTouched,
+            bagOwner:bag, drugOwner:drugs, materialOwner:materials, intelOwner:intelligence,
+            saveOwner:_root.存档系统,
             materials:materials.toObject(), intelligence:intelligence.toObject(),
             money:Number(_root.金钱), kpoints:Number(_root.虚拟币),
             dirty:_root.存档系统 == undefined ? undefined : _root.存档系统.dirtyMark,
             procurementPlansExists:procurementPlansExists,
             procurementPlans:procurementPlansExists
-                ? ObjectUtil.clone(saveExt.procurementPlans) : null};
+                ? ObjectUtil.clone(saveExt.procurementPlans) : null,
+            drugLoadoutExists:drugLoadoutExists,
+            drugLoadout:drugLoadoutExists
+                ? ObjectUtil.clone(saveExt.drugLoadout) : null};
 
         var assetContext:Object = {
             source:"crafting", reason:"craft_commit", mergeScope:"operation"
@@ -492,54 +517,32 @@ class org.flashNight.arki.item.CraftingPanelService {
         try {
             // 制作的材料、产物、货币与采购进度共享同一存档权威；缺失时零写失败。
             PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
-            if (!ItemUtil.submit(current.requirements, assetContext)) {
-                // submit=false 也可能是同步 listener 重入后的少扣/多扣，不能再
-                // 当作零写直接 rollback receipt；只有完整快照恢复后才丢弃 frame。
-                var submitRestored:Boolean = false;
-                try {
-                    restoreState(backup);
-                    submitRestored = true;
-                } catch (submitRestoreError) {
-                    trace("[CraftingPanelService] submit=false restore failed: "
-                        + submitRestoreError);
-                }
-                PlayerAssetTransaction.settleAfterException(
-                    assetTransaction, !submitRestored);
-                return fail(submitRestored ? "material_missing" : "commit_failed");
+            if (!submitCraftingRequirements(current.requirements, useBattleBox, assetContext, battleBoxTouched, battleBox)) {
+                return failAndRestore(backup, assetTransaction, "material_missing");
             }
             var actualRequire:Object = ItemUtil.singleRequire(current.output.name, current.output.value);
             var actualDelivery:Object = projectOutputDelivery(
                 current.output.name, current.output.value, actualRequire);
             if (!deepEqual(actualDelivery, plan.outputDelivery, 0)) {
-                restoreState(backup);
-                PlayerAssetTransaction.rollback(assetTransaction);
-                return fail("stale_state");
+                return failAndRestore(backup, assetTransaction, "stale_state");
             }
             var targetBefore:Object = readOutputTarget(actualDelivery);
             if (!outputTargetMatchesMode(targetBefore, current.output.name, actualDelivery)) {
-                restoreState(backup);
-                PlayerAssetTransaction.rollback(assetTransaction);
-                return fail("stale_state");
+                return failAndRestore(backup, assetTransaction, "stale_state");
             }
             var beforeQuantity:Number = targetBefore == null ? 0 : Number(targetBefore.value);
             if (!ItemUtil.singleAcquire(current.output.name, current.output.value, assetContext)) {
-                restoreState(backup);
-                PlayerAssetTransaction.rollback(assetTransaction);
-                return fail("inventory_full");
+                return failAndRestore(backup, assetTransaction, "inventory_full");
             }
             var outputReceipt:Object = null;
             if (requiresPhysicalOutputReceipt(actualDelivery)) {
                 outputReceipt = InventoryPanelService.buildOutputReceipt(readOutputTarget(actualDelivery));
                 if (!outputReceiptMatchesPrototype(outputReceipt, plan.acceptedPlan.outputPrototype,
                         actualDelivery, beforeQuantity)) {
-                    restoreState(backup);
-                    PlayerAssetTransaction.rollback(assetTransaction);
-                    return fail("stale_state");
+                    return failAndRestore(backup, assetTransaction, "stale_state");
                 }
             } else if (plan.acceptedPlan.outputPrototype != null) {
-                restoreState(backup);
-                PlayerAssetTransaction.rollback(assetTransaction);
-                return fail("stale_state");
+                return failAndRestore(backup, assetTransaction, "stale_state");
             }
             _root.金钱 = Number(backup.money) - Number(current.cost.money);
             _root.虚拟币 = Number(backup.kpoints) - Number(current.cost.kpoints);
@@ -558,20 +561,8 @@ class org.flashNight.arki.item.CraftingPanelService {
                 crafted:current.output, acceptedPlan:plan.acceptedPlan,
                 outputReceipt:outputReceipt, balance:buildBalance(), procurement:procurement};
         } catch (commitError) {
-            // 只有完整恢复成功才能丢弃回执；恢复自身失败时保留当前事实，
-            // 但无论如何都先结清 frame，且继续抛原始 commitError。
-            var commitRestored:Boolean = false;
-            try {
-                restoreState(backup);
-                commitRestored = true;
-            } catch (commitRestoreError) {
-                trace("[CraftingPanelService] exact snapshot restore failed: "
-                    + commitRestoreError);
-            }
-            PlayerAssetTransaction.settleAfterException(
-                assetTransaction, !commitRestored);
             trace("[CraftingPanelService] asset commit failed: " + commitError);
-            return fail("commit_failed");
+            return failAndRestore(backup, assetTransaction, "commit_failed");
         }
         // commit 之后绝不进入资产恢复 catch：消费者/强存盘异常不能把已发布或
         // 已耐久的事实恢复成旧资产状态。
@@ -585,7 +576,30 @@ class org.flashNight.arki.item.CraftingPanelService {
         return successResponse;
     }
 
+    // 部分回滚后的原交易明细已经失真。保留 dirty 和未知写，等待原配方的权威对账。
+    private static function failAndRestore(backup:Object, transaction:Object, errorCode:String):Object {
+        var complete:Boolean = false;
+        try {
+            restoreState(backup);
+            complete = true;
+        } catch (restoreError) {
+            trace("[CraftingPanelService] incomplete restore: " + restoreError);
+            try {
+                if (backup.saveOwner != null) backup.saveOwner.dirtyMark = true;
+            } catch (dirtyError) {
+                trace("[CraftingPanelService] dirty restore failed: " + dirtyError);
+            }
+        } finally {
+            PlayerAssetTransaction.settleAfterException(transaction, false);
+        }
+        if (complete) return fail(errorCode);
+        return fail("commit_failed");
+    }
+
     private static function restoreState(backup:Object):Void {
+        if (_root.物品栏.背包 !== backup.bagOwner || _root.物品栏.药剂栏 !== backup.drugOwner
+                || _root.收集品栏.材料 !== backup.materialOwner || _root.收集品栏.情报 !== backup.intelOwner
+                || _root.存档系统 !== backup.saveOwner) throw new Error("craft_restore_owner_changed");
         _root.物品栏.背包.setItems(backup.bag);
         _root.物品栏.药剂栏.setItems(backup.drugs);
         _root.收集品栏.材料.setItems(backup.materials);
@@ -600,13 +614,52 @@ class org.flashNight.arki.item.CraftingPanelService {
         } else if (_root._saveExt != undefined && _root._saveExt != null) {
             delete _root._saveExt.procurementPlans;
         }
+        if (backup.drugLoadoutExists === true) {
+            if (_root._saveExt == undefined || _root._saveExt == null) _root._saveExt = {};
+            _root._saveExt.drugLoadout = ObjectUtil.clone(backup.drugLoadout);
+        } else if (_root._saveExt != undefined && _root._saveExt != null) {
+            delete _root._saveExt.drugLoadout;
+        }
+        var bbRestoreError:Error = null;
+        if (backup.battleBoxTouched != null && hasMapEntries(backup.battleBoxTouched)) {
+            var bb:Object = backup.battleBoxOwner;
+            if (bb == null) throw new Error("battlebox_restore_owner_missing");
+            for (var bbKey:String in backup.battleBoxTouched) {
+                if (ObjectUtil.isInternalKey(bbKey)) continue;
+                var bbSlot:Number = Number(bbKey);
+                var savedEntry:Object = backup.battleBoxTouched[bbKey];
+                var restoredItem:Object = null;
+                if (savedEntry.existed) {
+                    restoredItem = savedEntry.isBaseItem === true
+                        ? BaseItem.createFromObject(PersistedSnapshot.cloneData(savedEntry.snapshot))
+                        : ObjectUtil.clone(savedEntry.snapshot);
+                    if (restoredItem == null) {
+                        if (bbRestoreError == null) bbRestoreError = new Error("battlebox_restore_item_invalid");
+                        continue;
+                    }
+                }
+                try {
+                    if (bb.transactionWrite(bbSlot, restoredItem) !== true || bb.getItem(bbSlot) !== restoredItem) {
+                        bbRestoreError = new Error("battlebox_restore_write_failed");
+                    }
+                } catch (slotRestoreError) {
+                    bbRestoreError = new Error("battlebox_restore_write_failed");
+                }
+            }
+            if (_root.物品栏.战备箱 !== bb) throw new Error("battlebox_restore_owner_changed");
+        }
+        if (bbRestoreError != null) {
+            throw bbRestoreError;
+        }
         if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = backup.dirty;
     }
 
     private static function buildPlan(category:String, recipeIndex:Number, recipe:Object,
             craftCount:Number, calculateMaximum:Boolean,
-            procurementSources:Object, ownedIndex:Object, technique:Object):Object {
+            procurementSources:Object, ownedIndex:Object, technique:Object,
+            useBattleBox:Boolean):Object {
         if (!org.flashNight.arki.scene.Cf6Type61Service.recipeAllowed(String(recipe.recipeId))) return fail("recipe_not_found");
+        var allowBattleBox:Boolean = useBattleBox === true;
         var baseRequirements:Array = ItemUtil.getRequirementFromTask(recipe.materials || []);
         // 卡莫特林可选的配方在选择加入时按份数追加一份材料需求；
         // 未声明调制方式的配方 technique 为 null，需求保持不变。
@@ -618,7 +671,9 @@ class org.flashNight.arki.item.CraftingPanelService {
         var requirements:Array = scaleRequirements(baseRequirements, craftCount);
         // contain() is the canonical deduction planner used by submit().  Project its
         // concrete storage route instead of making the Web layer infer one from names.
-        var containmentPlan:Object = ItemUtil.contain(requirements);
+        var containmentPlan:Object = allowBattleBox
+            ? planCraftingContainment(requirements, true)
+            : ItemUtil.contain(requirements);
         if (procurementSources == null) {
             procurementSources = ProcurementPlanService.buildPurchaseSourceIndex();
         }
@@ -636,14 +691,17 @@ class org.flashNight.arki.item.CraftingPanelService {
         }
         for (var i:Number = 0; i < requirements.length; i++) {
             var projection:Object = projectRequirement(requirements[i], containmentPlan,
-                procurementSources, ownedIndex);
+                procurementSources, ownedIndex, allowBattleBox);
             if (projection == null) return fail("item_not_found");
             materialRows.push(projection);
-            if (projection.itemKind == "equipment") {
+            if (containmentPlan == null && projection.itemKind == "equipment") {
                 inheritedLevel = Math.max(inheritedLevel, projection.maxEnhancement);
             }
             stateParts.push(projection.name + ":" + projection.owned + ":"
                 + projection.maxEnhancement + ":" + projection.storageKind);
+        }
+        if (containmentPlan != null) {
+            inheritedLevel = Math.max(inheritedLevel, selectedEquipmentMaxLevel(containmentPlan));
         }
 
         var outputData:Object = ItemUtil.getRawItemData(String(recipe.name));
@@ -695,7 +753,7 @@ class org.flashNight.arki.item.CraftingPanelService {
         else if (!enoughSpace) blockingError = "inventory_full";
         var maxCraftCount:Number = batchEligible
             ? (calculateMaximum
-                ? calculateMaxCraftCount(recipe, baseRequirements, multiplier, levelAllowed)
+                ? calculateMaxCraftCount(recipe, baseRequirements, multiplier, levelAllowed, allowBattleBox)
                 : (blockingError == "" ? 1 : 0))
             : (blockingError == "" ? 1 : 0);
         var output:Object = projectItem(String(recipe.name), outputValue);
@@ -705,9 +763,13 @@ class org.flashNight.arki.item.CraftingPanelService {
             infrastructure:infrastructureRows,
             outputDelivery:outputDelivery, outputPrototype:outputPrototype, cost:cost};
         if (technique != null) acceptedPlan.technique = technique;
+        if (allowBattleBox) acceptedPlan.useBattleBox = true;
         var stateSignature:String = [recipeSignature(recipe), Number(_root.金钱),
             Number(_root.虚拟币), Number(_root.等级), reverseLevel, smith.enabled, smith.level,
             inventoryRevision(_root.物品栏.背包), inventoryRevision(_root.物品栏.药剂栏),
+            allowBattleBox ? InventoryPanelService.getAccessibleCapacity("战备箱") : 0,
+            allowBattleBox ? inventoryRevision(_root.物品栏.战备箱) : -1,
+            allowBattleBox,
             craftCount, stateParts.join("|"), infrastructureSignature(infrastructureRows),
             outputDelivery.storageKind,
             outputDelivery.mode, outputDelivery.physicalSlot,
@@ -717,6 +779,7 @@ class org.flashNight.arki.item.CraftingPanelService {
             requirements:requirements, materials:materialRows, output:output, cost:cost,
             infrastructure:infrastructureRows,
             outputDelivery:outputDelivery, acceptedPlan:acceptedPlan, technique:technique,
+            useBattleBox:allowBattleBox,
             balance:buildBalance(), skills:buildSkills(), levelAllowed:levelAllowed,
             enoughMaterials:allMaterials, enoughMoney:enoughMoney, enoughKpoints:enoughKpoints,
             enoughSpace:enoughSpace, batchEligible:batchEligible, maxCraftCount:maxCraftCount,
@@ -736,6 +799,7 @@ class org.flashNight.arki.item.CraftingPanelService {
             enoughSpace:plan.enoughSpace, canCommit:plan.canCommit,
             blockingError:plan.blockingError};
         if (plan.technique != null) result.technique = plan.technique;
+        if (plan.useBattleBox === true) result.useBattleBox = true;
         if (plan.canCommit) {
             result.craftToken = plan.token;
             result.acceptedPlan = plan.acceptedPlan;
@@ -766,30 +830,48 @@ class org.flashNight.arki.item.CraftingPanelService {
     }
 
     private static function calculateMaxCraftCount(recipe:Object, requirements:Array,
-            multiplier:Number, levelAllowed:Boolean):Number {
+            multiplier:Number, levelAllowed:Boolean, useBattleBox:Boolean):Number {
         if (!levelAllowed) return 0;
         var low:Number = 0;
         var high:Number = MAX_CRAFT_COUNT;
         while (low < high) {
             var middle:Number = Math.ceil((low + high) / 2);
             _maximumProbeCount++;
-            if (canCraftCount(recipe, requirements, middle, multiplier)) low = middle;
+            if (canAffordCount(recipe, requirements, middle, multiplier, useBattleBox)) low = middle;
             else high = middle - 1;
         }
-        return low;
+        // 满包时更高份数可能清空整格后才腾出产物空间（非单调），从可负担上界向下核验落点。
+        for (var candidate:Number = low; candidate >= 1; candidate--) {
+            if (canDeliverCount(recipe, requirements, candidate, useBattleBox)) return candidate;
+        }
+        return 0;
     }
 
-    private static function canCraftCount(recipe:Object, requirements:Array,
-            craftCount:Number, multiplier:Number):Boolean {
+    private static function canAffordCount(recipe:Object, requirements:Array,
+            craftCount:Number, multiplier:Number, useBattleBox:Boolean):Boolean {
         var scaled:Array = scaleRequirements(requirements, craftCount);
-        var containmentPlan:Object = ItemUtil.contain(scaled);
+        var containmentPlan:Object = useBattleBox === true
+            ? planCraftingContainment(scaled, true)
+            : ItemUtil.contain(scaled);
         if (containmentPlan == null) return false;
         if (Number(_root.金钱) < adjustedUnitCost(recipe.price, multiplier) * craftCount) return false;
         if (Number(_root.虚拟币) < adjustedUnitCost(recipe.kprice, multiplier) * craftCount) return false;
         var outputValue:Number = Number(recipe.value);
         if (isNaN(outputValue) || outputValue <= 0) outputValue = 1;
         outputValue *= craftCount;
-        if (!isValidOutputValue(String(recipe.name), outputValue)) return false;
+        return isValidOutputValue(String(recipe.name), outputValue);
+    }
+
+    private static function canDeliverCount(recipe:Object, requirements:Array,
+            craftCount:Number, useBattleBox:Boolean):Boolean {
+        var scaled:Array = scaleRequirements(requirements, craftCount);
+        var containmentPlan:Object = useBattleBox === true
+            ? planCraftingContainment(scaled, true)
+            : ItemUtil.contain(scaled);
+        if (containmentPlan == null) return false;
+        var outputValue:Number = Number(recipe.value);
+        if (isNaN(outputValue) || outputValue <= 0) outputValue = 1;
+        outputValue *= craftCount;
         var delivery:Object = projectOutputDeliveryAfterSubmit(
             String(recipe.name), outputValue, containmentPlan);
         if (!delivery.available) return false;
@@ -804,7 +886,7 @@ class org.flashNight.arki.item.CraftingPanelService {
     }
 
     private static function projectRequirement(req:Object, containmentPlan:Object,
-            procurementSources:Object, ownedIndex:Object):Object {
+            procurementSources:Object, ownedIndex:Object, useBattleBox:Boolean):Object {
         var name:String = String(req.name || "");
         var data:Object = ItemUtil.getRawItemData(name);
         if (data == null) return null;
@@ -818,9 +900,14 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (ItemUtil.isMaterial(name)) owned = Number(ownedSummary.material);
         else if (ItemUtil.isInformation(name)) owned = Number(ownedSummary.information);
         else {
-            owned = Number(ownedSummary.usable);
+            owned = Number(ownedSummary.usable)
+                + (useBattleBox === true ? Number(ownedSummary.battleBox) : 0);
             if (kind == "equipment") {
                 maxEnhancement = Number(ownedSummary.usableMaxEnhancement);
+                if (useBattleBox === true && ownedIndex != null && ownedIndex[name] != null) {
+                    var bbMaxEnh:Number = Number(ownedIndex[name].battleBoxMaxEnhancement);
+                    if (!isNaN(bbMaxEnh)) maxEnhancement = Math.max(maxEnhancement, bbMaxEnh);
+                }
             }
         }
         var enough:Boolean = kind == "equipment" && !req.isQuantity
@@ -843,6 +930,11 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (containmentPlan == null) return "unavailable";
         var inBag:Boolean = planContainsItem(containmentPlan.背包, _root.物品栏.背包, name);
         var inDrug:Boolean = planContainsItem(containmentPlan.药剂栏, _root.物品栏.药剂栏, name);
+        var inBattleBox:Boolean = planContainsItem(containmentPlan.战备箱, _root.物品栏.战备箱, name);
+        if (inBag && inDrug && inBattleBox) return "bag_drug_and_battlebox";
+        if (inBag && inBattleBox) return "bag_and_battlebox";
+        if (inDrug && inBattleBox) return "drug_and_battlebox";
+        if (inBattleBox) return "battlebox";
         if (inBag && inDrug) return "bag_and_drug";
         if (inBag) return "bag";
         if (inDrug) return "drug";
@@ -858,6 +950,288 @@ class org.flashNight.arki.item.CraftingPanelService {
         return false;
     }
 
+    private static function hasMapEntries(map:Object):Boolean {
+        if (map == null) return false;
+        for (var key:String in map) {
+            if (!ObjectUtil.isInternalKey(key)) return true;
+        }
+        return false;
+    }
+
+    private static function selectedEquipmentMaxLevel(containmentPlan:Object):Number {
+        var best:Number = 1;
+        if (containmentPlan == null) return best;
+        best = Math.max(best, maxPlannedEquipmentLevel(containmentPlan.背包, _root.物品栏.背包));
+        best = Math.max(best, maxPlannedEquipmentLevel(containmentPlan.战备箱, _root.物品栏.战备箱));
+        return best;
+    }
+
+    private static function maxPlannedEquipmentLevel(plan:Object, inventory:Object):Number {
+        var best:Number = 1;
+        if (plan == null || inventory == null) return best;
+        for (var key:String in plan) {
+            if (ObjectUtil.isInternalKey(key)) continue;
+            var item:Object = inventory.getItem(Number(key));
+            if (item == null || !ItemUtil.isEquipment(String(item.name || ""))) continue;
+            var lv:Number = (item.value != null && typeof item.value == "object")
+                ? Number(item.value.level) : 1;
+            if (!isNaN(lv) && isFinite(lv) && lv > best) best = lv;
+        }
+        return best;
+    }
+
+    /**
+     * 合成域专用的战备箱可选扣料规划器（严格只读，不修改全局 ItemUtil.contain）：
+     * 按 背包 → 药剂栏 → 已解锁战备箱前缀（slot < accessibleCapacity）顺序规划，
+     * 绝不触碰装备栏、仓库或战备箱未解锁尾部。
+     * 装备需求先按强化阈值降序预留，再由剩余件满足数量型装备需求。
+     */
+    private static function planCraftingContainment(requirements:Array, useBattleBox:Boolean):Object {
+        if (useBattleBox !== true) return ItemUtil.contain(requirements);
+        var list:Object = {背包:{}, 材料:{}, 情报:{}, 药剂栏:{}, 战备箱:{}};
+        var bag:Object = _root.物品栏.背包;
+        var drugs:Object = _root.物品栏.药剂栏;
+        var battleBox:Object = _root.物品栏.战备箱;
+        var materials:Object = _root.收集品栏.材料;
+        var intelligence:Object = _root.收集品栏.情报;
+        var accessibleCap:Number = InventoryPanelService.getAccessibleCapacity("战备箱");
+        var usedBag:Object = {};
+        var usedDrug:Object = {};
+        var usedBattleBox:Object = {};
+
+        var ordered:Array = [];
+        var equipThresholdReqs:Array = [];
+        var equipQuantityReqs:Array = [];
+        for (var r:Number = 0; r < requirements.length; r++) {
+            var reqEntry:Object = requirements[r];
+            var reqName:String = String(reqEntry.name || "");
+            if (ItemUtil.isEquipment(reqName)) {
+                if (reqEntry.isQuantity === true) equipQuantityReqs.push(reqEntry);
+                else equipThresholdReqs.push(reqEntry);
+            } else {
+                ordered.push(reqEntry);
+            }
+        }
+        equipThresholdReqs.sort(function(a:Object, b:Object):Number {
+            return Number(b.value) - Number(a.value);
+        });
+        for (var e1:Number = 0; e1 < equipThresholdReqs.length; e1++) ordered.push(equipThresholdReqs[e1]);
+        for (var e2:Number = 0; e2 < equipQuantityReqs.length; e2++) ordered.push(equipQuantityReqs[e2]);
+
+        for (var i:Number = 0; i < ordered.length; i++) {
+            var req:Object = ordered[i];
+            var name:String = String(req.name || "");
+            var need:Number = Number(req.value);
+            var isQty:Boolean = req.isQuantity === true;
+            if (ItemUtil.isMaterial(name)) {
+                var prevMat:Number = Number(list.材料[name] || 0);
+                if (Number(materials.getValue(name)) < prevMat + need) return null;
+                list.材料[name] = prevMat + need;
+                continue;
+            }
+            if (ItemUtil.isInformation(name)) {
+                if (Number(intelligence.getValue(name)) < need) return null;
+                var prevInfo:Number = Number(list.情报[name] || 0);
+                list.情报[name] = Math.max(prevInfo, need);
+                continue;
+            }
+            var isEquip:Boolean = ItemUtil.isEquipment(name);
+            need = allocateContainerForRequirement(bag, -1, name, need, isEquip, isQty, list.背包, usedBag);
+            if (!isEquip && need > 0) {
+                need = allocateContainerForRequirement(drugs, -1, name, need, false, true, list.药剂栏, usedDrug);
+            }
+            if (need > 0 && battleBox != null && accessibleCap > 0) {
+                need = allocateContainerForRequirement(battleBox, accessibleCap, name, need, isEquip, isQty, list.战备箱, usedBattleBox);
+            }
+            if (isNaN(need) || need > 0) return null;
+        }
+        return list;
+    }
+
+    private static function allocateContainerForRequirement(inventory:Object, maxSlotExclusive:Number,
+            name:String, need:Number, isEquip:Boolean, isQty:Boolean,
+            planMap:Object, usedMap:Object):Number {
+        if (inventory == null || need <= 0) return need;
+        var indexes:Array = inventory.getIndexes();
+        for (var idx:Number = 0; idx < indexes.length; idx++) {
+            var slot:Number = Number(indexes[idx]);
+            if (maxSlotExclusive >= 0 && (slot < 0 || slot >= maxSlotExclusive)) continue;
+            var slotKey:String = String(slot);
+            var item:Object = inventory.getItem(slot);
+            if (item == null || String(item.name) != name) continue;
+            if (isEquip) {
+                if (usedMap[slotKey] === true) continue;
+                if (isQty) {
+                    usedMap[slotKey] = true;
+                    planMap[slotKey] = 1;
+                    need -= 1;
+                    if (need <= 0) return 0;
+                    continue;
+                }
+                var itemLv:Number = (item.value != null && typeof item.value == "object")
+                    ? Number(item.value.level || 0) : 0;
+                if (itemLv >= need) {
+                    usedMap[slotKey] = true;
+                    planMap[slotKey] = need;
+                    return 0;
+                }
+                continue;
+            }
+            var avail:Number = Number(item.value) - Number(usedMap[slotKey] || 0);
+            if (isNaN(avail) || avail <= 0) continue;
+            var take:Number = avail >= need ? need : avail;
+            usedMap[slotKey] = Number(usedMap[slotKey] || 0) + take;
+            planMap[slotKey] = Number(planMap[slotKey] || 0) + take;
+            need -= take;
+            if (need <= 0) return 0;
+        }
+        return need;
+    }
+
+    private static function submitCraftingRequirements(requirements:Array, useBattleBox:Boolean,
+            assetContext:Object, battleBoxTouched:Object, battleBoxOwner:Object):Boolean {
+        if (useBattleBox !== true) return ItemUtil.submit(requirements, assetContext);
+        var plan:Object = planCraftingContainment(requirements, true);
+        if (plan == null) return false;
+        var hasBbEntries:Boolean = hasMapEntries(plan.战备箱);
+        var accessibleCap:Number = InventoryPanelService.getAccessibleCapacity("战备箱");
+        var bag:Object = _root.物品栏.背包;
+        var drugs:Object = _root.物品栏.药剂栏;
+        var battleBox:Object = _root.物品栏.战备箱;
+        var materials:Object = _root.收集品栏.材料;
+        if (hasBbEntries && (battleBox == null || battleBox !== battleBoxOwner || accessibleCap <= 0)) return false;
+
+        var expectedBag:Object = preflightContainerPlan(bag, -1, plan.背包);
+        if (expectedBag == null) return false;
+        var expectedDrug:Object = preflightContainerPlan(drugs, -1, plan.药剂栏);
+        if (expectedDrug == null) return false;
+        var expectedBattleBox:Object = hasBbEntries
+            ? preflightContainerPlan(battleBox, accessibleCap, plan.战备箱) : {};
+        if (expectedBattleBox == null) return false;
+        for (var matName:String in plan.材料) {
+            if (ObjectUtil.isInternalKey(matName)) continue;
+            var reqMatQty:Number = Number(plan.材料[matName]);
+            if (isNaN(reqMatQty) || reqMatQty <= 0 || Number(materials.getValue(matName)) < reqMatQty) return false;
+        }
+
+        var exact:Boolean = true;
+        for (var mKey:String in plan.材料) {
+            if (ObjectUtil.isInternalKey(mKey)) continue;
+            var matQty:Number = Number(plan.材料[mKey]);
+            var matBefore:Number = Number(materials.getValue(mKey));
+            materials.addValue(mKey, -matQty);
+            var matAfter:Number = Number(materials.getValue(mKey));
+            var matDelta:Number = matBefore - matAfter;
+            if (matDelta != matQty) exact = false;
+            if (matDelta > 0) {
+                PlayerAssetTransaction.recordEffect("loss", "material", mKey,
+                    matDelta > matQty ? matQty : matDelta, assetContext);
+            }
+        }
+        if (!deductContainerPlan(bag, -1, plan.背包, expectedBag, false, false, assetContext, null)) exact = false;
+        if (!deductContainerPlan(drugs, -1, plan.药剂栏, expectedDrug, true, false, assetContext, null)) exact = false;
+        if (hasBbEntries && !deductContainerPlan(battleBox, accessibleCap, plan.战备箱, expectedBattleBox, false, true, assetContext, battleBoxTouched)) exact = false;
+        return exact;
+    }
+
+    private static function preflightContainerPlan(inventory:Object, maxSlotExclusive:Number,
+            planMap:Object):Object {
+        var expected:Object = {};
+        for (var slotKey:String in planMap) {
+            if (ObjectUtil.isInternalKey(slotKey)) continue;
+            var slotNum:Number = Number(slotKey);
+            if (isNaN(slotNum) || slotNum < 0 || (maxSlotExclusive >= 0 && slotNum >= maxSlotExclusive)) return null;
+            if (inventory == null) return null;
+            var item:Object = inventory.getItem(slotNum);
+            if (item == null) return null;
+            expected[slotKey] = {
+                ref:item,
+                name:String(item.name),
+                equipment:ItemUtil.isEquipment(String(item.name))
+            };
+        }
+        return expected;
+    }
+
+    private static function deductContainerPlan(inventory:Object, maxSlotExclusive:Number,
+            planMap:Object, expectedMap:Object, isDrug:Boolean, isBattleBox:Boolean,
+            assetContext:Object, touchedBackup:Object):Boolean {
+        var exact:Boolean = true;
+        for (var slotKey:String in planMap) {
+            if (ObjectUtil.isInternalKey(slotKey)) continue;
+            var slotNum:Number = Number(slotKey);
+            var liveLimit:Number = isBattleBox
+                ? InventoryPanelService.getAccessibleCapacity("战备箱") : maxSlotExclusive;
+            if (isBattleBox && (_root.物品栏 == undefined || _root.物品栏.战备箱 !== inventory)) {
+                exact = false;
+                continue;
+            }
+            if (liveLimit >= 0 && (slotNum < 0 || slotNum >= liveLimit)) {
+                exact = false;
+                continue;
+            }
+            var item:Object = inventory.getItem(slotNum);
+            var expected:Object = expectedMap[slotKey];
+            if (item == null || expected == null || String(item.name) != String(expected.name)
+                    || (expected.equipment && item !== expected.ref)) {
+                exact = false;
+                continue;
+            }
+            if (touchedBackup != null && !touchedBackup.hasOwnProperty(slotKey)) {
+                var rawSnapshot:Object = typeof item.toObject == "function"
+                    ? item.toObject() : ObjectUtil.clone(item);
+                touchedBackup[slotKey] = {
+                    existed:true,
+                    isBaseItem:(item instanceof BaseItem),
+                    snapshot:rawSnapshot
+                };
+            }
+            var removedName:String = String(item.name);
+            var plannedQty:Number = Number(planMap[slotKey]);
+            var removedEquipment:Boolean = expected.equipment === true;
+            var removedTier:String = "";
+            if (removedEquipment && item.value != null && item.value.tier != undefined) {
+                removedTier = String(item.value.tier);
+            }
+            var beforeItem:Object = item;
+            var beforeValue:Number = Number(item.value);
+            if (removedEquipment || isNaN(beforeValue)) {
+                inventory.remove(slotNum);
+            } else {
+                inventory.addValue(String(slotNum), -plannedQty);
+            }
+            var afterItem:Object = inventory.getItem(slotNum);
+            var rawCommitted:Number = 0;
+            if (removedEquipment) {
+                if (afterItem !== beforeItem) rawCommitted = 1;
+            } else if (!isNaN(beforeValue)) {
+                var afterValue:Number = afterItem == null ? 0 : Number(afterItem.value);
+                if (!isNaN(afterValue)) rawCommitted = beforeValue - afterValue;
+            } else if (afterItem !== beforeItem) {
+                rawCommitted = plannedQty;
+            }
+            var expectedRemoval:Number = removedEquipment ? 1 : plannedQty;
+            var committed:Number = rawCommitted > expectedRemoval ? expectedRemoval : rawCommitted;
+            if (rawCommitted != expectedRemoval) exact = false;
+            if (committed > 0 && !isNaN(committed)) {
+                PlayerAssetTransaction.recordEffect(
+                    "loss", removedEquipment ? "equip" : "item", removedName, committed,
+                    removedTier == "" ? assetContext : {
+                        source:assetContext == null ? undefined : assetContext.source,
+                        reason:assetContext == null ? undefined : assetContext.reason,
+                        mergeScope:assetContext == null ? undefined : assetContext.mergeScope,
+                        tier:removedTier
+                    });
+                if (isDrug && afterItem == null) {
+                    var affinityCommit:Object = org.flashNight.arki.item.DrugSlotAffinityService
+                        .recordDepleted(_root, inventory, slotNum, removedName);
+                    if (!affinityCommit.success) exact = false;
+                }
+            }
+        }
+        return exact;
+    }
+
     private static function projectOutputDelivery(name:String, value:Number,
             requirePlan:Object):Object {
         var quantity:Number = ItemUtil.isEquipment(name) ? 1 : value;
@@ -870,8 +1244,10 @@ class org.flashNight.arki.item.CraftingPanelService {
         for (var drugKey:String in requirePlan.药剂栏) {
             var drugReq:Object = requirePlan.药剂栏[drugKey];
             if (drugReq != null && String(drugReq.name) == name) {
-                return {available:true, storageKind:"drug", mode:"merge",
-                    physicalSlot:Number(drugKey), quantity:quantity};
+                var drugIndex:Number = Number(drugKey);
+                var drugMode:String = _root.物品栏.药剂栏.isEmpty(drugIndex) ? "insert" : "merge";
+                return {available:true, storageKind:"drug", mode:drugMode,
+                    physicalSlot:drugIndex, quantity:quantity};
             }
         }
         for (var bagKey:String in requirePlan.背包) {
@@ -901,8 +1277,68 @@ class org.flashNight.arki.item.CraftingPanelService {
             return projectOutputDelivery(name, value, ItemUtil.singleRequire(name, value));
         }
 
+        var drugs:Object = _root.物品栏.药剂栏;
+        var bag:Object = _root.物品栏.背包;
+        var acquireState:Object = org.flashNight.arki.item.DrugSlotAffinityService
+            .createAcquirePlanningState(_root, drugs, bag);
+        if (acquireState != null && acquireState.ok === true) {
+            if (containmentPlan.药剂栏 != null) {
+                for (var dKey:String in containmentPlan.药剂栏) {
+                    if (ObjectUtil.isInternalKey(dKey)) continue;
+                    var dSlot:Number = Number(dKey);
+                    var dItem:Object = drugs.getItem(dSlot);
+                    if (dItem == null || dSlot < 0
+                            || dSlot >= org.flashNight.arki.item.DrugSlotAffinityService.SLOT_COUNT) continue;
+                    var dRem:Number = remainingStackAfterSubmit(
+                        dItem, containmentPlan.药剂栏, dSlot, String(dItem.name));
+                    if (dRem <= 0) {
+                        acquireState.drugs[dSlot] = null;
+                        var dSeq:Number = Number(acquireState.feature.nextDepletedSequence || 1);
+                        acquireState.feature.slots[dSlot] = {
+                            itemKey:String(dItem.name),
+                            lastDepletedSequence:dSeq
+                        };
+                        acquireState.feature.nextDepletedSequence = dSeq + 1;
+                    } else if (acquireState.drugs[dSlot] != null) {
+                        acquireState.drugs[dSlot].value = dRem;
+                    }
+                }
+            }
+            if (containmentPlan.背包 != null) {
+                for (var bKey:String in containmentPlan.背包) {
+                    if (ObjectUtil.isInternalKey(bKey)) continue;
+                    var bSlot:Number = Number(bKey);
+                    var bItem:Object = bag.getItem(bSlot);
+                    if (bItem == null || bSlot < 0 || bSlot >= acquireState.backpackCapacity) continue;
+                    var bRem:Number = remainingStackAfterSubmit(
+                        bItem, containmentPlan.背包, bSlot, String(bItem.name));
+                    if (bRem <= 0) {
+                        acquireState.backpack[bSlot] = null;
+                    } else if (acquireState.backpack[bSlot] != null) {
+                        acquireState.backpack[bSlot].value = bRem;
+                    }
+                }
+            }
+            var rawOut:Object = ItemUtil.getRawItemData(name);
+            var isDrugOut:Boolean = rawOut != null && typeof rawOut.use == "string"
+                && String(rawOut.use) == "药剂";
+            var outPlan:Object = org.flashNight.arki.item.DrugSlotAffinityService.planAcquireTarget(
+                acquireState, name, quantity, isDrugOut, !ItemUtil.isEquipment(name));
+            if (!outPlan.success) {
+                return {available:false, storageKind:"unavailable",
+                    mode:"none", physicalSlot:-1, quantity:quantity};
+            }
+            if (String(outPlan.storageKind) == "drug") {
+                return {available:true, storageKind:"drug",
+                    mode:(String(outPlan.mode) == "affinity_restore" ? "insert" : "merge"),
+                    physicalSlot:Number(outPlan.slot), quantity:quantity};
+            }
+            return {available:true, storageKind:"bag",
+                mode:(String(outPlan.mode) == "backpack_merge" ? "merge" : "insert"),
+                physicalSlot:Number(outPlan.slot), quantity:quantity};
+        }
+
         if (!ItemUtil.isEquipment(name)) {
-            var drugs:Object = _root.物品栏.药剂栏;
             var drugIndexes:Array = drugs.getIndexes();
             for (var d:Number = 0; d < drugIndexes.length; d++) {
                 var drugSlot:Number = Number(drugIndexes[d]);
@@ -913,7 +1349,6 @@ class org.flashNight.arki.item.CraftingPanelService {
                 }
             }
 
-            var bag:Object = _root.物品栏.背包;
             var bagIndexes:Array = bag.getIndexes();
             for (var b:Number = 0; b < bagIndexes.length; b++) {
                 var bagSlot:Number = Number(bagIndexes[b]);
@@ -1023,7 +1458,7 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (!org.flashNight.arki.scene.Cf6Type61Service.recipeAllowed(String(recipe.recipeId))) return null;
         _availabilityPlanCount++;
         var availabilityPlan:Object = buildPlan(
-            category, recipeIndex, recipe, 1, false, procurementSources, ownedIndex);
+            category, recipeIndex, recipe, 1, false, procurementSources, ownedIndex, null, false);
         if (!availabilityPlan.success) return null;
         var value:Number = Number(recipe.value);
         if (isNaN(value) || value <= 0) value = 1;

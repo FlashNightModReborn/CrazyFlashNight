@@ -1242,6 +1242,7 @@
         this._disabled = false;
         this._numberDraft = null;
         this._rangeDraft = null;
+        this._syncingDraft = false;
         this._pendingFocusRestore = null;
         this._pendingFocusFallback = null;
         this._changeFocusOrigin = null;
@@ -1337,9 +1338,7 @@
                 if (event.preventDefault) event.preventDefault();
                 if (event.stopPropagation) event.stopPropagation();
                 if (event.stopImmediatePropagation) event.stopImmediatePropagation();
-                self._numberDraft = null;
-                self._setValidation(null);
-                self._render();
+                self.revertDraft();
             }
         }));
         this._lifetime.defer(listen(this.rangeInput, 'input', function() {
@@ -1348,7 +1347,6 @@
         this._lifetime.defer(listen(this.rangeInput, 'change', function(event) {
             var next = self._rangeDraft == null
                 ? self._sliderToQuantity(self.rangeInput.value) : self._rangeDraft;
-            self._rangeDraft = null;
             self.setValue(next, {notify:true, reason:'range', event:event});
         }));
         this._lifetime.defer(listen(this.rangeInput, 'keydown', function(event) {
@@ -1414,6 +1412,24 @@
                 Math.round(progress * 10000) / 100 + '%');
         }
     };
+    QuantityControl.prototype._notifyDraftChange = function(dirty) {
+        if (typeof this._options.onDraftChange !== 'function') return;
+        this._syncingDraft = true;
+        try { this._options.onDraftChange(!!dirty); }
+        finally { this._syncingDraft = false; }
+    };
+    QuantityControl.prototype.hasPendingDraft = function() {
+        return this._numberDraft != null || this._rangeDraft != null;
+    };
+    QuantityControl.prototype.revertDraft = function() {
+        var hadDraft = this.hasPendingDraft();
+        this._numberDraft = null;
+        this._rangeDraft = null;
+        this._setValidation(null);
+        this._render();
+        if (hadDraft) this._notifyDraftChange(false);
+        return hadDraft;
+    };
     QuantityControl.prototype._syncSliderDraft = function(value) {
         var quantity = this._sliderToQuantity(value);
         this._rangeDraft = quantity;
@@ -1421,6 +1437,7 @@
         this._setValidation(null);
         this.numberInput.value = String(quantity);
         this._syncSliderAria(quantity);
+        this._notifyDraftChange(true);
         return quantity;
     };
     QuantityControl.prototype._validationResult = function(value) {
@@ -1450,19 +1467,23 @@
         if (!result.valid) {
             this.rangeInput.value = String(this._quantityToSlider(this._value));
             this._syncSliderAria(this._value);
+            this._notifyDraftChange(true);
             return null;
         }
         this.rangeInput.value = String(this._quantityToSlider(result.value));
         this._syncSliderAria(result.value);
+        this._notifyDraftChange(true);
         return result.value;
     };
     QuantityControl.prototype._commitNumberDraft = function(event) {
         var result = this._validationResult(this.numberInput.value);
         this._numberDraft = String(this.numberInput.value == null ? '' : this.numberInput.value);
         this._setValidation(result);
-        if (!result.valid) return false;
+        if (!result.valid) { this._notifyDraftChange(true); return false; }
         this._numberDraft = null;
-        return this.setValue(result.value, {notify:true, reason:'number', event:event});
+        var changed = this.setValue(result.value, {notify:true, reason:'number', event:event});
+        if (!changed) this._notifyDraftChange(false);
+        return changed;
     };
     QuantityControl.prototype._magnitudeNodes = function() {
         var nodes = [this._min, this._sliderUpper()];
@@ -1556,6 +1577,8 @@
         this.rangeMarker.hidden = !markerVisible;
         this.rangeMarker.title = markerVisible
             ? '当前可直接结算 ' + this._formatSliderLabel(this._presetMax) : '';
+        this.rangeMidLabel.title = markerVisible
+            ? '当前可用上限：' + this._formatSliderLabel(this._presetMax) : '';
         if (markerVisible && this.rangeTrack.style && this.rangeTrack.style.setProperty) {
             this.rangeTrack.style.setProperty('--quantity-effective-position',
                 Math.round(this._physicalProgress(this._presetMax) * 10000) / 100 + '%');
@@ -1585,11 +1608,13 @@
         if (this._destroyed || this._disabled) return false;
         var next = this._clamp(value);
         var changed = next !== this._value;
+        var hadDraft = this.hasPendingDraft();
         this._value = next;
         this._numberDraft = null;
         this._rangeDraft = null;
         this._setValidation(null);
         this._render();
+        if (hadDraft) this._notifyDraftChange(false);
         if ((changed || meta && meta.forceNotify) && meta && meta.notify
                 && typeof this._options.onChange === 'function') {
             var focusOrigin = this._document.activeElement;
@@ -1635,7 +1660,8 @@
             this._changeFocusOrigin = null;
         }
         this._disabled = nextDisabled;
-        if (this._numberDraft != null && this._document.activeElement !== this.numberInput) {
+        if (this._numberDraft != null && !this._syncingDraft
+                && this._document.activeElement !== this.numberInput) {
             this._numberDraft = null;
             this._setValidation(null);
         }
@@ -1662,6 +1688,9 @@
             }
         }
         return true;
+    };
+    QuantityControl.prototype.commitDraft = function(event) {
+        return this._numberDraft != null ? this._commitNumberDraft(event) : false;
     };
     QuantityControl.prototype.getValue = function() { return this._value; };
     QuantityControl.prototype.destroy = function() {

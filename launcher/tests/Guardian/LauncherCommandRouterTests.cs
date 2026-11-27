@@ -8004,6 +8004,35 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void EQUIPMENT_TUNING_RejectsOpenWhileCharacterBuildTaskStillBound()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter router = MakeRouter(c);
+            using var harness = new HostHarness(router);
+            var commands = new List<string>();
+            router.SetGameCommandSenderForTests(value =>
+            {
+                commands.Add(value);
+                return true;
+            });
+            using (var buildTask = new CharacterBuildTask(() => true, delegate { return true; }))
+            {
+                router.SetCharacterBuildTask(buildTask);
+                Assert.True(buildTask.BindPanelInstance("panel.workbench.settling"));
+
+                router.Dispatch("EQUIPMENT_TUNING");
+
+                Assert.Empty(commands);
+                Assert.Null(harness.Host.ActivePanelName);
+
+                Assert.True(buildTask.TryClosePanelInstance("panel.workbench.settling"));
+                router.Dispatch("EQUIPMENT_TUNING");
+
+                Assert.Single(commands);
+            }
+        }
+
+        [Fact]
         public void EQUIPMENT_TUNING_DuplicateEchoWithoutBoundTaskStillReportsExpired()
         {
             Capture c = new Capture();

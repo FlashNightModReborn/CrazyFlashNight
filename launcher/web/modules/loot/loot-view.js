@@ -432,7 +432,7 @@ var LootView = (function() {
         var self = this;
         this.shell = new Workbench.DualPaneShell({
             profile:'transfer-pair',
-            eyebrow:this.isSettlement ? 'θ-FLOOD / SETTLEMENT LINK' : '',
+            eyebrow:'',
             title:this.init.displayName,
             subtitle:this.isSettlement ? '战报与基地奖励' : '从战利品箱领取物品到背包',
             leftLabel:this.isSettlement ? '行动报告' : '玩家背包',
@@ -464,14 +464,14 @@ var LootView = (function() {
                 ? this.rewardDelivery.message+'右栏展示本关所得与消耗。'
                 : this.isSettlement
                 ? '领取奖励\n• 单击或 Enter 可直接领取。\n• Ctrl+A 或底部“全部收取”会批量领取。\n• 左栏查看战斗战报；右栏切换所得、消耗和材料存量。'
-                : '领取物品\n• Enter、双击或 Ctrl+单击可直接领取。\n• 空格先选择，再到背包侧确认。\n• Ctrl+A 或底部“全部收取”会批量领取。',
+                : '领取物品\n• 单击、Enter 或拖入左侧即可直接领取。\n• 空格先选择，再到背包侧确认。\n• Ctrl+A 或底部“全部收取”会批量领取。',
             detail:this.isStashedReport
                 ? this.rewardDelivery.organize+'关闭结算会保留已入账奖励。材料存量展示当前持有量。'
                 : this.isSettlement
                 ? '左栏展示击杀和友军记录；右栏展示本关所得、消耗与当前材料存量。\n库存整理仍使用原有背包与战备箱界面。普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。'
                 : this.isRewardInbox
                     ? '普通关闭会保留未领取内容；待领取恢复批次不提供永久放弃。'
-                : '可进入库存整理。关闭页面时，箱中剩余物资会存入暂存区，稍后可从角色物品页取出。',
+                : '可进入库存整理。普通关闭或“存入暂存区”均会将剩余物品存入暂存区并返回游戏。',
             actions:[{id:'close',label:'知道了',primary:true}]
         }});
         mountSession.defer(function() { if (self.helpAction) self.helpAction.destroy(); });
@@ -491,6 +491,14 @@ var LootView = (function() {
                 if (self.reportDensity) self.reportDensity.destroy();
                 self.reportDensity=null;self.reportDensityToggle=null;
             });
+        } else {
+            this.gridDensity=new Workbench.GridDensityController({panelId:'loot-chest',defaultMode:'full'});
+            this.gridDensityToggle=this.gridDensity.createToggle();
+            this.shell.addHeaderAction(this.gridDensityToggle);
+            mountSession.defer(function() {
+                if (self.gridDensity) self.gridDensity.destroy();
+                self.gridDensity=null;self.gridDensityToggle=null;
+            });
         }
 
         this.closeButton = document.createElement('button');
@@ -505,8 +513,8 @@ var LootView = (function() {
         this.abandonButton.className = 'workbench-mode-btn loot-abandon-btn';
         this.abandonButton.textContent = this.isSettlement ? '放弃剩余' : '存入暂存区';
         this.abandonButton.setAttribute('aria-label',this.isSettlement
-            ? '永久放弃剩余关卡奖励' : '保管剩余战利品并关闭');
-        this.abandonButton.setAttribute('data-audio-cue',this.isSettlement?'destructive':'confirm');
+            ? '永久放弃剩余关卡奖励' : '将剩余战利品存入暂存区并关闭');
+        this.abandonButton.setAttribute('data-audio-cue', this.isSettlement ? 'destructive' : 'back');
         this.abandonButton.hidden = true;
         this.abandonButton.disabled = !!this.isRewardInbox;
         this.reconcileButton = document.createElement('button');
@@ -516,15 +524,13 @@ var LootView = (function() {
         this.reconcileButton.setAttribute('aria-label','重新查询上一次领取或关闭的实际结果');
         this.reconcileButton.hidden = true;
         this.reconcileButton.setAttribute('data-header-action','reconcile');
-        if (this.isSettlement) {
-            this.inventoryButton=document.createElement('button');
-            this.inventoryButton.type='button';
-            this.inventoryButton.className='workbench-mode-btn loot-inventory-btn';
-            this.inventoryButton.textContent='库存整理';
-            this.inventoryButton.setAttribute('aria-label','打开背包与战备箱整理页');
-            this.inventoryButton.setAttribute('data-header-action','inventory');
-            this.shell.addHeaderAction(this.inventoryButton);
-        }
+        this.inventoryButton=document.createElement('button');
+        this.inventoryButton.type='button';
+        this.inventoryButton.className='workbench-mode-btn loot-inventory-btn';
+        this.inventoryButton.textContent=this.isSettlement ? '库存整理' : '整理背包';
+        this.inventoryButton.setAttribute('aria-label','打开背包与战备箱整理页');
+        this.inventoryButton.setAttribute('data-header-action','inventory');
+        this.shell.addHeaderAction(this.inventoryButton);
         this.abandonButton.setAttribute('data-header-action','abandon');
         this.closeButton.setAttribute('data-header-action','close');
         this.shell.addHeaderAction(this.reconcileButton);
@@ -603,6 +609,10 @@ var LootView = (function() {
             if (!this.shell.mountInitial(this.reportView, this.settlementSideView))
                 throw new Error('stage settlement workbench views cannot mount');
         } else {
+            if (this.gridDensity) {
+                this.gridDensity.register(this.leftGrid.renderer);
+                this.gridDensity.register(this.rightGrid.renderer);
+            }
             if (!this.shell.mountInitial(this.leftGrid.view, this.rightGrid.view))
                 throw new Error('map loot workbench views cannot mount');
             this.backpackPane = new WorkbenchComponents.OwnedInventoryPane({
@@ -695,19 +705,19 @@ var LootView = (function() {
         root.innerHTML=''
             +'<div class="loot-settlement-report-scroll">'
             +'  <section class="loot-settlement-report-section" data-settlement-section="report">'
-            +'    <header class="loot-settlement-hero"><div><small>STAGE RECORD</small>'
+            +'    <header class="loot-settlement-hero"><div>'
             +'      <h2 data-settlement-stage></h2><p data-settlement-difficulty></p></div>'
             +'      <strong data-settlement-outcome></strong></header>'
             +'    <div class="loot-settlement-metrics">'
-            +'      <div><small>作战时间</small><b data-settlement-time></b><em>关卡帧 / 30 FPS</em></div>'
-            +'      <div><small>总击杀</small><b data-settlement-kill-total></b><em>由关卡击杀事实汇总</em></div>'
+            +'      <div><small>作战时间</small><b data-settlement-time></b><em>本次战斗耗时</em></div>'
+            +'      <div><small>总击杀</small><b data-settlement-kill-total></b><em>本关累计击杀</em></div>'
             +'    </div>'
-            +'    <div class="loot-settlement-kill-heading"><div><small>ENEMY RECORD</small>'
+            +'    <div class="loot-settlement-kill-heading"><div>'
             +'      <h3>击杀记录</h3></div><span data-settlement-kill-status></span></div>'
             +'    <div class="loot-settlement-kills" data-settlement-kills></div>'
             +'  </section>'
             +'  <section class="loot-settlement-flow-section" data-settlement-section="allies">'
-            +'    <header class="loot-settlement-kill-heading"><div><small>ALLY RECORD</small>'
+            +'    <header class="loot-settlement-kill-heading"><div>'
             +'      <h3>友军损失</h3></div><span data-settlement-ally-status></span></header>'
             +'    <div class="loot-settlement-metrics">'
             +'      <div><small>最终损失</small><b data-settlement-ally-loss></b><em>阵亡与撤退单位</em></div>'
@@ -763,7 +773,7 @@ var LootView = (function() {
             +'    <div class="loot-settlement-flows" data-settlement-losses></div>'
             +'  </section>'
             +'  <section class="loot-settlement-material-section" role="tabpanel" data-settlement-side-section="materials" hidden>'
-            +'    <header class="loot-settlement-material-toolbar"><div><small>MATERIAL ARCHIVE</small>'
+            +'    <header class="loot-settlement-material-toolbar"><div>'
             +'      <h2>材料存量</h2></div><input type="search" maxlength="64" placeholder="查找材料" aria-label="查找材料"></header>'
             +'    <p class="loot-settlement-material-status" data-settlement-material-status></p>'
             +'    <div class="loot-settlement-materials" data-settlement-materials></div>'
@@ -1753,7 +1763,7 @@ var LootView = (function() {
             label:isLoot && slot.occupied
                 ? itemName + (this.isSettlement
                     ? '，按 Enter 或单击领取'
-                    : '，按 Enter、双击或 Ctrl+单击领取；空格选择后可在左侧确认')
+                    : '，单击、Enter 或拖入左侧领取；空格选择后可在左侧确认')
                 : itemName + (isLoot ? '' : '，战利品只能领取到此侧，不能放回箱子'),
             selected:function(){return self.broker && self.broker.isSelectedNode(node);},
             inspectable:function(){return self._tileInteraction(kind,slot).inspectable;},
@@ -1764,13 +1774,12 @@ var LootView = (function() {
             onActivate:function(event,context){
                 if (self.drag && self.drag.consumeClick()) return;
                 if (isLoot) {
-                    if (self.isSettlement || event.ctrlKey || event.metaKey || Number(event.detail) >= 2
-                            || context.origin === 'keyboard' && event.key === 'Enter') {
-                        if (typeof self.options.onClaim === 'function') self.options.onClaim(slot);
+                    if (!self.isSettlement && context.origin === 'keyboard' && event.key === ' ') {
+                        if (self.broker.isSelectedNode(node)) self.broker.clearSelection();
+                        else self.broker.select(self.rightGrid.view,slot,node);
                         return;
                     }
-                    if (self.broker.isSelectedNode(node)) self.broker.clearSelection();
-                    else self.broker.select(self.rightGrid.view,slot,node);
+                    if (typeof self.options.onClaim === 'function') self.options.onClaim(slot);
                     return;
                 }
                 if (self.broker.debugState().selectedInstanceKey)
@@ -1830,7 +1839,7 @@ var LootView = (function() {
                 && !claimAll
                 && !organizerActive) {
             this.interaction={inspectable:true,actionable:false,
-                reason:'当前为兼容回滚只读模式，不接纳新的领取事务。'};
+                reason:'当前为兼容只读模式，暂不支持新的领取操作。'};
         }
         if (this.backpackPane) this.backpackPane.setInteraction(this.interaction);
         if (this.lootPane) this.lootPane.setInteraction(this.interaction);
@@ -1862,9 +1871,9 @@ var LootView = (function() {
         }
         if (this.rightGrid) this.rightGrid.chrome.setMeta(projection && projection.loot
             ? (this.isSettlement ? '待领取 '+state.remainingCount+' 项奖励'
-                : '箱内 '+state.remainingCount+' 个非空槽位')
+                : '箱内 '+state.remainingCount+' 件物品')
             : (this.isSettlement ? '等待奖励内容' : '等待箱子内容'));
-        this.shell.setMetric('remaining',this.isStashedReport?'奖励去向':this.isSettlement?'待领奖励':'剩余槽位',
+        this.shell.setMetric('remaining',this.isStashedReport?'奖励去向':this.isSettlement?'待领奖励':'剩余物品',
             this.isStashedReport ? this.rewardDelivery.label : state.remainingCount == null ? '—' : state.remainingCount);
         var busy=state.phase==='opening'||state.phase==='write_pending'||!!state.pending
             ||claimAll||organizerActive;
@@ -1920,7 +1929,7 @@ var LootView = (function() {
     };
     View.prototype.openAbandon = function(remainingCount,onAbandon) {
         if (!this.shell || this.isRewardInbox) return false;
-        var noun=this.isSettlement?'项关卡奖励':'个非空槽位';
+        var noun=this.isSettlement?'项关卡奖励':'件物品';
         this.shell.openModal({
             kind:'loot-abandon',
             kicker:'尚有 ' + remainingCount + ' '+noun,
@@ -2051,9 +2060,9 @@ var LootView = (function() {
             state:'busy',disabled:true,busy:true
         };
         if (state.phase!=='active') return {
-            label:'同步中',status:isSettlement?'正在读取游戏中的关卡奖励快照…'
-                :isRewardInbox?'正在读取游戏中的待领取物品快照…'
-                :'正在读取游戏中的背包与战利品快照…',
+            label:'同步中',status:isSettlement?'正在读取游戏中的关卡奖励数据…'
+                :isRewardInbox?'正在读取游戏中的待领取物品数据…'
+                :'正在读取游戏中的背包与战利品数据…',
             state:'idle',disabled:true,busy:true
         };
         if (organizerActive) return {
@@ -2082,7 +2091,7 @@ var LootView = (function() {
         };
         if (isRewardInbox && rootAdmissionEnabled === false) return {
             label:'兼容只读',
-            status:'当前回滚模式不接纳新的领取事务；既有根仍可重新核对并安全收束。',
+            status:'当前为兼容只读模式，暂不支持新的领取；已有记录仍可重新核对。',
             state:'blocked',disabled:true
         };
         if (state.claimAllError) return {
@@ -2093,11 +2102,11 @@ var LootView = (function() {
         return {
             label:'全部收取',
             status:block||(isSettlement
-                ? '剩余 '+state.remainingCount+' 项奖励；关闭会保留，永久放弃请使用顶部危险操作。'
+                ? '剩余 '+state.remainingCount+' 项奖励；关闭会保留，永久放弃请使用顶部“放弃剩余”。'
                 : isRewardInbox
                     ? '剩余 '+state.remainingCount+' 项待领取物品；关闭会保留，不能永久放弃。'
                 : '剩余 '+state.remainingCount
-                    +' 个非空槽位；关闭只返回游戏，永久放弃请使用顶部危险操作。'),
+                    +' 件物品；关闭或点击顶部“存入暂存区”会将剩余物品存入暂存区并返回游戏。'),
             state:block?'blocked':'ready',canCommit:true
         };
     }
@@ -2117,7 +2126,7 @@ var LootView = (function() {
     }
     function errorMessage(error) {
         var fallback={
-            disconnected:'与游戏桥接已断开，未猜测领取结果。',
+            disconnected:'与游戏连接已断开，未猜测领取结果。',
             client_timeout:'等待游戏响应超时，没有再次提交操作。',
             malformed_response:'游戏响应不完整，已暂停操作并等待重新核对。',
             stale_reconcile:'查询结果仍未包含上一次操作，请重试。',

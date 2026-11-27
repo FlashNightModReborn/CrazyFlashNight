@@ -81,6 +81,12 @@
             });
         }
 
+        if (mutations && typeof mutations.onSettled === 'function') {
+            unsubscribe.push(mutations.onSettled(function() {
+                if (listener) listener();
+            }));
+        }
+
         function currentChestTarget(source) {
             var rev = session && typeof session.getLoadoutRevision === 'function'
                 ? session.getLoadoutRevision()
@@ -105,7 +111,11 @@
             }
             return (context && context.equipmentSnapshot && context.equipmentSnapshot.emergencyInjection)
                 || (context && context.item && context.item.emergencyInjection)
-                || DEFAULT_DISABLED;
+                || null;
+        }
+
+        function hasAuthoritativeConfig(context) {
+            return resolveConfig(context) !== null;
         }
 
         function configure(chestTarget, enabled, drugSlot) {
@@ -239,14 +249,16 @@
             var doc = context.document;
             var snap = session && session.getSnapshot ? session.getSnapshot() : null;
             var cfg = resolveConfig(context);
-            var status = cfg && cfg.status ? String(cfg.status) : 'disabled';
-            var label = '应急药 · ' + statusSummaryText(cfg, snap);
+            var unread = cfg === null;
+            var status = unread ? 'unread' : (cfg && cfg.status ? String(cfg.status) : 'disabled');
+            var label = '应急药 · ' + (unread ? '待读取' : statusSummaryText(cfg, snap));
             var pill = el(doc, 'button', 'cb-mech-pill' + (context.active ? ' is-active' : ''), label);
             pill.type = 'button';
             pill.setAttribute('data-tuning-focus-key', 'summary-mechanism');
             pill.setAttribute('data-mech-status', status);
             pill.disabled = !!context.disabled;
-            var fullDesc = status === 'authorized'
+            var fullDesc = unread ? '应急注射：尚未读取该胸甲配置，请重试读取'
+                : status === 'authorized'
                 ? '应急注射：已绑定 ' + statusSummaryText(cfg, snap) + ' ' + cfg.itemKey + '，点击配置机制'
                 : status === 'empty'
                     ? '应急注射：' + statusSummaryText(cfg, snap) + '（' + cfg.itemKey + ' 待补），点击调整'
@@ -267,18 +279,20 @@
             var drugs = snap && Array.isArray(snap.drugs) ? snap.drugs : [];
             var state = session ? session.getState() : 'idle';
             var cfg = resolveConfig(context);
+            var unread = cfg === null;
+            var displayCfg = cfg || DEFAULT_DISABLED;
             var chestTarget = currentChestTarget(context && context.source);
             var isWorn = !chestTarget || chestTarget.kind === 'loadout';
             var needsReconcile = state === 'needs_reconcile';
-            var unsupported = cfg && cfg.status === 'unsupported_config';
+            var unsupported = displayCfg && displayCfg.status === 'unsupported_config';
             var busy = state !== 'idle' || !!(mutations && mutations.isPending && mutations.isPending());
-            var locked = busy || needsReconcile || unsupported || !chestTarget;
+            var locked = busy || needsReconcile || unsupported || unread || !chestTarget;
             var iconHtmlFn = typeof context.iconHtml === 'function' ? context.iconHtml : fallbackIconHtml;
 
             var body = el(doc, 'section', 'cb-mech-panel');
             body.setAttribute('data-customization-panel', 'emergency-injection');
             body.setAttribute('data-target-kind', isWorn ? 'loadout' : 'backpack');
-            body.setAttribute('data-config-status', String(cfg && cfg.status || 'disabled'));
+            body.setAttribute('data-config-status', unread ? 'unread' : String(displayCfg && displayCfg.status || 'disabled'));
             body.setAttribute('data-reconcile', needsReconcile ? 'required' : 'clear');
             body.setAttribute('aria-label', '61胸甲应急药剂注射配置');
 
@@ -293,33 +307,36 @@
             reactor.appendChild(reactorHead);
 
             var reactorMain = el(doc, 'div', 'cb-mech-reactor-main');
-            var boundInfo = cfg && cfg.enabled ? DrugControls.slotPresentation(snap, cfg.physicalSlot) : null;
-            var boundRow = cfg && cfg.enabled ? drugs[cfg.physicalSlot] : null;
+            var boundInfo = !unread && displayCfg.enabled ? DrugControls.slotPresentation(snap, displayCfg.physicalSlot) : null;
+            var boundRow = !unread && displayCfg.enabled ? drugs[displayCfg.physicalSlot] : null;
             var summaryMedia = el(doc, 'div', 'cb-mech-reactor-icon');
-            if (cfg && cfg.enabled && cfg.status === 'authorized') {
-                summaryMedia.innerHTML = iconHtmlFn(boundRow && boundRow.item && (boundRow.item.icon || boundRow.item.name) || cfg.itemKey, 'kshop-icon');
+            if (!unread && displayCfg.enabled && displayCfg.status === 'authorized') {
+                summaryMedia.innerHTML = iconHtmlFn(boundRow && boundRow.item && (boundRow.item.icon || boundRow.item.name) || displayCfg.itemKey, 'kshop-icon');
             } else {
-                summaryMedia.appendChild(el(doc, 'span', 'cb-mech-reactor-sigil', cfg && cfg.enabled ? '!' : '+'));
+                summaryMedia.appendChild(el(doc, 'span', 'cb-mech-reactor-sigil', unread ? '?' : (displayCfg.enabled ? '!' : '+')));
             }
             reactorMain.appendChild(summaryMedia);
 
             var summaryCopy = el(doc, 'div', 'cb-mech-reactor-copy');
-            if (unsupported) {
+            if (unread) {
+                summaryCopy.appendChild(el(doc, 'strong', '', '尚未读取该胸甲应急配置'));
+                summaryCopy.appendChild(el(doc, 'span', '', '为防止覆盖原有绑定，请先重试读取装备状态后再修改。'));
+            } else if (unsupported) {
                 summaryCopy.appendChild(el(doc, 'strong', '', '检测到高版本或未知应急配置'));
                 summaryCopy.appendChild(el(doc, 'span', '', '该胸甲持有当前面板不支持的配置版本，已锁定保护，不会自动覆盖。'));
-            } else if (cfg && cfg.enabled && cfg.status === 'authorized' && boundInfo) {
+            } else if (displayCfg.enabled && displayCfg.status === 'authorized' && boundInfo) {
                 var qty = boundRow ? Number(boundRow.quantity || boundRow.item && boundRow.item.quantity || 1) : 0;
-                summaryCopy.appendChild(el(doc, 'strong', '', '已绑定 ' + boundInfo.shortcutLabel + ' · ' + cfg.itemKey));
+                summaryCopy.appendChild(el(doc, 'strong', '', '已绑定 ' + boundInfo.shortcutLabel + ' · ' + displayCfg.itemKey));
                 summaryCopy.appendChild(el(doc, 'span', '', '剩余 ×' + qty + ' · 生命值跌至 ≤ 50% 时自动注入此槽位药剂'));
-            } else if (cfg && cfg.enabled && cfg.status === 'empty' && boundInfo) {
-                summaryCopy.appendChild(el(doc, 'strong', '', boundInfo.shortcutLabel + ' 当前空槽（原设：' + cfg.itemKey + '）'));
-                summaryCopy.appendChild(el(doc, 'span', '', '重新补入「' + cfg.itemKey + '」将自动恢复激活，也可直接改选下列药剂槽'));
-            } else if (cfg && cfg.enabled && cfg.status === 'item_changed' && boundInfo) {
+            } else if (displayCfg.enabled && displayCfg.status === 'empty' && boundInfo) {
+                summaryCopy.appendChild(el(doc, 'strong', '', boundInfo.shortcutLabel + ' 当前空槽（原设：' + displayCfg.itemKey + '）'));
+                summaryCopy.appendChild(el(doc, 'span', '', '重新补入「' + displayCfg.itemKey + '」将自动恢复激活，也可直接改选下列药剂槽'));
+            } else if (displayCfg.enabled && displayCfg.status === 'item_changed' && boundInfo) {
                 summaryCopy.appendChild(el(doc, 'strong', '', boundInfo.shortcutLabel + ' 药剂已更换（原设授权已失效）'));
                 summaryCopy.appendChild(el(doc, 'span', '', '请点击下方任意有药剂槽位重新授权，或停用该胸甲的应急槽位'));
             } else {
                 summaryCopy.appendChild(el(doc, 'strong', '', '未设定应急注射槽'));
-                summaryCopy.appendChild(el(doc, 'span', '', '单击下方任意药剂图标或直接点按左侧药剂栏，一步完成绑定'));
+                summaryCopy.appendChild(el(doc, 'span', '', '单击下方任意药剂图标或直接点按左侧药剂格，一步完成绑定'));
             }
             reactorMain.appendChild(summaryCopy);
 
@@ -331,7 +348,15 @@
                 reconcileBtn.setAttribute('data-tuning-focus-key', 'mech:reconcile');
                 reconcileBtn.addEventListener('click', function() { reconcile(); });
                 actionsBox.appendChild(reconcileBtn);
-            } else if (cfg && cfg.enabled && !unsupported) {
+            } else if (unread && typeof context.onRetrySnapshot === 'function') {
+                var retryBtn = el(doc, 'button', 'cb-mech-action', '重试读取');
+                retryBtn.type = 'button';
+                retryBtn.setAttribute('data-customization-retry', '');
+                retryBtn.setAttribute('data-tuning-focus-key', 'mech:retry');
+                retryBtn.disabled = busy;
+                retryBtn.addEventListener('click', function() { context.onRetrySnapshot(); });
+                actionsBox.appendChild(retryBtn);
+            } else if (!unread && displayCfg.enabled && !unsupported) {
                 var disableBtn = el(doc, 'button', 'cb-mech-action', '停用');
                 disableBtn.type = 'button';
                 disableBtn.setAttribute('data-customization-disable', '');
@@ -349,9 +374,11 @@
             guide.setAttribute('role', 'status');
             guide.setAttribute('aria-live', 'polite');
             if (needsReconcile) {
-                guide.textContent = '上次修改结果尚未确认，已冻结写入；请点“重新确认结果”对账，切勿盲目重放。';
+                guide.textContent = '上次修改结果尚未确认，已暂停修改；请点“重新确认结果”，切勿重复点击。';
             } else if (state === 'write_pending') {
                 guide.textContent = '正在提交胸甲应急授权…';
+            } else if (unread) {
+                guide.textContent = '装备配置尚未就绪，暂不允许修改；请先重试读取。';
             } else if (unsupported) {
                 guide.textContent = '当前配置版本受保护，禁止修改。';
             } else {

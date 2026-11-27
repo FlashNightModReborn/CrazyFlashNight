@@ -288,7 +288,7 @@
     min-width:0;
     height:var(--workbench-owned-card-height);
     min-height:var(--workbench-owned-card-height);
-    padding-right:29px;
+    padding-right:6px;
     box-sizing:border-box;
     overflow:hidden;
     text-align:left;
@@ -338,7 +338,65 @@
     font:700 10px/1.2 "Consolas","Microsoft YaHei",monospace;
 }
 .character-build-candidate-delta[data-badge-kind="preview"] {
-    color:color-mix(in srgb,var(--wb-accent) 45%,transparent);
+    display:none;
+    color:var(--dls-crystal-faint);
+}
+.character-build-drug-grid .inventory-slot-value.quantity::before { content:"×"; }
+.character-build-slot-filter-chip {
+    grid-column:3;
+    grid-row:2;
+    align-self:end;
+    margin-bottom:2px;
+    min-height:19px;
+    padding:1px 6px;
+    border:1px solid var(--wb-accent);
+    background:var(--wb-accent-soft);
+    color:var(--wb-text);
+    font:600 10px/1.2 "Microsoft YaHei",sans-serif;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.character-build-slot-filter-chip:hover,
+.character-build-slot-filter-chip:focus-visible {
+    background:var(--wb-accent);
+    color:var(--wb-bg);
+}
+.character-build-slot-filter-chip[hidden] { display:none; }
+.character-build-slot-quickbar {
+    position:absolute;
+    z-index:18;
+    display:flex;
+    align-items:center;
+    gap:2px;
+    padding:2px;
+    border:1px solid var(--wb-accent);
+    background:var(--wb-panel);
+    box-shadow:var(--wb-shadow-raised);
+}
+.character-build-slot-quickbar[hidden] { display:none; }
+.character-build-slot-quick-btn {
+    min-height:20px;
+    padding:0 6px;
+    border:1px solid var(--wb-line);
+    background:var(--wb-surface);
+    color:var(--wb-text);
+    font:600 11px/1.1 "Microsoft YaHei",sans-serif;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.character-build-slot-quick-btn:hover,
+.character-build-slot-quick-btn:focus-visible {
+    border-color:var(--wb-accent);
+    color:var(--wb-accent);
+}
+.character-build-slot-quick-btn.is-tune {
+    border-color:color-mix(in srgb,var(--wb-accent) 55%,var(--wb-line));
+    color:var(--wb-accent);
+}
+.character-build-slot-quick-btn[data-capacity-blocked="true"] {
+    opacity:.55;
+    border-color:var(--wb-danger);
+    color:var(--wb-danger);
 }
 
 .character-build-candidate-actions > button {

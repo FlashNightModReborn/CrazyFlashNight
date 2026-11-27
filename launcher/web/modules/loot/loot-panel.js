@@ -400,7 +400,7 @@ var LootPanel = (function() {
                 || _claimAll && !quiet) return false;
         if (_init && _init.sourceKind === 'reward_inbox'
                 && _init.rootAdmissionEnabled !== true) {
-            if (!quiet) toast('当前为兼容回滚只读模式，不接纳新的领取事务。');
+            if (!quiet) toast('当前为兼容只读模式，暂不支持新的领取操作。');
             return false;
         }
         var retainedReason=_claimAllBlockedReason,retainedSlots=_claimAllBlockedSlots;
@@ -634,7 +634,7 @@ var LootPanel = (function() {
                 }
                 stopClaimAll();
                 if (/^(target_full|inventory_full|capacity_reached|cap_reached)$/.test(String(error)))
-                    _claimAllError = '容量拒绝未满足零写证明，已停止全部收取，请人工核对。';
+                    _claimAllError = '背包空间不足且状态校验未通过，已停止全部收取，请核对后重试。';
                 else _claimAllError = writeFailureMessage(response);
                 toast(_claimAllError,'error');
                 render();
@@ -685,9 +685,9 @@ var LootPanel = (function() {
         var state=_model&&_model.debugState();
         var capacityBlocked=state&&(LootView.isInventoryCapacityBlock(state.blockReason)
             ||LootView.isInventoryCapacityBlock(_claimAllBlockedReason));
-        var settlementAccess=force===true&&_init&&_init.sourceKind==='stage_settlement';
+        var directAccess=force===true;
         if (!state||state.phase!=='active'||state.pending||_claimAll
-                ||!capacityBlocked&&!settlementAccess
+                ||!capacityBlocked&&!directAccess
                 ||!_organizer||!_inventoryCoordinator) return false;
         if (_organizerActive) return true;
         if (!_organizer.open()) {
@@ -803,7 +803,7 @@ var LootPanel = (function() {
                 ||LootView.isInventoryCapacityBlock(_claimAllBlockedReason)) openOrganizer();
         else if (_init&&_init.sourceKind==='reward_inbox'
                 &&_init.rootAdmissionEnabled!==true)
-            toast('当前为兼容回滚只读模式，不接纳新的领取事务。');
+            toast('当前为兼容只读模式，暂不支持新的领取操作。');
         else startClaimAll();
     }
 

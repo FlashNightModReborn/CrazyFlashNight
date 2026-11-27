@@ -322,7 +322,7 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
         options = options || {};
         if (!this._active) { callback(true); return true; }
         if (this._writeHandle || !this._tuningView || !this._tuningView.canClose()) {
-            if (this._ports.toast) this._ports.toast('调制写入或对账尚未完成，请稍候返回。');
+            if (this._ports.toast) this._ports.toast('调制写入或结果确认尚未完成，请稍候返回。');
             callback(false);
             return false;
         }
@@ -350,7 +350,7 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
             && (!this._tuningView || !this._tuningView.canClose()));
     };
     CharacterBuildTuning.prototype.lockReason = function() {
-        return this.isLocked() ? '当前装备调制正在读取、写入或对账，完成后才能切换。' : '';
+        return this.isLocked() ? '当前装备调制正在处理中，完成后才能切换。' : '';
     };
     CharacterBuildTuning.prototype.canExit = function() {
         return !this._active || !!(!this._writeHandle

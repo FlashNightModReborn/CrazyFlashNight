@@ -73,21 +73,27 @@
                             '<button class="arena-custom-btn" type="button" data-custom-mode="mvm" data-audio-cue="select">怪物 vs 怪物</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-mode="pve" data-audio-cue="select">玩家 vs 怪物</button>' +
                         '</div>' +
-                        '<label class="arena-custom-code-label" for="arena-custom-code-input">赛程代码（实时解析）</label>' +
-                        '<textarea id="arena-custom-code-input" class="arena-custom-code-input" rows="2" spellcheck="false"></textarea>' +
                         '<div class="arena-custom-code-status" id="arena-custom-code-status"></div>' +
+                        '<details class="arena-custom-code-drawer">' +
+                            '<summary class="arena-custom-code-summary">高级 · 赛程代码导入 / 导出</summary>' +
+                            '<div class="arena-custom-code-drawer-body">' +
+                                '<label class="arena-custom-code-label" for="arena-custom-code-input">赛程代码（支持直接粘贴）</label>' +
+                                '<textarea id="arena-custom-code-input" class="arena-custom-code-input" rows="2" spellcheck="false"></textarea>' +
+                                '<div class="arena-custom-actions arena-custom-editor-code-actions">' +
+                                    '<button class="arena-custom-btn" type="button" data-custom-action="import">校验代码</button>' +
+                                    '<button class="arena-custom-btn" type="button" data-custom-action="copy" data-audio-cue="activate">复制代码</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</details>' +
                     '</div>' +
                     '<div class="arena-custom-config-tools">' +
-                        '<label class="arena-custom-code-label" for="arena-custom-preset-select">整局待标定组合</label>' +
-                        '<select id="arena-custom-preset-select" class="arena-custom-preset-select" aria-label="待标定组合">' + buildCustomPresetOptions() + '</select>' +
+                        '<label class="arena-custom-code-label" for="arena-custom-preset-select">预设对阵方案</label>' +
+                        '<select id="arena-custom-preset-select" class="arena-custom-preset-select" aria-label="预设对阵方案">' + buildCustomPresetOptions() + '</select>' +
                         '<div class="arena-custom-actions arena-custom-editor-code-actions">' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="preset" data-audio-cue="activate">载入整局</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="random" data-audio-cue="toggle">随机整局</button>' +
                         '</div>' +
                         '<div class="arena-custom-actions arena-custom-editor-code-actions" id="arena-custom-swap-actions">' +
-                            // 校验代码 = 本地可拒绝动作（契约 §5.2）：不挂声明式 cue，由 handleCustomAction 按解析结果播 activate/illegal
-                            '<button class="arena-custom-btn" type="button" data-custom-action="import">校验代码</button>' +
-                            '<button class="arena-custom-btn" type="button" data-custom-action="copy" data-audio-cue="activate">复制代码</button>' +
                             '<button class="arena-custom-btn" type="button" data-custom-action="swap-sides" data-audio-cue="toggle">交换红蓝</button>' +
                         '</div>' +
                     '</div>' +
@@ -166,6 +172,8 @@
                     '<div class="arena-custom-side-editor-actions">' +
                         '<select class="arena-custom-preset-select" data-custom-saved-select="active" aria-label="已保存配置"></select>' +
                         '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="active" data-audio-cue="activate">读取</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="rename-saved" data-side="active" data-audio-cue="select">重命名</button>' +
+                        '<button class="arena-custom-btn" type="button" data-custom-side-action="delete-saved" data-side="active" data-audio-cue="destructive">删除</button>' +
                         '<button class="arena-custom-btn" type="button" data-custom-side-action="save" data-side="active" data-audio-cue="activate">保存</button>' +
                         '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="active" data-audio-cue="toggle">随机组合</button>' +
                         '<button class="arena-custom-btn" type="button" data-custom-side-action="clear" data-side="active" data-audio-cue="destructive">清空</button>' +
@@ -187,7 +195,7 @@
                         '</div>' +
                         '<input id="arena-custom-unit-search" class="arena-custom-unit-search" type="search" placeholder="搜索 ID / 名称 / 素材" spellcheck="false">' +
                         '<span class="arena-custom-unit-count" id="arena-custom-unit-count">--</span>' +
-                        '<span class="arena-custom-portrait-coverage" id="arena-custom-portrait-coverage" aria-live="polite" data-custom-tooltip="头像覆盖核对中">头像 --/--</span>' +
+                        '<span class="arena-custom-portrait-coverage" id="arena-custom-portrait-coverage" hidden></span>' +
                     '</div>' +
                     '<div class="arena-custom-unit-filters">' +
                         '<button type="button" data-custom-unit-filter="all" data-audio-cue="select">全部</button>' +
@@ -1026,8 +1034,7 @@
                     '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="navigate">调整怪物</button>' +
                 '</div>';
             caseEl.textContent =
-                'seed=' + parsed.seed +
-                ' · player=current' +
+                '当前角色 vs 怪物' +
                 ' · ' + formatCustomBattleParams(parsed) +
                 ' · 无掉落 / 无经验 / 标准竞技场';
         } else {
@@ -1053,14 +1060,14 @@
                     '<button class="arena-custom-side-edit" type="button" data-custom-action="edit" data-custom-edit-side="red" data-audio-cue="navigate">调整红方</button>' +
                 '</div>';
             caseEl.textContent =
-                'seed=' + parsed.seed +
-                ' · 上限 ' + parsed.calibrationCase.timeoutFrames + ' 帧' +
+                '怪物对决' +
                 ' · ' + formatCustomBattleParams(parsed) +
-                ' · 无掉落 / 无经验 / 原死亡流程';
+                ' · 无掉落 / 无经验';
         }
         statusEl.innerHTML = ArenaResult.buildCustomRunStatusHtml(parsed.mode === 'pve');
         feeEl.textContent = ArenaCore.formatMoney(parsed.venueFeeEstimate);
-        btn.textContent = S._customConfirmOpen ? '确认页已打开' : '检查并确认';
+        var freePve = parsed.mode === 'pve' && !(Number(parsed.venueFeeEstimate) > 0);
+        btn.textContent = freePve ? '开始挑战' : (S._customConfirmOpen ? '确认页已打开' : '检查并确认');
         btn.disabled = S._busy || (parsed.mode !== 'pve' && ArenaResult.customRunActive());
         abortBtn.disabled = S._busy || parsed.mode === 'pve' || !ArenaResult.customRunActive();
     }
@@ -1091,7 +1098,7 @@
         var swapBtn = S._el.querySelector('[data-custom-action="swap-sides"]');
         if (swapBtn) swapBtn.hidden = editor.mode === 'pve';
         var presetLabel = S._el.querySelector('label[for="arena-custom-preset-select"]');
-        if (presetLabel) presetLabel.textContent = editor.mode === 'pve' ? '待标定怪物组合' : '整局待标定组合';
+        if (presetLabel) presetLabel.textContent = editor.mode === 'pve' ? '预设怪物组合' : '预设对阵方案';
 
         var blueConfigEl = S._el.querySelector('#arena-custom-config-blue');
         var redConfigEl = S._el.querySelector('#arena-custom-config-red');
@@ -1192,6 +1199,8 @@
             '<div class="arena-custom-side-config-load">' +
                 '<select class="arena-custom-preset-select" data-custom-saved-select="' + side + '" aria-label="' + sideLabel + '已保存配置">' + buildCustomSavedRosterOptions() + '</select>' +
                 '<button class="arena-custom-btn" type="button" data-custom-side-action="load" data-side="' + side + '" data-audio-cue="activate">读取</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="rename-saved" data-side="' + side + '" data-audio-cue="select" title="重命名所选已保存配置">改名</button>' +
+                '<button class="arena-custom-btn" type="button" data-custom-side-action="delete-saved" data-side="' + side + '" data-audio-cue="destructive" title="删除所选已保存配置">删除</button>' +
             '</div>' +
             '<div class="arena-custom-side-config-actions">' +
                 '<button class="arena-custom-btn" type="button" data-custom-side-action="random" data-side="' + side + '" data-audio-cue="toggle">随机组合</button>' +
@@ -1791,7 +1800,7 @@
                 '<div class="arena-custom-confirm-head">' +
                     '<div>' +
                         '<div class="arena-custom-confirm-title">确认挑战</div>' +
-                        '<div class="arena-custom-confirm-subtitle">启动后关闭 Web 面板，使用当前玩家进入标准竞技场</div>' +
+                        '<div class="arena-custom-confirm-subtitle">启动后将进入标准竞技场</div>' +
                     '</div>' +
                     '<div class="arena-custom-confirm-fee">' + ArenaCore.formatMoney(0) + '</div>' +
                 '</div>' +
@@ -1807,7 +1816,7 @@
                 '<div class="arena-custom-confirm-head">' +
                     '<div>' +
                         '<div class="arena-custom-confirm-title">确认委托</div>' +
-                        '<div class="arena-custom-confirm-subtitle">启动后将关闭 Web 面板，战斗结束再回开结算页</div>' +
+                        '<div class="arena-custom-confirm-subtitle">启动后开始战斗，结束后打开结算页</div>' +
                     '</div>' +
                     '<div class="arena-custom-confirm-fee">' + ArenaCore.formatMoney(parsed.venueFeeEstimate) + '</div>' +
                 '</div>' +
@@ -1908,7 +1917,7 @@
                 ? 1
                 : customRosterTotal(parsed.redRoster);
             el.className = 'arena-custom-code-status arena-custom-code-status-ok';
-            el.textContent = '实时解析 OK · mode=' + parsed.mode + ' · seed=' + parsed.seed + ' · ' + left + ' vs ' + right + ' · ' + formatCustomBattleParams(parsed);
+            el.textContent = '配置有效 · ' + (parsed.mode === 'pve' ? '玩家 vs 怪物' : '怪物 vs 怪物') + ' · ' + left + ' vs ' + right + ' · ' + formatCustomBattleParams(parsed);
         } else {
             el.className = 'arena-custom-code-status arena-custom-code-status-error';
             el.textContent = '实时解析失败 · ' + (S._customMatch.error || '赛程代码无效');
@@ -1987,14 +1996,14 @@
             select.value = presets[S._customSampleIndex].id;
             syncCustomSelect(select);
         }
-        applyCustomPresetCodeForCurrentMode(presets[S._customSampleIndex].code, '已随机抽取待标定组合');
+        applyCustomPresetCodeForCurrentMode(presets[S._customSampleIndex].code, '已随机抽取预设对阵');
     }
 
     function applySelectedCustomPreset() {
         var select = S._el ? S._el.querySelector('#arena-custom-preset-select') : null;
         var preset = findCustomPresetById(select ? select.value : '');
         captureCustomUndo('载入整局');
-        applyCustomPresetCodeForCurrentMode((preset && preset.code) || getDefaultCustomMatchCode(), '已载入待标定组合');
+        applyCustomPresetCodeForCurrentMode((preset && preset.code) || getDefaultCustomMatchCode(), '已载入预设对阵');
     }
 
     function applyCustomPresetCodeForCurrentMode(code, toast) {
@@ -2043,7 +2052,7 @@
             : ((parsed.redRoster && parsed.redRoster.length) ? parsed.redRoster : parsed.blueRoster);
         captureCustomUndo(customSideLabel(side) + '随机组合');
         setCustomSideRoster(side, roster || []);
-        ArenaCore.showToast(customSideLabel(side) + '已随机抽取待标定组合');
+        ArenaCore.showToast(customSideLabel(side) + '已随机抽取预设阵容');
     }
 
     function parseCustomPresetForRoster(preset) {
@@ -2073,12 +2082,16 @@
         ArenaCore.showToast(customSideLabel(side) + '配置已保存');
     }
 
-    function loadCustomSideConfig(side) {
-        side = resolveCustomSide(side);
-        var selectorKey = side;
+    function resolveSavedSelect(side) {
+        var selectorKey = resolveCustomSide(side);
         var activeSelect = S._el ? S._el.querySelector('[data-custom-saved-select="active"]') : null;
         if (S._customEditorPage === 'side' && activeSelect) selectorKey = 'active';
-        var select = S._el ? S._el.querySelector('[data-custom-saved-select="' + selectorKey + '"]') : null;
+        return S._el ? S._el.querySelector('[data-custom-saved-select="' + selectorKey + '"]') : null;
+    }
+
+    function loadCustomSideConfig(side) {
+        side = resolveCustomSide(side);
+        var select = resolveSavedSelect(side);
         var saved = findCustomSavedRosterById(select ? select.value : '');
         if (!saved) {
             ArenaCore.showToast('暂无可读取配置');
@@ -2087,6 +2100,90 @@
         captureCustomUndo(customSideLabel(side) + '读取配置');
         setCustomSideRoster(side, saved.roster);
         ArenaCore.showToast(customSideLabel(side) + '已读取配置');
+    }
+
+    function renameCustomSavedConfig(side) {
+        var select = resolveSavedSelect(side);
+        var saved = findCustomSavedRosterById(select ? select.value : '');
+        if (!saved) {
+            ArenaCore.showToast('暂无可重命名配置');
+            return;
+        }
+        if (!S._shell || typeof S._shell.openModal !== 'function') return;
+        var currentLabel = saved.label || '';
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'arena-custom-rename-input';
+        input.maxLength = 48;
+        input.value = currentLabel;
+        input.setAttribute('aria-label', '新配置名称');
+        input.setAttribute('data-browser-native', '1');
+        var commitRename = function() {
+            var next = String(input.value || '').trim();
+            if (!next) { ArenaCore.showToast('名称不能为空'); input.focus(); return; }
+            var list = getCustomSavedRosters().slice();
+            for (var i = 0; i < list.length; i++) {
+                if (list[i].id === saved.id) { list[i].label = next.slice(0, 48); break; }
+            }
+            if (saveCustomSavedRosters(list)) {
+                S._shell.closeModal('confirm');
+                renderCustomEditor();
+                ArenaCore.showToast('配置已重命名');
+            }
+        };
+        input.addEventListener('keydown', function(ev) {
+            if (ev && ev.key === 'Enter') {
+                ev.preventDefault();
+                commitRename();
+            }
+        });
+        S._shell.openModal({
+            kind: 'arena-saved-rename',
+            kicker: '已保存配置',
+            title: '重命名配置',
+            message: '修改配置「' + currentLabel + '」的显示名称：',
+            detail: '请输入新的配置名称（最多 48 字）',
+            initialFocus: input,
+            actions: [
+                { id: 'cancel', label: '取消', audioCue: 'back' },
+                { id: 'confirm', label: '保存名称', primary: true, close: false, audioCue: 'activate', onSelect: commitRename }
+            ]
+        });
+        var modal = S._shell.getRoot && S._shell.getRoot().querySelector('.workbench-modal[data-modal-kind="arena-saved-rename"]');
+        var detail = modal && modal.querySelector('.workbench-modal-detail');
+        if (detail) {
+            detail.textContent = '';
+            detail.appendChild(input);
+            setTimeout(function() { input.focus(); input.select(); }, 0);
+        }
+    }
+
+    function deleteCustomSavedConfig(side) {
+        var select = resolveSavedSelect(side);
+        var saved = findCustomSavedRosterById(select ? select.value : '');
+        if (!saved) {
+            ArenaCore.showToast('暂无可删除配置');
+            return;
+        }
+        var doDelete = function() {
+            var list = getCustomSavedRosters().filter(function(item) { return item.id !== saved.id; });
+            if (saveCustomSavedRosters(list)) {
+                renderCustomEditor();
+                ArenaCore.showToast('已删除配置');
+            }
+        };
+        if (!S._shell || typeof S._shell.openModal !== 'function') { doDelete(); return; }
+        S._shell.openModal({
+            kind: 'arena-saved-delete',
+            kicker: '已保存配置',
+            title: '确认删除配置',
+            message: '确定要删除「' + saved.label + '」吗？',
+            detail: '删除后无法恢复；当前正在编辑的阵容不受影响。',
+            actions: [
+                { id: 'cancel', label: '取消', audioCue: 'back' },
+                { id: 'confirm', label: '确认删除', primary: true, danger: true, audioCue: 'destructive', onSelect: doDelete }
+            ]
+        });
     }
 
     function swapCustomSides() {
@@ -2117,6 +2214,10 @@
             saveCustomSideConfig(side);
         } else if (action === 'load') {
             loadCustomSideConfig(side);
+        } else if (action === 'rename-saved') {
+            renameCustomSavedConfig(side);
+        } else if (action === 'delete-saved') {
+            deleteCustomSavedConfig(side);
         } else if (action === 'clear') {
             clearCustomRosterSide(side);
         } else {
@@ -2439,10 +2540,24 @@
         var editor = ensureCustomEditorState();
         var roster = side === 'red' ? editor.red : editor.blue;
         if (!roster || !roster.length) return;
-        captureCustomUndo(customSideLabel(side) + '清空阵容');
-        if (side === 'red') editor.red = [];
-        else editor.blue = [];
-        syncCustomCodeFromEditor();
+        var doClear = function() {
+            captureCustomUndo(customSideLabel(side) + '清空阵容');
+            if (side === 'red') editor.red = [];
+            else editor.blue = [];
+            syncCustomCodeFromEditor();
+        };
+        if (!S._shell || typeof S._shell.openModal !== 'function') { doClear(); return; }
+        S._shell.openModal({
+            kind: 'arena-clear-roster',
+            kicker: '定制赛阵容',
+            title: '确认清空' + customSideLabel(side) + '？',
+            message: '当前已配置 ' + customRosterTotal(roster) + ' 个单位。',
+            detail: '清空后可通过顶部「撤销」恢复上一步。',
+            actions: [
+                { id: 'cancel', label: '取消', audioCue: 'back' },
+                { id: 'confirm', label: '确认清空', primary: true, danger: true, audioCue: 'destructive', onSelect: doClear }
+            ]
+        });
     }
 
     function adjustCustomRosterCount(side, index, delta) {
@@ -2513,6 +2628,12 @@
         if (!S._customMatch.parsed) {
             cue('illegal'); // 本地拦截：赛程代码无效，确认条不打开（契约 §5.2 按结果播音）
             ArenaCore.showToast('赛程代码无效');
+            return;
+        }
+        // R1 免费 PvE 跳过多余二次确认条，一键直接开始挑战；收费 MvM 仍走确认条。
+        if (S._customMatch.parsed.mode === 'pve' && !(Number(S._customMatch.parsed.venueFeeEstimate) > 0)) {
+            cue('activate');
+            startCustomPveMatch(S._customMatch.parsed);
             return;
         }
         cue('activate'); // 校验通过：动作成立并打开确认条

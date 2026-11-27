@@ -96,6 +96,12 @@
                     if (ports.consumeDragClick()) return;
                     ports.selectSkill(entry.skillKey);
                 });
+                row.addEventListener('dblclick', function() {
+                    if (ports.consumeDragClick()) return;
+                    if (current.view === 'manage' && typeof ports.quickEquipSkill === 'function') {
+                        ports.quickEquipSkill(entry);
+                    }
+                });
                 row.addEventListener('keydown', function(event) {
                     if (current.view === 'manage' && event.altKey && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
                         event.preventDefault();
@@ -211,16 +217,31 @@
             return context;
         }
 
+        function inlineSummaryText(value) {
+            return String(value == null ? '' : value)
+                .replace(/<[^>]*>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
         function renderManageActions(entry) {
             var current = state();
             var actions = document.createElement('section'); actions.className = 'skills-detail-actions';
             if (!entry) {
                 var hint = document.createElement('div'); hint.className = 'skills-action-hint';
-                hint.textContent = '技能格可拖到快捷栏；快捷槽之间可直接拖动调整按键布局。';
+                hint.textContent = '单击选技能，双击装入空槽，右键或拖离快捷槽可卸载。';
                 actions.appendChild(hint);
                 return actions;
             }
             actions.appendChild(renderSelectionContext(entry, '已选择'));
+            var summaryText = inlineSummaryText(entry.description);
+            if (summaryText) {
+                var desc = document.createElement('div'); desc.className = 'skills-manage-desc';
+                desc.textContent = summaryText;
+                desc.title = summaryText;
+                ports.bindSkillTooltip(desc, entry);
+                actions.appendChild(desc);
+            }
             if (entry.passive && !entry.equippable) {
                 var passive = ports.button(entry.enabled ? '停用被动' : '启用被动', 'skills-action-btn primary', function() {
                     ports.writeCommand('setPassive', {skillKey:entry.skillKey, enabled:!entry.enabled,
@@ -228,10 +249,10 @@
                 });
                 passive.disabled = ports.writesDisabled(entry); passive.setAttribute('data-audio-cue', 'toggle');
                 passive.setAttribute('data-focus-key', 'action:passive'); actions.appendChild(passive);
-            } else {
+            } else if (!summaryText) {
                 var actionHint = document.createElement('div'); actionHint.className = 'skills-action-hint';
                 actionHint.textContent = entry.equippable
-                    ? '拖到技能格可交换顺序；拖到快捷槽可装备，快捷槽之间可移动或交换。'
+                    ? '双击装入空槽，或点击/拖到下方快捷槽；右键槽位卸载。'
                     : '可拖到其他技能格交换顺序；该技能不可装备到快捷栏。';
                 actions.appendChild(actionHint);
             }
@@ -264,13 +285,10 @@
             stepper.appendChild(label);
             if (currentLevel >= skillMax) {
                 var full = document.createElement('output'); full.textContent = 'Lv.' + skillMax; stepper.appendChild(full);
-            } else if (currentLevel <= 0) {
-                var fixed = document.createElement('output'); fixed.textContent = 'Lv.1（初学固定）'; stepper.appendChild(fixed);
-                ports.setDesiredLevelState(1);
-                desiredLevel = 1;
             } else if (max <= currentLevel) {
                 var unavailable = document.createElement('output');
-                unavailable.textContent = '当前 SP 不足以升级'; stepper.appendChild(unavailable);
+                unavailable.textContent = currentLevel <= 0 ? '当前 SP 不足以学习' : '当前 SP 不足以升级';
+                stepper.appendChild(unavailable);
             } else {
                 var minus = ports.button('−', 'skills-level-btn', function() {
                     ports.setDesiredLevel(state().desiredLevel - 1);
@@ -320,9 +338,10 @@
             }
             target.appendChild(stepper);
             if (rangeShell) { target.appendChild(rangeShell); syncTargetSelector(target, entry); }
-            if (currentLevel > 0 && max > currentLevel) {
+            if (max > currentLevel) {
                 var presets = document.createElement('div'); presets.className = 'skills-target-presets';
-                var presetLabel = max < skillMax ? '升至可负担最高级' : '升至满级';
+                var presetVerb = currentLevel <= 0 ? '学至' : '升至';
+                var presetLabel = max < skillMax ? presetVerb + '可负担最高级' : presetVerb + '满级';
                 var toMax = ports.button(presetLabel, 'skills-target-preset', function() { ports.setDesiredLevel(max, true); });
                 toMax.setAttribute('data-focus-key', 'trainer:level-max');
                 toMax.disabled = ports.writesDisabled(entry) || desiredLevel === max;
@@ -334,10 +353,11 @@
             if (matchingPreview && !matchingPreview.canCommit && matchingPreview.blockingError) gate.classList.add('blocked');
             gate.textContent = '解锁 Lv.' + ports.safeNumber(entry.unlockLevel) + ' · 初学 '
                 + ports.safeNumber(entry.unlockSP) + ' 点 · 升级 ' + ports.safeNumber(entry.upgradeSP) + ' 点/级';
-            if (currentLevel > 0 && currentLevel < skillMax) {
+            if (currentLevel < skillMax) {
+                var verb = currentLevel <= 0 ? '学' : '升';
                 gate.textContent += max > currentLevel
-                    ? ' · 当前可升至 Lv.' + ports.safeNumber(max)
-                    : ' · 当前技能点不足以升级';
+                    ? ' · 当前可' + verb + '至 Lv.' + ports.safeNumber(max)
+                    : ' · 当前技能点不足以' + (currentLevel <= 0 ? '学习' : '升级');
             }
             section.appendChild(gate);
 
@@ -345,13 +365,13 @@
             var previousPreview = current.preview && current.preview.skillKey === entry.skillKey ? current.preview : null;
             if (currentLevel >= skillMax) {
                 result.classList.add('ok'); appendCostRow(result, '研习状态', '技能已达到最高等级');
-            } else if (currentLevel > 0 && max <= currentLevel) {
-                result.classList.add('blocked'); appendCostRow(result, '研习状态', '当前技能点不足以升级');
+            } else if (max <= currentLevel) {
+                result.classList.add('blocked'); appendCostRow(result, '研习状态', currentLevel <= 0 ? '当前技能点不足以学习' : '当前技能点不足以升级');
             } else if (matchingPreview) {
                 appendPreviewSummary(result, matchingPreview, entry, false);
                 if (current.previewLoading) {
                     result.classList.add('updating');
-                    appendPreviewUpdateStatus(result, '正在刷新 Lv.' + desiredLevel + ' 的权威消耗…', false);
+                    appendPreviewUpdateStatus(result, '正在计算 Lv.' + desiredLevel + ' 消耗…', false);
                 } else if (current.previewError) {
                     appendPreviewUpdateStatus(result, '消耗刷新失败：' + ports.errorMessage(current.previewError), true);
                     appendPreviewRetry(result, entry);
@@ -376,7 +396,7 @@
             var footer = document.createElement('div'); footer.className = 'skills-trainer-footer';
             var commitText = '正在准备研习…', commitEnabled = false;
             if (currentLevel >= skillMax) commitText = '该技能已满级';
-            else if (currentLevel > 0 && max <= currentLevel) commitText = '技能点不足，无法升级';
+            else if (max <= currentLevel) commitText = currentLevel <= 0 ? '技能点不足，无法学习' : '技能点不足，无法升级';
             else if (current.previewLoading) commitText = '正在更新 Lv.' + ports.safeNumber(desiredLevel) + ' 的消耗…';
             else if (current.previewError) commitText = '暂时无法研习';
             else if (matchingPreview && matchingPreview.canCommit && matchingPreview.learnToken) {
@@ -437,7 +457,6 @@
             var requirements = document.createElement('div'); requirements.className = 'skills-trainer-requirements';
             appendRequirement(requirements, '等级要求 Lv.' + ports.safeNumber(entry.unlockLevel),
                 Number(player.level) >= Number(entry.unlockLevel));
-            appendRequirement(requirements, '教师可教', true);
             appendRequirement(requirements, '技能点充足', skillPoints >= cost);
             parent.appendChild(requirements);
             if (!preview.canCommit) {
@@ -479,6 +498,7 @@
                 var main = ports.button('', 'skills-slot-main', function() { ports.onSlotClick(slot, readOnly); });
                 main.setAttribute('data-focus-key', 'slot:' + slot.slot);
                 main.title = '槽位 ' + slot.slot + ' · ' + (slot.keyLabel || '无按键') + ' · ' + (slot.skillKey || '空槽')
+                    + (!readOnly && slot.skillKey ? ' · 右键或点击 × 卸载' : '')
                     + (!readOnly && slot.skillKey && slot.stateHealth === 'ok' ? ' · 可拖动调整，Alt+←/→ 与相邻槽交换' : '');
                 var number = document.createElement('span'); number.className = 'skills-slot-number'; number.textContent = String(slot.slot);
                 var key = document.createElement('span'); key.className = 'skills-slot-key'; key.textContent = slot.keyLabel || '';
@@ -492,6 +512,12 @@
                         ? '；可拖动调整，Alt 加左右方向键与相邻槽交换' : ''));
                 main.disabled = !readOnly && (current.writeBlocked || slot.writeBlocked);
                 if (!readOnly) main.addEventListener('keydown', function(event) { ports.onSlotKeyDown(event, slot); });
+                if (!readOnly && slot.skillKey) {
+                    main.addEventListener('contextmenu', function(event) {
+                        event.preventDefault();
+                        ports.proposeUnequip(slot);
+                    });
+                }
                 card.appendChild(main);
                 if (!readOnly && slot.skillKey) {
                     var clear = ports.button('×', 'skills-slot-clear', function(event) {
@@ -607,7 +633,7 @@
                     : row.writeBlocked ? '配置异常，暂时无法修改' : !row.enabled ? '已关闭'
                     : row.effectiveEnabled ? '已开启' : '随父技能停用';
                 copy.appendChild(title);copy.appendChild(description);copy.appendChild(state);section.appendChild(copy);
-                var toggle = ports.button(row.enabled ? '开启' : '关闭', 'skills-action-btn skills-feature-toggle', function() {
+                var toggle = ports.button(row.enabled ? '已开启' : '已关闭', 'skills-action-btn skills-feature-toggle', function() {
                     _featureFocusId = row.id;
                     ports.writeCommand('setFeature', {featureId:row.id,enabled:!row.enabled,expectedRevision:Number(_snapshot.revision)});
                 });

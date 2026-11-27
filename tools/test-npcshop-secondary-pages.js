@@ -31,6 +31,34 @@ test('inventory-full presentation blocks commit and offers organizer', () => {
     assert(model.context.includes('重新核算'));
 });
 
+test('material cart keeps its key across a refreshed lease only while the same item and quantity exist', () => {
+    const intent = {identity:'material:石', source:{viewId:'material',key:'石',expectedLease:'old'},
+        quantity:3, maxQuantity:5, item:{name:'石'}, scope:'slot'};
+    const cart = {[intent.identity]:intent};
+    const material = {slots:[{collectionKey:'石',occupied:true,slotLease:'fresh',item:{name:'石',quantity:4}}]};
+    const rebound = Pages.rebindSaleIntents(cart, {material}, Runtime.isPlainProjectedItem);
+    assert.strictEqual(rebound.changed, true);
+    assert.strictEqual(rebound.next[intent.identity].source.expectedLease, 'fresh');
+    assert.strictEqual(rebound.next[intent.identity].maxQuantity, 4);
+    assert.strictEqual(Pages.rebindSaleIntents(cart, {bag:{slots:[]}}, Runtime.isPlainProjectedItem).changed, false);
+    material.slots[0].item.quantity = 2;
+    assert.strictEqual(Pages.rebindSaleIntents(cart, {material}, Runtime.isPlainProjectedItem).dropped, 1);
+    material.slots[0].item = {name:'替换物',quantity:8};
+    assert.strictEqual(Pages.rebindSaleIntents(cart, {material}, Runtime.isPlainProjectedItem).dropped, 1);
+});
+
+test('low-risk shortcut boundaries use only the reviewed sale lines', () => {
+    const sc = {kind:'sale',intent:{item:{name:'石',itemKind:'stack'}}};
+    const payload = {sales:[{scope:'slot',quantity:1}]};
+    for (const [total, review] of [[49999,false],[50000,true],[60000,true]]) {
+        assert.strictEqual(Pages.requiresTradeReview(payload, {sellTotal:total}, sc, {}, Runtime.isPlainProjectedItem), review);
+    }
+    payload.sales[0].quantity = 2;
+    assert(Pages.requiresTradeReview(payload, {sellTotal:8}, sc, {}, Runtime.isPlainProjectedItem));
+    const unrelated = {equipped:{item:{itemKind:'equipment',enhancementLevel:4}}};
+    assert.strictEqual(Pages.requiresTradeReview({sales:[]}, {sellTotal:0}, {kind:'purchase'}, unrelated, Runtime.isPlainProjectedItem), false);
+});
+
 test('bulk-sale protection copy wins over generic settlement copy', () => {
     const model = Pages.settlementViewModel({saleLines:[{scope:'same_name'}]}, {}, String);
     assert(model.context.includes('自动保护'));
@@ -251,6 +279,38 @@ test('NPC secondary inspection survives write locks and releases every removed b
     assert(presenterSource.includes('this._tooltip.releaseTree(this.root)'));
     assert(source.includes('requestTooltip:request'));
     assert(source.includes('tooltip:_tooltipScope || PanelTooltip'));
+});
+
+test('purchase line total matches AS2 permille rounding and drift guard detects price changes', () => {
+    assert.strictEqual(Pages.computePurchaseLineTotal({basePrice:101, unitPrice:85}, 2, 850), 171);
+    assert.strictEqual(Pages.computePurchaseLineTotal({basePrice:101, unitPrice:85}, 1, 850), 85);
+    assert.strictEqual(Pages.computePurchaseLineTotal({unitPrice:120}, 3, null), 360);
+    const expected = Pages.captureDirectQuote(
+        {purchases:[{catalogIndex:1, quantity:1}], sales:[]},
+        {'1':{item:{catalogIndex:1, basePrice:100, unitPrice:100}, quantity:1}},
+        {},
+        null,
+        {buyRatePermille:1000, catalog:[{catalogIndex:1, basePrice:100, unitPrice:100}]}
+    );
+    assert.strictEqual(expected.buyTotal, 100);
+    assert.strictEqual(Pages.describeQuoteDrift(expected, {
+        buyTotal:100,
+        purchaseLines:[{catalogIndex:1, quantity:1, total:100}],
+        saleLines:[]
+    }), '');
+    const drift = Pages.describeQuoteDrift(expected, {
+        buyTotal:200,
+        purchaseLines:[{catalogIndex:1, quantity:1, total:200}],
+        saleLines:[]
+    });
+    assert(drift.includes('100') && drift.includes('200'), 'expected drift message to name both totals: ' + drift);
+    const driftedModel = Pages.settlementViewModel(
+        {canCommit:true, saleLines:[]},
+        {driftNotice:drift},
+        String
+    );
+    assert.strictEqual(driftedModel.status, '报价已更新 · 请确认');
+    assert.strictEqual(driftedModel.context, drift);
 });
 
 process.stdout.write('NPC secondary pages: ' + passed + '/' + passed + ' passed\n');

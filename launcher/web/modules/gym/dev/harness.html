@@ -427,7 +427,20 @@
             'confirmed switch returns focus to the newly selected row');
         check(document.querySelector('.gym-stage-pause').hidden,
             'pause overlay clears once the session is gone');
+        check(startButton.textContent === '开始训练 · 6,000 K点',
+            'K-point project shows price on the primary CTA', startButton.textContent);
+        var beforeKpointStart = window.__gymPostedMessages.filter(function(m) { return m.cmd === 'start'; }).length;
         startButton.click();
+        var kpointModal = document.querySelector('.workbench-modal[data-modal-kind="gym-kpoint-confirm"]');
+        check(!!kpointModal && window.__gymPostedMessages.filter(function(m) { return m.cmd === 'start'; }).length === beforeKpointStart,
+            'K-point project requires lightweight confirmation before starting');
+        kpointModal.querySelector('.workbench-modal-action[data-action="cancel"]').click();
+        check(!document.querySelector('.workbench-modal[data-modal-kind="gym-kpoint-confirm"]')
+                && window.__gymPostedMessages.filter(function(m) { return m.cmd === 'start'; }).length === beforeKpointStart
+                && GymPanel.debugState().phase === 'preview',
+            'cancelling K-point confirmation sends no start request');
+        startButton.click();
+        document.querySelector('.workbench-modal[data-modal-kind="gym-kpoint-confirm"] .workbench-modal-action[data-action="confirm"]').click();
         await waitFor(function() { return GymPanel.debugState().phase === 'running'; }, 1000);
         var secondToken = GymPanel.debugState().sessionToken;
         window.chrome.webview.dispatch({type:'panel_event',panel:'gym',domain:'gym',event:'progress',
@@ -448,9 +461,9 @@
         check(GymPanel.debugState().phase === 'applied'
                 && document.querySelector('.gym-progress-amount').textContent.indexOf('永久加成 +9') >= 0,
             'only an exact saved settlement displays gained attributes');
-        check(document.querySelectorAll('.gym-balances .gym-balance-value').length === 2
-                && document.querySelectorAll('.gym-balances .gym-balance-value')[1].textContent === '6,450',
-            'settlement refreshes the authoritative K-point balance');
+        check(document.querySelectorAll('.workbench-metric[data-metric]').length === 2
+                && document.querySelector('.workbench-metric[data-metric="kpoint"] b').textContent === '6,450',
+            'settlement refreshes the authoritative K-point balance in header metrics');
         var floatGain = document.querySelector('.gym-float-gain');
         check(!!floatGain && floatGain.classList.contains('gym-float-run')
                 && floatGain.textContent === '+9 空手攻击力',
@@ -495,7 +508,7 @@
                     return message.cmd === 'start' || message.cmd === 'retrySave';
                 }).length === paidCommandsBefore,
             'projection retry sends only the explicit query flag and never starts or saves training again');
-        check(document.querySelectorAll('.gym-balances .gym-balance-value')[1].textContent === '6,450',
+        check(document.querySelector('.workbench-metric[data-metric="kpoint"] b').textContent === '6,450',
             'projection-only recovery preserves the already committed balance');
         var projectionOpen = fixture('gym-projection-header');
         projectionOpen.snapshot.pendingProjection = {sessionToken:'gym.session.saved.1',stationId:'dummy',projectId:'dummy.1',
@@ -570,15 +583,18 @@
                 && !!brokeStatus && brokeStatus.textContent.indexOf('还差') >= 0,
             'unaffordable selection blocks the commit with the exact gap',
             brokeStatus ? brokeStatus.textContent : 'missing');
-        var brokeCards = document.querySelectorAll('.gym-balances .gym-balance-card');
-        check(brokeCards.length === 2
+        var brokeCards = [
+            document.querySelector('.workbench-metric[data-metric="money"]'),
+            document.querySelector('.workbench-metric[data-metric="kpoint"]')
+        ];
+        check(!!brokeCards[0] && !!brokeCards[1]
                 && brokeCards[0].classList.contains('gym-balance-attention')
                 && !brokeCards[1].classList.contains('gym-balance-attention'),
-            'the short money card calls attention for a money project');
+            'the short money header metric calls attention for a money project');
         brokeOptions[1].click();
         check(!brokeCards[0].classList.contains('gym-balance-attention')
                 && brokeCards[1].classList.contains('gym-balance-attention'),
-            'selecting a k-point project moves attention to the k-point card');
+            'selecting a k-point project moves attention to the k-point header metric');
         window.chrome.webview.dispatch({
             type:'panel_cmd', cmd:'close', panel:'gym', panelInstanceId:'gym-broke-001'
         });

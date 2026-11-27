@@ -543,7 +543,9 @@
         var badge = makeElement('span', 'balance-weight-badge balance-weight-' + tone);
         badge.setAttribute('data-balance-state', 'confirmed');
         badge.setAttribute('data-balance-weight', String(summary.weightLayers));
-        badge.setAttribute('aria-label', ItemCard.balanceAriaLabel(summary));
+        var badgeAria = ItemCard.balanceAriaLabel(summary);
+        badge.setAttribute('aria-label', badgeAria);
+        badge.setAttribute('title', badgeAria);
         var level = makeElement('span', 'balance-badge-level');
         level.textContent = 'Lv' + balanceNumber(summary.level, 2);
         badge.appendChild(level);

@@ -19,26 +19,10 @@
 })(typeof window !== 'undefined' ? window : globalThis, function(DrugControls) {
     'use strict';
 
-    var MUTATIONS = {
-        equipEquipment:true,
-        unequipEquipment:true,
-        equipDrug:true,
-        unequipDrug:true,
-        configureEmergencyInjection:true
-    };
-
-    function integer(value, min, max) {
-        value = Number(value);
-        return isFinite(value) && Math.floor(value) === value
-            && value >= min && value <= max ? value : null;
-    }
-    function token(value) {
-        value = String(value || '');
-        return /^[A-Za-z0-9._~-]{1,128}$/.test(value) ? value : '';
-    }
-    function own(value, key) {
-        return Object.prototype.hasOwnProperty.call(value || {}, key);
-    }
+    var MUTATIONS = { equipEquipment:true, unequipEquipment:true, equipDrug:true, unequipDrug:true, configureEmergencyInjection:true };
+    function integer(value, min, max) { value = Number(value); return isFinite(value) && Math.floor(value) === value && value >= min && value <= max ? value : null; }
+    function token(value) { value = String(value || ''); return /^[A-Za-z0-9._~-]{1,128}$/.test(value) ? value : ''; }
+    function own(value, key) { return Object.prototype.hasOwnProperty.call(value || {}, key); }
     function validIdentityTriple(value) {
         if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
         var keys = ['name', 'displayName', 'icon'];
@@ -166,9 +150,18 @@
         this._session = options.session;
         this._ports = options.ports || {};
         this._onApplied = typeof options.onApplied === 'function' ? options.onApplied : function() {};
-        this._inventoryWrite = null;
-        this._pending = null;
+        this._inventoryWrite = null; this._pending = null; this._settledListeners = [];
     }
+    MutationCoordinator.prototype.onSettled = function(fn) {
+        if (typeof fn !== 'function') return function() {};
+        this._settledListeners.push(fn);
+        var self = this;
+        return function() { var i = self._settledListeners.indexOf(fn); if (i >= 0) self._settledListeners.splice(i, 1); };
+    };
+    MutationCoordinator.prototype._notifySettled = function(response, accepted) {
+        var list = this._settledListeners ? this._settledListeners.slice() : [];
+        for (var i = 0; i < list.length; i++) { try { list[i](response, accepted); } catch (_) {} }
+    };
     MutationCoordinator.prototype._completeInventory = function(snapshots) {
         var operation = this._inventoryWrite;
         this._inventoryWrite = null;
@@ -181,6 +174,7 @@
             this._completeInventory(response.inventorySnapshots);
             this._pending = null;
             this._onApplied(response);
+            this._notifySettled(response, true);
             if (this._ports.toast) this._ports.toast(response.cmd === 'snapshot'
                 ? '角色构筑写入结果已确认。'
                 : response.changed ? '角色构筑已更新。' : '当前构筑已是目标状态。', 'success');
@@ -197,6 +191,7 @@
         }
         this._completeInventory(null);
         this._pending = null;
+        this._notifySettled(response, false);
     };
     MutationCoordinator.prototype.start = function(intent) {
         if (!intent || this._pending || this._session.getState() !== 'idle') return false;
@@ -242,10 +237,7 @@
         this._pending.reconcileAttempted = true;
         return !!this._session.reconcileMutation(this._result.bind(this));
     };
-    MutationCoordinator.prototype.destroy = function() {
-        this._inventoryWrite = null;
-        this._pending = null;
-    };
+    MutationCoordinator.prototype.destroy = function() { this._inventoryWrite = null; this._pending = null; this._settledListeners = []; };
     MutationCoordinator.prototype.isPending = function() { return !!this._pending; };
 
     return {

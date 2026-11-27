@@ -711,4 +711,98 @@ test('late catalog read from a closed shop cannot change the new session', () =>
     assert.strictEqual(coordinator.debugState().canStartWrite,true);
 });
 
+test('KShopClaimBatch caps manual selection at 40 rows and preserves selection when write is rejected', () => {
+    const ClaimBatch = require('../launcher/web/modules/kshop-claim-batch.js');
+    function makeElement(tag) {
+        const listeners = {};
+        const el = {
+            tagName: tag.toUpperCase(),
+            className: '',
+            textContent: '',
+            hidden: false,
+            disabled: false,
+            checked: false,
+            children: [],
+            addEventListener(type, fn) { (listeners[type] = listeners[type] || []).push(fn); },
+            dispatch(type) { (listeners[type] || []).forEach(fn => fn({ stopPropagation() {} })); },
+            insertBefore(node) { this.children.unshift(node); },
+            querySelector(sel) {
+                if (sel === '.kshop-claim-all-btn') return el._allBtn;
+                if (sel === '.kshop-claim-batch-btn') return el._batchBtn;
+                if (sel === '.kshop-claim-batch-hint') return el._hint;
+                if (sel === '.kshop-claim-check') return el._check;
+                return null;
+            }
+        };
+        Object.defineProperty(el, 'innerHTML', {
+            set() {
+                el._allBtn = makeElement('button');
+                el._batchBtn = makeElement('button');
+                el._hint = makeElement('small');
+                el._check = makeElement('input');
+            }
+        });
+        return el;
+    }
+    const prevDocument = global.document;
+    global.document = { createElement: makeElement };
+    try {
+        const rows = Array.from({length:41}, (_, i) => ({rowFingerprint:'fp.' + i}));
+        const toasts = [];
+        let allowInv = false, allowCoord = false, dispatched = [];
+        const ctrl = ClaimBatch.create({
+            getPurchased:() => rows,
+            toast:(msg) => toasts.push(msg),
+            inventoryCoordinator:{
+                beginExternalWrite:() => allowInv ? {token:1} : null,
+                completeExternalWrite:() => true
+            },
+            coordinator:{
+                claimBatch:(_id, selection) => {
+                    if (!allowCoord) return false;
+                    dispatched = selection.slice();
+                    return true;
+                }
+            }
+        });
+        const host = makeElement('section'), grid = makeElement('div');
+        ctrl.attachBar({root:host, renderer:{root:grid}});
+        const checkboxes = rows.map(item => {
+            const row = makeElement('div');
+            row.innerHTML = ctrl.checkboxHtml();
+            ctrl.bindRow(row, item);
+            return row._check;
+        });
+        for (let i = 0; i < 41; i++) {
+            checkboxes[i].checked = true;
+            checkboxes[i].dispatch('change');
+        }
+        assert.strictEqual(ctrl.selectionSize(), 40);
+        assert.strictEqual(checkboxes[40].checked, false);
+        assert(toasts.some(t => t.includes('40')));
+        const bar = host.children[0];
+        assert(bar._hint.textContent.includes('已达单批上限 40 项'));
+
+        // Busy inventory must not wipe selection
+        bar._batchBtn.dispatch('click');
+        assert.strictEqual(ctrl.selectionSize(), 40);
+        assert.strictEqual(dispatched.length, 0);
+
+        // Busy shop coordinator must not wipe selection
+        allowInv = true;
+        bar._batchBtn.dispatch('click');
+        assert.strictEqual(ctrl.selectionSize(), 40);
+        assert.strictEqual(dispatched.length, 0);
+
+        // Accepted write dispatches exactly 40 and clears only dispatched rows
+        allowCoord = true;
+        bar._batchBtn.dispatch('click');
+        assert.strictEqual(dispatched.length, 40);
+        assert.strictEqual(ctrl.selectionSize(), 0);
+    } finally {
+        if (prevDocument === undefined) delete global.document;
+        else global.document = prevDocument;
+    }
+});
+
 process.stdout.write(`KShop presenter tests passed: ${passed}/${passed}\n`);

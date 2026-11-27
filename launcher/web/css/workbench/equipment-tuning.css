@@ -212,21 +212,33 @@
 .equipment-tuning-detail {
     grid-row:4;
     min-height:0;
+    display:grid;
+    grid-template-rows:minmax(0,1fr) auto;
+    overflow:hidden;
+}
+.equipment-tuning-body {
+    min-height:0;
     overflow:auto;
+    padding:9px;
     scrollbar-width:thin;
     scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
     scrollbar-gutter:stable;
 }
-.equipment-tuning-detail::-webkit-scrollbar { width:7px; height:7px; }
-.equipment-tuning-detail::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
-.equipment-tuning-detail::-webkit-scrollbar-thumb {
+.equipment-tuning-body::-webkit-scrollbar,
+.equipment-tuning-preview::-webkit-scrollbar { width:7px; height:7px; }
+.equipment-tuning-body::-webkit-scrollbar-track,
+.equipment-tuning-preview::-webkit-scrollbar-track { background:var(--wb-scrollbar-track); }
+.equipment-tuning-body::-webkit-scrollbar-thumb,
+.equipment-tuning-preview::-webkit-scrollbar-thumb {
     background:var(--wb-scrollbar-thumb);
     border:1px solid var(--wb-scrollbar-thumb-border);
 }
-.equipment-tuning-detail::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
-.equipment-tuning-detail::-webkit-scrollbar-button { display:none; width:0; height:0; }
-.equipment-tuning-detail::-webkit-scrollbar-corner { background:var(--wb-scrollbar-track); }
-.equipment-tuning-body { min-height:0; overflow:visible; padding:9px; }
+.equipment-tuning-body::-webkit-scrollbar-thumb:hover,
+.equipment-tuning-preview::-webkit-scrollbar-thumb:hover { background:var(--wb-scrollbar-thumb-hover); }
+.equipment-tuning-body::-webkit-scrollbar-button,
+.equipment-tuning-preview::-webkit-scrollbar-button { display:none; width:0; height:0; }
+.equipment-tuning-body::-webkit-scrollbar-corner,
+.equipment-tuning-preview::-webkit-scrollbar-corner { background:var(--wb-scrollbar-track); }
 .equipment-tuning-empty { min-height:54px; display:grid; place-items:center; padding:8px; color:#69747a; font:10px/1.5 "Microsoft YaHei",sans-serif; text-align:center; }
 .equipment-tuning-enhance-reactor {
     position:relative; min-height:68px; margin-bottom:6px; padding:7px 9px 7px 72px; display:grid;
@@ -525,10 +537,8 @@
     border:1px solid rgba(var(--dls-crystal-rgb),.18); background:repeating-linear-gradient(135deg,rgba(var(--dls-crystal-rgb),.018) 0 12px,transparent 12px 24px),#071014;
     box-shadow:inset 3px 0 0 var(--dls-crystal-dim);
 }
-.equipment-tuning-mod-filter::before {
-    content:"D.L.S. / MOD INDEX"; position:absolute; top:2px; right:5px; color:rgba(89,215,243,.28);
-    font:600 9px/1 Consolas,sans-serif; letter-spacing:.12em; pointer-events:none;
-}
+.equipment-tuning-mod-filter::before { display:none; }
+.equipment-tuning-show-all-mods { display:block; margin:6px auto 0; }
 .equipment-tuning-mod-breadcrumb { min-height:0; overflow:hidden; }
 .equipment-tuning-mod-filter .item-filter-breadcrumbs { min-height:24px; padding:0 4px; border:1px solid #295865; background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.09),transparent 58%),#071014; }
 .equipment-tuning-mod-filter .item-filter-row { gap:3px; }
@@ -675,7 +685,16 @@
 .inventory-workbench-panel .workbench-modal[data-modal-kind="equipment-tuning-help"] { width:510px; }
 .inventory-workbench-panel .workbench-modal[data-modal-kind="equipment-tuning-help"] .workbench-modal-message,
 .inventory-workbench-panel .workbench-modal[data-modal-kind="equipment-tuning-help"] .workbench-modal-detail { white-space:pre-line; }
-.equipment-tuning-preview { min-height:78px; overflow:visible; padding:8px; border-top:1px solid var(--dls-crystal-dim); background:linear-gradient(90deg,rgba(var(--dls-crystal-rgb),.04),transparent 45%),var(--wb-bg); }
+.equipment-tuning-preview {
+    min-height:78px;
+    max-height:210px;
+    overflow:auto;
+    padding:8px;
+    border-top:1px solid var(--dls-crystal-dim);
+    background:linear-gradient(90deg,color-mix(in srgb,var(--dls-crystal) 4%,transparent),transparent 45%),var(--wb-bg);
+    scrollbar-width:thin;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
 .equipment-tuning-preview.is-empty:not(.enhance-compact) { min-height:0; max-height:0; padding:0; border:0; background:transparent; overflow:hidden; }
 .equipment-tuning-preview.is-empty:not(.enhance-compact) .equipment-tuning-empty { display:none; }
 .equipment-tuning-preview.enhance-compact { min-height:0; max-height:none; overflow:visible; padding:7px 8px; }
@@ -1119,3 +1138,155 @@
     color:var(--wb-muted);
     font:11px/1.25 "Microsoft YaHei",sans-serif;
 }
+.inventory-tuning-source-switch {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    margin-left:auto;
+}
+.inventory-tuning-source-switch[hidden] { display:none; }
+.inventory-tuning-source-tab {
+    min-height:24px;
+    padding:0 8px;
+    border:1px solid var(--wb-line);
+    background:var(--wb-surface);
+    color:var(--wb-muted);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+    cursor:pointer;
+}
+.inventory-tuning-source-tab:hover,
+.inventory-tuning-source-tab:focus-visible {
+    color:var(--wb-text);
+    border-color:var(--dls-crystal);
+}
+.inventory-tuning-source-tab.is-active {
+    color:var(--wb-bg);
+    border-color:var(--dls-crystal);
+    background:var(--dls-crystal);
+}
+.inventory-tuning-loadout-pane {
+    flex:1 1 auto;
+    min-height:0;
+    overflow:auto;
+    padding:8px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    scrollbar-width:thin;
+    scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
+}
+.inventory-tuning-loadout-pane[hidden] { display:none; }
+.inventory-tuning-loadout-section {
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+.inventory-tuning-loadout-section h3 {
+    margin:0;
+    padding-bottom:3px;
+    border-bottom:1px solid var(--wb-line-soft);
+    color:var(--wb-muted);
+    font:700 11px/1.2 "Microsoft YaHei",sans-serif;
+}
+.inventory-tuning-loadout-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(148px,1fr));
+    gap:6px;
+}
+.inventory-tuning-loadout-card {
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    min-width:0;
+    min-height:48px;
+    padding:6px 7px;
+    border:1px solid var(--wb-line);
+    background:var(--wb-surface);
+    color:var(--wb-text);
+    text-align:left;
+    cursor:pointer;
+}
+.inventory-tuning-loadout-card:hover:not(:disabled),
+.inventory-tuning-loadout-card:focus-visible {
+    border-color:var(--dls-crystal);
+    background:rgba(var(--dls-crystal-rgb),.08);
+}
+.inventory-tuning-loadout-card.is-disabled,
+.inventory-tuning-loadout-card:disabled {
+    opacity:.55;
+    border-style:dashed;
+    cursor:default;
+}
+.inventory-tuning-loadout-card.equipment-tuning-authority-source {
+    border-color:var(--wb-focus);
+    box-shadow:inset 0 0 0 2px var(--wb-focus);
+}
+.inventory-tuning-loadout-icon {
+    width:32px;
+    height:32px;
+    flex:0 0 32px;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--wb-line-soft);
+    background:var(--wb-bg);
+}
+.inventory-tuning-loadout-icon img,
+.inventory-tuning-loadout-icon .kshop-icon {
+    width:28px;
+    height:28px;
+    object-fit:contain;
+}
+.inventory-tuning-loadout-empty-glyph {
+    color:var(--wb-muted);
+    font:600 11px/1 Consolas,monospace;
+}
+.inventory-tuning-loadout-copy {
+    min-width:0;
+    flex:1 1 auto;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+}
+.inventory-tuning-loadout-top {
+    display:flex;
+    align-items:center;
+    gap:5px;
+    min-width:0;
+}
+.inventory-tuning-loadout-slot-tag {
+    flex:0 0 auto;
+    padding:1px 4px;
+    border:1px solid var(--wb-line-soft);
+    background:var(--wb-bg);
+    color:var(--wb-muted);
+    font:600 10px/1.2 "Microsoft YaHei",sans-serif;
+    font-style:normal;
+}
+.inventory-tuning-loadout-top b {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--wb-text);
+    font:600 11px/1.2 "Microsoft YaHei",sans-serif;
+}
+.inventory-tuning-loadout-meta {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--wb-muted);
+    font:10px/1.2 "Microsoft YaHei",sans-serif;
+}
+.inventory-tuning-loadout-empty {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+    padding:14px;
+    border:1px dashed var(--wb-line);
+    background:var(--wb-surface);
+    color:var(--wb-muted);
+    font:12px/1.4 "Microsoft YaHei",sans-serif;
+}
+.inventory-tuning-loadout-empty p { margin:0; }

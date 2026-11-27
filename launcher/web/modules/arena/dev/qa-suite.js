@@ -487,15 +487,17 @@ var ArenaHarnessQA = (function() {
                 api.assert(!!compactPortrait && parseFloat(getComputedStyle(compactPortrait).width) <= 50, '紧凑头像应收至 48px CSS 档');
                 api.assert(getComputedStyle(grid.querySelector('.arena-card-stats')).display !== 'none', '紧凑态仍应保留对手数/等级语义');
                 fullButton.click();
-                // 换一批（右栏决策头）/ 全部重抽（左栏控件条）+ 右栏唯一主 CTA（未选中 = disabled）
+                // 换一批（右栏决策头）/ 全部重抽（左栏控件条）+ 打开默认选中首张可用合约（消除空白右栏）
                 api.assert(!!document.getElementById('arena-roll-one'), '右栏决策头应有「换一批」控件');
                 api.assert(document.getElementById('arena-roll-one').closest('.arena-decision-head') != null,
                     '「换一批」应挂在右栏决策头');
                 api.assert(!!document.getElementById('arena-reroll-all'), '左栏应有「全部重抽」控件');
+                api.assertEqual(window.ArenaPanel.getState().selectedCardIdx, 0, '打开时应默认选中首张合约卡，消除空白右栏');
+                var firstCard = grid.querySelector('.arena-card[data-index="0"]');
+                api.assert(!!firstCard && firstCard.classList.contains('arena-card-selected'), '默认选中卡应高亮 arena-card-selected');
                 var primary = commitPrimary();
                 api.assert(!!primary, '右栏应有 CommitBar 主 CTA');
-                api.assertEqual(primary.disabled, true, '未选中时主 CTA 应禁用');
-                api.assert(commitStatusText().indexOf('选择左侧合约') >= 0, '未选中状态文案应引导选择');
+                return waitCommitEnabled(api);
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });
@@ -1421,9 +1423,13 @@ var ArenaHarnessQA = (function() {
                         && depositRect.right <= blockRect.right + 0.5,
                         '卡片 ' + prizeIdx + ' 经济数值不得溢出容器');
                 }
+                api.assertEqual(window.ArenaPanel.getState().selectedCardIdx, 0, '打开时应默认选中首张卡 0');
                 var cards = window.ArenaPanel.getCards();
-                cardIdx = findPublicCardIndexByRole(cards, 'merc', 1);
-                api.assert(cardIdx >= 0, '应能找到佣兵公开卡');
+                cardIdx = findPublicCardIndexByRole(cards, 'merc', 2);
+                if (cardIdx < 0 || cardIdx === 0) {
+                    cardIdx = 1;
+                }
+                api.assert(cardIdx > 0, '应能找到非默认选中的佣兵公开卡');
             })
             .then(function() {
                 // 未选中卡上 Enter = 只选中固定预览（不发 enter）
@@ -1471,6 +1477,10 @@ var ArenaHarnessQA = (function() {
                 }, 2000, 'commit #2 失败回包已处理');
             })
             .then(function() {
+                // 含押金合约双击不自动入场（需明确提交），防止误触扣费
+                var cardEl = document.querySelector('#arena-grid .arena-card[data-index="' + cardIdx + '"]');
+                cardEl.dispatchEvent(new MouseEvent('dblclick', { bubbles: true, cancelable: true }));
+                api.assertEqual(host.enterMessages.length, 2, '含押金合约双击不应绕过提交直接发 enter');
                 // 右栏 CommitBar 主 CTA → commit #3（成功，panel 关闭）
                 return waitCommitEnabled(api).then(function() {
                     commitPrimary().click();
@@ -1699,7 +1709,7 @@ var ArenaHarnessQA = (function() {
                 api.assertEqual(state.customMatch.parsed.calibrationCase.blueRoster.length, 4, '蓝方应为 thief-lv30x4 对照阵容');
                 api.assert(state.customMatch.parsed.calibrationCase.redRoster.length > 0, '红方应为关卡拆解元战队');
                 api.assert(document.getElementById('arena-custom-fee').textContent !== '--', '估算场地费应渲染');
-                api.assert(/实时解析 OK/.test(document.getElementById('arena-custom-code-status').textContent || ''), '赛程代码状态应显示实时解析 OK');
+                api.assert(/配置有效/.test(document.getElementById('arena-custom-code-status').textContent || ''), '赛程代码状态应显示配置有效');
                 api.assertEqual(document.getElementById('arena-custom-editor-view').hidden, true, '入口卡内不应直接展开阵容编辑器');
                 api.assert(!document.querySelector('.arena-card-custom #arena-custom-code-input'), '入口卡不应承载赛程代码输入');
                 api.assert(!document.querySelector('.arena-card-custom #arena-custom-preset-select'), '入口卡不应承载预设下拉框');
@@ -2487,22 +2497,15 @@ var ArenaHarnessQA = (function() {
                 }, 2000, 'back to custom card');
             })
             .then(function() {
-                document.querySelector('.arena-custom-generate').click();
-                return api.waitFor(function() {
-                    var confirm = document.getElementById('arena-custom-confirm');
-                    return confirm && !confirm.hidden && /确认挑战|开始挑战/.test(confirm.textContent || '');
-                }, 2000, 'pve confirm rendered');
-            })
-            .then(function() {
-                var earlyStart = host.sentMessages.filter(function(m) { return m && m.cmd === 'custom_start'; });
-                api.assertEqual(earlyStart.length, 0, 'PVE 确认前不应发送 custom_start');
-                document.querySelector('[data-custom-confirm-action="start"]').click();
+                var genBtn = document.querySelector('.arena-custom-generate');
+                api.assert(genBtn && /开始挑战/.test(genBtn.textContent || ''), '免费 PVE 应直接显示「开始挑战」');
+                genBtn.click();
                 return api.waitFor(function() {
                     for (var i = 0; i < host.sentMessages.length; i++) {
                         if (host.sentMessages[i] && host.sentMessages[i].cmd === 'enter') return true;
                     }
                     return false;
-                }, 2000, 'pve enter sent');
+                }, 2000, 'pve enter sent directly without secondary confirm');
             })
             .then(function() {
                 var enterMsg = null;
@@ -3309,7 +3312,9 @@ var ArenaHarnessQA = (function() {
                 var card0 = document.querySelector('#arena-grid .arena-card[data-index="0"]');
                 api.assertEqual(card0.getAttribute('role'), 'option', '目录卡应为 role=option');
                 api.assertEqual(card0.getAttribute('tabindex'), '0', '目录卡应 tabindex=0（Tab 可停）');
-                api.assertEqual(card0.getAttribute('aria-selected'), 'false', '未选中卡 aria-selected=false');
+                api.assertEqual(card0.getAttribute('aria-selected'), 'true', '首张合约应默认自动选中');
+                var card1 = document.querySelector('#arena-grid .arena-card[data-index="1"]');
+                api.assertEqual(card1.getAttribute('aria-selected'), 'false', '未选中卡 aria-selected=false');
                 card0.focus();
                 api.assert(document.activeElement === card0, '目录卡应可 focus（Tab 可停）');
                 var firstTab = document.querySelector('.arena-mode-tab[data-mode="standard"]');
@@ -3322,11 +3327,11 @@ var ArenaHarnessQA = (function() {
                 api.assert(Panels.getActive && Panels.getActive() === 'arena', 'Web 层 Escape keydown 不应关闭 panel（Esc 归宿主 panel_esc 通道）');
                 // 未选中卡上的合成 Enter：只选中（本地意图），不发 enter
                 var before = host.enterMessages.length;
-                var card0 = document.querySelector('#arena-grid .arena-card[data-index="0"]');
-                card0.focus();
-                card0.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+                var card1 = document.querySelector('#arena-grid .arena-card[data-index="1"]');
+                card1.focus();
+                card1.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
                 api.assertEqual(host.enterMessages.length, before, '未选中卡 Enter 只选中、不应触发挑战');
-                api.assertEqual(window.ArenaPanel.getState().selectedCardIdx, 0, '未选中卡 Enter 应完成选中');
+                api.assertEqual(window.ArenaPanel.getState().selectedCardIdx, 1, '未选中卡 Enter 应完成选中');
             })
             .then(function() { return { pass: true }; })
             .catch(function(e) { return { pass: false, detail: String(e.message || e) }; });

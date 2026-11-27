@@ -445,17 +445,21 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         var maxLevel:Number = metadataMaxLevel(metadata);
         if (desiredLevel > maxLevel) return fail("invalid_level");
         var currentLevel:Number = state.learned ? state.level : 0;
-        if (currentLevel == 0 && desiredLevel != 1) return fail("initial_level_must_be_one");
         if (currentLevel > 0 && desiredLevel <= currentLevel) return fail("invalid_level");
         var expectedCost:Number;
         if (currentLevel == 0) {
-            expectedCost = Number(metadata.UnlockSP);
+            var unlockSP:Number = Number(metadata.UnlockSP);
+            var initUpgradeSP:Number = Number(metadata.UpgradeSP);
+            var initExtra:Number = desiredLevel - 1;
+            if (initExtra > 0 && initUpgradeSP > Math.floor((2147483647 - unlockSP) / initExtra)) return fail("invalid_level");
+            expectedCost = unlockSP + initExtra * initUpgradeSP;
         } else {
             var delta:Number = desiredLevel - currentLevel;
             if (Number(metadata.UpgradeSP) > Math.floor(2147483647 / delta)) return fail("invalid_level");
             expectedCost = delta * Number(metadata.UpgradeSP);
         }
         if (cost != expectedCost) return fail("stale_state");
+        if (safeWhole(root().等级, 0) < Number(metadata.UnlockLevel)) return fail("level_locked");
         if (safeWhole(root().技能点数, -1) < cost) return fail("insufficient_sp");
 
         var table:Array = root().主角技能表;
@@ -464,7 +468,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         var before:Object = captureTransactionState();
         if (!state.learned) {
                 var purePassive:Boolean = isPurePassive(metadata);
-                table[targetIndex] = [skillKey, 1, purePassive, metadata.Type, purePassive];
+                table[targetIndex] = [skillKey, desiredLevel, purePassive, metadata.Type, purePassive];
         } else {
             table[targetIndex][1] = desiredLevel;
             if (String(table[targetIndex][3]) != String(metadata.Type)) table[targetIndex][3] = metadata.Type;

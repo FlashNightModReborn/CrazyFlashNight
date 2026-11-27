@@ -320,18 +320,20 @@
             var backpackMetric = state.root.querySelector('.workbench-metric[data-metric="backpack"]');
             if (backpackMetric) backpackMetric.hidden = view !== 'build' || statsMode;
             if (statsMode) {
-                state.shell.setTitle('个人信息', '角色档案 · 已应用构筑');
+                state.shell.setTitle('个人信息', '');
             } else if (view === 'build') {
-                state.shell.setTitle('角色构筑', '装备与药剂 · 构筑预览');
+                state.shell.setTitle('角色构筑', '');
             } else if (view === 'tuning') {
-                state.shell.setTitle('装备调制', '背包装备 · DLS 调制终端');
+                state.shell.setTitle('装备调制', '');
             } else {
                 state.shell.setTitle(state.profile.title, '');
             }
             state.shell.setSlotLabel(
                 'R',
                 view === 'build' ? '候选对比'
-                    : view === 'tuning' ? '调制操作' : state.profile.title);
+                    : view === 'tuning' ? '调制操作'
+                    : state.root.getAttribute('data-storage-source') === 'stash' ? '暂存物资'
+                    : state.profile.title);
             if (state.preparationMenu) {
                 state.preparationMenu.setSuppressed(
                     view !== 'build'

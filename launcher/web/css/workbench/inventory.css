@@ -72,7 +72,8 @@
     font:700 9px/1 Consolas,"Microsoft YaHei",sans-serif; font-variant-numeric:tabular-nums;
     text-shadow:0 1px 2px #000;
 }
-.inventory-slot-value.level { color:#f3d648; border-color:rgba(226,189,53,.4); }
+.inventory-slot-value.level { color:var(--wb-warning); border-color:color-mix(in srgb,var(--wb-warning) 44%,transparent); }
+.inventory-slot-value.level::before { content:"+"; }
 .inventory-slot-copy { min-width:0; flex:1 1 auto; display:flex; flex-direction:column; gap:5px; }
 .inventory-slot-copy b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:600 11px/1.1 "Microsoft YaHei",sans-serif; }
 .inventory-owned-backpack .inventory-slot-copy b { padding-right:12px; }
@@ -228,9 +229,12 @@
         linear-gradient(180deg,rgba(255,255,255,.012) 1px,transparent 1px),var(--wb-bg);
     background-size:auto,32px 32px,32px 32px,auto;
 }
-.loot-workbench .workbench-flow-arrow { transform:rotate(180deg); }
+.loot-workbench .workbench-flow-arrow,
+.inventory-workbench-panel[data-storage-source="stash"] .workbench-flow-arrow { transform:rotate(180deg); }
 .loot-workbench .workbench-flow-rail[data-state="accept"] .workbench-flow-arrow,
-.loot-workbench .workbench-flow-rail[data-state="pending"] .workbench-flow-arrow {
+.loot-workbench .workbench-flow-rail[data-state="pending"] .workbench-flow-arrow,
+.inventory-workbench-panel[data-storage-source="stash"] .workbench-flow-rail[data-state="accept"] .workbench-flow-arrow,
+.inventory-workbench-panel[data-storage-source="stash"] .workbench-flow-rail[data-state="pending"] .workbench-flow-arrow {
     transform:rotate(180deg) translateY(-1px);
 }
 .loot-workbench .workbench-view { height:100%; min-height:0; }
@@ -755,14 +759,7 @@
     color:var(--launcher-dust);
     text-shadow:none;
 }
-.loot-stage-settlement .workbench-status[data-state="ready"] {
-    color:var(--dls-crystal);
-    border-color:var(--dls-crystal-dim);
-}
-.loot-stage-settlement .workbench-status[data-state="ready"]::before {
-    color:var(--dls-crystal);
-    text-shadow:0 0 6px var(--dls-crystal);
-}
+.loot-stage-settlement .workbench-status[data-state="ready"] { display:none; }
 .loot-stage-settlement .workbench-metrics { gap:4px; }
 .loot-stage-settlement .workbench-metric {
     min-width:66px;
@@ -1089,6 +1086,7 @@
 .inventory-workbench-panel .inventory-discard-btn {
     opacity:0; pointer-events:none; transition:opacity var(--wb-motion-micro) var(--wb-ease-standard);
 }
+.inventory-workbench-panel .inventory-slot-card:hover .inventory-discard-btn,
 .inventory-workbench-panel .inventory-slot-card.workbench-source-selected .inventory-discard-btn,
 .inventory-workbench-panel .inventory-slot-card:focus-within .inventory-discard-btn,
 .inventory-workbench-panel .inventory-discard-btn:focus-visible {
@@ -1187,19 +1185,15 @@
 /* ── Workbench Gate A3: authoritative tree filter + explicit authority sort ── */
 .inventory-warehouse-toolbar {
     display:grid;
-    grid-template-columns:auto minmax(0,1fr) minmax(0,1fr) auto;
-    grid-template-areas:
-        "pager filter filter filter"
-        "authority authority authority commit";
+    grid-template-columns:auto minmax(0,1fr) minmax(74px,108px) auto;
+    grid-template-areas:"pager filter authority commit";
     align-items:center;
-    gap:5px;
-    padding-top:5px;
+    gap:4px;
+    padding-top:4px;
 }
 .inventory-warehouse-toolbar.inventory-no-pager {
-    grid-template-columns:minmax(0,1.5fr) minmax(112px,.7fr) auto;
-    grid-template-areas:
-        "filter filter filter"
-        "authority authority commit";
+    grid-template-columns:minmax(0,1fr) minmax(78px,112px) auto;
+    grid-template-areas:"filter authority commit";
 }
 .inventory-sort-controls { display:contents; }
 .inventory-owned-warehouse .workbench-view-chrome { position:relative; z-index:3; }
@@ -1295,4 +1289,6 @@
 .inventory-inline-quantity .workbench-quantity-feedback { grid-column:1 / -1; }
 .inventory-move-selected:not(:disabled) { color:var(--wb-accent); border-color:var(--wb-accent); }
 
-.inventory-quick-transfer-bar .workbench-mode-btn.inventory-take-page { min-height:40px; white-space:nowrap; }
+.inventory-quick-transfer-bar .workbench-mode-btn.inventory-take-page,
+.inventory-quick-transfer-bar .workbench-mode-btn.inventory-deposit-page { min-height:40px; white-space:nowrap; }
+.inventory-deposit-page[hidden] { display:none; }

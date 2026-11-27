@@ -409,8 +409,12 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
     }
 
     private static function testInitialLearnMustBeLevelOne():Void {
-        var r:Object = fixture(80); var result:Object = SkillLoadoutService.commitLearn("闪现", 2, 20, SkillLoadoutService.getRevision());
-        check(!result.success && result.error == "initial_level_must_be_one" && r.技能点数 == 100, "unlearned skill cannot skip directly to a higher level");
+        var r:Object = fixture(80);
+        var badCost:Object = SkillLoadoutService.commitLearn("闪现", 3, 20, SkillLoadoutService.getRevision());
+        var okLearn:Object = SkillLoadoutService.commitLearn("闪现", 3, 30, SkillLoadoutService.getRevision());
+        check(!badCost.success && badCost.error == "stale_state"
+            && okLearn.success && r.主角技能表[0][0] == "闪现" && r.主角技能表[0][1] == 3 && r.技能点数 == 70,
+            "unlearned skill commits directly to desiredLevel using UnlockSP + (N-1)*UpgradeSP and rejects mismatched cost");
     }
 
     private static function testUpgradeKeepsRowIdentity():Void {

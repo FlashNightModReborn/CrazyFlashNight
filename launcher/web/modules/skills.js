@@ -23,13 +23,11 @@ var SkillsPanel = (function() {
     var _previewTimer = null, _previewIntent = 0, _previewLoading = false, _previewError = '', _previewReceivedAt = 0;
     var _trainerExpired = false;
     var _pendingFocusKey = '';
-    var _density = null, _densityToggle = null, _confirmationToggle = null;
+    var _density = null, _densityToggle = null;
     var _drag = null, _dragBroker = null, _dragSourceView = null, _dragSlotSourceView = null;
-    var _dragTargetView = null, _dragSlotTargetView = null, _dragOrderTargetView = null;
+    var _dragTargetView = null, _dragSlotTargetView = null, _dragOrderTargetView = null, _dragUnequipTargetView = null;
     var _switchWaitTimer = null, _switchPending = false, _switchPendingStatus = '';
     var _config = (typeof window !== 'undefined' && window.__SKILLS_CONFIG__) || {};
-    var LOADOUT_CONFIRMATION_KEY = 'cf7.skills.loadoutConfirmationMode';
-    var _loadoutConfirmationMode = readLoadoutConfirmationMode();
     var _responseTrace = Diagnostics.createResponseTrace({
         send:function(message) { return Bridge.send(message); },
         now:function() { return performance.now(); },
@@ -73,7 +71,7 @@ var SkillsPanel = (function() {
         prepareLearnConfirmation:prepareLearnConfirmation, scheduleLearnPreview:scheduleLearnPreview,
         errorMessage:Presenter.errorMessage, clearPendingFocus:function() { _pendingFocusKey = ''; },
         onSlotClick:onSlotClick, onSlotKeyDown:onSlotKeyDown, proposeUnequip:proposeUnequip,
-        entryByKey:entryByKey
+        quickEquipSkill:quickEquipSkill, entryByKey:entryByKey
     });
 
     var _featureEditor = Presenter.createFeatureEditor({
@@ -116,7 +114,6 @@ var SkillsPanel = (function() {
 
     function beginOpen(initData) {
         cleanupView(false);
-        _loadoutConfirmationMode = readLoadoutConfirmationMode();
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('skills', {profile:'dense-inspect'}) : null;
         _initData = initData || {};
@@ -172,10 +169,6 @@ var SkillsPanel = (function() {
         if (fullDensity) fullDensity.title = '技能库显示名称、等级与状态';
         if (compactDensity) compactDensity.title = '技能库使用方块图标瓦片，一屏查看更多技能';
         _shell.addHeaderAction(_densityToggle);
-        if (_view === 'manage') {
-            _confirmationToggle = createLoadoutConfirmationToggle();
-            _shell.addHeaderAction(_confirmationToggle);
-        }
         if (_view === 'trainer') {
             _switchButton = button('管理技能', 'workbench-mode-btn skills-switch-manage-btn', requestManageView);
             _switchButton.title = '保留当前选择并打开技能管理';
@@ -527,8 +520,13 @@ var SkillsPanel = (function() {
         var currentLevel = Number(entry && entry.currentLevel || 0);
         if (_view !== 'trainer' || _trainerExpired || !entry || writesDisabled(entry)
                 || currentLevel >= Number(entry.maxLevel || 1)
-                || (currentLevel > 0 && targetMaxLevel(entry) <= currentLevel)) {
+                || targetMaxLevel(entry) <= currentLevel) {
             cancelPreviewWork(); renderDetail(); return false;
+        }
+        if (immediate && _previewError === 'stale_state' && _coordinator.getState() === 'idle') {
+            clearPreviewState();
+            renderDetail(); refreshStateControls();
+            return requestSnapshot();
         }
         if (_previewTimer !== null) clearTimeout(_previewTimer);
         var intent = ++_previewIntent;
@@ -559,7 +557,9 @@ var SkillsPanel = (function() {
                     && Number(response.desiredLevel) === _desiredLevel) {
                 _preview = response; _previewError = ''; _previewReceivedAt = Date.now();
             } else {
-                if (!_preview || _preview.skillKey !== _selectedKey) { _preview = null; _previewReceivedAt = 0; }
+                if (response.error === 'stale_state' || !_preview || _preview.skillKey !== _selectedKey) {
+                    _preview = null; _previewReceivedAt = 0;
+                }
                 _previewError = String(response.error || 'preview_failed');
                 if (response.error === 'initial_level_must_be_one') _desiredLevel = 1;
             }
@@ -583,31 +583,59 @@ var SkillsPanel = (function() {
     }
     function prepareLearnConfirmation(entry) {
         if (!entry || writesDisabled(entry) || _trainerExpired) return;
-        if (hasFreshPreviewToken(entry)) { confirmLearn(entry); return; }
+        if (hasFreshPreviewToken(entry)) {
+            commitLearnPreview(entry);
+            return;
+        }
+        var expectedLevel = _desiredLevel;
+        var expectedCost = (_preview && _preview.skillKey === entry.skillKey
+            && Number(_preview.desiredLevel) === expectedLevel)
+            ? Number(_preview.cost) : null;
         scheduleLearnPreview(entry, true, function(preview) {
             var current = selectedEntry();
-            if (preview && current && hasFreshPreviewToken(current)) confirmLearn(current);
+            if (!preview || !current || !hasFreshPreviewToken(current)) return;
+            if (expectedCost !== null && Number(preview.cost) !== expectedCost) {
+                toast('研习消耗已变化，请核对新费用后再次点击研习。', 'warning');
+                return;
+            }
+            commitLearnPreview(current);
         });
     }
 
-    function confirmLearn(entry) {
-        if (!_preview || !_preview.learnToken) return;
-        _shell.openModal({kind:'skills-learn-confirm', kicker:'教师研习', title:'确认学习 ' + entry.skillKey,
-            message:'Lv.' + safeNumber(_preview.currentLevel) + ' → Lv.' + safeNumber(_preview.desiredLevel),
-            detail:'将消耗 ' + safeNumber(_preview.cost) + ' 技能点。', actions:[
-                {id:'cancel', label:'取消', audioCue:'back'},
-                {id:'confirm', label:'确认研习', primary:true, audioCue:'activate', onSelect:function() {
-                    if (!hasFreshPreviewToken(entry)) {
-                        scheduleLearnPreview(entry, true, function(preview) {
-                            var current = selectedEntry();
-                            if (preview && current && hasFreshPreviewToken(current)) confirmLearn(current);
-                        });
-                        return;
-                    }
-                    var token = _preview.learnToken;
-                    clearPreviewState(); writeCommand('learnCommit', {expectedLearnToken:token});
-                }}
-            ]});
+    function commitLearnPreview(entry) {
+        if (!_preview || !_preview.learnToken || !entry) return;
+        var token = _preview.learnToken;
+        clearPreviewState();
+        writeCommand('learnCommit', {expectedLearnToken:token});
+    }
+
+    function quickEquipSkill(entry) {
+        if (_view !== 'manage' || !_snapshot || !entry) return;
+        if (writesDisabled(entry)) {
+            toast('该技能数据异常，当前只读不可写入。', 'warning', {silent:true});
+            cue('illegal');
+            return;
+        }
+        if (!entry.equippable) {
+            toast('纯被动或不可配置技能不能放入快捷槽。', 'warning', {silent:true});
+            cue('illegal');
+            return;
+        }
+        var slots = _snapshot.loadout || [];
+        var emptySlot = null;
+        for (var i = 0; i < slots.length; i++) {
+            if (slots[i] && !slots[i].skillKey && !slots[i].writeBlocked) {
+                emptySlot = slots[i];
+                break;
+            }
+        }
+        if (!emptySlot) {
+            toast('快捷栏已满，请点击或拖到要替换的快捷槽。', 'warning', {silent:true});
+            cue('illegal');
+            return;
+        }
+        selectSkill(entry.skillKey);
+        proposeEquip(entry, emptySlot);
     }
 
     function onSlotClick(slot, readOnly) {
@@ -642,99 +670,24 @@ var SkillsPanel = (function() {
     function proposeEquip(entry, slot) {
         var plan = Loadout.equipPlan(entry, slot, {
             writesDisabled:writesDisabled(entry),
-            mode:_loadoutConfirmationMode,
             revision:_snapshot && _snapshot.revision
         });
         if (!plan.allowed) return;
-        if (plan.direct) {
-            cue('activate');
-            writeCommand('equip', plan.payload);
-            return;
-        }
-        var replacing = plan.replacingSkill ? '将替换「' + slot.skillKey + '」。' : '该槽当前为空。';
-        _shell.openModal({kind:'skills-equip-confirm', kicker:'快捷栏配置', title:'装备到槽位 ' + slot.slot,
-            message:'装备「' + entry.skillKey + '」', detail:replacing, actions:[
-                {id:'cancel', label:'取消', audioCue:'back'},
-                {id:'confirm', label:'确认装备', primary:true, audioCue:'activate', onSelect:function() {
-                    writeCommand('equip', plan.payload);
-                }}
-            ]});
+        cue('activate');
+        writeCommand('equip', plan.payload);
     }
     function proposeUnequip(slot) {
         var plan = Loadout.unequipPlan(slot, {
             writeBlocked:_coordinator.isWriteBlocked(),
-            mode:_loadoutConfirmationMode,
             revision:_snapshot && _snapshot.revision
         });
         if (!plan.allowed) return;
-        if (plan.direct) {
-            cue('activate');
-            writeCommand('unequip', plan.payload);
-            return;
-        }
-        _shell.openModal({kind:'skills-unequip-confirm', kicker:'快捷栏配置', title:'卸载槽位 ' + slot.slot,
-            message:'移除「' + slot.skillKey + '」', detail:slot.stateHealth === 'unknown'
-                ? '该槽中的技能数据已失效，可以直接移除。' : '不会重置或缩短该槽的冷却。', actions:[
-                {id:'cancel', label:'取消', audioCue:'back'},
-                {id:'confirm', label:'确认卸载', primary:true, audioCue:'activate', onSelect:function() {
-                    writeCommand('unequip', plan.payload);
-                }}
-            ]});
-    }
-    function readLoadoutConfirmationMode() {
-        var storage = null;
-        try { storage = typeof window !== 'undefined' ? window.localStorage : null; } catch (error) {}
-        return Loadout.readConfirmationMode(storage, LOADOUT_CONFIRMATION_KEY);
-    }
-    function setLoadoutConfirmationMode(mode) {
-        var previous = _loadoutConfirmationMode;
-        var storage = null;
-        try { storage = typeof window !== 'undefined' ? window.localStorage : null; } catch (error) {}
-        _loadoutConfirmationMode = Loadout.writeConfirmationMode(storage, LOADOUT_CONFIRMATION_KEY, mode);
-        refreshLoadoutConfirmationToggle();
-        if (previous !== _loadoutConfirmationMode) {
-            toast(_loadoutConfirmationMode === 'fast'
-                ? '快捷栏已切换为快速操作：替换和卸载将直接执行。'
-                : '快捷栏已切换为安全操作：替换和卸载前会确认。');
-        }
-        return _loadoutConfirmationMode;
-    }
-    function createLoadoutConfirmationToggle() {
-        var group = document.createElement('div');
-        group.className = 'item-grid-mode-switch skills-confirmation-toggle';
-        group.setAttribute('role', 'group');
-        group.setAttribute('aria-label', '快捷栏操作确认');
-        group.title = '安全模式会确认替换和卸载；快速模式直接执行。技能学习始终需要确认';
-        var label = document.createElement('span'); label.className = 'item-grid-mode-label'; label.textContent = '快捷栏';
-        group.appendChild(label);
-        [{mode:'safe', label:'安全', title:'替换和卸载前确认；空槽仍直接装备'},
-         {mode:'fast', label:'快速', title:'替换和卸载直接执行；技能学习仍需确认'}].forEach(function(option) {
-            var choice = button(option.label, 'workbench-mode-btn item-grid-mode-option skills-confirmation-option', function() {
-                setLoadoutConfirmationMode(option.mode);
-            });
-            choice.setAttribute('data-confirmation-mode', option.mode);
-            choice.setAttribute('aria-label', '快捷栏确认：' + option.label + '模式');
-            choice.title = option.title;
-            group.appendChild(choice);
-        });
-        refreshLoadoutConfirmationToggle(group);
-        return group;
-    }
-
-    function refreshLoadoutConfirmationToggle(group) {
-        group = group || _confirmationToggle;
-        if (!group) return;
-        group.setAttribute('data-current-confirmation-mode', _loadoutConfirmationMode);
-        var choices = group.querySelectorAll('.skills-confirmation-option[data-confirmation-mode]');
-        for (var i = 0; i < choices.length; i++) {
-            var selected = choices[i].getAttribute('data-confirmation-mode') === _loadoutConfirmationMode;
-            choices[i].setAttribute('aria-pressed', selected ? 'true' : 'false');
-        }
+        cue('activate');
+        writeCommand('unequip', plan.payload);
     }
 
     function manageHelpDetail() {
-        return Loadout.helpDetail(_loadoutConfirmationMode,
-            !!(_initData && _initData.canReturnTrainer === true));
+        return Loadout.helpDetail(!!(_initData && _initData.canReturnTrainer === true));
     }
     function writeCommand(cmd, payload) {
         _preview = null;
@@ -927,6 +880,12 @@ var SkillsPanel = (function() {
                 return Interactions.probeReorder(offer, hit && hit.entry, entryByKey, reorderBlockReason);
             }
         };
+        _dragUnequipTargetView = {
+            instanceKey:'skills:unequip-target',
+            probeAccept:function(offer) {
+                return Interactions.probeUnequip(offer, _coordinator.isWriteBlocked());
+            }
+        };
         _dragBroker = new Workbench.InteractionBroker({
             onIntent:function(intent, context) {
                 if (intent && intent.operationId === 'reorder_skill') {
@@ -935,6 +894,11 @@ var SkillsPanel = (function() {
                 }
                 if (intent && intent.operationId === 'move_quick_slot') {
                     moveQuickSlot(loadoutSlot(Number(intent.targetRef.sourceSlot)), loadoutSlot(Number(intent.targetRef.targetSlot)));
+                    return;
+                }
+                if (intent && intent.operationId === 'unequip_quick_slot') {
+                    var unequipSlot = loadoutSlot(Number(intent.targetRef && intent.targetRef.slot));
+                    if (unequipSlot) proposeUnequip(unequipSlot);
                     return;
                 }
                 var slot = loadoutSlot(intent && intent.targetRef && Number(intent.targetRef.slot));
@@ -969,11 +933,17 @@ var SkillsPanel = (function() {
                 var activeSlotNode = _scaleEl.querySelector('.skills-slot.dragging[data-slot]');
                 if (activeSlotNode) {
                     var slotNode = target && target.closest ? target.closest('.skills-slot[data-slot]') : null;
-                    if (!slotNode || !_scaleEl.contains(slotNode) || slotNode === activeSlotNode) return null;
-                    var quickTarget = loadoutSlot(Number(slotNode.getAttribute('data-slot')));
-                    return {view:_dragSlotTargetView, hit:{slot:quickTarget}, node:slotNode,
-                        accepted:!!quickTarget && !quickTarget.writeBlocked
-                            && (!quickTarget.skillKey || quickTarget.stateHealth === 'ok') && !_coordinator.isWriteBlocked()};
+                    if (slotNode && _scaleEl.contains(slotNode)) {
+                        if (slotNode === activeSlotNode) return null;
+                        var quickTarget = loadoutSlot(Number(slotNode.getAttribute('data-slot')));
+                        return {view:_dragSlotTargetView, hit:{slot:quickTarget}, node:slotNode,
+                            accepted:!!quickTarget && !quickTarget.writeBlocked
+                                && (!quickTarget.skillKey || quickTarget.stateHealth === 'ok') && !_coordinator.isWriteBlocked()};
+                    }
+                    if (_leftRoot && target && _leftRoot.contains(target)) {
+                        return {view:_dragUnequipTargetView, hit:{}, node:_leftRoot, accepted:!_coordinator.isWriteBlocked()};
+                    }
+                    return null;
                 }
                 var node = target && target.closest ? target.closest('.skills-library-row[data-skill-key]') : null;
                 if (node && _list.contains(node)) {
@@ -1022,10 +992,10 @@ var SkillsPanel = (function() {
         var trainer = _view === 'trainer';
         var title = trainer ? '技能研习帮助' : '技能管理帮助';
         var message = trainer
-            ? '研习技能\n• 从左侧选择想学习或升级的技能。\n• 点击等级刻度、拖动滑条或直接输入目标等级。\n• 查看研习后余额，再确认完成研习。'
-            : '装备与排序\n• 点击技能，再点击下方快捷槽。\n• 技能可拖到快捷槽；快捷槽之间可直接拖动移动或交换。\n• 拖到另一个技能格可交换技能库顺序。\n• 悬停或聚焦快捷槽后，点击右上角 × 可以卸载技能。';
+            ? '研习技能\n• 从左侧选择想学习或升级的技能。\n• 点击等级刻度、拖动滑条或直接输入目标等级。\n• 核对右侧消耗与研习后余额，点击研习按钮直接完成。'
+            : '装备与排序\n• 单击技能再点快捷槽可直接装备或替换；双击技能格直接装入空槽。\n• 技能可拖到快捷槽；快捷槽之间可直接拖动移动或交换。\n• 拖到另一个技能格可交换技能库顺序。\n• 右键快捷槽、点击右上角 × 或拖回技能库均可直接卸载。';
         var detail = trainer
-            ? '等级规则\n• 未学技能第一次固定学习 1 级。\n• 已学技能可点任意可见刻度；− / + 用于逐级微调。\n• 滑动时旧消耗会保留，松开后自动计算消耗且只计算最终等级。\n\n页面切换\n• “管理技能”可进入快捷技能管理。\n• 返回研习后会自动恢复当前目标并重新计算。'
+            ? '等级规则\n• 未学与已学技能均可直接选择任意可负担目标等级，一次完成研习。\n• 可点任意可见刻度或拖动滑条；− / + 用于逐级微调。\n• 滑动时旧消耗会保留，松开后自动计算消耗且只计算最终等级。\n\n页面切换\n• “管理技能”可进入快捷技能管理。\n• 返回研习后会自动恢复当前目标并重新计算。'
             : manageHelpDetail();
         return {
             kind:'skills-help', title:title, message:message, detail:detail,
@@ -1104,14 +1074,14 @@ var SkillsPanel = (function() {
         if (_drag) { _drag.destroy(); _drag = null; }
         if (_dragBroker) { _dragBroker.clearSelection(); _dragBroker = null; }
         _dragSourceView = null; _dragSlotSourceView = null;
-        _dragTargetView = null; _dragSlotTargetView = null; _dragOrderTargetView = null;
+        _dragTargetView = null; _dragSlotTargetView = null; _dragOrderTargetView = null; _dragUnequipTargetView = null;
         skillFilterDefinitions().forEach(function(definition) {
             if (_filterNavigators[definition.id]) _filterNavigators[definition.id].destroy();
         });
         _filterNavigators = {}; _filterBoard = null; _filterResetButton = null;
         _featureEditor.destroy();
         if (_density) { _density.destroy(); _density = null; }
-        _densityToggle = null; _confirmationToggle = null;
+        _densityToggle = null;
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
         if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
         if (_shell) { _shell.destroy(); _shell = null; }
@@ -1225,7 +1195,7 @@ var SkillsPanel = (function() {
             return {view:_view, selectedKey:_selectedKey, desiredLevel:_desiredLevel, hasPreview:!!_preview,
                 previewLoading:_previewLoading, previewError:_previewError, trainerExpired:_trainerExpired,
                 schemaError:_schemaError, snapshotRevision:_snapshot && _snapshot.revision,
-                densityMode:_density && _density.mode, loadoutConfirmationMode:_loadoutConfirmationMode,
+                densityMode:_density && _density.mode, loadoutConfirmationMode:'direct',
                 switchPending:_switchPending, filterPaths:{
                     form:filterPathsForView().form.slice(), status:filterPathsForView().status.slice(),
                     school:filterPathsForView().school.slice()

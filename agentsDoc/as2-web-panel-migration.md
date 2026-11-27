@@ -4,6 +4,14 @@
 
 **2026-09-12 工作区增量**：NPC 场景菜单迁入 NativeHud，两个开发占位保留兼容接口，AS2 注释语义由 C#/Web 分别渲染，注释样式和交互以旧 Web 为权威。当前仍在实现与候选验证，未人验或部署；协议、兼容与验收边界见 [专项 ADR](../docs/NPC菜单与原生注释迁移-ADR-2026-09-12.md)。
 
+**2026-11-26 双栏工作台 P4 跨层扩展（工作区未发布）**：① **合成战备箱 opt-in 扣料**：`CraftingPanelService` 与 `CraftingTask` 在 `preview` 接受可选布尔 `useBattleBox`（默认 `false`），冻结到 `planToken` 与 `stateSignature` 并在 `commit` 按 `背包 → 药剂栏 → 战备箱[0..accessibleCapacity-1]` 原子扣减并带完整回滚，绝不触碰装备栏、仓库、战备箱未解锁区或修改 `ItemUtil`。② **独立装备调制复用无头构筑会话**：`InventoryWorkbenchStashNavigation` / `CharacterBuildStashAuthority.acquireSession` 为独立 `view:"tuning"` 提供唯一共享无头 `CharacterBuildSession`（无人物视图/纸娃娃），供 `InventoryWorkbenchLoadoutTuning` 驱动左栏 `背包`/`已穿戴` 11 槽调制与 61 胸甲 `configureEmergencyInjection`，退出或切入 `build` 前按既有 `finalize` 结算；`LauncherCommandRouter` 在 `CharacterBuildTask.HasBoundPanel` 未释放时拒绝重入独立调制。③ **战宠灵石与单事务批量培养**：`PetPanelService` 与 `PetTask` 投影 `stones`、`levelUpCosts` 并在 `level_up` 接受可选 `count`/`targetLevel`/`mode:"max"`，在单次 `PlayerAssetTransaction` 内完成扣石、升级与一次出战重建。④ **技能教师首次直学目标等级**：`SkillPanelService` 与 `SkillLoadoutService` 允许未学技能（`Lv.0`）按 `UnlockSP + (N-1)*UpgradeSP` 单事务预览并直学到 `Lv.1..MaxLevel`。上述均属工作区源码增量，不外推为正式部署或真实游戏 E2E `standard_entry_verified`。
+
+**2026-11-27 工作台交易、培养与合成契约**
+
+- NPC 单件快捷交易有独立草稿。单件预览、改量、撤回和提交都只针对这笔交易。返回普通购物车后，单槽出售按物品和槽租约核对，同名全售按同名普通物品重新绑定，材料按当前持有量核对。
+- 战宠快照为每个可升级槽位提供 `levelUpToken` 和逐级费用。Web 确认时随 `level_up` 发送 `levelQuote` 的 token、起止等级及总石耗。Flash 核对宠物记录、费用和目标后扣石；Host 和 Web 核对成功回执中的同一 token 和金额。过期报价需要玩家查看新报价再确认。
+- 合成勾选战备箱后，事务保留实际扣料容器。失败时逐槽写回并读回核对。来源换箱、缺箱或写回不完整时，Flash 返回 `commit_failed`，保留脏标记并撤销本次暂存的资产通知。Host 标记 `requiresReconcile`，重新读取原配方和材料来源后才能再次提交。
+
 **文档角色**：AS2 UI 迁移到 Launcher Web Panel 的专题 canonical doc。
 
 **U8 共享引导合同**：`native_guidance` 只承载 AS2→Host 的有界显示快照，close 意图仍由 AS2 核对当前场景；5 个现场提示保留原版白色图示，不拥有输入、暂停或业务写。新手/地图告示板由原触发打开对应 Web 帮助条目，复用 tracked exact instance、执行门及现役帮助暂停/关闭生命周期，不驱逐已有面板。自动教程必须等待 AS2 结算/切场与 loot lane 空闲，再由 Host 在投递前复核结算 binding 完全释放；不能只依赖面板已关闭。自动教程提供“跳过本次”与全局“关闭教程弹窗”；本机 `tutorialsAutoOpen` 关闭后，后续触发改为一次刘海屏通知提醒，等待相同的结算/场景准入，保留手动帮助与现场图示，不推进任务或改变奖励。Help 偏好命令只允许 exact 当前实例关闭自动弹窗，失败回滚，结果未知不重发。主帮助与领域帮助共用固定样例的演示页面和语义轨迹播放器，领域帮助留在原 Panel 的 `SecondaryPage` 内。对话图片与引导共用资源读取、缓存和 contain 绘制，剧情权威不随图像复用转移。源码、扩展接口与候选边界见 [U8 共享基座](../docs/U8引导迁移与共享教程基座-2026-09-30.md)。

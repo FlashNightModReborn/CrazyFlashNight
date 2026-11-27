@@ -15,12 +15,12 @@ var CookingPanel = (function() {
     var _snapshot = null, _books = [], _selectedBook = '', _selectedIndex = -1,
         _selectedRecipe = null, _cardOpen = false,
         _preview = null, _craftCount = 1;
-    var _busy = false, _previewBusy = false, _generation = 0;
+    var _busy = false, _previewBusy = false, _generation = 0, _previewSeq = 0;
     var _commitFeedback = null;
 
     function mount(shellEl, deps) {
         _host = deps;
-        _generation++;
+        _generation++; _previewSeq++;
         _snapshot = null; _books = []; _selectedBook = '';
         _selectedIndex = -1; _selectedRecipe = null; _cardOpen = false;
         _preview = null;
@@ -31,7 +31,7 @@ var CookingPanel = (function() {
     }
 
     function unmount() {
-        _generation++;
+        _generation++; _previewSeq++;
         releaseTooltipTree(_el);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _preview = null;
@@ -120,6 +120,7 @@ var CookingPanel = (function() {
             setStatus(response.note || '就绪', 'ready');
             groupBooks(response.recipes || []);
             if (_selectedBook && !_books.some(function(book) { return book.name === _selectedBook; })) {
+                _previewSeq++; _previewBusy = false;
                 _selectedBook = '';
                 _selectedIndex = -1; _selectedRecipe = null;
                 _cardOpen = false; _preview = null;
@@ -127,6 +128,7 @@ var CookingPanel = (function() {
             if (_selectedRecipe) {
                 var found = findRecipe(_selectedRecipe.recipeIndex);
                 if (!found) {
+                    _previewSeq++; _previewBusy = false;
                     _selectedRecipe = null; _selectedIndex = -1;
                     _cardOpen = false; _preview = null;
                 }
@@ -174,6 +176,7 @@ var CookingPanel = (function() {
     }
 
     function selectBook(name) {
+        _previewSeq++; _previewBusy = false;
         if (_selectedBook === name) {
             // 再点当前纸条：收回纸条，书本翻回空白页。
             _selectedBook = '';
@@ -192,12 +195,14 @@ var CookingPanel = (function() {
     // 收卡只关配方纸：菜品保持选中、厨具照片留在左页。
     function closeRecipe() {
         if (!_cardOpen) return;
+        _previewSeq++; _previewBusy = false;
         _cardOpen = false; _commitFeedback = null;
         renderRight();
     }
 
     // 取消选中菜品（换纸条/再次点该菜时调用）：照片也撤下。
     function deselectRecipe() {
+        _previewSeq++; _previewBusy = false;
         _selectedIndex = -1; _selectedRecipe = null;
         _cardOpen = false; _preview = null; _commitFeedback = null;
         renderStage(); renderRight();
@@ -210,13 +215,19 @@ var CookingPanel = (function() {
             // 已选中该菜：卡关着就重新展开，卡开着就取消选中收起照片。
             if (!_cardOpen) {
                 _cardOpen = true;
-                renderRight();
-                if (!_preview && !_previewBusy) requestPreview();
+                if (!_preview || Number(_preview.craftCount) !== _craftCount) {
+                    _preview = null;
+                    renderRight();
+                    requestPreview();
+                } else {
+                    renderRight();
+                }
             } else {
                 deselectRecipe();
             }
             return;
         }
+        _previewSeq++; _previewBusy = false;
         _selectedIndex = Number(recipeIndex);
         _selectedRecipe = recipe;
         _cardOpen = true;
@@ -226,12 +237,13 @@ var CookingPanel = (function() {
 
     function requestPreview() {
         if (!_selectedRecipe || _busy) return;
+        var seq = ++_previewSeq;
         _previewBusy = true; renderRight();
         var generation = _generation;
         var recipeIndex = _selectedIndex, craftCount = _craftCount;
-        _host.request('preview', {category:'烹饪', recipeIndex:recipeIndex,
+        var callId = _host.request('preview', {category:'烹饪', recipeIndex:recipeIndex,
             craftCount:craftCount}, function(response) {
-            if (generation !== _generation || !_el) return;
+            if (generation !== _generation || seq !== _previewSeq || !_el) return;
             _previewBusy = false;
             if (_selectedIndex !== recipeIndex || _craftCount !== craftCount) return;
             if (!response || !response.success) {
@@ -245,6 +257,27 @@ var CookingPanel = (function() {
             }
             renderRight();
         });
+        if (!callId && seq === _previewSeq) {
+            _previewBusy = false;
+            _preview = null;
+            _commitFeedback = errorMessage('disconnected');
+            renderRight();
+        }
+    }
+
+    function onBattleBoxChanged() {
+        if (_busy || !_el) return false;
+        _previewSeq++;
+        _commitFeedback = null;
+        if (_selectedRecipe && _cardOpen) {
+            if (_preview) _preview = Object.assign({}, _preview, {canCommit:false, craftToken:''});
+            requestPreview();
+        } else {
+            _preview = null;
+            _previewBusy = false;
+            renderRight();
+        }
+        return true;
     }
 
     function commit() {
@@ -566,7 +599,7 @@ var CookingPanel = (function() {
         var confirm = document.createElement('button');
         confirm.type = 'button';
         confirm.className = 'cooking-confirm';
-        confirm.textContent = _busy ? '烹饪中…' : '确认烹饪';
+        confirm.textContent = _busy ? '烹饪中…' : _previewBusy ? '核算中…' : '确认烹饪';
         var committable = !!_preview && _preview.canCommit && !_busy && !_previewBusy;
         confirm.disabled = !committable;
         if (!committable) {
@@ -706,6 +739,8 @@ var CookingPanel = (function() {
         mount:mount,
         unmount:unmount,
         refresh:refresh,
+        onBattleBoxChanged:onBattleBoxChanged,
+        isCommitting:function() { return _busy; },
         isBusy:function() { return _busy || _previewBusy; },
         debugState:function() { return {
             book:_selectedBook, selectedIndex:_selectedIndex, cardOpen:_cardOpen,

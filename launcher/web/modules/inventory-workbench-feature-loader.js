@@ -20,10 +20,7 @@
         'modules/equipment-tuning-loadout-lifecycle.js',
         'modules/equipment-tuning-source-marker.js',
         'modules/equipment-tuning-view.js',
-        'modules/inventory-tuning-scope.js'
-    ];
-    var BUILD_DEPS = TUNING_DEPS.concat([
-        'modules/character-appearance-preview.js',
+        'modules/inventory-tuning-scope.js',
         'modules/character-build/character-build-drug-controls.js',
         'modules/character-build/character-build-mutation.js',
         'modules/character-build/character-build-drug-layout.js',
@@ -32,6 +29,16 @@
         'modules/character-build-session.js',
         'modules/loadout-picker/loadout-picker-action-view.js',
         'modules/character-build/character-build-tuning-adapter.js',
+        'modules/character-build/character-build-customization.js',
+        'modules/character-build/character-build-transport.js',
+        'modules/character-build/character-build-cooldown-channel.js',
+        'modules/character-build/character-build-stash-transport.js',
+        'modules/character-build/character-build-item-use.js',
+        'modules/character-build/character-build-stash-authority.js',
+        'modules/inventory-workbench-loadout-tuning.js'
+    ];
+    var BUILD_DEPS = TUNING_DEPS.concat([
+        'modules/character-appearance-preview.js',
         'modules/character-build/character-build-tuning-ports.js',
         'modules/character-build/character-build-candidate-tooltip.js',
         'modules/loadout-picker/loadout-picker-candidate-state.js',
@@ -47,27 +54,22 @@
         'modules/loadout-picker/loadout-picker.js',
         'modules/character-build/character-build-item-use-openmany-view.js',
         'modules/character-build-view.js',
-        'modules/character-build/character-build-customization.js',
         'modules/character-build/character-build-tuning.js',
         'modules/character-build/character-build-slot-transition.js',
         'modules/character-build/character-build-pose.js',
         'modules/character-build/character-build-candidate-eligibility.js',
         'modules/character-build/character-build-projection.js',
-        'modules/character-build/character-build-transport.js',
-        'modules/character-build/character-build-cooldown-channel.js',
-        'modules/character-build/character-build-stash-transport.js',
-        'modules/character-build/character-build-item-use.js', 'modules/grade-presentation.js',
+        'modules/grade-presentation.js',
         'modules/character-build/character-build-choice-rewards.js', 'modules/character-build/character-build-item-use-reveal.js',
         'modules/character-build/character-build-item-use-channel.js',
-        'modules/character-build/character-build-stash-authority.js',
         'modules/character-build/character-build-candidate-channel.js',
         'modules/character-build.js'
     ]);
     function tuningReady() {
-        return !!(root.EquipmentTuningRuntime
-            && root.EquipmentTuningView
-            && root.InventoryTuningScope
-            && root.EquipmentInspector);
+        if (!(root.EquipmentTuningRuntime && root.EquipmentTuningView
+            && root.InventoryTuningScope && root.EquipmentInspector)) return false;
+        return !root.LazyLoader || typeof root.LazyLoader.load !== 'function'
+            || !!(root.InventoryWorkbenchLoadoutTuning && root.CharacterBuildStashAuthority && root.CharacterBuildCustomization);
     }
 
     function buildReady() {

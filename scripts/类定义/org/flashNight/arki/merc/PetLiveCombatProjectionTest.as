@@ -1,4 +1,8 @@
 ﻿import LiteJSON;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.item.itemCollection.EquipmentInventory;
 import org.flashNight.arki.merc.PetPanelService;
 import org.flashNight.arki.unit.PlayerInfoProvider;
 import org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
@@ -87,6 +91,11 @@ class org.flashNight.arki.merc.PetLiveCombatProjectionTest {
         var oldDifficulty = _root.难度等级;
         var oldPetLimit = _root.宠物领养限制;
         var oldCalcXp = _root.战宠UI函数 != undefined ? _root.战宠UI函数.计算战宠升级所需经验 : undefined;
+        var oldInventories = _root.物品栏;
+        var oldCollections = _root.收集品栏;
+        var oldSingleSubmit = _root.singleSubmit;
+        var oldItemDataDict = ItemUtil.itemDataDict;
+        var oldMaterialDict = ItemUtil.materialDict;
 
         var coordinator:Object = PlayerStatRefreshCoordinator.production();
         var oldFlush:Function = coordinator.flush;
@@ -319,7 +328,131 @@ class org.flashNight.arki.merc.PetLiveCombatProjectionTest {
                     && benchParsed.snapshot.pets[9].liveCombat.status == "not_deployed"
                     && rawPayload.indexOf('"combat":') < 0,
                 "10 战宠快照可观测基线通过且零旧 combat 字段残留");
+
+            // 17-21. 战宠批量升级 (count / targetLevel / mode:"max" / 统一阈值回退 / 非法选择子 / 失败零写与线缆回执)
+            _root.物品栏 = {
+                背包: new ArrayInventory(null, 20),
+                药剂栏: new ArrayInventory(null, 8),
+                装备栏: new EquipmentInventory(null),
+                战备箱: new ArrayInventory(null, 40)
+            };
+            _root.收集品栏 = {
+                材料: new DictCollection(null),
+                情报: new DictCollection(null)
+            };
+            ItemUtil.itemDataDict = { 战宠灵石: { name: "战宠灵石", displayname: "战宠灵石", type: "收集品", use: "材料" } };
+            ItemUtil.materialDict = { 战宠灵石: true };
+            _root.收集品栏.材料.add("战宠灵石", 2000);
+            _root.singleSubmit = function(name:String, val:Number, ctx:Object):Boolean {
+                return ItemUtil.singleSubmit(name, val, ctx);
+            };
+            _root.战宠UI函数.计算战宠升级所需经验 = function():Number { return NaN; };
+            _root.宠物信息 = [
+                [0, 50, 200, 0, 0, { 宠物升级所需经验: 0 }]
+            ];
+            PetPanelService.handleSnapshot({ callId: "batch_snap_xp" });
+            var snapXp:Object = codec.parse(rawPayload);
+            var costs:Array = snapXp.snapshot.pets[0].levelUpCosts;
+            var resCount:Object = PetPanelService.levelUpSlot(0, { count: 2 });
+            var resTarget:Object = PetPanelService.levelUpSlot(0, { targetLevel: 54 });
+            var expected2:Number = Number(costs[0]) + Number(costs[1]);
+            check(resCount.success === true && resCount.levelsGained == 2 && resCount.newLevel == 52
+                    && resCount.stoneCost == expected2
+                    && resTarget.success === true && resTarget.levelsGained == 2 && resTarget.newLevel == 54,
+                "批量升级 count 与 targetLevel 扣费与快照 levelUpCosts 使用同一 XP 回退阈值");
+
+            // 18. mode:"max" 按当前灵石精确升到可负担上限，0 灵石返回 insufficient_stones 且零写
+            PetPanelService.handleSnapshot({ callId: "batch_snap_max" });
+            var snapMax:Object = codec.parse(rawPayload);
+            var maxCosts:Array = snapMax.snapshot.pets[0].levelUpCosts;
+            var exact2:Number = Number(maxCosts[0]) + Number(maxCosts[1]);
+            _root.收集品栏.材料.setItems({ 战宠灵石: exact2 });
+            var resMax:Object = PetPanelService.levelUpSlot(0, { mode: "max" });
+            var resZero:Object = PetPanelService.levelUpSlot(0, { mode: "max" });
+            check(resMax.success === true && resMax.levelsGained == 2 && resMax.newLevel == 56
+                    && resMax.stoneCost == exact2 && Number(_root.收集品栏.材料.getValue("战宠灵石") || 0) == 0
+                    && !resZero.success && resZero.error == "insufficient_stones"
+                    && _root.宠物信息[0][1] == 56,
+                "mode:max 精确升满可负担档位且灵石不足时零写返回 insufficient_stones");
+
+            // 19. 非法类型选择子与非整数宠物等级在扣费前被拒绝
+            _root.收集品栏.材料.setItems({ 战宠灵石: 5000 });
+            var badBool:Object = PetPanelService.levelUpSlot(0, { count: true });
+            var badStrTarget:Object = PetPanelService.levelUpSlot(0, { targetLevel: "60" });
+            var badNumMode:Object = PetPanelService.levelUpSlot(0, { mode: 1 });
+            _root.宠物信息[0][1] = 99.5;
+            var badFrac:Object = PetPanelService.levelUpSlot(0, { mode: "max" });
+            check(!badBool.success && badBool.error == "invalid_count"
+                    && !badStrTarget.success && badStrTarget.error == "invalid_target_level"
+                    && !badNumMode.success && badNumMode.error == "invalid_level_up_mode"
+                    && !badFrac.success && badFrac.error == "invalid_pet"
+                    && Number(_root.收集品栏.材料.getValue("战宠灵石") || 0) == 5000,
+                "布尔 count、非数字 targetLevel、非串 mode 与小数等级在扣费前严格拒绝");
+
+            // 20. 存档脏标失败或 singleSubmit 拒绝时完整零写保护
+            _root.宠物信息[0][1] = 10;
+            _root.收集品栏.材料.setItems({ 战宠灵石: 500 });
+            _root.存档系统 = null;
+            var threwDirty:Boolean = false;
+            try { PetPanelService.levelUpSlot(0, { count: 3 }); } catch (e) { threwDirty = true; }
+            _root.存档系统 = { dirtyMark: false };
+            var savedSubmit = _root.singleSubmit;
+            _root.singleSubmit = function():Boolean { return false; };
+            var failSub:Object = PetPanelService.levelUpSlot(0, { count: 2 });
+            _root.singleSubmit = savedSubmit;
+            check(threwDirty && !failSub.success && failSub.error == "insufficient_stones"
+                    && _root.宠物信息[0][1] == 10
+                    && Number(_root.收集品栏.材料.getValue("战宠灵石") || 0) == 500,
+                "批量升级在存档标脏异常与灵石扣除拒绝时保持等级与灵石完整零写");
+
+            // 21. handleLevelUp wire 输出包含 slotIndex / newLevel / levelsGained / stoneCost / stones
+            _root.存档系统 = { dirtyMark: false };
+            PetPanelService.handleSnapshot({callId:"quote_a"});
+            var quotedPet:Object = codec.parse(rawPayload).snapshot.pets[0];
+            var cost3:Number = Number(quotedPet.levelUpCosts[0]) + Number(quotedPet.levelUpCosts[1])
+                + Number(quotedPet.levelUpCosts[2]);
+            var confirmed:Object = {token:quotedPet.levelUpToken, fromLevel:10, toLevel:13, stoneCost:cost3};
+            var req:Object = {callId:"lv_wire_1", slotIndex:0, count:3, levelQuote:confirmed};
+            var original:Array = _root.宠物信息[0];
+            var other:Array = [original[0], 10, 200, 0, 0, {宠物升级所需经验:0}];
+            _root.宠物信息[0] = other;
+            PetPanelService.handleLevelUp(req);
+            check(codec.parse(rawPayload).error == "stale_level_quote" && other[1] == 10 && original[1] == 10
+                    && _root.收集品栏.材料.getValue("战宠灵石") == 500 && !_root.存档系统.dirtyMark,
+                "同品种同等级替换记录时旧确认拒绝且零写");
+            _root.宠物信息[0] = original;
+            original[5].宠物升级所需经验 = 80000;
+            PetPanelService.handleLevelUp(req);
+            check(codec.parse(rawPayload).error == "stale_level_quote" && original[1] == 10
+                    && _root.收集品栏.材料.getValue("战宠灵石") == 500 && !_root.存档系统.dirtyMark,
+                "同宠费用基础变化拒绝旧报价且零写");
+            PetPanelService.handleSnapshot({callId:"quote_b"});
+            quotedPet = codec.parse(rawPayload).snapshot.pets[0];
+            confirmed.token = quotedPet.levelUpToken;
+            confirmed.stoneCost = Number(quotedPet.levelUpCosts[0]) + Number(quotedPet.levelUpCosts[1])
+                + Number(quotedPet.levelUpCosts[2]);
+            confirmed.stoneCost++;
+            PetPanelService.handleLevelUp(req);
+            check(codec.parse(rawPayload).error == "stale_level_quote" && original[1] == 10
+                    && _root.收集品栏.材料.getValue("战宠灵石") == 500, "同一有效目标拒绝篡改的报价");
+            confirmed.stoneCost--;
+            PetPanelService.handleLevelUp(req);
+            var lvWire:Object = codec.parse(rawPayload);
+            check(lvWire != null && lvWire.success === true && lvWire.slotIndex == 0
+                    && lvWire.newLevel == 13 && lvWire.levelsGained == 3
+                    && lvWire.levelUpToken === confirmed.token && lvWire.stoneCost == confirmed.stoneCost && lvWire.stones == Number(_root.收集品栏.材料.getValue("战宠灵石") || 0),
+                "handleLevelUp 批量升级 wire 回执包含完整 slotIndex/newLevel/levelsGained/stoneCost/stones");
+            req.callId = "new_call_same_quote";
+            PetPanelService.handleLevelUp(req);
+            check(codec.parse(rawPayload).error == "stale_level_quote"
+                    && _root.收集品栏.材料.getValue("战宠灵石") == 500 - confirmed.stoneCost && original[1] == 13,
+                "成功或丢回包后重新发送旧确认不会再扣石");
         } finally {
+            _root.物品栏 = oldInventories;
+            _root.收集品栏 = oldCollections;
+            _root.singleSubmit = oldSingleSubmit;
+            ItemUtil.itemDataDict = oldItemDataDict;
+            ItemUtil.materialDict = oldMaterialDict;
             _root.gameworld = oldWorld;
             _root.宠物mc库 = oldPetUnits;
             _root.出战宠物id库 = oldDeployedIds;

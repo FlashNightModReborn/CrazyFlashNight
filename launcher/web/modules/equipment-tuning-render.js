@@ -150,13 +150,14 @@ var EquipmentTuningRender = (function() {
                 item:this._sourceItem,
                 equipmentSnapshot:this._snapshot && this._snapshot.equipment || null,
                 iconHtml:iconHtml,
-                onNavigateToDrugSlots:this._onNavigateToDrugSlots || null
+                onNavigateToDrugSlots:this._onNavigateToDrugSlots || null,
+                onRetrySnapshot:function() { self.requestSnapshot(); }
             });
             root.appendChild(custom.body);
             root.appendChild(custom.footer);
         } else {
             var detail = element('section', 'equipment-tuning-detail');
-            detail.setAttribute('aria-label', '调制选项与权威预览');
+            detail.setAttribute('aria-label', '调制选项与预览');
             detail.appendChild(this._renderBody());
             detail.appendChild(this._renderPreview());
             root.appendChild(detail);
@@ -191,7 +192,7 @@ var EquipmentTuningRender = (function() {
             document:this._root.ownerDocument,
             className:'equipment-tuning-commit-bar',
             label:'等待预览',
-            status:'选择操作后查看权威材料与结果。',
+            status:'选择操作后查看材料与结果。',
             canCommit:false,
             onCommit:function() { self.commit(); }
         });
@@ -213,12 +214,12 @@ var EquipmentTuningRender = (function() {
         if (!status && this._preview) {
             status = this._preview.noOp ? '当前预览无需写入。'
                 : ready ? '材料与结果已确认，可以提交。'
-                    : '当前预览没有可提交的权威令牌。';
+                    : '当前条件暂不满足提交。';
         }
-        if (!status) status = '选择操作后查看权威材料与结果。';
+        if (!status) status = '选择操作后查看材料与结果。';
         bar.update({
             label:this._busy ? '提交中…'
-                : ready ? commitLabel(this._preview) : '等待权威预览',
+                : ready ? commitLabel(this._preview) : '等待预览',
             status:status,
             busy:projection.phase === 'write_pending',
             canCommit:projection.commit,
@@ -233,13 +234,15 @@ var EquipmentTuningRender = (function() {
     TuningView.prototype._refreshPreviewSurface = function(options) {
         var root = this._root.querySelector('.equipment-tuning-view');
         var detail = root && root.querySelector('.equipment-tuning-detail');
+        var body = root && root.querySelector('.equipment-tuning-body');
         var preview = root && root.querySelector('.equipment-tuning-preview');
         if (!root || !detail || !preview) {
             this.render({preserveScroll:true});
             return false;
         }
         var detailScroll = this._detailScrollAnchor
-            || {top:detail.scrollTop, left:detail.scrollLeft};
+            || {top:detail.scrollTop, left:detail.scrollLeft,
+                bodyTop:body ? body.scrollTop : 0, bodyLeft:body ? body.scrollLeft : 0};
         if (this._readPending && !this._detailScrollAnchor) {
             this._detailScrollAnchor = detailScroll;
         }
@@ -247,7 +250,6 @@ var EquipmentTuningRender = (function() {
         this._updatePreviewSection(preview);
         this._syncEnhancementDraft(this._targetLevel);
         this._syncEnhancementPreview();
-        this._renderConfirmationControl();
         var status = root.querySelector('[data-tuning-status]');
         if (status) status.textContent = this._status;
         this._updateCommitBar();
@@ -255,6 +257,10 @@ var EquipmentTuningRender = (function() {
         this._syncModIntentPresentation(root);
         detail.scrollTop = detailScroll.top;
         detail.scrollLeft = detailScroll.left;
+        if (body && detailScroll.bodyTop != null) {
+            body.scrollTop = detailScroll.bodyTop;
+            body.scrollLeft = detailScroll.bodyLeft || 0;
+        }
         preview.scrollTop = previewScroll.top;
         preview.scrollLeft = previewScroll.left;
         if (!this._readPending && !this._enhancePreviewTimer) this._detailScrollAnchor = null;
@@ -398,10 +404,9 @@ var EquipmentTuningRender = (function() {
         if (!this._sourceItem) {
             var emptyMark = element('div', 'equipment-tuning-empty-mark'); emptyMark.textContent = '＋';
             var emptyCopy = element('div', 'equipment-tuning-summary-copy');
-            emptyCopy.innerHTML = '<b>选择装备</b><small>只接受当前权威来源中的武器与防具</small>';
+            emptyCopy.innerHTML = '<b>选择装备</b><small>请选择左侧可调制的武器或防具</small>';
             emptyCopy.querySelector('small').setAttribute('data-tuning-status', '');
             header.appendChild(emptyMark); header.appendChild(emptyCopy);
-            if (!this._customizationActive) header.appendChild(this._renderConfirmationControl());
             return header;
         }
         var item = this._sourceItem;
@@ -448,7 +453,6 @@ var EquipmentTuningRender = (function() {
         info.setAttribute('aria-expanded', this._infoPanelOpen ? 'true' : 'false');
         info.addEventListener('click', this._openInfoPanel.bind(this));
         header.appendChild(info);
-        if (!this._customizationActive) header.appendChild(this._renderConfirmationControl());
         return header;
     };
 
@@ -836,7 +840,12 @@ var EquipmentTuningRender = (function() {
         return true;
     };
     TuningView.prototype.refreshCustomization = function() {
-        if (!this._root || !this._customizationActive) return false;
+        if (!this._root) return false;
+        if (!this._customizationActive
+                && !(this._customization && this._sourceItem
+                    && this._customization.isAvailable(this._source, this._sourceItem))) {
+            return false;
+        }
         this.render({preserveScroll:true});
         return true;
     };
@@ -885,10 +894,10 @@ var EquipmentTuningRender = (function() {
             body.appendChild(refreshRetry);
             return body;
         }
-        if (!this._source) { body.appendChild(empty('选择一件装备后，Flash 会返回权威候选。')); return body; }
+        if (!this._source) { body.appendChild(empty('请先从左侧选择一件武器或防具。')); return body; }
         if (!this._snapshot) {
             var retry = element('button', 'equipment-tuning-retry'); retry.type = 'button';
-            retry.textContent = this._needsReconcile ? '重新对账' : '重试同步';
+            retry.textContent = this._needsReconcile ? '确认结果' : '重试同步';
             setCapability(retry, this._needsReconcile ? 'reconcile' : 'snapshot', false);
             var self = this; retry.addEventListener('click', function() {
                 var capability = self._needsReconcile ? 'reconcile' : 'snapshot';
@@ -903,13 +912,14 @@ var EquipmentTuningRender = (function() {
             else this._renderConvert(body);
         }
         else if (this._operation === 'install_tier') {
-            var tierCandidates = this._snapshot.tierCandidates || [];
-            var availableTierCandidates = tierCandidates.filter(function(candidate) {
-                return candidate && candidate.available === true;
+            var tierCandidates = (this._snapshot.tierCandidates || []).slice().sort(function(left, right) {
+                var la = left && left.available === true ? 0 : 1;
+                var ra = right && right.available === true ? 0 : 1;
+                return la - ra;
             });
             this._renderCandidates(
                 body,
-                availableTierCandidates,
+                tierCandidates,
                 'install_tier',
                 tierEmptyText(tierCandidates)
             );
@@ -934,7 +944,7 @@ var EquipmentTuningRender = (function() {
         core.setAttribute('data-motion', staticMotion ? 'static' : 'animated');
         core.innerHTML = materialIconHtml('强化石', 'equipment-tuning-stone-icon', staticMotion);
         var reactorCopy = element('div', 'equipment-tuning-reactor-copy');
-        reactorCopy.innerHTML = '<span>D.L.S. / CRYSTAL RESONANCE</span><b>强化石共振注能</b>';
+        reactorCopy.innerHTML = '<b>强化石注能</b>';
         var reactorBalance = element('div', 'equipment-tuning-reactor-balance');
         var stoneDelta = this._preview && this._preview.operation === 'enhance'
             ? materialDeltaFor(this._preview.materials, '强化石') : null;
@@ -1005,6 +1015,9 @@ var EquipmentTuningRender = (function() {
         slider.setAttribute('data-tuning-focus-key', 'enhance:range');
         slider.disabled = input.disabled;
         setCapability(slider, 'range', current >= max);
+        slider.addEventListener('input', function() {
+            self._chooseEnhancementLevel(slider.value, 'range');
+        });
         slider.addEventListener('change', function() {
             self._chooseEnhancementLevel(slider.value, 'range');
         });
@@ -1058,8 +1071,14 @@ var EquipmentTuningRender = (function() {
         // stats 预览使 preview 段落高度随显隐变化；在去抖 render 前锁定 detail 滚动锚点，
         // 待新 preview 把内容长回来后由 _refreshPreviewSurface 统一恢复
         var detail = this._root && this._root.querySelector('.equipment-tuning-detail');
-        if (detail && !this._detailScrollAnchor) {
-            this._detailScrollAnchor = {top:detail.scrollTop, left:detail.scrollLeft};
+        var body = this._root && this._root.querySelector('.equipment-tuning-body');
+        if ((detail || body) && !this._detailScrollAnchor) {
+            this._detailScrollAnchor = {
+                top:detail ? detail.scrollTop : 0,
+                left:detail ? detail.scrollLeft : 0,
+                bodyTop:body ? body.scrollTop : 0,
+                bodyLeft:body ? body.scrollLeft : 0
+            };
         }
         var scheduled = this.scheduleEnhancementPreview(level, 160);
         this.render({previewOnly:true});
@@ -1211,7 +1230,8 @@ var EquipmentTuningRender = (function() {
                     candidateName:candidate.itemName,
                     replaceCandidateKey:self._replaceCandidateKey,
                     replaceCandidateName:self._replaceCandidateName,
-                    quickCommit:self._modConfirmationMode === 'fast'
+                    quickCommit:modOp,
+                    directQuickCommit:modOp
                 });
                 else {
                     self._recordDiagnostic('intrinsic_unavailable', {
@@ -1521,10 +1541,21 @@ var EquipmentTuningRender = (function() {
                 return modMatchesFilter(candidate, self._modFilterPath);
             });
         }
+        var totalUninstalled = candidates.filter(function(candidate) { return candidate.installed !== true; }).length;
         var count = element('p', 'equipment-tuning-filter-count');
-        count.textContent = '显示 ' + availableCandidates.length + ' / ' + candidates.filter(function(candidate) { return candidate.installed !== true; }).length;
+        count.textContent = '显示 ' + availableCandidates.length + ' / ' + totalUninstalled;
         body.appendChild(count);
         var dropSlots = buildModDropSlots(equipment, candidates);
+        if (!availableCandidates.length && totalUninstalled > 0 && this._modFilterPath.length) {
+            body.appendChild(empty('当前筛选下暂无兼容配件。'));
+            var resetFilter = actionButton('查看全部兼容配件（' + totalUninstalled + '）', function() {
+                self._modFilterPath = [];
+                self.render({preserveScroll:false});
+            });
+            resetFilter.classList.add('equipment-tuning-show-all-mods');
+            body.appendChild(resetFilter);
+            return;
+        }
         this._renderCandidates(
             body,
             availableCandidates,
@@ -1549,7 +1580,7 @@ var EquipmentTuningRender = (function() {
                 section.classList.add('enhance-compact');
                 section.hidden = true;
             }
-            section.appendChild(empty(this._needsReconcile ? '上次提交结果未知，必须完成权威对账。'
+            section.appendChild(empty(this._needsReconcile ? '上次提交结果尚未确认，请先刷新确认。'
                 : (this._operation === 'enhance'
                     ? (this._readPending ? '正在计算强化消耗…' : '选择目标强化度后确认。')
                     : '选择操作后在此确认材料与结果。')));

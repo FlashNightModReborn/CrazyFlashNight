@@ -183,6 +183,9 @@
         'craftingSources', 'procurement'];
     var STORAGE_KINDS = ['bag', 'drug', 'bag_and_drug', 'material_collection',
         'information_collection', 'unavailable'];
+    var REQUIREMENT_STORAGE_KINDS = ['bag', 'drug', 'bag_and_drug', 'battlebox',
+        'bag_and_battlebox', 'drug_and_battlebox', 'bag_drug_and_battlebox',
+        'material_collection', 'information_collection', 'unavailable'];
 
     function finiteNonNegative(value) {
         return typeof value === 'number' && isFinite(value) && value >= 0;
@@ -333,7 +336,7 @@
             && finiteNonNegative(value.required) && finiteNonNegative(value.owned)
             && finiteNonNegative(value.maxEnhancement) && typeof value.isQuantity === 'boolean'
             && typeof value.tier === 'string' && typeof value.consumed === 'boolean'
-            && typeof value.enough === 'boolean' && STORAGE_KINDS.indexOf(value.storageKind) >= 0
+            && typeof value.enough === 'boolean' && REQUIREMENT_STORAGE_KINDS.indexOf(value.storageKind) >= 0
             && validCraftingSources(value.craftingSources)
             && validDemand(value.procurement, value.name);
     }
@@ -444,7 +447,7 @@
                 || value.mode === 'merge' && output.itemKind === 'stack')
             && value.physicalSlot >= 0 && value.physicalSlot < 50;
         if (value.storageKind === 'drug') return output.itemKind === 'stack'
-            && value.mode === 'merge' && value.physicalSlot >= 0;
+            && (value.mode === 'merge' || value.mode === 'insert') && value.physicalSlot >= 0;
         return (value.storageKind === 'material_collection'
                 || value.storageKind === 'information_collection')
             && output.itemKind === 'stack'
@@ -456,6 +459,7 @@
             'outputDelivery', 'outputPrototype', 'cost'];
         if (own(plan, 'infrastructure')) keys.push('infrastructure');
         if (own(plan, 'technique')) keys.push('technique');
+        if (own(plan, 'useBattleBox')) keys.push('useBattleBox');
         return exactKeys(plan, keys)
             && plan.category === response.category
             && plan.recipeIndex === response.recipeIndex
@@ -467,6 +471,13 @@
             && (!own(plan, 'technique') || validTechnique(plan.technique))
             // commit 响应不回显 technique；preview 回显时必须与冻结计划全等。
             && (!own(response, 'technique') || same(plan.technique, response.technique))
+            && (!own(plan, 'useBattleBox') || plan.useBattleBox === true)
+            && (outputField !== 'output' || own(plan, 'useBattleBox') === own(response, 'useBattleBox'))
+            && (!own(response, 'useBattleBox') || same(plan.useBattleBox, response.useBattleBox))
+            && (plan.useBattleBox === true || plan.materials.every(function(material) {
+                return material.storageKind !== 'battlebox' && material.storageKind !== 'bag_and_battlebox'
+                    && material.storageKind !== 'drug_and_battlebox' && material.storageKind !== 'bag_drug_and_battlebox';
+            }))
             && validOutputDelivery(plan.outputDelivery, plan.output)
             && validOutputPrototype(plan.outputPrototype, plan.output, plan.outputDelivery);
     }
@@ -1021,8 +1032,11 @@
             return true;
         }
         if (cmd === 'snapshot') {
-            if (!businessKeys(data, ['success', 'v', 'category', 'gender', 'recipes',
-                    'balance', 'skills', 'procurement', 'note'])
+            var snapKeys = ['success', 'v', 'category', 'gender', 'recipes',
+                'balance', 'skills', 'procurement', 'note'];
+            if (own(data, 'battleBoxAccessible')) snapKeys.push('battleBoxAccessible');
+            if (!businessKeys(data, snapKeys)
+                    || (own(data, 'battleBoxAccessible') && typeof data.battleBoxAccessible !== 'boolean')
                     || data.v !== 1 || !identityText(data.category, 256)
                     || data.category !== payload.category
                     || (data.gender !== '男' && data.gender !== '女')
@@ -1053,6 +1067,7 @@
                 'enoughKpoints', 'enoughSpace', 'canCommit', 'blockingError', 'outputDelivery']);
             if (own(data, 'infrastructure')) previewKeys.push('infrastructure');
             if (own(data, 'technique')) previewKeys.push('technique');
+            if (own(data, 'useBattleBox')) previewKeys.push('useBattleBox');
             if (data.canCommit === true) previewKeys.push('craftToken', 'acceptedPlan');
             return exactKeys(data, previewKeys)
                 && validProjectedItem(data.output) && Array.isArray(data.materials)
@@ -1060,6 +1075,12 @@
                 && (!own(data, 'infrastructure') || validInfraRows(data.infrastructure, 32))
                 && (!own(data, 'technique') || validTechnique(data.technique))
                 && same(data.technique, payload.technique)
+                && (!own(data, 'useBattleBox') || data.useBattleBox === true)
+                && Boolean(data.useBattleBox === true) === Boolean(payload.useBattleBox === true)
+                && (data.useBattleBox === true || data.materials.every(function(material) {
+                    return material.storageKind !== 'battlebox' && material.storageKind !== 'bag_and_battlebox'
+                        && material.storageKind !== 'drug_and_battlebox' && material.storageKind !== 'bag_drug_and_battlebox';
+                }))
                 && validOutputDelivery(data.outputDelivery, data.output)
                 && data.outputDelivery.available === data.enoughSpace
                 && (data.canCommit !== true || data.materials.every(function(material) {

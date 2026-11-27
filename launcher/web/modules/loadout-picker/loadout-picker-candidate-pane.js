@@ -247,6 +247,7 @@ function() {
                 }
             }
             this._actionView.sync();
+            if (typeof this._syncSlotFilterChip === 'function') this._syncSlotFilterChip();
         };
 
         prototype.setInteractionState = function(state) {

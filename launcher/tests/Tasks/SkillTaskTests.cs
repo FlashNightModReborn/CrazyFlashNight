@@ -218,6 +218,58 @@ namespace Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void LearnCommit_InitialUnlearnedMultiLevel_SucceedsDirectlyToTargetLevel()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                BindTrainerContext(task);
+                JObject preview = Request("learnPreview", "skill.preview.init.multi");
+                preview["payload"]["desiredLevel"] = 5;
+                task.HandleWebRequest("learnPreview", preview);
+                JObject previewResp = PreviewResponse((int)sent[0]["callId"], "learn.init.multi", 5);
+                previewResp["currentLevel"] = 0;
+                previewResp["cost"] = 40;
+                task.HandleFlashResponse(previewResp, null);
+
+                Assert.Single(web);
+                Assert.True((bool)web[0]["canCommit"]);
+                Assert.Equal(0, (int)web[0]["currentLevel"]);
+                Assert.Equal(5, (int)web[0]["desiredLevel"]);
+
+                JObject commit = Request("learnCommit", "skill.commit.init.multi");
+                commit["payload"]["expectedLearnToken"] = "learn.init.multi";
+                task.HandleWebRequest("learnCommit", commit);
+                JObject snap = TrainerSnapshot(13, "trainer.one");
+                snap["learned"][0]["level"] = 5;
+                task.HandleFlashResponse(WriteSuccess((int)sent[1]["callId"], true, 13, snap), null);
+
+                Assert.Equal("idle", task.WriteState);
+                Assert.Equal(2, web.Count);
+                Assert.True((bool)web[1]["success"]);
+                Assert.Equal(5, (int)web[1]["snapshot"]["learned"][0]["level"]);
+            }
+        }
+
+        [Fact]
+        public void LearnPreview_OversizedBigIntegerDesiredLevel_RejectsWithoutThrowing()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                BindTrainerContext(task);
+                JObject preview = Request("learnPreview", "skill.preview.bigint");
+                preview["payload"]["desiredLevel"] = JToken.Parse("9223372036854775808");
+                task.HandleWebRequest("learnPreview", preview);
+                Assert.Empty(sent);
+                Assert.Single(web);
+                Assert.Equal("invalid_payload", (string)web[0]["error"]);
+            }
+        }
+
+        [Fact]
         public void LearnCommit_IsBoundToAuthoritativePreviewTokenAndExpectedLevel()
         {
             var sent = new List<JObject>();

@@ -42,7 +42,7 @@
                 : '背包同步失败，只能先重试背包刷新。';
         } else if (state.needsReconcile && !state.refreshRetryPending) {
             phase = 'reconcile_required';
-            reason = '正在核对调制结果，只能先重新对账。';
+            reason = '正在确认上次调制结果，请先刷新确认。';
         } else if (state.loadoutBarrier) {
             phase = 'loadout_barrier';
             reason = '正在核对调制结果，完成后才能继续操作。';

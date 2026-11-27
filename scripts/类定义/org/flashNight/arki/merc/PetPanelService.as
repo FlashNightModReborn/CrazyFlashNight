@@ -35,6 +35,8 @@ import org.flashNight.gesh.object.ObjectUtil;
 class org.flashNight.arki.merc.PetPanelService {
     private static var _json:LiteJSON;
     private static var _inited:Boolean = false;
+    private static var _levelQuotes:Array = [];
+    private static var _levelQuoteSeq:Number = 0;
 
     public static function install():Void {
         if (_inited) return;
@@ -110,6 +112,9 @@ class org.flashNight.arki.merc.PetPanelService {
     public static function handleSnapshot(params:Object):Void {
         var callId = params.callId;
         var pets:Array = [];
+        var quotes:Array = [];
+        _levelQuotes = quotes;
+        var quotePrefix:String = "pet." + getTimer() + "." + (++_levelQuoteSeq) + ".";
         var 宠物信息:Array = _root.宠物信息;
         // 同一轮只签发一次背包 lease。若每只 T800 各取一次快照，后一个会令前一个候选
         // 的 source lease 立即过期，多 T800 存档会出现“看得见但无法交付”。
@@ -170,6 +175,14 @@ class org.flashNight.arki.merc.PetPanelService {
             petEntry.xp = xpFromAttr;
             petEntry.xpNeeded = xpNeededFromAttr > 0 ? xpNeededFromAttr : calcXpForLevel(String(petDef.Identifier), info[1]);
             petEntry.maxStamina = 200;
+            petEntry.levelUpCosts = buildLevelUpCosts(
+                String(petDef.Identifier), Number(info[1]), petEntry.xpNeeded, Number(_root.等级限制) || 100);
+            if (petEntry.levelUpCosts.length > 0) {
+                petEntry.levelUpToken = quotePrefix + i;
+                quotes[i] = {token:petEntry.levelUpToken, roster:宠物信息, record:info, petId:Number(info[0]),
+                    level:Number(info[1]), savedXp:Number(info[5].宠物升级所需经验) || 0,
+                    costs:petEntry.levelUpCosts};
+            }
 
             // 当前真实出战单位只读实时属性投影：仅对已就绪实例读最终数值，不重算离线成长表。
             petEntry.liveCombat = buildLiveCombatStats(
@@ -284,6 +297,7 @@ class org.flashNight.arki.merc.PetPanelService {
                 priceOverrides: priceOverrides,
                 gold: Number(_root.金钱) || 0,
                 kpoint: Number(_root.虚拟币) || 0,
+                stones: readStoneCount(),
                 playerLevel: Number(_root.等级) || 1,
                 levelLimit: Number(_root.等级限制) || 100,
                 playerTask: Number(_root.主线任务进度) || 0,
@@ -1020,12 +1034,28 @@ class org.flashNight.arki.merc.PetPanelService {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // handleLevelUp — 消耗战宠灵石升级
+    // handleLevelUp — 消耗战宠灵石升级（支持单级与原子批量）
     // ═══════════════════════════════════════════════════════════
     public static function handleLevelUp(params:Object):Void {
         var callId = params.callId;
         var slotIndex:Number = Number(params.slotIndex);
-        var result:Object = levelUpSlot(slotIndex);
+        var opts:Object = null;
+        if (params != undefined && (params.count != undefined
+                || params.targetLevel != undefined || params.mode != undefined)) {
+            opts = {
+                count: params.count,
+                targetLevel: params.targetLevel,
+                mode: params.mode
+            };
+        }
+        var quote:Object = params.levelQuote;
+        var result:Object;
+        if (quote == null || typeof quote.token != "string" || typeof quote.fromLevel != "number"
+                || typeof quote.toLevel != "number" || typeof quote.stoneCost != "number") {
+            result = {success:false, error:"stale_level_quote"};
+        } else {
+            result = levelUpSlot(slotIndex, opts, quote);
+        }
         if (result.success === true) refreshPetIconsSafely("level_up");
         result.task = "pet_response";
         result.callId = callId;
@@ -1033,14 +1063,21 @@ class org.flashNight.arki.merc.PetPanelService {
     }
 
     /**
-     * Web 与旧 Flash UI 共用的同步升级核心。
+     * Web 与旧 Flash UI 共用的同步升级核心（支持单级与原子多级批量）。
      *
      * 所有只读校验与费用计算先完成；显式玩家物资事务再把 singleSubmit 的 loss
      * 与等级/下一档阈值写绑定为同一个提交点。dirtyMark 必须先于第一项权威写，
      * 而重建、动画、埋点均在提交后隔离，因此失败重建只返回 refreshDeferred，
      * 不会把已扣灵石且已升级的操作伪装成可重试失败。
      */
-    public static function levelUpSlot(slotIndex:Number):Object {
+    private static function matchesLevelRecord(slotIndex:Number, lease:Object):Boolean {
+        if (lease == null || _root.宠物信息 !== lease.roster || _root.宠物信息[slotIndex] !== lease.record) return false;
+        var record:Array = lease.record;
+        return Number(record[0]) == lease.petId && Number(record[1]) == lease.level
+            && (Number(record[5].宠物升级所需经验) || 0) == lease.savedXp;
+    }
+
+    public static function levelUpSlot(slotIndex:Number, options:Object, quote:Object):Object {
         if (isNaN(slotIndex) || Math.floor(slotIndex) != slotIndex
                 || slotIndex < 0 || slotIndex >= _root.宠物信息.length) {
             return {success:false, error:"invalid_slot"};
@@ -1051,13 +1088,56 @@ class org.flashNight.arki.merc.PetPanelService {
             return {success:false, error:"invalid_pet"};
         }
 
+        var lease:Object = quote != null ? _levelQuotes[slotIndex] : null;
+        if (quote != null && (!matchesLevelRecord(slotIndex, lease) || quote.token !== lease.token
+                || quote.fromLevel !== lease.level)) return {success:false, error:"stale_level_quote"};
         var currentLevel:Number = Number(petInfo[1]);
-        var levelLimit:Number = Number(_root.等级限制) || 100;
-        if (!isFinite(currentLevel) || currentLevel < 0) {
+        var rawLimit:Number = Number(_root.等级限制);
+        var levelLimit:Number = (isFinite(rawLimit) && rawLimit > 0) ? rawLimit : 100;
+        if (!isFinite(currentLevel) || Math.floor(currentLevel) != currentLevel || currentLevel < 0
+                || !isFinite(levelLimit) || Math.floor(levelLimit) != levelLimit || levelLimit < 1) {
             return {success:false, error:"invalid_pet"};
         }
         if (currentLevel >= levelLimit) {
             return {success:false, error:"level_maxed", levelLimit:levelLimit};
+        }
+
+        var hasCount:Boolean = options != undefined && options != null && options.count != undefined && options.count != null;
+        var hasTarget:Boolean = options != undefined && options != null && options.targetLevel != undefined && options.targetLevel != null;
+        var hasMode:Boolean = options != undefined && options != null && options.mode != undefined && options.mode != null;
+        var selectorKinds:Number = (hasCount ? 1 : 0) + (hasTarget ? 1 : 0) + (hasMode ? 1 : 0);
+        if (selectorKinds > 1) {
+            return {success:false, error:"invalid_level_up_request"};
+        }
+        var isMaxMode:Boolean = false;
+        var requestedLevels:Number = 1;
+        if (hasMode) {
+            if (typeof options.mode != "string" || options.mode != "max") {
+                return {success:false, error:"invalid_level_up_mode"};
+            }
+            isMaxMode = true;
+        } else if (hasCount) {
+            if (typeof options.count != "number") {
+                return {success:false, error:"invalid_count"};
+            }
+            var reqCount:Number = Number(options.count);
+            if (!isFinite(reqCount) || Math.floor(reqCount) != reqCount || reqCount < 1) {
+                return {success:false, error:"invalid_count"};
+            }
+            if (currentLevel + reqCount > levelLimit) {
+                return {success:false, error:"invalid_count", levelLimit:levelLimit};
+            }
+            requestedLevels = reqCount;
+        } else if (hasTarget) {
+            if (typeof options.targetLevel != "number") {
+                return {success:false, error:"invalid_target_level", levelLimit:levelLimit};
+            }
+            var reqTarget:Number = Number(options.targetLevel);
+            if (!isFinite(reqTarget) || Math.floor(reqTarget) != reqTarget
+                    || reqTarget <= currentLevel || reqTarget > levelLimit) {
+                return {success:false, error:"invalid_target_level", levelLimit:levelLimit};
+            }
+            requestedLevels = reqTarget - currentLevel;
         }
 
         var petId:Number = Number(petInfo[0]);
@@ -1068,27 +1148,54 @@ class org.flashNight.arki.merc.PetPanelService {
         // 不为旧档补对象/阈值，直到灵石提交成功；insufficient 必须是零宠物写。
         var oldAttrs:Object = petInfo[5];
         var hasObjectAttrs:Boolean = oldAttrs != undefined && typeof oldAttrs == "object";
-        var xpNeeded:Number = hasObjectAttrs
+        var savedCurrentXp:Number = hasObjectAttrs
             ? Number(oldAttrs.宠物升级所需经验) : 0;
-        if (!isFinite(xpNeeded) || xpNeeded <= 0) {
-            xpNeeded = 0;
-            if (_root.战宠UI函数 != undefined
-                    && typeof _root.战宠UI函数.计算战宠升级所需经验 == "function") {
-                xpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(
-                    identifier, currentLevel));
-                if (!isFinite(xpNeeded) || xpNeeded < 0) xpNeeded = 0;
-            }
-        }
-        var stoneCost:Number = currentLevel * 2 + Math.floor(xpNeeded / 10000);
-        if (!isFinite(stoneCost) || stoneCost <= 0) stoneCost = 1;
+        var hasXpCalc:Boolean = _root.战宠UI函数 != undefined
+            && typeof _root.战宠UI函数.计算战宠升级所需经验 == "function";
+        var xpNeeded:Number = resolveStepXpNeeded(identifier, currentLevel, savedCurrentXp, true);
 
         // 阈值计算会调用旧 UI 的可注入函数，必须在扣灵石/写等级前完成。
         // 一旦进入显式资产 frame，成功扣除后的路径只允许本地权威赋值，
         // 避免可选计算异常截断 success response 并让同一升级被重放。
-        var newLevel:Number = currentLevel + 1;
+        var stoneCost:Number = 0;
+        var levelsGained:Number = 0;
+        if (isMaxMode) {
+            var ownedStones:Number = readStoneCount();
+            var firstCost:Number = calcStepStoneCost(currentLevel, xpNeeded);
+            if (ownedStones < firstCost) {
+                return {
+                    success:false,
+                    error:"insufficient_stones",
+                    cost:firstCost,
+                    stones:ownedStones,
+                    requestedLevels:1
+                };
+            }
+            for (var maxLvl:Number = currentLevel; maxLvl < levelLimit; maxLvl++) {
+                var stepXpMax:Number = resolveStepXpNeeded(identifier, maxLvl, savedCurrentXp, maxLvl == currentLevel);
+                var stepCostMax:Number = calcStepStoneCost(maxLvl, stepXpMax);
+                if (stoneCost + stepCostMax > ownedStones) break;
+                if (lease != null && lease.costs[levelsGained] !== stepCostMax) return {success:false, error:"stale_level_quote"};
+                stoneCost += stepCostMax;
+                levelsGained++;
+            }
+        } else {
+            levelsGained = requestedLevels;
+            for (var stepIdx:Number = 0; stepIdx < levelsGained; stepIdx++) {
+                var stepLvl:Number = currentLevel + stepIdx;
+                var stepXp:Number = resolveStepXpNeeded(identifier, stepLvl, savedCurrentXp, stepIdx == 0);
+                var stepCost:Number = calcStepStoneCost(stepLvl, stepXp);
+                if (lease != null && lease.costs[stepIdx] !== stepCost) return {success:false, error:"stale_level_quote"};
+                stoneCost += stepCost;
+            }
+        }
+
+        if (levelsGained < 1 || currentLevel + levelsGained > levelLimit) {
+            return {success:false, error:"invalid_level_up_request", levelLimit:levelLimit};
+        }
+        var newLevel:Number = currentLevel + levelsGained;
         var newXpNeeded:Number = 0;
-        if (_root.战宠UI函数 != undefined
-                && typeof _root.战宠UI函数.计算战宠升级所需经验 == "function") {
+        if (hasXpCalc) {
             newXpNeeded = Number(_root.战宠UI函数.计算战宠升级所需经验(
                 identifier, newLevel));
             if (!isFinite(newXpNeeded) || newXpNeeded < 0) newXpNeeded = 0;
@@ -1098,6 +1205,14 @@ class org.flashNight.arki.merc.PetPanelService {
             source:"pet_service", reason:"level_up", mergeScope:"operation"
         };
         var levelSnapshot:Object = capturePetTransactionState();
+        if (quote != null) {
+            if (_levelQuotes[slotIndex] !== lease || !matchesLevelRecord(slotIndex, lease)
+                    || quote.toLevel !== newLevel || quote.stoneCost !== stoneCost) {
+                return {success:false, error:"stale_level_quote"};
+            }
+            _levelQuotes[slotIndex] = null;
+        }
+        var staleDuringWrite:Boolean = false;
         var levelTransaction:Object =
             org.flashNight.arki.item.PlayerAssetTransaction.begin(levelContext);
         var levelDirtyMarked:Boolean = false;
@@ -1108,6 +1223,10 @@ class org.flashNight.arki.merc.PetPanelService {
             org.flashNight.arki.item.PlayerAssetTransaction.markDirtyRequired(
                 _root.存档系统);
             levelDirtyMarked = true;
+            if (lease != null && !matchesLevelRecord(slotIndex, lease)) {
+                staleDuringWrite = true;
+                throw new Error("stale_level_quote");
+            }
             if (!_root.singleSubmit("战宠灵石", stoneCost, levelContext)) {
                 // singleSubmit=false 尚未触碰宠物权威；只恢复通用资产/dirty，避免
                 // 全量宠物快照克隆把确定零写伪装成对象替换。
@@ -1121,9 +1240,19 @@ class org.flashNight.arki.merc.PetPanelService {
                 }
                 org.flashNight.arki.item.PlayerAssetTransaction.rollback(levelTransaction);
                 levelTransactionSettled = true;
-                return {success:false, error:"insufficient_stones", cost:stoneCost};
+                return {
+                    success:false,
+                    error:"insufficient_stones",
+                    cost:stoneCost,
+                    stones:readStoneCount(),
+                    requestedLevels:levelsGained
+                };
             }
 
+            if (lease != null && !matchesLevelRecord(slotIndex, lease)) {
+                staleDuringWrite = true;
+                throw new Error("stale_level_quote");
+            }
             var attrs:Object = hasObjectAttrs ? oldAttrs : {};
             levelPetWriteStarted = true;
             if (!hasObjectAttrs) petInfo[5] = attrs;
@@ -1143,13 +1272,14 @@ class org.flashNight.arki.merc.PetPanelService {
                     levelTransaction, !levelRestored);
                 levelTransactionSettled = true;
             }
+            if (staleDuringWrite && levelRestored) return {success:false, error:"stale_level_quote"};
             throw levelError;
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(levelTransaction);
 
         try {
             if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {
-                org.flashNight.arki.achievement.AchievementMetrics.record("宠物培养次数", 1);
+                org.flashNight.arki.achievement.AchievementMetrics.record("宠物培养次数", levelsGained);
             }
         } catch (levelMetricError) {
             trace("[PetPanelService] post-commit level metric failed: " + levelMetricError);
@@ -1160,8 +1290,12 @@ class org.flashNight.arki.merc.PetPanelService {
         return {
             success:true,
             slotIndex:slotIndex,
+            oldLevel:currentLevel,
+            levelUpToken:lease == null ? undefined : lease.token,
             newLevel:newLevel,
+            levelsGained:levelsGained,
             stoneCost:stoneCost,
+            stones:readStoneCount(),
             newXpNeeded:newXpNeeded,
             levelLimit:levelLimit,
             rebuilt:levelRebuilt,
@@ -1283,6 +1417,7 @@ class org.flashNight.arki.merc.PetPanelService {
             slotIndex:slotIndex,
             deleted:true,
             stoneRefund:stoneRefund,
+            stones:readStoneCount(),
             weaponReturned:weaponReturned,
             refreshDeferred:deleteRefreshDeferred
         };
@@ -1619,6 +1754,40 @@ class org.flashNight.arki.merc.PetPanelService {
         }
         // 引擎不可用时的粗略回退估算
         return Math.floor((50 + ((400 - 50) / 59) * level) * level);
+    }
+
+    private static function readStoneCount():Number {
+        if (_root.收集品栏 == undefined) return 0;
+        var v:Number = Number(ItemUtil.getTotal("战宠灵石"));
+        return (!isNaN(v) && isFinite(v) && v > 0) ? Math.floor(v) : 0;
+    }
+
+    private static function calcStepStoneCost(level:Number, xpNeeded:Number):Number {
+        var c:Number = level * 2 + Math.floor(xpNeeded / 10000);
+        return (!isFinite(c) || c <= 0) ? 1 : c;
+    }
+
+    /** snapshot 预览与 levelUpSlot 扣费共用的唯一经验阈值解析器。 */
+    private static function resolveStepXpNeeded(identifier:String, level:Number,
+            savedCurrentXp:Number, isFirstStep:Boolean):Number {
+        if (isFirstStep && isFinite(savedCurrentXp) && savedCurrentXp > 0) {
+            return savedCurrentXp;
+        }
+        return calcXpForLevel(identifier, level);
+    }
+
+    private static function buildLevelUpCosts(identifier:String, currentLevel:Number,
+            currentXpNeeded:Number, levelLimit:Number):Array {
+        var costs:Array = [];
+        if (!isFinite(currentLevel) || Math.floor(currentLevel) != currentLevel
+                || currentLevel < 0 || !isFinite(levelLimit) || Math.floor(levelLimit) != levelLimit
+                || currentLevel >= levelLimit) return costs;
+        var limit:Number = Math.min(levelLimit, currentLevel + 200);
+        for (var lvl:Number = currentLevel; lvl < limit; lvl++) {
+            var xpNeed:Number = resolveStepXpNeeded(identifier, lvl, currentXpNeeded, lvl == currentLevel);
+            costs.push(calcStepStoneCost(lvl, xpNeed));
+        }
+        return costs;
     }
 
     // ═══════════════════════════════════════════════════════════

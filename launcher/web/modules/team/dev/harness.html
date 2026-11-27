@@ -96,7 +96,9 @@ function pet(id,name,slot,lv,dep){
   var liveCombat = liveOverride !== undefined ? liveOverride : (dep
     ? {status:'ready',hp:2800,maxHp:3500,unarmedAttack:90,defense:550,speed:6.4,speedUnit:'m/s'}
     : {status:'not_deployed'});
-  var out={petId:id,name:name,slotIndex:slot,level:lv,deployed:!!dep,stamina:100,maxStamina:200,xp:10,xpNeeded:100,schemeStatus:{},
+  var levelUpCosts=[];
+  for(var cl=lv;cl<100;cl++) levelUpCosts.push(Math.max(1, cl*2));
+  var out={petId:id,name:name,slotIndex:slot,level:lv,deployed:!!dep,stamina:100,maxStamina:200,xp:10,xpNeeded:100,levelUpCosts:levelUpCosts,levelUpToken:'q.'+slot+'.'+lv+'.'+(window.petQuoteVersion||0),schemeStatus:{},
     liveCombat:liveCombat};
   if(MockHost.legacyCombatOnly && MockHost.legacyCombatOnly[slot]){
     delete out.liveCombat;
@@ -274,6 +276,8 @@ var MockHost = {
   mercDeploy:{0:true},    // 佣兵出战态（slotIndex → bool）：snapshot 与 deploy 回包共用
   mercDead:{2:true},      // 佣兵阵亡态（佣兵丙初始阵亡）
   mercCoins:2,            // 复活币余额（snapshot.reviveCoins）
+  petStones:250,          // 战宠灵石余额（snapshot.stones）
+  petLevels:{0:100,1:20,2:10,3:5},
   playerTask:999,         // 领养目录主线防剧透 fixture；用例内降至 100 后重开 snapshot
   lockSecondStore:false,  // 第二项按需改为主线 130，避免干扰既有余额不足门
   failAdopt:false,        // R：adopt 回 {success:false, reason}（CommitBar error 分支注入）
@@ -329,11 +333,15 @@ var MockHost = {
       else{
       var snapshotPartnerDeployed=this.snapshotUsesPetDeployState?!!this.deployState[3]:true;
       var snapshotPartner0Deployed=this.snapshotUsesPetDeployState?!!this.deployState[0]:false;
-      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,100,snapshotPartner0Deployed),pet(1,'伙伴乙',3,5,snapshotPartnerDeployed),pet(2,'战宠甲',1,20,!!this.deployState[1]),pet(66,'终结者-x',2,10,!!this.deployState[2])],
-        gold:999999,kpoint:999,currentDeployCount:(snapshotPartnerDeployed?1:0)+(snapshotPartner0Deployed?1:0),maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
+      resp.snapshot={pets:this.emptyPets?[]:[pet(1,'伙伴甲',0,this.petLevels[0],snapshotPartner0Deployed),pet(1,'伙伴乙',3,this.petLevels[3],snapshotPartnerDeployed),pet(2,'战宠甲',1,this.petLevels[1],!!this.deployState[1]),pet(66,'终结者-x',2,this.petLevels[2],!!this.deployState[2])],
+        gold:999999,kpoint:999,stones:this.petStones,currentDeployCount:(snapshotPartnerDeployed?1:0)+(snapshotPartner0Deployed?1:0),maxDeploy:5,maxSlots:8,levelLimit:100,playerLevel:60,playerTask:this.playerTask,
         schemes:{'淬毒':{gold:500,desc:'攻击附带毒素',type:'开关',unlockLevel:1,buttonText:'进阶'},
           '终结者武器扩展':{gold:100000,desc:'开放全部长枪',type:'',unlockLevel:30,buttonText:'扩展武器接口'},
           '终结者全武装':{gold:300000,desc:'移除固定等级上限',type:'',unlockLevel:50,buttonText:'完成全武装'}},priceOverrides:{}};
+      if(this.replacementFixture){
+        var record=this.replacementFixture.record;
+        resp.snapshot.pets=record?[pet(2,record.name,1,this.petLevels[1],false)]:[];
+      }
       if(this.dogFixture){ resp.snapshot.pets=[pet(0,'小黑',0,17,false)]; resp.snapshot.isCombatMap=!!this.dogCombat; }
       if(this.dualBadge && resp.snapshot.pets.length>1) resp.snapshot.pets[1].stamina=0;
       }
@@ -360,6 +368,9 @@ var MockHost = {
         ];
       }
     }
+    if(this.replacementFixture && msg.panel==='pets' && msg.cmd==='adopt_list'){
+      resp.adoptable=[{petId:2,identifier:'敌人-武装JK',name:'新领养',price:1000,kprice:0,unique:false,unlockLevel:1,unlockTask:0}];
+    }
     if(msg.panel === 'pets' && msg.cmd === 'deploy'){
       this.lastDeploy=msg;
       this.deployState[msg.slotIndex]=!this.deployState[msg.slotIndex];
@@ -369,9 +380,37 @@ var MockHost = {
     if(msg.panel === 'pets' && msg.cmd === 'change_dog_form'){ this.dogForm=msg.dogForm; this.lastDogForm=msg; resp.dogForm=msg.dogForm; }
     if(msg.panel === 'pets' && msg.cmd === 'restore_stamina'){ this.lastRestore=msg; resp.stamina=200; resp.gold=998999; }
     if(msg.panel === 'pets' && msg.cmd === 'level_up'){
-      this.lastLevelUp=msg; resp.stoneCost=21; resp.refreshDeferred=true;
+      this.lastLevelUp=msg;
+      var curLv=this.petLevels[msg.slotIndex]||1;
+      var steps=1, totalCost=0;
+      if(msg.mode==='max'){
+        steps=0;
+        for(var ml=curLv;ml<100;ml++){
+          var mc=Math.max(1,ml*2);
+          if(totalCost+mc>this.petStones) break;
+          totalCost+=mc; steps++;
+        }
+        if(steps<1){ resp.success=false; resp.error='insufficient_stones'; resp.cost=Math.max(1,curLv*2); }
+      }else{
+        steps=typeof msg.count==='number'?msg.count:(typeof msg.targetLevel==='number'?(msg.targetLevel-curLv):1);
+        for(var si=0;si<steps;si++) totalCost+=Math.max(1,(curLv+si)*2);
+        if(totalCost>this.petStones){ resp.success=false; resp.error='insufficient_stones'; resp.cost=totalCost; }
+      }
+      var quote=msg.levelQuote;
+      if(!quote || quote.token!=='q.'+msg.slotIndex+'.'+curLv+'.'+(window.petQuoteVersion||0)
+          || quote.fromLevel!==curLv || quote.toLevel!==curLv+steps || quote.stoneCost!==totalCost){
+        resp.success=false; resp.error='stale_level_quote'; this.rejectedLevelQuotes=(this.rejectedLevelQuotes||0)+1;
+      }
+      if(resp.success){
+        resp.slotIndex=msg.slotIndex; resp.levelUpToken=quote.token;
+        this.petStones-=totalCost;
+        this.petLevels[msg.slotIndex]=curLv+steps;
+        resp.oldLevel=curLv; resp.newLevel=curLv+steps; resp.levelsGained=steps;
+        resp.stoneCost=totalCost; resp.stones=this.petStones; resp.refreshDeferred=true;
+      }
     }
     if(msg.panel === 'pets' && msg.cmd === 'delete'){
+      if(this.replacementFixture){this.replacementFixture.record=null;window.petQuoteVersion++;}
       this.lastDelete=msg; resp.stoneRefund=3; resp.refreshDeferred=true;
     }
     if(msg.panel === 'pets' && msg.cmd === 'advance'){
@@ -392,6 +431,9 @@ var MockHost = {
       resp.introHTML='<b>实例属性</b>'; resp.descHTML='强化、插件与弹量完整说明';
     }
     if(msg.panel === 'pets' && msg.cmd === 'adopt'){
+      if(this.replacementFixture && msg.petId===2){
+        this.replacementFixture.record={name:'新领养'};window.petQuoteVersion++;
+      }
       this.lastAdopt=msg;
       if(this.failAdopt){ resp.success=false; resp.reason='模拟领养失败原因'; }
       else{ resp.gold=998999; resp.kpoint=999; }
@@ -778,9 +820,11 @@ var MockHost = {
     // ── metrics 资源 ──
     var goldMetric=wb.querySelector('.workbench-metric[data-metric="gold"] b');
     var kMetric=wb.querySelector('.workbench-metric[data-metric="kpoint"] b');
-    assert('team-p5','header metrics：金币 / K点',
-      goldMetric && goldMetric.textContent==='100.0万' && kMetric && kMetric.textContent==='999',
-      (goldMetric&&goldMetric.textContent)+' / '+(kMetric&&kMetric.textContent));
+    var stoneMetric=wb.querySelector('.workbench-metric[data-metric="stones"] b');
+    assert('team-p5','header metrics：金币 / K点 / 灵石',
+      goldMetric && goldMetric.textContent==='100.0万' && kMetric && kMetric.textContent==='999' &&
+      stoneMetric && stoneMetric.textContent==='250',
+      (goldMetric&&goldMetric.textContent)+' / '+(kMetric&&kMetric.textContent)+' / '+(stoneMetric&&stoneMetric.textContent));
     // ── 排序 / 筛选 ──
     pickOption(dropdownAt(0),'等级 ↓');
     assert('team-p6','排序等级↓：首卡等级最高',
@@ -1006,6 +1050,28 @@ var MockHost = {
       jNext0.textContent.indexOf('更多进阶方案')>=0 &&
       jCx0<=jSecRect0.width*0.12 && jCy0<=jSecRect0.height*0.25,
       'cx='+jCx0.toFixed(1)+', cy='+jCy0.toFixed(1));
+    // ── P4-3：战宠灵石余额 + 原子批量强化（+5 与灵石不足阻断）──
+    var batchBtn=jSec0.querySelector('.team-act-levelup-batch');
+    var batchLabelBefore=batchBtn?batchBtn.textContent:'';
+    window.petQuoteVersion=1;
+    if(batchBtn) batchBtn.click();
+    await waitFor(function(){return MockHost.rejectedLevelQuotes===1 && jSec0.querySelector('.team-act-levelup-batch')!==batchBtn;},2000);
+    assert('team-pet-stale-quote','过期卡片被拒绝，刷新报价前后都无自动扣石',
+      MockHost.petLevels[1]===20 && MockHost.petStones===250 && MockHost.rejectedLevelQuotes===1);
+    jSec0.querySelector('.team-act-levelup-batch').click();
+    await waitFor(function(){ return MockHost.petLevels[1]===25 && MockHost.petStones===30; },2000);
+    await wait(40);
+    var singleBtnAfter=jSec0.querySelector('.team-act-levelup');
+    assert('team-p4-batch-levelup','P4-3：原子批量强化 +5 发出目标等级 targetLevel:25，等级 20→25、灵石 250→30，不足时按钮阻断',
+      batchLabelBefore==='强化 +5 · 灵石×220' &&
+      MockHost.lastLevelUp && MockHost.lastLevelUp.slotIndex===1 && MockHost.lastLevelUp.targetLevel===25 &&
+      MockHost.lastLevelUp.levelQuote.token==='q.1.20.1' && MockHost.lastLevelUp.levelQuote.stoneCost===220 &&
+      MockHost.petLevels[1]===25 && MockHost.petStones===30 &&
+      toastHas('连升 5 级') &&
+      !!singleBtnAfter && singleBtnAfter.getAttribute('aria-disabled')==='true' &&
+      jSec0.scrollWidth<=jSec0.clientWidth,
+      'label='+batchLabelBefore+', lv='+MockHost.petLevels[1]+', stones='+MockHost.petStones);
+    MockHost.petStones=250; MockHost.petLevels[1]=20;
     var jAdvClose=jSec0.querySelector('.team-pet-advance-close');
     var jAdvCloseRect=jAdvClose?jAdvClose.getBoundingClientRect():null;
     var jAdvHeaderRect=jAdvClose?jAdvClose.parentElement.getBoundingClientRect():null;
@@ -1083,11 +1149,11 @@ var MockHost = {
     commitPrimary.click();
     var commitBusy=commitBar.classList.contains('busy') && commitPrimary.disabled;
     await wait(40);
-    assert('team-p23','确认领养：busy → 回包 toast + 返回名册',
+    assert('team-p23','确认领养：busy → 栏位未满留商店刷新并 toast',
       commitBusy && MockHost.lastAdopt && MockHost.lastAdopt.cmd==='adopt' && MockHost.lastAdopt.petId===10 &&
-      toastHas('领养成功') && !!document.querySelector('.team-goto-store'));
-    // 天价候选 → CommitBar blocked
-    document.querySelector('.team-goto-store').click(); await wait(40);
+      toastHas('领养成功') && !!document.querySelector('.team-back-roster'));
+    // 天价候选 → CommitBar blocked（已留在商店，等列表刷新后直接点选）
+    await waitFor(function(){ return document.querySelectorAll('.team-store-card').length===2; },2000);
     document.querySelectorAll('.team-store-card')[1].click(); await wait(10);
     assert('team-p24','余额不足：CommitBar blocked（原因 + 主 CTA 禁用）',
       commitBar.classList.contains('is-blocked') && commitPrimary.disabled &&
@@ -1411,19 +1477,17 @@ var MockHost = {
       document.querySelector('.team-merc-child .workbench-commit-primary').disabled===true &&
       document.querySelector('.team-merc-child .workbench-commit-status').textContent.indexOf('金币不足')>=0,
       document.querySelector('.team-merc-child .workbench-commit-status').textContent);
-    // ── 确认雇佣：busy → 协议 → toast + 返回名册 ──
+    // ── 确认雇佣：busy → 协议 → 栏位未满留市场刷新并 toast ──
     document.querySelectorAll('.team-merc-child .team-merc-hire-grid .team-merc-hire-card')[0].click(); await wait(10);
     var mCommitPrimary=document.querySelector('.team-merc-child .workbench-commit-primary');
     mCommitPrimary.click();
     var mCommitBusy=document.querySelector('.team-merc-child .workbench-commit-bar').classList.contains('busy') && mCommitPrimary.disabled;
-    await wait(40);
-    assert('team-m19','确认雇佣：busy → 协议 hire(poolIndex+mercId) → toast + 返回名册',
+    await waitFor(function(){ return !MercTeamController.isBusy() && document.querySelectorAll('.team-merc-child .team-merc-hire-grid .team-merc-hire-card').length===6; },3000);
+    assert('team-m19','确认雇佣：busy → 协议 hire(poolIndex+mercId) → 栏位未满留市场刷新并 toast',
       mCommitBusy && MockHost.lastHire && MockHost.lastHire.cmd==='hire' &&
       MockHost.lastHire.poolIndex===0 && Object.prototype.hasOwnProperty.call(MockHost.lastHire,'mercId') &&
-      toastHas('成功雇佣') && !!document.querySelector('.team-merc-child .team-goto-hire'));
+      toastHas('成功雇佣') && !!document.querySelector('.team-merc-child .team-back-roster'));
     // ── hire 零横向溢出 + 返回名册 ──
-    document.querySelector('.team-merc-child .team-goto-hire').click();
-    await waitFor(function(){ return document.querySelectorAll('.team-merc-child .team-merc-hire-grid .team-merc-hire-card').length===6; },3000);
     assert('team-m20','hire 零横向溢出',
       mercWorkbench().scrollWidth<=mercWorkbench().clientWidth,
       mercWorkbench().scrollWidth+'<='+mercWorkbench().clientWidth);
@@ -1564,6 +1628,9 @@ var MockHost = {
     document.querySelector('.team-merc-child .team-merc-detail .team-merc-act-train').click();
     await wait(30);
     var mLdPage=document.querySelector('.team-merc-child .workbench-secondary-page.team-merc-detail-page');
+    var mLdTabBtn=mLdPage.querySelector('.team-merc-detail-tab[data-detail-tab="loadout"]');
+    if(mLdTabBtn) mLdTabBtn.click();
+    await wait(20);
     var mLdRightCol=mLdPage.querySelector('.team-merc-detail-right');
     var mLdSlot=function(k){ return mLdPage.querySelector('.merc-loadout-slot[data-slot-id="'+k+'"]'); };
     var mLdName=function(k){ var s=mLdSlot(k); var n=s&&s.querySelector('.inventory-slot-copy b'); return n?n.textContent:''; };
@@ -1589,8 +1656,9 @@ var MockHost = {
       var to=mLdPtrCenter(target);
       document.dispatchEvent(new PointerEvent('pointercancel',{bubbles:true,cancelable:true,pointerId:pid,pointerType:'mouse',isPrimary:true,button:0,buttons:0,clientX:to.x,clientY:to.y}));
     };
-    // ── 三态徽章 + 损坏占位 + 手雷只读行 + picker 初态（unselected 五态 + idle + scope 背包）──
-    assert('team-merc-loadout-states','托管三态渲染（picker 槽位徽章）：预设 / 托管 / 托管异常（data-blocked）；手雷只读行零按钮；picker 初态 unselected 五态',
+    // ── 三态徽章 + 损坏占位 + 手雷只读行 + picker 初态（背包总览 scope 立即加载候选 + idle）──
+    await waitFor(function(){ return mLdList().getAttribute('data-candidate-state')==='ready'; },2000);
+    assert('team-merc-loadout-states','托管三态渲染（picker 槽位徽章）：预设 / 托管 / 托管异常（data-blocked）；手雷只读行零按钮；picker 初态与背包总览对齐',
       mLdSlot('6') && mLdSlot('6').getAttribute('data-loadout-state')==='preset' &&
       mLdSlot('6').querySelector('.team-custody-badge').textContent==='预设' &&
       mLdSlot('13').getAttribute('data-loadout-state')==='custody' &&
@@ -1605,15 +1673,15 @@ var MockHost = {
       mLdPage.querySelector('.team-merc-equip-slot-readonly').getAttribute('data-loadout-slot')==='16' &&
       !mLdPage.querySelector('.team-merc-equip-slot-readonly button') &&
       mLdPk().getAttribute('data-interaction-state')==='idle' &&
-      mLdList().getAttribute('data-candidate-state')==='unselected' &&
-      mLdList().getAttribute('data-candidate-statement')==='先选择槽位',
+      mLdList().getAttribute('data-candidate-state')==='ready',
       'slot13='+mLdName('13')+', state='+mLdList().getAttribute('data-candidate-state'));
-    // ── 损坏占位 fail-closed：点击只解释原因、零候选请求 ──
+    // ── 损坏占位 fail-closed：点击只解释原因、零新增候选请求 ──
+    var corruptReqBefore = MockHost.mercRequestCounts.loadout_candidates || 0;
     mLdSlot('15').click(); await wait(10);
     assert('team-merc-loadout-corrupt','损坏占位槽：点击只给可读原因（aria-live 状态条），零候选请求',
       mLdNotice().getAttribute('data-notice-kind')==='blocked' &&
-      mLdNotice().textContent.indexOf('托管快照异常')>=0 &&
-      (MockHost.mercRequestCounts.loadout_candidates||0)===0 &&
+      mLdNotice().textContent.indexOf('装备数据异常')>=0 &&
+      (MockHost.mercRequestCounts.loadout_candidates||0)===corruptReqBefore &&
       mLdPk().getAttribute('data-interaction-state')==='idle',
       mLdNotice().textContent);
     // ── 点槽联动：兼容 tab = slot scope 拉取（请求带 scope:'slot'）+ 五态 loading→ready ──
@@ -1652,6 +1720,7 @@ var MockHost = {
       mLdNotice().textContent);
     // ── 双击提交 = 交付：lease-bound source + expectedLoadoutRevision 发对 ──
     mLdRightCol.scrollTop=60;
+    var mLdScrollBefore=mLdRightCol.scrollTop;
     var mLdPickerNode=mLdPk();
     mLdCandByText('测试佣兵头盔MK2').dispatchEvent(new MouseEvent('dblclick',{bubbles:true,cancelable:true}));
     await waitFor(function(){ return mLdSlot('6') && mLdSlot('6').getAttribute('data-loadout-state')==='custody' &&
@@ -1669,15 +1738,14 @@ var MockHost = {
       mLdSlot('6').querySelector('.team-custody-badge').textContent==='托管' &&
       toastHas('已交付'),
       'rev='+(MockHost.lastLoadoutDeliver&&MockHost.lastLoadoutDeliver.expectedLoadoutRevision));
-    // ── 写后局部刷新：picker 实例不销毁、选中槽保留、候选随新 revision 重拉、scrollTop 保持、快照不关 picker ──
+    // ── 写后局部刷新：picker 实例不销毁、选中槽保留、候选随新 revision 重拉、scrollTop 保持（分页签后无冗余滚动则保持同位）、快照不关 picker ──
     assert('team-merc-loadout-deliver-retain','滚动痛点根治：写后 picker 同一实例 + 选中槽保留 + 候选重拉就绪 + 右栏 scrollTop 保持 + 快照刷新不关 picker',
       mLdPk()===mLdPickerNode &&
       mLdSlot('6').getAttribute('aria-selected')==='true' &&
       MercTeamController.loadoutPickerDebug() && MercTeamController.loadoutPickerDebug().selectedSlotKey==='armor:6' &&
       mLdList().getAttribute('data-candidate-state')==='ready' &&
-      Math.abs(mLdRightCol.scrollTop-60)<=2 &&
-      mLdRightCol.scrollTop>0,
-      'scrollTop='+mLdRightCol.scrollTop+', key='+(MercTeamController.loadoutPickerDebug()&&MercTeamController.loadoutPickerDebug().selectedSlotKey));
+      Math.abs(mLdRightCol.scrollTop-mLdScrollBefore)<=2,
+      'scrollTop='+mLdRightCol.scrollTop+' (before='+mLdScrollBefore+'), key='+(MercTeamController.loadoutPickerDebug()&&MercTeamController.loadoutPickerDebug().selectedSlotKey));
     // ── 主按钮提交 = 替换（custody 槽动词方言「确认替换」）──
     mLdSlot('13').click();
     await waitFor(function(){ return mLdList().getAttribute('data-candidate-state')==='ready'; },2000);
@@ -1802,15 +1870,20 @@ var MockHost = {
       mLdSlot('6').getAttribute('data-loadout-state')==='preset' &&
       toastHas('已锁定写入并重新同步'),
       'timeoutState='+mLdTimeoutState+', lockState='+mLdLockState+', writeDelta='+((MockHost.mercRequestCounts.loadout_withdraw||0)-mLdWdBefore));
-    // ── 解雇守卫：slot 15 损坏占位仍在 → custody_not_empty 可读报错，佣兵保留 ──
+    // ── 解雇前置守卫：slot 15 损坏占位仍在 → 解雇前本地阻断并指引前往装备调配，零无效协议 ──
+    var dismissBeforeGuard=MockHost.mercRequestCounts.dismiss||0;
     mLdPage.querySelector('.team-merc-act-dismiss').click(); await wait(10);
-    document.querySelector('.team-merc-child .workbench-modal .workbench-modal-action[data-action="confirm"]').click();
-    await wait(30);
-    assert('team-merc-loadout-dismiss','解雇被托管占位阻塞：custody_not_empty →「请先取回全部托管装备」，佣兵保留',
-      MockHost.lastDismiss && MockHost.lastDismiss.mercIndex===1 &&
-      toastHas('请先取回全部托管装备') &&
+    var mGuardModal=document.querySelector('.team-merc-child .workbench-modal');
+    var mGuardTitle=mGuardModal && mGuardModal.querySelector('.workbench-modal-title') && mGuardModal.querySelector('.workbench-modal-title').textContent;
+    var mGuardCancel=mGuardModal && mGuardModal.querySelector('.workbench-modal-action[data-action="cancel"]');
+    if(mGuardCancel) mGuardCancel.click();
+    await wait(20);
+    assert('team-merc-loadout-dismiss','解雇前置拦截托管占位：弹出指引并阻断无效解雇协议，佣兵保留',
+      mGuardTitle==='请先取回托管装备' &&
+      (MockHost.mercRequestCounts.dismiss||0)===dismissBeforeGuard &&
       mercCards().length===3 &&
-      mLdPage.getAttribute('aria-hidden')!=='true');
+      mLdPage.getAttribute('aria-hidden')!=='true',
+      'title='+mGuardTitle+', dismissDelta='+((MockHost.mercRequestCounts.dismiss||0)-dismissBeforeGuard));
     // ── 五态 empty：无候选槽位 ──
     mLdSlot('7').click();
     await waitFor(function(){ return mLdList().getAttribute('data-candidate-state')==='empty'; },2000);
@@ -2091,9 +2164,17 @@ var MockHost = {
       fPetHead.offsetHeight>0 && fPetHead.offsetHeight<=40,
       'height='+(fPetHead&&fPetHead.offsetHeight));
     var expandSlotBtn=document.querySelector('.team-pet-child .team-expand-slot');
-    assert('team-expand-cost','扩容按钮在 hover 与无障碍名称中明示 50,000 金币费用',
-      !!expandSlotBtn && expandSlotBtn.title==='花费 50,000 金币扩充一个伙伴栏位' &&
-      expandSlotBtn.getAttribute('aria-label')==='花费 50,000 金币扩充一个伙伴栏位');
+    var expandCountBefore=MockHost.petRequestCounts.expand_slot||0;
+    expandSlotBtn.click(); await wait(10);
+    var expandModal=document.querySelector('.team-pet-child .workbench-modal');
+    var expandModalTitle=expandModal && expandModal.querySelector('.workbench-modal-title') && expandModal.querySelector('.workbench-modal-title').textContent;
+    var expandCancel=expandModal && expandModal.querySelector('.workbench-modal-action[data-action="cancel"]');
+    if(expandCancel) expandCancel.click(); await wait(10);
+    assert('team-expand-cost','扩容按钮明示 5 万金费用、共用栏位并在点击时走 R2+ 确认弹窗',
+      !!expandSlotBtn && expandSlotBtn.textContent.indexOf('5万金')>=0 &&
+      expandSlotBtn.title.indexOf('50,000')>=0 && expandSlotBtn.title.indexOf('共用栏位')>=0 &&
+      expandModalTitle==='确认扩充栏位' && (MockHost.petRequestCounts.expand_slot||0)===expandCountBefore,
+      'text='+(expandSlotBtn&&expandSlotBtn.textContent)+', modal='+expandModalTitle);
     // ── 排版收紧：store 页头并条（返回钮 + 分类 tabs 同一行 chrome）──
     document.querySelector('.team-goto-store').click();
     await waitFor(function(){ return document.querySelectorAll('.team-store-tab').length===2; },2000);
@@ -2874,9 +2955,11 @@ var MockHost = {
       r2bBusyOn && r2bState.view==='store' && r2bState.busy===true &&
       r2bStatus.indexOf('操作进行中')>=0,
       'view='+r2bState.view+', busy='+r2bState.busy+', status='+r2bStatus);
-    await wait(60);   // 回包成功路径：先 endOp 再程序化 backToRoster，不被守卫误拦
-    assert('team-r2c','外审二轮 P2-2：领养成功回包后程序化 backToRoster 不被误拦（回名册）',
-      window.PetPanel.getState().view==='roster');
+    await wait(60);   // 回包成功路径：栏位未满留在 store，且 busy 已解开，手动返回名册畅通
+    var r2cStayedStore = window.PetPanel.getState().view==='store' && window.PetPanel.getState().busy===false;
+    document.querySelector('.team-back-roster').click(); await wait(20);
+    assert('team-r2c','外审二轮 P2-2：领养成功后栏位未满留商店且操作锁解除，点击「返回名册」畅通',
+      r2cStayedStore && window.PetPanel.getState().view==='roster');
     // ── R3：adopt 失败——CommitBar error 保留 + 对账 snapshot 回包补后缀；改选清除 ──
     MockHost.failAdopt=true;
     document.querySelector('.team-goto-store').click();
@@ -3500,6 +3583,44 @@ var MockHost = {
       'jkHp='+jkHpCell.textContent+', rest='+!!jkRestState+', refresh='+refreshSent+', invalid='+invalidFailClosed+', legacy='+legacyIgnored);
     Panels.close();await wait(20);
     MockHost.liveCombatOverride=null; MockHost.legacyCombatOnly=null; MockHost.snapshotUsesPetDeployState=false;
+    // Hold both refreshes while a real delete and adoption reuse the same slot, species and level.
+    MockHost.replacementFixture={record:{name:'原战宠'}};
+    MockHost.petLevels[1]=20;MockHost.petStones=250;
+    Panels.open('team',{initialTab:'pet',panelInstanceId:'panel.team.harness.level-replace'});
+    await waitFor(function(){return document.querySelector('.team-pet-card[data-slot="1"]')},2000);
+    document.querySelector('.team-pet-card[data-slot="1"]').click();
+    document.querySelector('.team-pet-detail .team-act-advance').click();
+    var oldButton=document.querySelector('.team-act-levelup-batch');
+    var beforeLevel=MockHost.petRequestCounts.level_up||0;
+    var beforeQuote=window.petQuoteVersion;
+    MockHost.holdPetSnapshotCount=4;
+    document.querySelector('.team-advance .team-act-delete').click();
+    document.querySelector('.workbench-modal-action[data-action="confirm"]').click();
+    await waitFor(function(){return MockHost.heldPetSnapshots.length===1},2000);
+    document.querySelector('.team-goto-store').click();
+    await waitFor(function(){return document.querySelector('.team-store-card')},2000);
+    document.querySelector('.team-store-card').click();
+    document.querySelector('.workbench-commit-primary').click();
+    await waitFor(function(){return MockHost.heldPetSnapshots.length>=2},2000);
+    oldButton.click();await wait(10);
+    var guarded=MockHost.petLevels[1]===20&&MockHost.petStones===250&&window.petQuoteVersion===beforeQuote+2
+      &&MockHost.replacementFixture.record.name==='新领养'&&MockHost.lastDelete.slotIndex===1&&MockHost.lastAdopt.petId===2;
+    MockHost.holdPetSnapshotCount=0;
+    MockHost.releasePetSnapshot();await wait(10);
+    while(MockHost.heldPetSnapshots.length)MockHost.releasePetSnapshot();
+    document.querySelector('.team-back-roster').click();
+    await waitFor(function(){var n=document.querySelector('.team-pet-card[data-slot="1"]');return n&&n.textContent.indexOf('新领养')>=0},2000);
+    document.querySelector('.team-pet-card[data-slot="1"]').click();
+    document.querySelector('.team-pet-detail .team-act-advance').click();
+    var freshButton=document.querySelector('.team-act-levelup-batch');
+    var beforeFresh=MockHost.petRequestCounts.level_up||0;
+    freshButton.click();
+    await waitFor(function(){return MockHost.petLevels[1]===25},2000);
+    assert('team-pet-delete-adopt-held-reads','删除后同槽同种重领，读回包延迟时旧按钮零扣石，新报价只扣一次',
+      guarded&&oldButton!==freshButton&&beforeFresh<=beforeLevel+1
+      &&MockHost.petRequestCounts.level_up===beforeFresh+1&&MockHost.petStones===30
+      &&MockHost.lastLevelUp.levelQuote.token==='q.1.20.'+window.petQuoteVersion);
+    Panels.close();MockHost.replacementFixture=null;
     var failed=results.filter(function(x){return !x.pass;}).length;
     window.__qaResult={qa:{total:results.length,passed:results.length-failed,failed:failed,results:results}};
     document.getElementById('qa').textContent=(results.length-failed)+'/'+results.length+' passed';

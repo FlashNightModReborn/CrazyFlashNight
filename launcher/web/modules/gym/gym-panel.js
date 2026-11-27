@@ -31,6 +31,7 @@
     var progressNode = null;
     var progressBar = null;
     var startButton = null;
+    var cancelButton = null;
     var noticeNode = null;
     var balanceNodes = null;
     var balanceCards = null;
@@ -370,14 +371,23 @@
                     + ' · 还差 ' + formatCount(project.cost - snapshot.balances[project.currency]),
                 state:'blocked', canCommit:false, disabled:true };
         } else {
-            model = { label:'开始训练', status:commitStatusFor(project),
-                state:'ready', canCommit:true, disabled:false };
+            var isKpoint = project.currency === 'kpoint' && Number(project.cost) > 0;
+            model = {
+                label:isKpoint ? ('开始训练 · ' + formatCount(project.cost) + ' K点') : '开始训练',
+                status:commitStatusFor(project),
+                state:'ready', canCommit:true, disabled:false
+            };
         }
         if (commitBar) {
             commitBar.update(model);
         } else if (startButton) {
             startButton.disabled = model.disabled === true || model.busy === true;
             startButton.textContent = model.label;
+        }
+        if (cancelButton) {
+            var canCancel = state === 'running' && !pendingCall && !closePending;
+            cancelButton.hidden = !canCancel;
+            cancelButton.disabled = !canCancel;
         }
         updateBalanceAttention();
         updateShellStatus();
@@ -414,7 +424,11 @@
         }
         var heading = element('h3', 'gym-detail-title', project.rewardLabel);
         var reward = element('p', 'gym-detail-reward', expectedOutcome(project));
-        var cost = element('p', 'gym-detail-cost', currencyLabel(project.currency) + ' ' + formatCount(project.cost));
+        var cost = element('p', 'gym-detail-cost');
+        var currencyBadge = element('span', 'gym-currency-badge', currencyLabel(project.currency));
+        currencyBadge.dataset.currency = project.currency;
+        var costAmount = element('span', 'gym-detail-cost-amount', ' ' + formatCount(project.cost));
+        cost.append(currencyBadge, costAmount);
         var duration = element('p', 'gym-detail-duration', '训练时长 ' + durationLabel(project.durationMs));
         var pendingSave = !!snapshot.pendingSession || session && session.phase === 'save_pending';
         var currentText = project.cap === null
@@ -686,7 +700,7 @@
     function requestGym(cmd, payload, extra) {
         if (pendingCall || closePending || !panelInstanceId || !Bridge || !Bridge.send) return false;
         var callId = 'gym.web.' + Date.now().toString(36) + '.' + (++callSequence);
-        pendingCall = {cmd:cmd, callId:callId, extra:extra || null};
+        pendingCall = {cmd:cmd, callId:callId, extra:extra !== undefined ? extra : null};
         var sent = false;
         try {
             sent = Bridge.send({
@@ -817,19 +831,22 @@
             } else setNotice('训练未开始：' + errorLabel(data.error), 'error');
         } else if (call.cmd === 'cancel') {
             if (data.success === true && data.phase === 'cancelled') {
+                clearSwitchArm();
                 session = null;
-                applySelection(call.extra);
-                if (roving && snapshot.projects[call.extra]) {
+                var targetIdx = typeof call.extra === 'number' ? call.extra : selectedIndex;
+                var switchedProject = targetIdx !== selectedIndex;
+                applySelection(targetIdx);
+                if (roving && snapshot.projects[targetIdx]) {
                     rovingGuard = true;
                     try {
-                        roving.setActive(snapshot.projects[call.extra].id,
+                        roving.setActive(snapshot.projects[targetIdx].id,
                             { focus:false, reason:'programmatic' });
                     } finally { rovingGuard = false; }
                 }
-                if (projectNodes[call.extra]) projectNodes[call.extra].focus();
-                setNotice('', 'info');
+                if (switchedProject && projectNodes[targetIdx]) projectNodes[targetIdx].focus();
+                setNotice(switchedProject ? '' : '已取消当前训练，未扣费。', 'info');
             } else {
-                setNotice('切换尚未确认：' + errorLabel(data.error), 'warning');
+                setNotice('取消尚未确认：' + errorLabel(data.error), 'warning');
             }
         } else if (call.cmd === 'status') {
             if (data.phase === 'preview' || data.phase === 'cancelled') {
@@ -870,6 +887,12 @@
         } else if (data.event === 'settled') applySettled(data);
     }
 
+    function startSelectedProject(project) {
+        if (!project || !canAfford(project) || pendingCall || closePending
+                || (session && session.phase === 'running')) return;
+        requestGym('start', {v:1, projectId:project.id}, project.id);
+    }
+
     function onStartClick() {
         if (session && session.phase === 'needs_reconcile') {
             requestGym('query', {v:1});
@@ -881,8 +904,29 @@
         }
         if (projectionPending()) { requestGym('query', {v:1, recoverProjection:true}); return; }
         var project = selectedProject();
-        if (!project || !canAfford(project) || session && session.phase === 'running') return;
-        requestGym('start', {v:1, projectId:project.id}, project.id);
+        if (!project || !canAfford(project) || (session && session.phase === 'running')) return;
+        if (project.currency === 'kpoint' && Number(project.cost) > 0 && shell && typeof shell.openModal === 'function') {
+            if (shell.hasModal && shell.hasModal()) return;
+            var expectedId = project.id;
+            shell.openModal({
+                kind:'gym-kpoint-confirm',
+                kicker:'K 点训练确认',
+                title:'确认开启 K 点训练？',
+                message:'本次「' + project.rewardLabel + '」训练完成后将消耗 ' + formatCount(project.cost) + ' K 点。',
+                detail:expectedOutcome(project) + '；中途取消不会扣费。',
+                initialFocus:'[data-action="cancel"]',
+                actions:[
+                    { id:'cancel', label:'取消', audioCue:'back' },
+                    { id:'confirm', label:'确认开始（' + formatCount(project.cost) + ' K点）', primary:true, audioCue:'activate',
+                        onSelect:function() {
+                            var live = selectedProject();
+                            if (live && live.id === expectedId) startSelectedProject(live);
+                        } }
+                ]
+            });
+            return;
+        }
+        startSelectedProject(project);
     }
 
     function attemptSelectProject(index) {
@@ -942,10 +986,17 @@
             option.setAttribute('aria-label', projectAccessibleLabel(project));
             option.dataset.projectId = project.id;
             option.dataset.rovingKey = project.id;
+            option.dataset.currency = project.currency;
 
             var name = element('span', 'gym-project-name', project.rewardLabel);
-            var summary = element('span', 'gym-project-summary', '+' + formatCount(project.rewardAmount)
-                + ' · ' + currencyLabel(project.currency) + ' ' + formatCount(project.cost));
+            var summary = element('span', 'gym-project-summary');
+            var badge = element('span', 'gym-currency-badge', currencyLabel(project.currency));
+            badge.dataset.currency = project.currency;
+            summary.append(
+                document.createTextNode('+' + formatCount(project.rewardAmount) + ' · '),
+                badge,
+                document.createTextNode(' ' + formatCount(project.cost))
+            );
             option.append(name, summary);
             option.addEventListener('click', function() {
                 if (roving) roving.setActive(project.id, { focus:false, reason:'pointer' });
@@ -1075,12 +1126,33 @@
         if (copy) copy.textContent = message;
     }
 
-    function requestClose() {
+    function requestClose(force) {
+        if (force !== true && shell && typeof shell.hasModal === 'function' && shell.hasModal()) {
+            shell.closeModal('escape');
+            return true;
+        }
         if (!panelInstanceId || typeof Bridge === 'undefined' || !Bridge || !Bridge.send) return false;
         if (projectionPending()) { setNotice('收益已保存；请先重试属性更新，再关闭面板。', 'warning'); return false; }
         if (session && (session.phase === 'settling' || session.phase === 'needs_reconcile'
                 || session.phase === 'save_pending')) {
             setNotice('本次结算尚未确认，请先核实或保存。', 'warning');
+            return false;
+        }
+        if (session && session.phase === 'running' && force !== true && shell && typeof shell.openModal === 'function') {
+            if (shell.hasModal && shell.hasModal()) return false;
+            var elapsed = Number.isSafeInteger(session.elapsedMs) ? session.elapsedMs : 0;
+            shell.openModal({
+                kind: 'gym-close-running',
+                kicker: '训练进行中',
+                title: '放弃当前训练并关闭？',
+                message: '当前训练已进行 ' + formatSeconds(elapsed) + ' 秒，关闭面板将取消本次训练。',
+                detail: '取消不会扣费，也不会获得属性或经验奖励。',
+                actions: [
+                    { id: 'cancel', label: '继续训练', primary: true, audioCue: 'back' },
+                    { id: 'confirm', label: '放弃并关闭', danger: true, audioCue: 'destructive',
+                        onSelect: function() { requestClose(true); } }
+                ]
+            });
             return false;
         }
         var sent = false;
@@ -1161,6 +1233,7 @@
         session = null;
         progressNode = null;
         startButton = null;
+        cancelButton = null;
         noticeNode = null;
         balanceNodes = null;
         debugState = { stationId:'', selectedProjectId:'', motionMounted:false };
@@ -1213,6 +1286,15 @@
         });
         var shellRoot = shell.getRoot();
         shellRoot.classList.add('gym-workbench');
+        shell.setMetric('money', '金币', formatCount(snapshot.balances.money));
+        shell.setMetric('kpoint', 'K 点', formatCount(snapshot.balances.kpoint));
+        var moneyMetric = shellRoot.querySelector('.workbench-metric[data-metric="money"]');
+        var kpointMetric = shellRoot.querySelector('.workbench-metric[data-metric="kpoint"]');
+        balanceNodes = {
+            money: moneyMetric ? moneyMetric.querySelector('b') : null,
+            kpoint: kpointMetric ? kpointMetric.querySelector('b') : null
+        };
+        balanceCards = { money: moneyMetric, kpoint: kpointMetric };
         if (typeof WorkbenchComponents !== 'undefined' && WorkbenchComponents
                 && WorkbenchComponents.HelpAction) {
             helpAction = new WorkbenchComponents.HelpAction({
@@ -1227,8 +1309,9 @@
                 }
             });
         }
-        var close = element('button', 'gym-close-button', '关闭');
+        var close = element('button', 'workbench-close-btn gym-close-button', '×');
         close.type = 'button';
+        close.setAttribute('data-header-action', 'close');
         close.setAttribute('aria-label', '关闭健身训练面板');
         close.addEventListener('click', requestClose);
         shell.addHeaderAction(close);
@@ -1282,15 +1365,6 @@
         catalog.setAttribute('aria-label', normalized.station.label + '训练目录');
         noticeNode = element('div', 'gym-preview-note');
         noticeNode.hidden = true;
-        var balances = element('div', 'gym-balances');
-        var moneyCard = buildBalance('money', snapshot.balances.money);
-        var kpointCard = buildBalance('kpoint', snapshot.balances.kpoint);
-        balances.append(moneyCard, kpointCard);
-        balanceNodes = {
-            money:moneyCard.querySelector('.gym-balance-value'),
-            kpoint:kpointCard.querySelector('.gym-balance-value')
-        };
-        balanceCards = { money:moneyCard, kpoint:kpointCard };
         var list = buildProjectList();
         confirmBar = element('div', 'gym-switch-confirm');
         confirmBar.hidden = true;
@@ -1305,10 +1379,19 @@
         detail.setAttribute('aria-live', 'polite');
         var actions = element('div', 'gym-preview-actions');
         commitStatusNode = element('span', 'gym-rule-note');
+        cancelButton = element('button', 'gym-cancel-button', '取消训练');
+        cancelButton.type = 'button';
+        cancelButton.hidden = true;
+        cancelButton.setAttribute('data-audio-cue', 'back');
+        cancelButton.addEventListener('click', function() {
+            if (!session || session.phase !== 'running' || pendingCall || closePending) return;
+            clearSwitchArm();
+            requestGym('cancel', { v:1 }, selectedIndex);
+        });
         startButton = element('button', 'gym-start-button', '开始训练');
         startButton.type = 'button';
-        actions.append(commitStatusNode, startButton);
-        catalog.append(noticeNode, balances, list, confirmBar, detail, actions);
+        actions.append(commitStatusNode, cancelButton, startButton);
+        catalog.append(noticeNode, list, confirmBar, detail, actions);
 
         shell.mountInitial(slotView('gym-motion', scene), slotView('gym-catalog', catalog));
         if (typeof WorkbenchComponents !== 'undefined' && WorkbenchComponents
@@ -1337,6 +1420,7 @@
         keyHandler = function(event) {
             if (event.key === 'Escape') {
                 event.preventDefault();
+                if (shell && shell.hasModal && shell.hasModal()) { shell.closeModal('escape'); return; }
                 if (switchArm) { clearSwitchArm(); return; }
                 requestClose();
             }

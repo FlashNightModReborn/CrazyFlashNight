@@ -999,6 +999,22 @@
     InventoryCoordinator.prototype.completeExternalSnapshots = function(operation, snapshots, callback) {
         if (!this._isActiveOperation(operation) || this._ownerCompletionStarted) return false;
         this._ownerCompletionStarted = true;
+        var bagReq = this.getRequest('背包');
+        if (bagReq && requestNeedsAuthorityProjection(bagReq)) {
+            var validFull = !!validateSnapshotBatch(snapshots, [
+                {containerId:'背包', offset:0, limit:50}
+            ], null);
+            if (!validFull) {
+                this._clearOwner(operation);
+                this._ready = false;
+                this._refreshRequired = true;
+                this._emitState();
+                if (typeof callback === 'function') callback({success:false, error:'inventory_snapshot_invalid'});
+                return true;
+            }
+            this._refreshWhileOwned(callback, operation);
+            return true;
+        }
         var valid = this._applySnapshots(snapshots, [
             {containerId:'背包', offset:0, limit:50}
         ]);

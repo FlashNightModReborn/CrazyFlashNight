@@ -98,6 +98,12 @@ async function main() {
                     global.CharacterBuildItemUse = {Controller:function() {}};
                     global.CharacterBuildStashAuthority = {create:function() {}};
                 }
+                if (deps.includes('modules/character-build/character-build-customization.js')) {
+                    global.CharacterBuildCustomization = {createForSession:function() {}};
+                }
+                if (deps.includes('modules/inventory-workbench-loadout-tuning.js')) {
+                    global.InventoryWorkbenchLoadoutTuning = {create:function() {}};
+                }
             });
         }
     };
@@ -108,7 +114,12 @@ async function main() {
     assert.strictEqual(calls.length, 1);
     assert(calls[0].includes('modules/equipment-tuning-loadout-lifecycle.js'));
     assert(calls[0].includes('modules/equipment-tuning-view.js'));
+    assert(calls[0].includes('modules/character-build/character-build-customization.js'));
+    assert(calls[0].includes('modules/character-build/character-build-stash-authority.js'));
+    assert(calls[0].includes('modules/inventory-workbench-loadout-tuning.js'));
     assert(!calls[0].includes('modules/character-build.js'));
+    assert(!calls[0].includes('modules/character-build-view.js'));
+    assert(!calls[0].includes('modules/character-appearance-preview.js'));
     await loader.loadBuild();
     assert.strictEqual(calls.length, 2);
     assert(calls[1].includes('modules/character-build/character-build-drug-layout.js'));

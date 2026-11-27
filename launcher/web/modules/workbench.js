@@ -161,11 +161,9 @@
         this._views = {};
         this._defaults = { L: null, R: null };
         this._profile = profile;
-        // slotMarkers:false 是官方 opt-out：领域自带栏位标签时可关闭 L/R marker 条
-        // （默认 true，既有消费方零影响）；关闭时 frame 的 aria-label 仍保留标签文本，
-        // root 与各 slot frame 同步投影 data-slot-markers="off"（frame 属性供 core.css
-        // 槽级单行 grid 挂钩，避免壳级 grid 选择器触发 WB129）。
-        this._slotMarkers = options.slotMarkers !== false;
+        // slotMarkers 默认关闭（仅显式 slotMarkers:true 时挂载 L/R 栏位条）；
+        // frame 的 aria-label 仍保留栏位语义，同时投影 data-slot-markers="off"。
+        this._slotMarkers = options.slotMarkers === true;
         this._root = makeElement('div', 'workbench-shell');
         this._root.setAttribute('data-workbench-version', '1');
         this._root.setAttribute('data-profile', profile);
@@ -463,41 +461,36 @@
         this._modalLayer.appendChild(backdrop);
         this._modalLayer.style.display = '';
         var activeModal = {
-            backdrop: backdrop,
-            dialog: dialog,
-            spec: spec,
-            opener: returnFocus,
-            generation: generation,
-            focusScope: null,
-            backdropHandler: null,
-            closed: false
+            backdrop: backdrop, dialog: dialog, spec: spec, opener: returnFocus,
+            generation: generation, focusScope: null, backdropHandler: null,
+            repeatKeyHandler: null, closed: false
         };
         this._activeModal = activeModal;
+        activeModal.repeatKeyHandler = function(event) {
+            if (event && event.repeat && (event.key === 'Enter' || event.key === ' ')) {
+                event.preventDefault(); event.stopPropagation();
+            }
+        };
+        dialog.addEventListener('keydown', activeModal.repeatKeyHandler, true);
         activeModal.backdropHandler = function(event) {
-            if (event.target !== backdrop || spec.closeOnBackdrop === false) return;
-            self.closeModal('backdrop');
+            if (event.target === backdrop && spec.closeOnBackdrop !== false) self.closeModal('backdrop');
         };
         backdrop.addEventListener('click', activeModal.backdropHandler);
 
-        var focusTarget = null;
-        if (spec.initialFocus && spec.initialFocus.nodeType === 1) focusTarget = spec.initialFocus;
-        else if (typeof spec.initialFocus === 'string') focusTarget = dialog.querySelector(spec.initialFocus);
+        var focusTarget = spec.initialFocus && spec.initialFocus.nodeType === 1 ? spec.initialFocus
+            : typeof spec.initialFocus === 'string' ? dialog.querySelector(spec.initialFocus) : null;
         focusTarget = focusTarget || dialog.querySelector('.workbench-modal-action.primary')
             || dialog.querySelector('.workbench-modal-action') || dialog;
         activeModal.focusScope = new FocusScope({
-            root: dialog,
-            document: document,
-            restoreFocus: false,
+            root: dialog, document: document, restoreFocus: false,
             onEscape: function() {
-                if (spec.closeOnEscape === false) return false;
-                self.closeModal('escape');
+                if (spec.closeOnEscape !== false) self.closeModal('escape');
                 return false;
             }
         });
         try {
             activeModal.focusScope.activate({
-                opener: returnFocus,
-                initialFocus: focusTarget,
+                opener: returnFocus, initialFocus: focusTarget,
                 underlay:Array.prototype.filter.call(this._root.children,
                     function(node) { return node !== self._modalLayer; })
             });
@@ -513,11 +506,9 @@
         if (!activeModal || activeModal.closed) return false;
         activeModal.closed = true;
         if (this._activeModal === activeModal) this._activeModal = null;
-        var returnFocus = activeModal.opener;
-        var firstError = null;
-        if (activeModal.backdrop && activeModal.backdropHandler) {
-            activeModal.backdrop.removeEventListener('click', activeModal.backdropHandler);
-        }
+        var returnFocus = activeModal.opener, firstError = null;
+        if (activeModal.dialog && activeModal.repeatKeyHandler) activeModal.dialog.removeEventListener('keydown', activeModal.repeatKeyHandler, true);
+        if (activeModal.backdrop && activeModal.backdropHandler) activeModal.backdrop.removeEventListener('click', activeModal.backdropHandler);
         if (activeModal.focusScope) {
             try { activeModal.focusScope.deactivate(reason || 'close', {restoreFocus:false}); }
             catch (focusError) { firstError = focusError; }
@@ -879,7 +870,11 @@
             button.type = 'button';
             button.className = 'workbench-mode-btn item-grid-mode-option';
             button.setAttribute('data-layout-mode', mode);
-            button.textContent = text;
+            button.innerHTML = (mode === 'full'
+                ? '<svg class="item-grid-mode-icon" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><rect x="1" y="2" width="12" height="4" rx=".5" fill="currentColor"/><rect x="1" y="8" width="12" height="4" rx=".5" fill="currentColor"/></svg>'
+                : '<svg class="item-grid-mode-icon" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><rect x="1" y="1" width="5" height="5" rx=".5" fill="currentColor"/><rect x="8" y="1" width="5" height="5" rx=".5" fill="currentColor"/><rect x="1" y="8" width="5" height="5" rx=".5" fill="currentColor"/><rect x="8" y="8" width="5" height="5" rx=".5" fill="currentColor"/></svg>')
+                + '<span class="item-grid-mode-text">' + text + '</span>';
+            button.title = text + '视图：' + title;
             button.setAttribute('aria-label', title);
             button.addEventListener('click', function() {
                 if (mode === currentMode) return;

@@ -117,7 +117,7 @@
     function profileMarkup(index) {
         return '<section class="character-build-stats-profile" data-stats-profile>'
             + '<div class="character-build-stats-identity">'
-            + '<span>DLS / SUBJECT PROFILE · 当前已应用构筑</span>'
+            + '<span>角色档案</span>'
             + '<div><strong data-styled-title>' + escapeHtml(rowValue(index, 'title')) + '</strong>'
             + '<b>LV.' + escapeHtml(rowValue(index, 'level')) + '</b></div>'
             + '<p>经验 ' + escapeHtml(rowValue(index, 'experience'))
@@ -156,7 +156,7 @@
            The 25/50/100 visual zones do not recreate UnitUtil speed formulas. */
         return '<section class="character-build-encumbrance" data-stats-encumbrance'
             + ' data-weight-ratio="' + escapeHtml(String(scale.ratio)) + '">'
-            + '<header><div><span>ENCUMBRANCE RESPONSE</span><h3>负重与移动响应</h3></div>'
+            + '<header><div><h3>负重与移动响应</h3></div>'
             + '<div class="character-build-encumbrance-readout">'
             + '<span>装备重量 <b>' + escapeHtml(rowValue(index, 'equipmentWeight')) + '</b></span>'
             + '<span>当前速度 <b data-load-state="' + escapeHtml(state) + '">'
@@ -176,7 +176,7 @@
             + '%</b><span>轻/中阈值 ' + escapeHtml(trimFixed(scale.light, 3))
             + 'kg；中/重阈值 ' + escapeHtml(trimFixed(scale.medium, 3))
             + 'kg；最大负重 ' + escapeHtml(trimFixed(scale.heavy, 3))
-            + 'kg。色带显示当前已应用构筑。</span></p></section>';
+            + 'kg。色带反映当前装备负重。</span></p></section>';
     }
     function relativeMagnitude(value, key) {
         return key === 'power' ? Math.log(value + 1) / Math.LN10 : value;

@@ -83,24 +83,28 @@ var CraftingInventoryOrganizer = (function() {
         _root.classList.add('kshop-workbench', 'inventory-workbench-panel');
         _root.setAttribute('data-workbench-skin', 'inventory');
         _root.setAttribute('data-workbench-owner-context', 'crafting-organizer');
+        if (Array.isArray(ownerContext.gapItems) && ownerContext.gapItems.length) {
+            var parts = ownerContext.gapItems.map(function(e) {
+                return String(e.displayName || e.name || '') + (Number(e.missing) > 0 ? ' ×' + Number(e.missing) : '');
+            }).filter(Boolean);
+            var body = parts.length ? _root.querySelector('.workbench-body') : null;
+            if (body && body.parentNode) {
+                var gapBanner = document.createElement('div');
+                gapBanner.className = 'crafting-organizer-gap-banner';
+                gapBanner.setAttribute('role', 'status');
+                gapBanner.textContent = '本次合成需要从战备箱取出：' + parts.join('、');
+                body.parentNode.insertBefore(gapBanner, body);
+            }
+        }
         _host.appendChild(_root);
-        _density = new Workbench.GridDensityController({
-            panelId:'workbench',
-            defaultMode:'compact'
-        });
+        _density = new Workbench.GridDensityController({panelId:'workbench', defaultMode:'compact'});
         _root.setAttribute('data-layout-mode', _density.mode);
-        _shell.addHeaderAction(_density.createToggle(function(mode) {
-            _root.setAttribute('data-layout-mode', mode);
-        }));
-        var returnButton = button('返回合成',
-            'workbench-mode-btn inventory-return-crafting-btn',
-            requestReturn);
+        _shell.addHeaderAction(_density.createToggle(function(mode) { _root.setAttribute('data-layout-mode', mode); }));
+        var returnButton = button('返回合成', 'workbench-mode-btn inventory-return-crafting-btn', requestReturn);
         returnButton.setAttribute('aria-label', '返回合成并重新核算原配方与份数');
         _shell.addHeaderAction(returnButton);
         _help = new WorkbenchComponents.HelpAction({shell:_shell});
-        var closeButton = button('×', 'workbench-close-btn', function() {
-            requestClose('header');
-        });
+        var closeButton = button('×', 'workbench-close-btn', function() { requestClose('header'); });
         closeButton.setAttribute('aria-label', '关闭合成工作台');
         _shell.addHeaderAction(closeButton);
 

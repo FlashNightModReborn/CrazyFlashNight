@@ -131,6 +131,12 @@ namespace CF7Launcher.Tasks
             "bag", "drug", "bag_and_drug", "material_collection",
             "information_collection", "unavailable"
         };
+        private static readonly HashSet<string> RequirementStorageKinds = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "bag", "drug", "bag_and_drug", "battlebox", "bag_and_battlebox",
+            "drug_and_battlebox", "bag_drug_and_battlebox",
+            "material_collection", "information_collection", "unavailable"
+        };
 
         private readonly PanelPendingCallTracker<PendingRequest> _pendingCalls;
         private readonly object _lock = new object();
@@ -138,6 +144,9 @@ namespace CF7Launcher.Tasks
         private Action<Action> _invokeOnUI;
         private string _writeState = "idle";
         private int _reconcileEpoch;
+        private string _reconcileCategory;
+        private int? _reconcileRecipeIndex;
+        private bool? _reconcileUseBattleBox;
         private int _previewEpoch;
         private int _materialsRequestEpoch;
         private PreviewAuthority _previewAuthority;
@@ -540,6 +549,7 @@ namespace CF7Launcher.Tasks
             }
 
             JObject flash = PanelBridge.BuildFlashCommand(action, fid, normalized);
+            if (cmd == "snapshot") flash["supportsBattleBox"] = true;
             string json = flash.ToString(Formatting.None);
             LogManager.Log(AuthorityLogFormatter.FormatAuthorityFlashCallBound(
                 "CraftingTask", callId, fid, ownerPanel, ownerPanelInstanceId,
@@ -600,13 +610,22 @@ namespace CF7Launcher.Tasks
                 definitiveWrite = entry.IsWrite && valid && IsDefinitiveWriteResponse(msg);
                 if (entry.IsWrite)
                 {
-                    if (definitiveWrite) _writeState = "idle";
-                    else EnterNeedsReconcileLocked();
+                    if (definitiveWrite)
+                    {
+                        _writeState = "idle";
+                        ClearReconcileTargetLocked();
+                    }
+                    else EnterNeedsReconcileLocked(entry);
                 }
                 else if (entry.IsReconcileProbe
                     && entry.ReconcileEpoch == _reconcileEpoch
                     && entry.WebCmd == "preview" && valid && msg.Value<bool?>("success") == true
-                    && _writeState == "needs_reconcile") _writeState = "idle";
+                    && _writeState == "needs_reconcile"
+                    && MatchesReconcileTargetLocked(entry))
+                {
+                    _writeState = "idle";
+                    ClearReconcileTargetLocked();
+                }
             }
             JObject web = valid
                 ? authority
@@ -714,7 +733,7 @@ namespace CF7Launcher.Tasks
                 && !HasExactKeys(payload, "v", "category")) return false;
             if (cmd == "preview" && !HasExactKeysWithOptional(
                     payload, new[] { "v", "category", "recipeIndex", "craftCount" },
-                    "technique")) return false;
+                    "technique", "useBattleBox")) return false;
             if (cmd == "commit" && !HasExactKeys(
                     payload, "v", "category", "expectedCraftToken")) return false;
             string category = ReadExactString(payload["category"]);
@@ -747,6 +766,12 @@ namespace CF7Launcher.Tasks
                         return false;
                     normalized["technique"] = technique;
                 }
+                if (payload["useBattleBox"] != null)
+                {
+                    if (payload["useBattleBox"].Type != JTokenType.Boolean) return false;
+                    if (payload["useBattleBox"].Value<bool>())
+                        normalized["useBattleBox"] = true;
+                }
                 return true;
             }
             if (cmd == "commit")
@@ -763,7 +788,9 @@ namespace CF7Launcher.Tasks
         {
             value = 0;
             if (token == null || token.Type != JTokenType.Integer) return false;
-            long candidate = token.Value<long>();
+            long candidate;
+            try { candidate = token.ToObject<long>(); }
+            catch { return false; }
             if (candidate < min || candidate > max) return false;
             value = (int)candidate;
             return true;
@@ -1087,8 +1114,12 @@ namespace CF7Launcher.Tasks
         {
             var recipes = msg["recipes"] as JArray;
             string gender = ReadExactString(msg["gender"]);
-            if (!HasExactResponseKeys(msg, "v", "category", "gender", "recipes",
-                    "balance", "skills", "procurement", "note")
+            var snapKeyList = new List<string> { "v", "category", "gender", "recipes",
+                "balance", "skills", "procurement", "note" };
+            if (msg["battleBoxAccessible"] != null) snapKeyList.Add("battleBoxAccessible");
+            if (!HasExactResponseKeys(msg, snapKeyList.ToArray())
+                || (msg["battleBoxAccessible"] != null
+                    && msg["battleBoxAccessible"].Type != JTokenType.Boolean)
                 || !HasProtocolVersion(msg)
                 || !MatchesSelector(msg, entry, "category")
                 || recipes == null || !IsBalance(msg["balance"] as JObject)
@@ -2183,6 +2214,8 @@ namespace CF7Launcher.Tasks
             if (msg["infrastructure"] != null) keyList.Add("infrastructure");
             // technique 同为增量投影（调酒类目调制方式回显）。
             if (msg["technique"] != null) keyList.Add("technique");
+            // useBattleBox 同为增量投影（仅在启用战备箱直扣时回显 true）。
+            if (msg["useBattleBox"] != null) keyList.Add("useBattleBox");
             if (canCommit)
             {
                 keyList.Add("craftToken");
@@ -2207,17 +2240,40 @@ namespace CF7Launcher.Tasks
             if ((msg["technique"] != null && !IsTechnique(msg["technique"]))
                     || !JToken.DeepEquals(msg["technique"], entry.NormalizedPayload["technique"]))
                 return false;
+            if ((msg["useBattleBox"] != null
+                    && (msg["useBattleBox"].Type != JTokenType.Boolean || !msg["useBattleBox"].Value<bool>()))
+                    || !JToken.DeepEquals(msg["useBattleBox"], entry.NormalizedPayload["useBattleBox"]))
+                return false;
             if (((JObject)msg["outputDelivery"]).Value<bool>("available")
                 != msg.Value<bool>("enoughSpace")) return false;
+            bool useBattleBox = msg["useBattleBox"] != null && msg["useBattleBox"].Type == JTokenType.Boolean && msg["useBattleBox"].Value<bool>();
             foreach (JToken materialToken in (JArray)msg["materials"])
             {
                 if (!IsRequirement(materialToken as JObject)) return false;
-                if (canCommit && string.Equals(ReadExactString(materialToken["storageKind"]),
-                    "unavailable", StringComparison.Ordinal)) return false;
+                string sk = ReadExactString(materialToken["storageKind"]);
+                if (canCommit && string.Equals(sk, "unavailable", StringComparison.Ordinal)) return false;
+                if (!useBattleBox && (string.Equals(sk, "battlebox", StringComparison.Ordinal)
+                    || string.Equals(sk, "bag_and_battlebox", StringComparison.Ordinal)
+                    || string.Equals(sk, "drug_and_battlebox", StringComparison.Ordinal)
+                    || string.Equals(sk, "bag_drug_and_battlebox", StringComparison.Ordinal))) return false;
             }
             bool batchEligible = msg.Value<bool>("batchEligible");
             if (!batchEligible && (craftCount != 1 || maxCraftCount > 1)) return false;
+            bool infraAllowed = true;
+            if (msg["infrastructure"] is JArray infraRows)
+            {
+                foreach (JToken infraToken in infraRows)
+                {
+                    if (infraToken is JObject infraObj && infraObj["met"] != null
+                        && infraObj["met"].Type == JTokenType.Boolean && !infraObj.Value<bool>("met"))
+                    {
+                        infraAllowed = false;
+                        break;
+                    }
+                }
+            }
             bool allConditions = msg.Value<bool>("levelAllowed")
+                && infraAllowed
                 && msg.Value<bool>("enoughMaterials")
                 && msg.Value<bool>("enoughMoney")
                 && msg.Value<bool>("enoughKpoints")
@@ -2352,7 +2408,7 @@ namespace CF7Launcher.Tasks
                 && IsNonNegativeNumber(requirement["owned"])
                 && IsNonNegativeNumber(requirement["maxEnhancement"])
                 && IsSafeOptionalText(ReadExactString(requirement["tier"]), 128)
-                && StorageKinds.Contains(ReadExactString(requirement["storageKind"]))
+                && RequirementStorageKinds.Contains(ReadExactString(requirement["storageKind"]))
                 && IsCraftingSources(requirement["craftingSources"] as JArray)
                 && ProcurementProjectionValidator.IsDemand(
                     requirement["procurement"] as JObject,
@@ -2405,7 +2461,7 @@ namespace CF7Launcher.Tasks
                     || mode == "merge" && itemKind == "stack")
                 && physicalSlot >= 0 && physicalSlot < 50;
             if (storageKind == "drug") return itemKind == "stack"
-                && mode == "merge" && physicalSlot >= 0;
+                && (mode == "merge" || mode == "insert") && physicalSlot >= 0;
             if (storageKind == "material_collection" || storageKind == "information_collection")
                 return itemKind == "stack" && mode == "increment" && physicalSlot == -1;
             return false;
@@ -2418,11 +2474,14 @@ namespace CF7Launcher.Tasks
             return plan != null
                 && HasExactKeysWithOptional(plan, new[] { "category", "recipeIndex",
                     "craftCount", "output", "materials", "outputDelivery",
-                    "outputPrototype", "cost" }, "infrastructure", "technique")
+                    "outputPrototype", "cost" }, "infrastructure", "technique", "useBattleBox")
                 && (plan["infrastructure"] == null || IsInfrastructureRows(plan["infrastructure"]))
                 && JToken.DeepEquals(plan["infrastructure"], preview["infrastructure"])
                 && (plan["technique"] == null || IsTechnique(plan["technique"]))
                 && JToken.DeepEquals(plan["technique"], preview["technique"])
+                && (plan["useBattleBox"] == null
+                    || (plan["useBattleBox"].Type == JTokenType.Boolean && plan["useBattleBox"].Value<bool>()))
+                && JToken.DeepEquals(plan["useBattleBox"], preview["useBattleBox"])
                 && TryReadInteger(plan["recipeIndex"], 0, 999, out recipeIndex)
                 && TryReadInteger(plan["craftCount"], 1, 99, out craftCount)
                 && string.Equals(ReadExactString(plan["category"]),
@@ -2729,7 +2788,7 @@ namespace CF7Launcher.Tasks
             lock (_lock)
             {
                 _navigationGeneration++;
-                if (entry.IsWrite) EnterNeedsReconcileLocked();
+                if (entry.IsWrite) EnterNeedsReconcileLocked(entry);
             }
             if (reason == PanelPendingCallEndReason.Cleared) return;
             RespondError(
@@ -2741,10 +2800,43 @@ namespace CF7Launcher.Tasks
                 entry.IsWrite);
         }
 
-        private void EnterNeedsReconcileLocked()
+        private void ClearReconcileTargetLocked()
+        {
+            _reconcileCategory = null;
+            _reconcileRecipeIndex = null;
+            _reconcileUseBattleBox = null;
+        }
+
+        private void EnterNeedsReconcileLocked(PendingRequest writeEntry)
         {
             _writeState = "needs_reconcile";
             _reconcileEpoch++;
+            ClearReconcileTargetLocked();
+            if (writeEntry != null && writeEntry.ExpectedPreview != null)
+            {
+                _reconcileCategory = writeEntry.ExpectedPreview.Category;
+                _reconcileRecipeIndex = writeEntry.ExpectedPreview.RecipeIndex;
+                JToken bbTok = writeEntry.ExpectedPreview.AcceptedPlan?["useBattleBox"];
+                _reconcileUseBattleBox = bbTok != null && bbTok.Type == JTokenType.Boolean && bbTok.Value<bool>();
+            }
+        }
+
+        private bool MatchesReconcileTargetLocked(PendingRequest previewEntry)
+        {
+            if (_reconcileCategory == null) return true;
+            if (previewEntry == null || previewEntry.NormalizedPayload == null) return false;
+            string cat = ReadExactString(previewEntry.NormalizedPayload["category"]);
+            if (!string.Equals(cat, _reconcileCategory, StringComparison.Ordinal)) return false;
+            int idx;
+            if (!TryReadInteger(previewEntry.NormalizedPayload["recipeIndex"], 0, 999, out idx)
+                || !_reconcileRecipeIndex.HasValue || idx != _reconcileRecipeIndex.Value) return false;
+            if (_reconcileUseBattleBox == true)
+            {
+                JToken bbTok = previewEntry.NormalizedPayload["useBattleBox"];
+                bool bb = bbTok != null && bbTok.Type == JTokenType.Boolean && bbTok.Value<bool>();
+                if (!bb) return false;
+            }
+            return true;
         }
 
         private void RejectAndRemember(string callId, string cmd,

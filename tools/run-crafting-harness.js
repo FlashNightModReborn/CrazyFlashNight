@@ -14,6 +14,8 @@ const INVENTORY_WORKBENCH_MODULES=[
   'inventory-workbench-config.js','inventory-workbench-preparation-menu.js',
   'inventory-workbench-navigation.js','inventory-workbench-header.js',
   'inventory-workbench-quick-transfer.js','inventory-workbench-owned-view.js',
+  'inventory-workbench-stash-source.js','inventory-workbench-storage-source.js',
+  'inventory-workbench-storage-controls.js',
   'inventory-storage-workbench.js',
   'crafting-inventory-organizer.js'
 ];
@@ -205,7 +207,7 @@ function audit(){
       ||!panel.includes('Superseded read replies are deliberately silent')
       ||!detailPresenter.includes('new WorkbenchComponents.QuantityControl')
       ||!detailPresenter.includes('new WorkbenchComponents.CommitBar')
-      ||!detailPresenter.includes('max:99')||!detailPresenter.includes('sliderMax:99')
+      ||!detailPresenter.includes('max:99')||!detailPresenter.includes('sliderMax:')
       ||!detailPresenter.includes('Presenter.prototype.destroy')
       ||detailPresenter.includes('craftToken')||detailPresenter.includes('expectedCraftToken')) {
     throw new Error('stable detail presenter or latest-wins quantity protocol missing');
@@ -283,7 +285,7 @@ function audit(){
       ||!css.includes('.crafting-material-card')||!css.includes('[data-profile="archive-reference"]')
       ||!panel.includes("profile:_mode === 'materials' ? 'archive-reference' : 'catalog-decision'"))
     throw new Error('lazy registry, profile mapping, or crafting skin missing');
-  if(!css.includes('.item-filter-catalog .item-filter-option')||!css.includes('grid-template-columns:minmax(0,1.55fr) 28px minmax(330px,.95fr)')||!css.includes('.crafting-recipe-card.craftable'))throw new Error('shared filter, 60:40 layout, or craftable marker skin missing');
+  if(!css.includes('.item-filter-catalog .item-filter-option')||!css.includes('grid-template-columns:minmax(0,1.55fr) minmax(350px,.95fr)')||!css.includes('.crafting-recipe-card.craftable'))throw new Error('shared filter, 60:40 layout, or craftable marker skin missing');
   if(!css.includes('.crafting-commit-bar')||!css.includes('flex:1 1 auto')
       ||!css.includes('.crafting-detail-view [data-title]:focus-visible::after')
       ||!css.includes('font:11px/1.25 "Microsoft YaHei",sans-serif')
@@ -317,7 +319,7 @@ function audit(){
       ||css.includes('.crafting-material-shop-portrait {')) {
     throw new Error('material status, nested crafting route, single-layer shop portrait, project tooltip, or redraw cleanup contract missing');
   }
-  if(!css.includes('grid-template-columns:minmax(0,44fr) 28px minmax(360px,56fr)')
+  if(!css.includes('grid-template-columns:minmax(0,44fr) minmax(360px,56fr)')
       ||!css.includes('grid-template-rows:minmax(0,1fr)')
       ||!css.includes('grid-auto-rows:minmax(58px,auto)')
       ||!css.includes('.crafting-panel .crafting-material-card')
@@ -404,7 +406,7 @@ async function run(){
       const procurement=[];
       for(const viewport of viewports){
         const result=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-procurement');
-        if(result.total!==17)throw new Error('PG-CRAFTING-PROCUREMENT must contain exactly 17 checks, got '+result.total);
+        if(result.total!==18)throw new Error('PG-CRAFTING-PROCUREMENT must contain exactly 18 checks, got '+result.total);
         procurement.push(result);
       }
       output={mode:'procurement-only',executablePath,viewports,procurement,
@@ -454,7 +456,7 @@ async function run(){
       const baseline=[],coverage=[],fault=[],identity=[],legacy=[],sessionLock=[],recipeJump=[],materialShop=[],infrastructure=[],procurement=[];
       for(const viewport of viewports){
         const result=await runViewport(browser,serverInstance,viewport);
-        if(result.total!==150)throw new Error('baseline crafting harness must preserve all 150 checks, got '+result.total);
+        if(result.total!==153)throw new Error('baseline crafting harness must preserve all 153 checks, got '+result.total);
         baseline.push(result);
         const coverageResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-craft-current-coverage');
         if(coverageResult.total!==15)throw new Error('PG-CRAFT-CURRENT-COVERAGE must contain exactly 15 checks, got '+coverageResult.total);
@@ -481,7 +483,7 @@ async function run(){
         if(infrastructureResult.total!==9)throw new Error('PG-MATERIAL-INFRASTRUCTURE must contain exactly 9 checks, got '+infrastructureResult.total);
         infrastructure.push(infrastructureResult);
         const procurementResult=await runViewport(browser,serverInstance,viewport,'?scenario=pg-crafting-procurement');
-        if(procurementResult.total!==17)throw new Error('PG-CRAFTING-PROCUREMENT must contain exactly 17 checks, got '+procurementResult.total);
+        if(procurementResult.total!==18)throw new Error('PG-CRAFTING-PROCUREMENT must contain exactly 18 checks, got '+procurementResult.total);
         procurement.push(procurementResult);
       }
       output={mode:'full',executablePath,viewports,baseline,coverage,fault,identity,legacy,sessionLock,recipeJump,materialShop,infrastructure,procurement,

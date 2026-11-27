@@ -1087,17 +1087,29 @@ async function runViewport(browser, port, viewport) {
             JSON.stringify(candidateArrow));
         await page.click('.character-build-candidate[data-roving-key="candidate-2"]');
         await page.click('.character-build-candidate[data-roving-key="candidate-2"]');
-        const pointerDeselection = await page.evaluate(() => ({
+        const pointerRepeated = await page.evaluate(() => ({
             state:CharacterBuildHarness.view.debugState(),
             selected:document.querySelectorAll(
                 '.character-build-candidate[aria-selected="true"]').length,
             overlayHidden:document.querySelector(
                 '[data-layer="candidate-preview"]').hidden
         }));
-        check(pointerDeselection.state.selectedCandidateKey === ''
-            && pointerDeselection.selected === 0 && pointerDeselection.overlayHidden,
-            label + ' repeated pointer activation clears a legal empty preview state',
-            JSON.stringify(pointerDeselection));
+        check(pointerRepeated.state.selectedCandidateKey === 'candidate-2'
+            && pointerRepeated.selected === 1 && !pointerRepeated.overlayHidden,
+            label + ' repeated pointer click keeps the candidate selected instead of accidentally deselecting',
+            JSON.stringify(pointerRepeated));
+        await page.keyboard.press('Space');
+        const spaceClear = await page.evaluate(() => ({
+            state:CharacterBuildHarness.view.debugState(),
+            selected:document.querySelectorAll(
+                '.character-build-candidate[aria-selected="true"]').length,
+            overlayHidden:document.querySelector(
+                '[data-layer="candidate-preview"]').hidden
+        }));
+        check(spaceClear.state.selectedCandidateKey === ''
+            && spaceClear.selected === 0 && spaceClear.overlayHidden,
+            label + ' Space clears the selected candidate preview cleanly',
+            JSON.stringify(spaceClear));
         await page.keyboard.press('Space');
         const explicitSelection = await page.evaluate(() => ({
             state:CharacterBuildHarness.view.debugState(),

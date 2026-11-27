@@ -94,10 +94,15 @@
         var footer = document.createElement('div');
         footer.className = 'kshop-cart-footer workbench-commit-bar';
         footer.innerHTML = '<span class="workbench-commit-summary">预计结算 <b id="kshop-cart-total">0</b> K</span>'
-            + '<button class="kshop-checkout-btn" id="kshop-checkout" data-audio-cue="activate">核对并结账</button>';
+            + '<span class="kshop-cart-footer-actions">'
+            + '<button type="button" class="kshop-checkout-detail-btn" id="kshop-checkout" data-audio-cue="open">核对明细</button>'
+            + '<button type="button" class="kshop-checkout-btn" id="kshop-quick-checkout" data-audio-cue="activate">立即结账</button>'
+            + '</span>';
         var cartTotal = footer.querySelector('#kshop-cart-total');
         var checkoutButton = footer.querySelector('#kshop-checkout');
+        var quickCheckoutButton = footer.querySelector('#kshop-quick-checkout');
         checkoutButton.addEventListener('click', options.onCheckout);
+        quickCheckoutButton.addEventListener('click', options.onQuickCheckout || options.onCheckout);
         cartGridView.root.appendChild(footer);
 
         var purchasedAdapter = new Workbench.ContainerViewAdapter({
@@ -142,7 +147,8 @@
             dropTarget: dropTarget,
             dropLabel: dropTarget.querySelector('small'),
             cartTotal: cartTotal,
-            checkoutButton: checkoutButton
+            checkoutButton: checkoutButton,
+            quickCheckoutButton: quickCheckoutButton
         };
     }
 
@@ -306,7 +312,7 @@
         if (!status && preview && preview.blockingError === 'inventory_full') status = '背包容量不足，请先到“战备箱”整理空间。';
         if (!status && preview && preview.blockingError === 'destination_full') status = '对应收集项已达持有上限，请减少数量。';
         if (!status && preview && preview.blockingError) status = '当前订单暂不可提交，请核对商品或重新核算。';
-        if (!status && preview) status = '权威核算完成，可直接交付到对应物品栏。';
+        if (!status && preview) status = '订单已核对，确认后直接发放到对应物品栏。';
         this._status.textContent = status;
         this._status.classList.toggle('error', !!this._errorMessage || !!invalid || !!(preview && preview.blockingError));
         this._commit.disabled = invalid > 0 || this._loading || !preview || !preview.canCommit || !options.canCheckout();
@@ -451,5 +457,28 @@
         return this.secondary.destroy();
     };
 
-    return { createCatalog: createCatalog, createOrder: createOrder, SettlementPage: SettlementPage };
+    function quickCheckoutModalSpec(resp, onConfirm, onDetail) {
+        var total = Number(resp && resp.total || 0);
+        var balance = Number(resp && resp.balance || 0);
+        var projected = Number(resp && resp.projectedBalance || 0);
+        return {
+            kind:'kshop-quick-checkout',
+            title:'确认支付 ' + total.toLocaleString() + ' K 点？',
+            message:'当前余额 ' + balance.toLocaleString() + ' K，结账后预计结余 ' + projected.toLocaleString() + ' K。',
+            detail:'确认后整单扣款并直接发放到对应物品栏。',
+            initialFocus:'[data-action="cancel"]',
+            actions:[
+                {id:'detail', label:'核对明细', audioCue:'open', onSelect:onDetail},
+                {id:'cancel', label:'取消', audioCue:'back'},
+                {id:'confirm', label:'确认支付', primary:true, audioCue:'activate', onSelect:onConfirm}
+            ]
+        };
+    }
+
+    return {
+        createCatalog: createCatalog,
+        createOrder: createOrder,
+        SettlementPage: SettlementPage,
+        quickCheckoutModalSpec: quickCheckoutModalSpec
+    };
 });

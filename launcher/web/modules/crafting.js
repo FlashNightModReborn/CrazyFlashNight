@@ -5,8 +5,8 @@ var CraftingPanel = (function() {
     var _mode = 'recipes', _materials = null, _materialRequestSeq = 0;
     var _materialSnapshotIntentGeneration = 0, _materialSessionVersion = 0,
         _materialSnapshotId = '';
-    var _category = '', _snapshot = null, _preview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
-    var _busy = false, _previewBusy = false, _planBusy = false,
+    var _category = '', _snapshot = null, _preview = null, _stalePreview = null, _previewCheckpoint = null, _selectedIndex = -1, _craftCount = 1;
+    var _busy = false, _previewBusy = false, _planBusy = false, _queuedCommitIntent = null,
         _organizerBusy = false, _organizerMounted = false;
     var _planFocusRecipeId = '', _planFocusAction = '', _planFeedback = null, _commitError = '';
     var _needsReconcile = false, _needsRefresh = false, _reconcileEpoch = 0, _generation = 0;
@@ -14,10 +14,11 @@ var CraftingPanel = (function() {
     var _scaleHandle = null, _retryButton = null, _organizerButton = null, _craftableToggle = null, _tooltipCache = {};
     var _inspector = null, _tooltipScope = null;
     var _filterTree = null, _filterNavigator = null, _filterPath = [];
-    var _craftableOnly = false;
+    var _craftableOnly = false, _useBattleBox = false;
     var _densityController = null, _helpAction = null, _densityToggle = null;
     var _returnCharacterBuildButton = null, _returnNavigationTimer = null;
     var _returnMaterialsButton = null, _materialRecipeReturn = null;
+    var _nestedReturnStack = [], _nestedReturnButton = null, _switchModeButton = null, _recipeReturnContext = null;
     var _panelInstanceId = '', _canReturnCharacterBuild = false;
     var _cookingActive = false, _chemistryActive = false, _communeActive = false,
         _bartendingActive = false, _armoryActive = false, _ironspearActive = false;
@@ -36,6 +37,9 @@ var CraftingPanel = (function() {
         'modules/inventory-workbench-config.js',
         'modules/inventory-workbench-quick-transfer.js',
         'modules/inventory-workbench-owned-view.js',
+        'modules/inventory-workbench-stash-source.js',
+        'modules/inventory-workbench-storage-source.js',
+        'modules/inventory-workbench-storage-controls.js',
         'modules/inventory-storage-workbench.js',
         'modules/crafting-inventory-organizer.js'
     ];
@@ -73,7 +77,7 @@ var CraftingPanel = (function() {
         _shell = new Workbench.DualPaneShell({
             profile:_mode === 'materials' ? 'archive-reference' : 'catalog-decision',
             title:_mode === 'materials' ? '材料档案' : (_category || '合成工作台'),
-            subtitle:_mode === 'materials' ? '来源与用途' : '权威预览',
+            subtitle:'',
             status:'同步中',
             leftLabel:_mode === 'materials' ? '材料目录' : '配方目录',
             rightLabel:_mode === 'materials' ? '来源与用途' : '合成详情',
@@ -115,6 +119,37 @@ var CraftingPanel = (function() {
             _returnMaterialsButton.addEventListener('click', returnToMaterials);
             _shell.addHeaderAction(_returnMaterialsButton);
         }
+        _nestedReturnButton = null;
+        if (_mode === 'recipes') {
+            _nestedReturnButton = document.createElement('button');
+            _nestedReturnButton.type = 'button';
+            _nestedReturnButton.className = 'workbench-mode-btn crafting-nested-return-btn';
+            _nestedReturnButton.setAttribute('data-audio-cue', 'back');
+            _nestedReturnButton.hidden = !_nestedReturnStack.length;
+            _nestedReturnButton.addEventListener('click', returnFromNestedRecipe);
+            _shell.addHeaderAction(_nestedReturnButton);
+            updateNestedReturnButton();
+        }
+        _switchModeButton = null;
+        if (_mode === 'recipes' && !_materialRecipeReturn) {
+            _switchModeButton = document.createElement('button');
+            _switchModeButton.type = 'button';
+            _switchModeButton.className = 'workbench-mode-btn crafting-switch-mode-btn';
+            _switchModeButton.textContent = '材料档案';
+            _switchModeButton.setAttribute('aria-label', '切换到材料档案查询来源与用途');
+            _switchModeButton.setAttribute('data-audio-cue', 'navigate');
+            _switchModeButton.addEventListener('click', openMaterialsFromRecipes);
+            _shell.addHeaderAction(_switchModeButton);
+        } else if (_mode === 'materials' && _recipeReturnContext) {
+            _switchModeButton = document.createElement('button');
+            _switchModeButton.type = 'button';
+            _switchModeButton.className = 'workbench-mode-btn crafting-switch-mode-btn';
+            _switchModeButton.textContent = '← 返回合成';
+            _switchModeButton.setAttribute('aria-label', '返回之前的合成配方并保留筛选状态');
+            _switchModeButton.setAttribute('data-audio-cue', 'back');
+            _switchModeButton.addEventListener('click', returnToSavedRecipes);
+            _shell.addHeaderAction(_switchModeButton);
+        }
         _densityToggle = null;
         _densityController = new Workbench.GridDensityController({
             panelId:_mode === 'materials' ? 'crafting-materials' : 'crafting-recipes',
@@ -145,14 +180,14 @@ var CraftingPanel = (function() {
             kind:'crafting-materials-help',
             ariaLabel:'查看材料档案帮助',
             title:'材料档案帮助',
-            message:'浏览与筛选\n• 完整档案可沿“类型”或“用途”树逐层浏览；一种材料可能出现在多条路径，但结果只显示一张卡。\n• 搜索框、“已持有”和“有用途”会与当前树路径组合筛选；排序可切换档案顺序、持有数、名称或用途数，新开档案恢复档案顺序。\n• “持有种类”统计整个可信目录，不随搜索、筛选或排序变化；旧版兼容视图会持续提示并停用分类树与排序。\n• 紧凑模式以图标为主，完整模式同时显示类型、持有量、来源数和用途数。',
-            detail:'查看来源与用途\n• 右侧把 authored“档案摘要”和随存档变化的“已发现来源”分开显示；尚未发现不等于没有来源。\n• 选择左侧材料后，结构化来源按档案顺序列出掉落敌人、关卡、任务或商店；同一敌人或关卡的每条掉落配置都会单独显示。\n• 敌人显示名义概率，关卡显示默认分支基准概率，两者都不是本次实际概率。\n• “会用在哪里”列出引用该材料的合成项目及每份需求。方向键在网格移动；Esc 会先关闭排序菜单、清空已聚焦的搜索，再在分类树内返回一级。',
+            message:'浏览与筛选\n• 完整档案可沿“类型”或“用途”树逐层浏览；一种材料可能出现在多条路径，但结果只显示一张卡。\n• 搜索框、“已持有”和“有用途”会与当前树路径组合筛选；排序可切换档案顺序、持有数、名称或用途数，新开档案恢复档案顺序。\n• “持有种类”统计整个材料目录，不随搜索、筛选或排序变化。\n• 紧凑模式以图标为主，完整模式同时显示类型、持有量、来源数和用途数。',
+            detail:'查看来源与用途\n• 右侧分开显示“档案摘要”和随存档变化的“已发现来源”；尚未发现不等于没有来源。\n• 选择左侧材料后，按档案顺序列出掉落敌人、关卡、任务或商店；同一敌人或关卡的每条掉落配置都会单独显示。\n• 敌人显示名义概率，关卡显示默认分支基准概率，两者都不是本次实际概率。\n• “会用在哪里”列出引用该材料的合成项目及每份需求。方向键在网格移动；Esc 会先关闭排序菜单、清空已聚焦的搜索，再在分类树内返回一级。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'back'}]
         } : {
             kind:'crafting-help',
             ariaLabel:'查看合成工作台帮助',
             title:'合成工作台帮助',
-            message:'选择配方后，右侧会显示权威材料、费用、容量与产物预览。批量配方可用 − / +、“最大”、数字输入或滑杆选择 1–99 份；99 是单次原子提交的协议保护上限，不是物品持有上限。核算期间仍可继续调整，提交会等最新份数核算完成。',
+            message:'选择配方后，右侧会显示材料、费用、容量与产物预览。批量配方可用 − / +、“最大”、数字输入或滑杆选择 1–99 份（单次最多 99 份）。计算期间仍可继续调整，提交会等最新份数核算完成。',
             detail:'完整模式显示当前总持有量与位置明细；紧凑模式固定每行 10 个图标，适合同屏浏览成套配方。待合成标记两侧的 − / + 可设置 0–99 件，金币商店与 K 点商城会按标记数量高亮仍需购买的材料；进行中任务的提交/持有物资也会纳入高亮。缺失材料旁的扳手可前往它的合成配方：同分类直接定位，跨分类会先读取并核对目标配方。\n数字输入按 Enter 确认、按 Esc 撤回未确认文字。滑杆可用方向键逐份调整，Shift + 方向键每次 5 份，Page Up / Page Down 跨数量级，Home / End 到两端。“只看可合成”只筛选当前目录；“背包 / 战备箱”返回后会重新核算原配方。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'back'}]
         }});
@@ -237,6 +272,8 @@ var CraftingPanel = (function() {
             renderMaterialRow:renderMaterialRow,
             onInspect:openInspector,
             onQuantityChange:setCraftCount,
+            onQuantityDraftChange:onQuantityDraftChange,
+            onToggleBattleBox:toggleUseBattleBox,
             onPlanToggle:toggleSelectedPlan,
             onPlanAdjust:adjustSelectedPlan,
             onCommit:commitCraft,
@@ -346,11 +383,62 @@ var CraftingPanel = (function() {
         applyCatalogFilter();
     }
 
+    function battleBoxAccessible() {
+        return !!(_snapshot && _snapshot.battleBoxAccessible === true);
+    }
+
+    function hasPendingQuantityDraft() {
+        return !!(_detailPresenter && typeof _detailPresenter.hasPendingQuantityDraft === 'function'
+            && _detailPresenter.hasPendingQuantityDraft());
+    }
+
+    function onQuantityDraftChange() {
+        if (_queuedCommitIntent) _queuedCommitIntent = null;
+        renderDetail();
+        refreshControls();
+    }
+
+    function queuedCommitMatchesCurrent() {
+        return !!_queuedCommitIntent
+            && _queuedCommitIntent.generation === _generation
+            && _queuedCommitIntent.category === _category
+            && _queuedCommitIntent.recipeIndex === _selectedIndex
+            && _queuedCommitIntent.craftCount === _craftCount
+            && !!_queuedCommitIntent.useBattleBox === (_useBattleBox && battleBoxAccessible());
+    }
+
+    function canQueueCommitNow(selected) {
+        return !_busy && _previewBusy && !_planBusy && !_organizerBusy
+            && !_procurementNavigation && !_nestedRecipeNavigation
+            && !_needsReconcile && !_needsRefresh && !!selected
+            && !hasPendingQuantityDraft()
+            && !queuedCommitMatchesCurrent()
+            && !!(_stalePreview && Number(_stalePreview.recipeIndex) === _selectedIndex
+                && String(_stalePreview.category || '') === _category
+                && (_stalePreview.useBattleBox === true) === (_useBattleBox && battleBoxAccessible()));
+    }
+
+    function toggleUseBattleBox() {
+        if (_busy || _planBusy || _organizerBusy || _procurementNavigation
+                || _nestedRecipeNavigation || _needsReconcile || _needsRefresh
+                || !battleBoxAccessible()) return false;
+        _useBattleBox = !_useBattleBox;
+        _commitError = '';
+        _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
+        clearPreviewCheckpoint();
+        cue('toggle');
+        renderDetail();
+        requestPreview();
+        return true;
+    }
+
     function applyCatalogFilter() {
         var visible = filteredRecipes(_snapshot && _snapshot.recipes ? _snapshot.recipes : []);
         if (!visible.some(function(recipe) { return Number(recipe.recipeIndex) === _selectedIndex; })) {
             _selectedIndex = visible.length ? Number(visible[0].recipeIndex) : -1;
-            _craftCount = 1; _preview = null; clearPreviewCheckpoint();
+            _craftCount = 1; _preview = null; _stalePreview = null; _queuedCommitIntent = null; clearPreviewCheckpoint();
             renderCatalog({preserveScroll:false}); renderDetail({preserveScroll:false});
             if (_selectedIndex >= 0) requestPreview(); else refreshControls();
             return;
@@ -360,8 +448,9 @@ var CraftingPanel = (function() {
 
     function selectRecipe(recipeIndex) {
         if (_busy || _planBusy || _procurementNavigation || _nestedRecipeNavigation
-                || recipeIndex < 0) return;
-        _selectedIndex = recipeIndex; _craftCount = 1; _preview = null; _commitError = ''; clearPreviewCheckpoint();
+                || _needsReconcile || recipeIndex < 0) return;
+        _queuedCommitIntent = null;
+        _selectedIndex = recipeIndex; _craftCount = 1; _preview = null; _stalePreview = null; _commitError = ''; clearPreviewCheckpoint();
         if (_catalogRenderer) _catalogRenderer.setSelectedKey(String(recipeIndex));
         cue('select');
         renderDetail({preserveScroll:false}); requestPreview();
@@ -374,6 +463,7 @@ var CraftingPanel = (function() {
             category:_category,
             recipeIndex:_selectedIndex,
             craftCount:_craftCount,
+            useBattleBox:_useBattleBox && battleBoxAccessible(),
             revision:authorityRevision(_snapshot),
             reconcileEpoch:_reconcileEpoch,
             isReconcileProbe:_needsReconcile
@@ -382,6 +472,8 @@ var CraftingPanel = (function() {
             // The latest desired value returned to the in-flight intent, so a
             // superseded queued value must not run afterward and invalidate it.
             _previewQueued = null;
+            renderDetail();
+            refreshControls();
             return true;
         }
         if (_previewQueued && samePreviewIntent(_previewQueued, intent)) return true;
@@ -398,11 +490,13 @@ var CraftingPanel = (function() {
         var intent = _previewQueued;
         _previewQueued = null;
         _previewFlight = intent;
-        request('preview', {
+        var previewPayload = {
             category:intent.category,
             recipeIndex:intent.recipeIndex,
             craftCount:intent.craftCount
-        }, function(response) {
+        };
+        if (intent.useBattleBox) previewPayload.useBattleBox = true;
+        request('preview', previewPayload, function(response) {
             completePreviewIntent(intent, response);
         });
         return true;
@@ -415,6 +509,7 @@ var CraftingPanel = (function() {
             && intent.category === _category
             && intent.recipeIndex === _selectedIndex
             && intent.craftCount === _craftCount
+            && !!intent.useBattleBox === (_useBattleBox && battleBoxAccessible())
             && intent.reconcileEpoch === _reconcileEpoch
             && (!_needsReconcile || intent.isReconcileProbe)
             && sameIntentRevision(intent.revision, authorityRevision(_snapshot));
@@ -423,10 +518,12 @@ var CraftingPanel = (function() {
         // Superseded read replies are deliberately silent: they cannot change
         // the checkpoint, controls, focus, scroll, balance or player messaging.
         if (!isCurrent || !exactResponse) {
+            if (!queuedCommitMatchesCurrent()) _queuedCommitIntent = null;
             if (_previewQueued) {
                 dispatchPreviewIntent();
             } else {
                 _previewBusy = false;
+                _queuedCommitIntent = null;
                 renderDetail();
                 refreshControls();
             }
@@ -437,21 +534,27 @@ var CraftingPanel = (function() {
         var retryRestoredPreview = false;
         if (response.success) {
             _preview = response;
+            _stalePreview = response;
             rememberPreview(response, intent.recipeIndex, intent.craftCount);
             _needsReconcile = false;
             _needsRefresh = false;
             applyBalance(response.balance);
         } else if (requiresReconcile(response)) {
             _preview = null;
+            _stalePreview = null;
+            _queuedCommitIntent = null;
             clearPreviewCheckpoint();
             enterNeedsReconcile();
             toast(errorMessage(response.error));
         } else if (requiresAuthorityRefresh(response)) {
             _preview = null;
+            _stalePreview = null;
+            _queuedCommitIntent = null;
             clearPreviewCheckpoint();
             _needsRefresh = true;
             toast(errorMessage(response.error));
         } else {
+            _queuedCommitIntent = null;
             if (!_needsReconcile && !restorePreviewCheckpoint(intent.recipeIndex)) {
                 _preview = null;
             } else if (_preview && !previewMatchesCurrent()
@@ -460,6 +563,16 @@ var CraftingPanel = (function() {
                 retryRestoredPreview = true;
             }
             toast(errorMessage(response.error));
+        }
+        var shouldAutoCommit = false;
+        if (!retryRestoredPreview && !_previewQueued && !_needsReconcile && !_needsRefresh) {
+            if (queuedCommitMatchesCurrent() && !hasPendingQuantityDraft() && response.success
+                    && response.canCommit === true && response.craftToken) {
+                shouldAutoCommit = true;
+            }
+            _queuedCommitIntent = null;
+        } else if (retryRestoredPreview || _needsReconcile || _needsRefresh || !response.success) {
+            _queuedCommitIntent = null;
         }
         renderDetail();
         refreshControls();
@@ -471,6 +584,8 @@ var CraftingPanel = (function() {
         } else if (isCurrent && exactResponse && !response.success
                 && requiresAuthorityRefresh(response)) {
             refreshSnapshot(intent.recipeIndex, intent.craftCount);
+        } else if (shouldAutoCommit) {
+            commitCraft();
         }
     }
 
@@ -480,13 +595,17 @@ var CraftingPanel = (function() {
         var recipe = findRecipe(_selectedIndex);
         var selected = !!recipe && _selectedIndex >= 0;
         var preview = _preview;
-        var output = preview && preview.output;
+        var displayPreview = preview || (selected && !_needsReconcile
+            && (_previewBusy || _busy || _needsRefresh) ? _stalePreview : null);
+        var output = displayPreview && displayPreview.output;
         var previewCurrent = previewMatchesCurrent();
-        var cost = preview && preview.cost || {};
+        var cost = displayPreview && displayPreview.cost || {};
         var canCommit = !_busy && !_previewBusy && !_planBusy && !_organizerBusy
             && !_procurementNavigation && !_nestedRecipeNavigation
-            && !_needsReconcile && !_needsRefresh
+            && !_needsReconcile && !_needsRefresh && !hasPendingQuantityDraft()
             && previewCurrent && preview.canCommit === true && !!preview.craftToken;
+        var queuedCommit = _previewBusy && queuedCommitMatchesCurrent();
+        var canQueueCommit = canQueueCommitNow(selected);
         var commitStatus = detailCommitStatus(selected, preview, previewCurrent);
         var commitState = _commitError ? 'error'
             : canCommit ? 'ready'
@@ -501,9 +620,9 @@ var CraftingPanel = (function() {
             preserveScroll:renderOptions.preserveScroll !== false,
             selected:selected,
             title:(output && output.displayName) || recipeOutput.displayName || '合成详情',
-            kicker:'权威核算',
+            kicker:'',
             meta:detailMetaText(_snapshot),
-            emptyText:_previewBusy ? '正在向 Flash 核算材料与容量…' : '等待权威预览',
+            emptyText:_previewBusy ? '正在计算材料与容量…' : '正在准备合成预览',
             previewState:previewState,
             pending:_previewBusy,
             output:output || null,
@@ -529,20 +648,27 @@ var CraftingPanel = (function() {
             planStatusKind:_planFeedback && recipe
                     && _planFeedback.recipeId === String(recipe.recipeId || '')
                 ? _planFeedback.kind : 'idle',
-            materials:preview && preview.materials || [],
+            materials:displayPreview && displayPreview.materials || [],
+            battleBoxAccessible:battleBoxAccessible(),
+            useBattleBox:_useBattleBox && battleBoxAccessible(),
+            battleBoxToggleDisabled:_busy || _planBusy || _organizerBusy
+                || !!_procurementNavigation || !!_nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh,
             moneyText:formatNumber(cost.money),
             kpointsText:formatNumber(cost.kpoints),
-            enoughSpace:!!(preview && preview.enoughSpace),
+            enoughSpace:!!(displayPreview && displayPreview.enoughSpace),
             batchEligible:!!(recipe && recipe.batchEligible === true),
             craftCount:_craftCount,
-            presetMax:preview ? Number(preview.maxCraftCount) || 0 : 0,
+            presetMax:displayPreview ? Number(displayPreview.maxCraftCount) || 0 : 0,
             quantityDisabled:_busy || _planBusy || _organizerBusy || !!_procurementNavigation
                 || !!_nestedRecipeNavigation
                 || _needsReconcile || _needsRefresh,
             canCommit:canCommit,
+            canQueueCommit:canQueueCommit,
+            commitQueued:queuedCommit,
             commitBusy:_busy || _previewBusy || _planBusy || !!_procurementNavigation
                 || !!_nestedRecipeNavigation,
-            commitLabel:_busy ? '提交中…' : '确认合成',
+            commitLabel:_busy ? '提交中…' : queuedCommit ? '核算后合成…' : '确认合成',
             commitStatus:commitStatus,
             commitState:commitState,
             commitAriaLabel:'确认合成 ' + _craftCount + ' 份',
@@ -660,7 +786,7 @@ var CraftingPanel = (function() {
                 _planFeedback = {recipeId:String(recipe.recipeId), kind:'pending',
                     text:'正在核对标记结果…'};
                 toast(isWriteAmbiguous(response, dispatched)
-                    ? '标记结果不明确，正在向 Flash 对账。'
+                    ? '标记结果尚未确认，正在重新同步。'
                     : errorMessage(response.error));
                 refreshSnapshot(preferred, preferredCount);
                 return;
@@ -691,6 +817,7 @@ var CraftingPanel = (function() {
                 || !recipe || recipe.batchEligible !== true) return false;
         var next = Math.max(1, Math.min(99, Math.floor(Number(value) || 1)));
         if (next === _craftCount) return false;
+        _queuedCommitIntent = null;
         _craftCount = next;
         requestPreview();
         return true;
@@ -750,9 +877,7 @@ var CraftingPanel = (function() {
 
     function detailMetaText(snapshot) {
         var note = snapshot && snapshot.note ? String(snapshot.note) : '';
-        return note === '改装后的装备默认强化等级为 1'
-            ? '提交前会再次校验材料与费用'
-            : note || '提交前会再次校验材料与费用';
+        return note || '提交前会再次校验材料与费用';
     }
 
     function samePreviewIntent(left, right) {
@@ -761,6 +886,7 @@ var CraftingPanel = (function() {
             && left.category === right.category
             && left.recipeIndex === right.recipeIndex
             && left.craftCount === right.craftCount
+            && !!left.useBattleBox === !!right.useBattleBox
             && left.reconcileEpoch === right.reconcileEpoch
             && left.isReconcileProbe === right.isReconcileProbe
             && sameIntentRevision(left.revision, right.revision);
@@ -791,6 +917,7 @@ var CraftingPanel = (function() {
             && String(response.category || '') === intent.category
             && Number(response.recipeIndex) === intent.recipeIndex
             && Number(response.craftCount) === intent.craftCount
+            && (response.useBattleBox === true) === !!intent.useBattleBox
             && matchesExpectedRevision(intent.revision, authorityRevision(response));
     }
 
@@ -800,6 +927,7 @@ var CraftingPanel = (function() {
             category:_category,
             recipeIndex:_selectedIndex,
             craftCount:_craftCount,
+            useBattleBox:_useBattleBox && battleBoxAccessible(),
             revision:authorityRevision(_snapshot)
         });
     }
@@ -811,15 +939,19 @@ var CraftingPanel = (function() {
         if (_nestedRecipeNavigation) return '正在定位嵌套合成配方';
         if (_busy) return '正在提交，请稍候';
         if (_planBusy) return '正在同步待合成标记';
+        if (hasPendingQuantityDraft()) return '请先按 Enter 确认或 Esc 取消份数修改';
+        if (_previewBusy && queuedCommitMatchesCurrent()) {
+            return '核算完成后将自动合成 ' + _craftCount + ' 份';
+        }
         if (_previewBusy) return '正在核算 ' + _craftCount + ' 份；仍可调整数量';
-        if (!preview) return '等待权威预览';
+        if (!preview) return '正在准备预览';
         if (!previewCurrent) {
             return '上次核算为 ' + Number(preview.craftCount || 1)
                 + ' 份；当前 ' + _craftCount + ' 份尚未核算';
         }
         if (_commitError) return _commitError;
         return preview.canCommit
-            ? '条件满足，可安全提交 ' + _craftCount + ' 份'
+            ? '可合成 ' + _craftCount + ' 份'
             : errorMessage(preview.blockingError);
     }
 
@@ -841,6 +973,7 @@ var CraftingPanel = (function() {
     function renderMaterialStatus(note, material, procurement) {
         var owned = Math.max(0, Number(material.owned) || 0);
         var required = Math.max(0, Number(material.required) || 0);
+        var usesBattleBox = String(material.storageKind || '').indexOf('battlebox') >= 0;
         if (material.itemKind !== 'equipment' || material.isQuantity) {
             note.className = 'crafting-material-status is-quantity';
             appendMaterialMetric(note, formatNumber(owned), formatNumber(required),
@@ -850,11 +983,17 @@ var CraftingPanel = (function() {
                 retained.className = 'crafting-material-retained';
                 retained.textContent = ' · 保留';
                 note.appendChild(retained);
+            } else if (usesBattleBox) {
+                var battleBoxTag = document.createElement('span');
+                battleBoxTag.className = 'crafting-material-retained';
+                battleBoxTag.textContent = ' · 含战备箱';
+                note.appendChild(battleBoxTag);
             }
             note.setAttribute('data-material-status', material.enough ? 'ready' : 'quantity-shortage');
             var quantityText = '数量：持有 ' + formatNumber(owned)
                 + '，需要 ' + formatNumber(required);
             if (material.consumed === false) quantityText += '；该材料不消耗';
+            else if (usesBattleBox) quantityText += '；含已解锁战备箱材料';
             note.setAttribute('aria-label', quantityText);
             return quantityText;
         }
@@ -869,9 +1008,18 @@ var CraftingPanel = (function() {
         var needsEnhancement = procurement
             ? procurement.needsEnhancement === true
             : totalMaxEnhancement < requiredEnhancement;
-        var needsRelocation = procurement && Number(procurement.relocateMissing || 0) > 0;
 
         note.className = 'crafting-material-status is-equipment';
+        if (material.enough) {
+            note.classList.add('is-ready');
+            note.textContent = usesBattleBox ? '装备满足 · 含战备箱' : '装备满足';
+            note.setAttribute('data-material-status', 'ready');
+            var readyText = usesBattleBox
+                ? '已持有符合强化要求的装备（含战备箱直扣）'
+                : '已持有符合强化要求的装备';
+            note.setAttribute('aria-label', readyText);
+            return readyText;
+        }
         if (totalOwned <= 0) {
             note.classList.add('is-missing');
             note.textContent = '缺少装备';
@@ -889,26 +1037,19 @@ var CraftingPanel = (function() {
             note.setAttribute('aria-label', enhancementText);
             return enhancementText;
         }
-        if (needsRelocation || !material.enough) {
-            note.classList.add('is-relocate');
-            var relocation = typeof WorkbenchComponents !== 'undefined'
-                && WorkbenchComponents.ProcurementHighlight
-                && typeof WorkbenchComponents.ProcurementHighlight.relocation === 'function'
-                ? WorkbenchComponents.ProcurementHighlight.relocation(procurement) : null;
-            note.textContent = relocation ? relocation.shortText : '合成前需要移回背包';
-            note.setAttribute('data-material-status', 'equipment-relocate');
-            note.setAttribute('data-relocation-source', relocation
-                ? relocation.source : 'unknown');
-            var relocationText = relocation ? relocation.detail
-                : '这里只是合成前指引，不会自动移动装备；请将所需装备移回背包后再合成';
-            note.setAttribute('aria-label', relocationText);
-            return relocationText;
-        }
-        note.classList.add('is-ready');
-        note.textContent = '装备满足';
-        note.setAttribute('data-material-status', 'ready');
-        note.setAttribute('aria-label', '已持有符合强化要求的装备');
-        return '已持有符合强化要求的装备';
+        note.classList.add('is-relocate');
+        var relocation = typeof WorkbenchComponents !== 'undefined'
+            && WorkbenchComponents.ProcurementHighlight
+            && typeof WorkbenchComponents.ProcurementHighlight.relocation === 'function'
+            ? WorkbenchComponents.ProcurementHighlight.relocation(procurement) : null;
+        note.textContent = relocation ? relocation.shortText : '合成前需要移回背包';
+        note.setAttribute('data-material-status', 'equipment-relocate');
+        note.setAttribute('data-relocation-source', relocation
+            ? relocation.source : 'unknown');
+        var relocationText = relocation ? relocation.detail
+            : '这里只是合成前指引，不会自动移动装备；请将所需装备移回背包后再合成';
+        note.setAttribute('aria-label', relocationText);
+        return relocationText;
     }
 
     function buildAnnotationTooltipHtml(value) {
@@ -988,7 +1129,7 @@ var CraftingPanel = (function() {
         var procurementSummary = typeof WorkbenchComponents !== 'undefined'
             && WorkbenchComponents.ProcurementHighlight
             ? WorkbenchComponents.ProcurementHighlight.summary(procurement) : null;
-        if (procurementSummary) {
+        if (procurementSummary && !(material.enough && procurementSummary.kind === 'relocate')) {
             row.classList.add(procurementSummary.kind === 'obtain'
                 ? 'procurement-needed' : 'procurement-relocate');
             note.classList.add('crafting-material-procurement-note');
@@ -1078,6 +1219,22 @@ var CraftingPanel = (function() {
                     }
                 });
                 if (!sourceActions.childNodes.length) sourceActions = null;
+            } else if (procurementSummary.kind === 'relocate'
+                    && Number(procurement && procurement.battleBoxOwned || 0) > 0) {
+                if (!sourceActions) {
+                    sourceActions = document.createElement('span');
+                    sourceActions.className = 'crafting-material-source-actions';
+                }
+                var relocateBtn = document.createElement('button');
+                relocateBtn.type = 'button';
+                relocateBtn.className = 'workbench-mode-btn crafting-material-relocate-btn';
+                relocateBtn.textContent = '去取出';
+                relocateBtn.setAttribute('aria-label', '打开战备箱取出 ' + String(material.displayName || material.name));
+                relocateBtn.setAttribute('data-audio-cue', 'navigate');
+                relocateBtn.addEventListener('click', function() {
+                    openOrganizer(collectBattleBoxGaps());
+                });
+                sourceActions.appendChild(relocateBtn);
             }
         }
         row.appendChild(icon); row.appendChild(copy);
@@ -1092,11 +1249,29 @@ var CraftingPanel = (function() {
         bindTooltip(row, material); return row;
     }
 
-    function commitCraft() {
-        if (_busy || _planBusy || _previewBusy || _procurementNavigation
+    function commitCraft(event) {
+        if (event && event.detail > 1) return;
+        if (hasPendingQuantityDraft()) return;
+        if (_previewBusy) {
+            if (canQueueCommitNow(findRecipe(_selectedIndex))) {
+                _queuedCommitIntent = {
+                    generation:_generation,
+                    category:_category,
+                    recipeIndex:_selectedIndex,
+                    craftCount:_craftCount,
+                    useBattleBox:_useBattleBox && battleBoxAccessible()
+                };
+                _commitError = '';
+                renderDetail();
+                refreshControls();
+            }
+            return;
+        }
+        if (_busy || _planBusy || _procurementNavigation
                 || _nestedRecipeNavigation
                 || _needsReconcile || _needsRefresh || !previewMatchesCurrent()
                 || !_preview.canCommit || !_preview.craftToken || !_preview.acceptedPlan) return;
+        _queuedCommitIntent = null;
         _busy = true; _commitError = ''; refreshControls(); renderDetail();
         var preferred = _selectedIndex, preferredCount = _craftCount;
         var expectedAcceptedPlan = _preview.acceptedPlan;
@@ -1108,7 +1283,7 @@ var CraftingPanel = (function() {
             if (response.success) {
                 if (!sameJson(response.acceptedPlan, expectedAcceptedPlan)) {
                     enterNeedsReconcile();
-                    toast('提交回包与权威预览不一致，正在向 Flash 对账。', 'warning', {silent:true});
+                    toast('合成结果与预览不一致，正在确认实际结果。', 'warning', {silent:true});
                     cue('unknown');
                     requestPreview(); return;
                 }
@@ -1117,7 +1292,7 @@ var CraftingPanel = (function() {
                 _preview = null; clearPreviewCheckpoint(); refreshSnapshot(preferred, preferredCount); return;
             }
             if (isWriteAmbiguous(response, dispatched)) {
-                enterNeedsReconcile(); toast('提交结果不明确，正在向 Flash 对账。', 'warning', {silent:true});
+                enterNeedsReconcile(); toast('提交结果尚未确认，正在重新同步。', 'warning', {silent:true});
                 cue('unknown');
                 requestPreview();
             } else if (requiresAuthorityRefresh(response)) {
@@ -1139,7 +1314,7 @@ var CraftingPanel = (function() {
         if (_retryButton) _retryButton.disabled = true;
         var generation = _generation, previousIndex = _selectedIndex;
         return !!request('snapshot', {category:_category}, function(response) {
-            if (generation !== _generation) return;
+            if (generation !== _generation || _mode !== 'recipes') return;
             if (!response.success) {
                 if (requiresReconcile(response)) {
                     _preview = null; clearPreviewCheckpoint(); enterNeedsReconcile(); _needsRefresh = false;
@@ -1147,6 +1322,7 @@ var CraftingPanel = (function() {
                 toast(errorMessage(response.error)); renderDetail(); refreshControls(); return;
             }
             _snapshot = response; _needsRefresh = false; applyBalance(response.balance); rebuildFilterTree();
+            if (!battleBoxAccessible()) _useBattleBox = false;
             var recipes = response.recipes || [], visible = filteredRecipes(recipes);
             var next = Number(preferredIndex);
             if (isNaN(next) || next < 0 || !visible.some(function(recipe) { return Number(recipe.recipeIndex) === next; })) {
@@ -1157,7 +1333,7 @@ var CraftingPanel = (function() {
             var selectedRecipe = findRecipe(next);
             _craftCount = selectedRecipe && selectedRecipe.batchEligible === true
                 ? Math.max(1, Math.min(99, Math.floor(Number(preferredCount) || 1))) : 1;
-            _preview = null; clearPreviewCheckpoint();
+            _preview = null; _stalePreview = null; _queuedCommitIntent = null; clearPreviewCheckpoint();
             renderCatalog({preserveScroll:!selectionChanged});
             renderDetail({preserveScroll:!selectionChanged});
             if (next >= 0) requestPreview(); else refreshControls();
@@ -1240,8 +1416,8 @@ var CraftingPanel = (function() {
             } else if (_materials) {
                 if (!_materials.setDetail(response)) {
                     _needsRefresh = true;
-                    _materials.setDetailError('材料详情与目录快照不一致，请重新同步。', false);
-                    toast('材料详情与目录快照不一致，请重新同步。');
+                    _materials.setDetailError('材料详情与当前目录不一致，请重新同步。', false);
+                    toast('材料详情与当前目录不一致，请重新同步。');
                 }
             }
             refreshControls();
@@ -1734,11 +1910,21 @@ var CraftingPanel = (function() {
             toast('配方已变化，未执行定位；请重新核对。');
             return false;
         }
+        var sourceRecipe = findRecipe(intent.sourceRecipeIndex);
+        _nestedReturnStack.push({
+            category:intent.sourceCategory,
+            recipeIndex:intent.sourceRecipeIndex,
+            title:sourceRecipe && sourceRecipe.output ? sourceRecipe.output.displayName : intent.sourceCategory,
+            craftCount:_craftCount
+        });
+        updateNestedReturnButton();
         _filterPath = [];
         _craftableOnly = false;
         _selectedIndex = intent.targetRecipeIndex;
         _craftCount = 1;
         _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
         _planFeedback = null;
         clearPreviewCheckpoint();
         rebuildFilterTree();
@@ -1764,6 +1950,13 @@ var CraftingPanel = (function() {
             return failNestedRecipeNavigation(intent,
                 '配方已变化，未执行跳转；请重新核对。');
         }
+        var sourceRecipe = findRecipe(intent.sourceRecipeIndex);
+        _nestedReturnStack.push({
+            category:intent.sourceCategory,
+            recipeIndex:intent.sourceRecipeIndex,
+            title:sourceRecipe && sourceRecipe.output ? sourceRecipe.output.displayName : intent.sourceCategory,
+            craftCount:_craftCount
+        });
         _nestedRecipeNavigationGeneration++;
         _nestedRecipeNavigation = null;
         _category = intent.targetCategory;
@@ -1771,6 +1964,8 @@ var CraftingPanel = (function() {
         _selectedIndex = intent.targetRecipeIndex;
         _craftCount = 1;
         _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
         _previewFlight = null;
         _previewQueued = null;
         clearPreviewCheckpoint();
@@ -1945,6 +2140,8 @@ var CraftingPanel = (function() {
         _selectedIndex = intent.use.recipeIndex;
         _craftCount = 1;
         _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
         _previewFlight = null;
         _previewQueued = null;
         clearPreviewCheckpoint();
@@ -1996,6 +2193,8 @@ var CraftingPanel = (function() {
         _category = '';
         _snapshot = null;
         _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
         _selectedIndex = -1;
         _craftCount = 1;
         _previewFlight = null;
@@ -2045,14 +2244,125 @@ var CraftingPanel = (function() {
         else refreshSnapshot();
     }
 
-    function openOrganizer() {
+    function updateNestedReturnButton() {
+        if (!_nestedReturnButton) return;
+        var top = _nestedReturnStack.length ? _nestedReturnStack[_nestedReturnStack.length - 1] : null;
+        _nestedReturnButton.hidden = !top;
+        if (top) {
+            _nestedReturnButton.textContent = '← 返回：' + String(top.title || '上级配方');
+            _nestedReturnButton.setAttribute('aria-label', '返回上级配方：' + String(top.title || top.category));
+        }
+    }
+
+    function returnFromNestedRecipe() {
+        if (!_nestedReturnStack.length || _busy || _previewBusy || _planBusy || _organizerBusy
+                || _procurementNavigation || _nestedRecipeNavigation) return false;
+        var entry = _nestedReturnStack.pop();
+        updateNestedReturnButton();
+        if (entry.category === _category) {
+            _selectedIndex = entry.recipeIndex;
+            _craftCount = entry.craftCount || 1;
+            _preview = null;
+            _stalePreview = null;
+            _queuedCommitIntent = null;
+            clearPreviewCheckpoint();
+            renderCatalog({preserveScroll:false});
+            renderDetail({preserveScroll:false});
+            focusExactRecipeCard(entry.recipeIndex);
+            requestPreview();
+            return true;
+        }
+        _category = entry.category;
+        _selectedIndex = entry.recipeIndex;
+        _craftCount = entry.craftCount || 1;
+        _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
+        clearPreviewCheckpoint();
+        _filterPath = [];
+        _craftableOnly = false;
+        buildDOM();
+        refreshSnapshot(entry.recipeIndex, entry.craftCount || 1);
+        return true;
+    }
+
+    function openMaterialsFromRecipes() {
+        if (_mode !== 'recipes' || _busy || _previewBusy || _planBusy || _organizerBusy
+                || _procurementNavigation || _nestedRecipeNavigation || _needsReconcile || _needsRefresh) return false;
+        _recipeReturnContext = {
+            category:_category,
+            selectedIndex:_selectedIndex,
+            craftCount:_craftCount,
+            filterPath:_filterPath.slice(),
+            craftableOnly:_craftableOnly
+        };
+        _generation++;
+        _materialRequestSeq++;
+        _materialSnapshotIntentGeneration++;
+        _mode = 'materials';
+        _snapshot = null;
+        _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
+        _previewFlight = null;
+        _previewQueued = null;
+        _previewBusy = false;
+        clearPreviewCheckpoint();
+        buildDOM();
+        refreshMaterialsSnapshot();
+        return true;
+    }
+
+    function returnToSavedRecipes() {
+        if (_mode !== 'materials' || !_recipeReturnContext || _materialShopNavigation) return false;
+        var saved = _recipeReturnContext;
+        _recipeReturnContext = null;
+        _generation++;
+        _materialRequestSeq++;
+        _materialSnapshotIntentGeneration++;
+        _mode = 'recipes';
+        _category = saved.category;
+        _filterPath = saved.filterPath.slice();
+        _craftableOnly = !!saved.craftableOnly;
+        _snapshot = null;
+        _preview = null;
+        _stalePreview = null;
+        _queuedCommitIntent = null;
+        _previewFlight = null;
+        _previewQueued = null;
+        _previewBusy = false;
+        clearPreviewCheckpoint();
+        buildDOM();
+        refreshSnapshot(saved.selectedIndex, saved.craftCount);
+        return true;
+    }
+
+    function collectBattleBoxGaps() {
+        var preview = _preview || _stalePreview;
+        var rows = preview && Array.isArray(preview.materials) ? preview.materials : [];
+        var gaps = [];
+        for (var i = 0; i < rows.length; i++) {
+            var mat = rows[i], proc = mat && mat.procurement;
+            if (!mat || !proc || Number(proc.relocateMissing || 0) <= 0
+                    || Number(proc.battleBoxOwned || 0) <= 0) continue;
+            gaps.push({
+                name:String(mat.name || ''),
+                displayName:String(mat.displayName || mat.name || ''),
+                missing:Math.min(Number(proc.relocateMissing || 0), Number(proc.battleBoxOwned || 0))
+            });
+        }
+        return gaps;
+    }
+
+    function openOrganizer(gapItems) {
         if (_busy || _previewBusy || _planBusy || _procurementNavigation
                 || _nestedRecipeNavigation || _organizerBusy
                 || _needsReconcile || _needsRefresh || !_category) return false;
+        var resolvedGaps = Array.isArray(gapItems) ? gapItems : collectBattleBoxGaps();
         _organizerBusy = true; renderDetail(); refreshControls();
         var generation = _generation;
         return !!request('snapshot', {category:_category}, function(response) {
-            if (generation !== _generation) return;
+            if (generation !== _generation || _mode !== 'recipes') return;
             if (!response.success) {
                 _organizerBusy = false;
                 if (requiresReconcile(response)) {
@@ -2061,11 +2371,11 @@ var CraftingPanel = (function() {
                 toast(errorMessage(response.error)); renderDetail(); refreshControls(); return;
             }
             _preview = null; clearPreviewCheckpoint();
-            loadOrganizer(generation);
+            loadOrganizer(generation, resolvedGaps);
         });
     }
 
-    function loadOrganizer(generation) {
+    function loadOrganizer(generation, gapItems) {
         var pending = null;
         try {
             pending = typeof LazyLoader !== 'undefined' && LazyLoader
@@ -2088,6 +2398,7 @@ var CraftingPanel = (function() {
                     kind:'crafting-organizer',
                     panel:'crafting',
                     panelInstanceId:_panelInstanceId,
+                    gapItems:Array.isArray(gapItems) ? gapItems : [],
                     onReturn:restoreFromOrganizer
                 });
             if (!mounted) {
@@ -2233,8 +2544,8 @@ var CraftingPanel = (function() {
         else if (_procurementNavigation) _shell.setStatus('正在前往商店', 'loading');
         else if (_organizerBusy) _shell.setStatus('正在打开战备箱', 'loading');
         else if (_planBusy) _shell.setStatus('正在同步标记', 'loading');
-        else if (_busy || _previewBusy) _shell.setStatus('权威核算中', 'loading');
-        else if (_snapshot) _shell.setStatus('Flash 权威状态', 'idle');
+        else if (_busy || _previewBusy) _shell.setStatus('核算中', 'loading');
+        else if (_snapshot) _shell.setStatus('已同步', 'idle');
         else _shell.setStatus('同步中', 'loading');
         if (_retryButton) {
             _retryButton.textContent = _needsReconcile ? '重新核对' : '重新同步';
@@ -2245,6 +2556,15 @@ var CraftingPanel = (function() {
         if (_organizerButton) _organizerButton.disabled = _busy || _previewBusy || _planBusy
             || _organizerBusy || !!_procurementNavigation || !!_nestedRecipeNavigation
             || _needsReconcile || _needsRefresh;
+        if (_nestedReturnButton) {
+            _nestedReturnButton.disabled = _busy || _previewBusy || _planBusy
+                || _organizerBusy || !!_procurementNavigation || !!_nestedRecipeNavigation;
+        }
+        if (_switchModeButton) {
+            _switchModeButton.disabled = _busy || _previewBusy || _planBusy
+                || _organizerBusy || !!_procurementNavigation || !!_nestedRecipeNavigation
+                || _needsReconcile || _needsRefresh;
+        }
         if (_returnMaterialsButton) {
             _returnMaterialsButton.disabled = _busy || _previewBusy || _planBusy
                 || _organizerBusy || _organizerMounted
@@ -2304,162 +2624,164 @@ var CraftingPanel = (function() {
         var nextCategory = _mode === 'materials'
             ? '' : (typeof initData.category === 'string' ? initData.category : '');
         if (nextCategory !== _category) { _filterPath = []; _craftableOnly = false; }
+        _useBattleBox = false;
         _category = nextCategory;
         var preferredIndex = initData && Number(initData.preferredRecipeIndex);
         var preferredCount = initData && Number(initData.preferredCraftCount);
-        _snapshot = null; _preview = null; clearPreviewCheckpoint(); _selectedIndex = -1;
-        _busy = false; _previewBusy = false; _planBusy = false;
+        _snapshot = null; _preview = null; _stalePreview = null; clearPreviewCheckpoint(); _selectedIndex = -1;
+        _busy = false; _previewBusy = false; _planBusy = false; _queuedCommitIntent = null;
+        _nestedReturnStack = []; _recipeReturnContext = null;
         _planFocusRecipeId = ''; _planFocusAction = ''; _planFeedback = null;
         _previewFlight = null; _previewQueued = null;
         _craftCount = 1; _organizerBusy = false; _organizerMounted = false;
         _needsReconcile = false; _needsRefresh = false; _reconcileEpoch = 0; _tooltipCache = {};
-        // 烹饪品类走独立厨房界面（modules/cooking.js + css/panels/cooking.css），
-        // 不再渲染工作台 DOM；协议与会话复用同一套 CraftingRuntime mux。
-        if (_mode === 'recipes' && _category === '烹饪'
-                && typeof CookingPanel !== 'undefined' && CookingPanel != null) {
-            _cookingActive = true;
+        function mountDedicatedPanel(panelApi, flagSetter, extraDeps) {
+            flagSetter(true);
             if (_scaleHandle) _scaleHandle.detach();
-            _scaleHandle = typeof PanelScale !== 'undefined'
-                ? PanelScale.attach(_shellEl, 1024, 576) : null;
-            if (!_mux.openSession({
-                    ownerPanel:'crafting',
-                    panelInstanceId:_panelInstanceId
-                })) return false;
+            _scaleHandle = typeof PanelScale !== 'undefined' ? PanelScale.attach(_shellEl, 1024, 576) : null;
+            if (!_mux.openSession({ ownerPanel:'crafting', panelInstanceId:_panelInstanceId })) return false;
             Workbench.clearElement(_shellEl);
-            CookingPanel.mount(_shellEl, {
-                request:request,
-                toast:toast,
-                cue:cue,
-                iconHtml:iconHtml,
-                formatNumber:formatNumber,
-                requestClose:requestClose,
-                bindTooltip:bindTooltip,
-                releaseTooltipTree:releaseTooltipTree
-            });
+            var bbBtn = null, previewSeq = 0, latestAcceptedSeq = 0, commitInFlight = false;
+            var lastAcceptedToken = '', lastAcceptedUseBb = false;
+            function syncDedicatedBbBtn() {
+                if (!bbBtn) return;
+                bbBtn.setAttribute('aria-pressed', _useBattleBox ? 'true' : 'false');
+                bbBtn.classList.toggle('active', _useBattleBox);
+                bbBtn.disabled = commitInFlight;
+                bbBtn.textContent = _useBattleBox ? '战备箱直扣：开' : '战备箱直扣';
+            }
+            function removeDedicatedBbBtn() {
+                if (bbBtn && bbBtn.parentNode) bbBtn.parentNode.removeChild(bbBtn);
+                bbBtn = null;
+            }
+            function ensureDedicatedBbBtn() {
+                if (bbBtn || !_shellEl) return;
+                var closeEl = _shellEl.querySelector('header button[aria-label*="关闭"], header .workbench-close-btn, header button:last-child');
+                var hdr = closeEl && closeEl.parentNode || _shellEl.querySelector('header');
+                if (!hdr) return;
+                bbBtn = document.createElement('button');
+                bbBtn.type = 'button';
+                bbBtn.className = 'workbench-mode-btn crafting-battlebox-toggle';
+                bbBtn.setAttribute('data-crafting-battlebox-toggle', '1');
+                bbBtn.setAttribute('aria-label', '合成时允许自动扣取战备箱已解锁物品');
+                bbBtn.title = '开启后允许本次预览与合成自动扣取战备箱已解锁物品';
+                syncDedicatedBbBtn();
+                bbBtn.addEventListener('click', function() {
+                    if (commitInFlight || (typeof panelApi.isCommitting === 'function' && panelApi.isCommitting())) return;
+                    _useBattleBox = !_useBattleBox;
+                    previewSeq++;
+                    latestAcceptedSeq = 0;
+                    lastAcceptedToken = '';
+                    lastAcceptedUseBb = _useBattleBox;
+                    syncDedicatedBbBtn();
+                    if (typeof panelApi.onBattleBoxChanged === 'function') {
+                        panelApi.onBattleBoxChanged(_useBattleBox);
+                    }
+                });
+                if (closeEl && closeEl.parentNode === hdr) hdr.insertBefore(bbBtn, closeEl);
+                else hdr.appendChild(bbBtn);
+            }
+            function dedicatedRequest(cmd, payload, cb) {
+                var nextPayload = payload && typeof payload === 'object' ? Object.assign({}, payload) : payload;
+                if (cmd === 'preview' && nextPayload) {
+                    if (_useBattleBox) nextPayload.useBattleBox = true; else delete nextPayload.useBattleBox;
+                    var mySeq = ++previewSeq;
+                    var myUseBb = _useBattleBox;
+                    latestAcceptedSeq = 0;
+                    lastAcceptedToken = '';
+                    var previewCallId = request(cmd, nextPayload, function(response) {
+                        if (mySeq !== previewSeq || myUseBb !== _useBattleBox) return;
+                        if (response && response.success) {
+                            if (Object.prototype.hasOwnProperty.call(response, 'useBattleBox')
+                                    && (response.useBattleBox === true) !== myUseBb) {
+                                lastAcceptedToken = '';
+                                latestAcceptedSeq = 0;
+                                if (typeof cb === 'function') cb({success:false, error:'stale_state'});
+                                return;
+                            }
+                            lastAcceptedToken = typeof response.craftToken === 'string' ? response.craftToken : '';
+                            lastAcceptedUseBb = myUseBb;
+                            latestAcceptedSeq = mySeq;
+                        } else {
+                            lastAcceptedToken = '';
+                            latestAcceptedSeq = 0;
+                        }
+                        if (typeof cb === 'function') cb(response);
+                    });
+                    return previewCallId;
+                }
+                if (cmd === 'commit') {
+                    var token = nextPayload && typeof nextPayload.expectedCraftToken === 'string'
+                        ? nextPayload.expectedCraftToken : '';
+                    if (commitInFlight || latestAcceptedSeq !== previewSeq || !token
+                            || token !== lastAcceptedToken || lastAcceptedUseBb !== _useBattleBox) {
+                        if (typeof cb === 'function') {
+                            setTimeout(function() { cb({success:false, error:'stale_state'}); }, 0);
+                        }
+                        return null;
+                    }
+                    commitInFlight = true;
+                    lastAcceptedToken = '';
+                    latestAcceptedSeq = 0;
+                    syncDedicatedBbBtn();
+                    var commitCallId = request(cmd, nextPayload, function(response) {
+                        commitInFlight = false;
+                        syncDedicatedBbBtn();
+                        if (typeof cb === 'function') cb(response);
+                    });
+                    if (!commitCallId) {
+                        commitInFlight = false;
+                        syncDedicatedBbBtn();
+                        if (typeof cb === 'function') {
+                            setTimeout(function() { cb({success:false, error:'disconnected'}); }, 0);
+                        }
+                    }
+                    return commitCallId;
+                }
+                return request(cmd, nextPayload, function(response) {
+                    if (cmd === 'snapshot' && response && response.success) {
+                        if (response.battleBoxAccessible === true) {
+                            ensureDedicatedBbBtn();
+                        } else {
+                            removeDedicatedBbBtn();
+                            if (_useBattleBox) {
+                                _useBattleBox = false;
+                                previewSeq++;
+                                lastAcceptedToken = '';
+                                lastAcceptedUseBb = false;
+                            }
+                        }
+                    }
+                    if (typeof cb === 'function') cb(response);
+                });
+            }
+            var deps = Object.assign({
+                request:dedicatedRequest, toast:toast, cue:cue, iconHtml:iconHtml,
+                formatNumber:formatNumber, requestClose:requestClose,
+                bindTooltip:bindTooltip, releaseTooltipTree:releaseTooltipTree
+            }, extraDeps || {});
+            panelApi.mount(_shellEl, deps);
             return true;
         }
-        // 化学生产走独立蓝图界面（modules/chemistry.js + css/panels/chemistry.css）。
-        if (_mode === 'recipes' && _category === '化学生产'
-                && typeof ChemistryPanel !== 'undefined' && ChemistryPanel != null) {
-            _chemistryActive = true;
-            if (_scaleHandle) _scaleHandle.detach();
-            _scaleHandle = typeof PanelScale !== 'undefined'
-                ? PanelScale.attach(_shellEl, 1024, 576) : null;
-            if (!_mux.openSession({
-                    ownerPanel:'crafting',
-                    panelInstanceId:_panelInstanceId
-                })) return false;
-            Workbench.clearElement(_shellEl);
-            ChemistryPanel.mount(_shellEl, {
-                request:request,
-                toast:toast,
-                cue:cue,
-                iconHtml:iconHtml,
-                formatNumber:formatNumber,
-                requestClose:requestClose,
-                bindTooltip:bindTooltip,
-                releaseTooltipTree:releaseTooltipTree
-            });
-            return true;
+        if (_mode === 'recipes' && _category === '烹饪' && typeof CookingPanel !== 'undefined' && CookingPanel != null) {
+            return mountDedicatedPanel(CookingPanel, function(v) { _cookingActive = v; });
         }
-        // 调酒走独立吧台界面（modules/bartending.js + css/panels/bartending.css），
-        // 调制方式随 preview 请求提交、由 AS2 裁决并冻结进计划。
-        if (_mode === 'recipes' && _category === '调酒'
-                && typeof BartendingPanel !== 'undefined' && BartendingPanel != null) {
-            _bartendingActive = true;
-            if (_scaleHandle) _scaleHandle.detach();
-            _scaleHandle = typeof PanelScale !== 'undefined'
-                ? PanelScale.attach(_shellEl, 1024, 576) : null;
-            if (!_mux.openSession({
-                    ownerPanel:'crafting',
-                    panelInstanceId:_panelInstanceId
-                })) return false;
-            Workbench.clearElement(_shellEl);
-            BartendingPanel.mount(_shellEl, {
-                request:request,
-                toast:toast,
-                cue:cue,
-                iconHtml:iconHtml,
-                formatNumber:formatNumber,
-                requestClose:requestClose
-            });
-            return true;
+        if (_mode === 'recipes' && _category === '化学生产' && typeof ChemistryPanel !== 'undefined' && ChemistryPanel != null) {
+            return mountDedicatedPanel(ChemistryPanel, function(v) { _chemistryActive = v; });
         }
-        // A兵团武器库四个类目走独立军工界面（modules/armory.js + css/panels/armory.css），
-        // 类目由 initData.category 传入，协议与通用工作台一致。
-        if (_mode === 'recipes'
-                && (_category === '武器合成' || _category === '饰品合成'
-                    || _category === '进阶防具' || _category === '基础防具')
+        if (_mode === 'recipes' && _category === '调酒' && typeof BartendingPanel !== 'undefined' && BartendingPanel != null) {
+            return mountDedicatedPanel(BartendingPanel, function(v) { _bartendingActive = v; });
+        }
+        if (_mode === 'recipes' && (_category === '武器合成' || _category === '饰品合成'
+                || _category === '进阶防具' || _category === '基础防具')
                 && typeof ArmoryPanel !== 'undefined' && ArmoryPanel != null) {
-            _armoryActive = true;
-            if (_scaleHandle) _scaleHandle.detach();
-            _scaleHandle = typeof PanelScale !== 'undefined'
-                ? PanelScale.attach(_shellEl, 1024, 576) : null;
-            if (!_mux.openSession({
-                    ownerPanel:'crafting',
-                    panelInstanceId:_panelInstanceId
-                })) return false;
-            Workbench.clearElement(_shellEl);
-            ArmoryPanel.mount(_shellEl, {
-                request:request,
-                toast:toast,
-                cue:cue,
-                iconHtml:iconHtml,
-                formatNumber:formatNumber,
-                requestClose:requestClose,
-                bindTooltip:bindTooltip,
-                releaseTooltipTree:releaseTooltipTree,
-                category:_category
-            });
-            return true;
+            return mountDedicatedPanel(ArmoryPanel, function(v) { _armoryActive = v; }, { category:_category });
         }
-        // 铁枪会走独立图腾商业点界面（modules/ironspear.js + css/panels/ironspear.css）。
-        if (_mode === 'recipes' && _category === '铁枪会'
-                && typeof IronspearPanel !== 'undefined' && IronspearPanel != null) {
-            _ironspearActive = true;
-            if (_scaleHandle) _scaleHandle.detach();
-            _scaleHandle = typeof PanelScale !== 'undefined'
-                ? PanelScale.attach(_shellEl, 1024, 576) : null;
-            if (!_mux.openSession({
-                    ownerPanel:'crafting',
-                    panelInstanceId:_panelInstanceId
-                })) return false;
-            Workbench.clearElement(_shellEl);
-            IronspearPanel.mount(_shellEl, {
-                request:request,
-                toast:toast,
-                cue:cue,
-                iconHtml:iconHtml,
-                formatNumber:formatNumber,
-                requestClose:requestClose,
-                bindTooltip:bindTooltip,
-                releaseTooltipTree:releaseTooltipTree
-            });
-            return true;
+        if (_mode === 'recipes' && _category === '铁枪会' && typeof IronspearPanel !== 'undefined' && IronspearPanel != null) {
+            return mountDedicatedPanel(IronspearPanel, function(v) { _ironspearActive = v; });
         }
-        // 公社防具走独立档案界面（modules/commune.js + css/panels/commune.css）。
-        if (_mode === 'recipes' && _category === '公社防具'
-                && typeof CommunePanel !== 'undefined' && CommunePanel != null) {
-            _communeActive = true;
-            if (_scaleHandle) _scaleHandle.detach();
-            _scaleHandle = typeof PanelScale !== 'undefined'
-                ? PanelScale.attach(_shellEl, 1024, 576) : null;
-            if (!_mux.openSession({
-                    ownerPanel:'crafting',
-                    panelInstanceId:_panelInstanceId
-                })) return false;
-            Workbench.clearElement(_shellEl);
-            CommunePanel.mount(_shellEl, {
-                request:request,
-                toast:toast,
-                cue:cue,
-                iconHtml:iconHtml,
-                formatNumber:formatNumber,
-                requestClose:requestClose,
-                bindTooltip:bindTooltip,
-                releaseTooltipTree:releaseTooltipTree
-            });
-            return true;
+        if (_mode === 'recipes' && _category === '公社防具' && typeof CommunePanel !== 'undefined' && CommunePanel != null) {
+            return mountDedicatedPanel(CommunePanel, function(v) { _communeActive = v; });
         }
         buildDOM();
         if (_scaleHandle) _scaleHandle.detach();
@@ -2541,8 +2863,10 @@ var CraftingPanel = (function() {
         if (_shell) _shell.closeModal();
         _inspector = null;
         _busy = false; _previewBusy = false; _planBusy = false; _organizerBusy = false;
+        _useBattleBox = false;
         _planFocusRecipeId = ''; _planFocusAction = ''; _planFeedback = null;
-        _organizerMounted = false; _snapshot = null; _preview = null;
+        _organizerMounted = false; _snapshot = null; _preview = null; _stalePreview = null; _queuedCommitIntent = null;
+        _nestedReturnStack = []; _nestedReturnButton = null; _switchModeButton = null; _recipeReturnContext = null;
         clearPreviewCheckpoint(); _needsReconcile = false; _needsRefresh = false; _reconcileEpoch = 0;
         disposeFilterNavigator(); _craftableToggle = null;
         if (_materials) { _materials.destroy(); _materials = null; }
@@ -2564,11 +2888,27 @@ var CraftingPanel = (function() {
     }
 
     function requestClose(reason) {
+        if (_queuedCommitIntent) {
+            _queuedCommitIntent = null;
+            renderDetail();
+            refreshControls();
+        }
         if (_organizerMounted && typeof CraftingInventoryOrganizer !== 'undefined') {
             return CraftingInventoryOrganizer.requestClose(reason);
         }
         if (_shell && _shell.hasModal()) {
             return _shell.closeModal(typeof reason === 'string' ? reason : 'close');
+        }
+        if (reason === 'escape' && _mode === 'recipes' && hasPendingQuantityDraft()) {
+            _detailPresenter.revertQuantityDraft();
+            renderDetail();
+            refreshControls();
+            return true;
+        }
+        if (reason === 'escape' && _mode === 'recipes' && _nestedReturnStack.length > 0
+                && !(_busy || _previewBusy || _planBusy || _organizerBusy
+                    || _procurementNavigation || _nestedRecipeNavigation)) {
+            return returnFromNestedRecipe();
         }
         if (_cookingActive && typeof CookingPanel !== 'undefined' && CookingPanel != null
                 && typeof CookingPanel.isBusy === 'function' && CookingPanel.isBusy()) {
@@ -2723,6 +3063,7 @@ var CraftingPanel = (function() {
     function enterNeedsReconcile() {
         if (!_needsReconcile) _reconcileEpoch++;
         _needsReconcile = true;
+        _queuedCommitIntent = null;
     }
 
     function isTransportUncertain(response) {
@@ -2781,9 +3122,9 @@ var CraftingPanel = (function() {
             infrastructure_locked:'基建等级不足。', insufficient_money:'金币不足。',
             insufficient_kpoint:'K 点不足。', inventory_full:'背包空间不足。', stale_state:'物品状态已变化，请重新核对。',
             batch_not_supported:'该配方包含装备产物或装备素材，只能逐份合成。',
-            busy:'Flash 正在处理另一项合成。', reconcile_required:'上次提交结果需要重新核对。',
+            busy:'正在处理另一项合成，请稍候。', reconcile_required:'上次提交结果需要重新核对。',
             stale_snapshot:'材料目录已更新，请重新同步。',
-            malformed_response:'Flash 回包不完整。', timeout:'合成响应超时。', client_timeout:'合成响应超时。', disconnected:'连接已断开。'};
+            malformed_response:'合成响应不完整，请重试。', timeout:'合成响应超时。', client_timeout:'合成响应超时。', disconnected:'连接已断开。'};
         return messages[error] || (_mode === 'materials' ? '材料档案读取失败，请重试。' : '合成操作失败，请重试。');
     }
 
@@ -2807,8 +3148,15 @@ var CraftingPanel = (function() {
         ironspear:_ironspearActive && typeof IronspearPanel !== 'undefined' && IronspearPanel
             && typeof IronspearPanel.debugState === 'function' ? IronspearPanel.debugState() : null,
         filterPath:_filterPath.slice(), craftableOnly:_craftableOnly,
+        useBattleBox:_useBattleBox && battleBoxAccessible(),
+        battleBoxAccessible:battleBoxAccessible(),
         craftableCount:_snapshot && _snapshot.recipes ? _snapshot.recipes.filter(function(recipe) { return recipe.canCraftOne === true; }).length : 0,
         busy:_busy, previewBusy:_previewBusy, planBusy:_planBusy,
+        queuedCommit:_queuedCommitIntent ? {
+            recipeIndex:_queuedCommitIntent.recipeIndex,
+            craftCount:_queuedCommitIntent.craftCount,
+            useBattleBox:!!_queuedCommitIntent.useBattleBox
+        } : null,
         organizerBusy:_organizerBusy,
         organizerMounted:_organizerMounted,
         needsReconcile:_needsReconcile, needsRefresh:_needsRefresh, reconcileEpoch:_reconcileEpoch,

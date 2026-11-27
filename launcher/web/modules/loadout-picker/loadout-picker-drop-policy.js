@@ -164,9 +164,31 @@
 
     var defaultPolicy = create();
 
+    function resolveSmartSlot(root, candidate) {
+        if (!root || !candidate || candidate.blocked === true || candidate.useAction) return null;
+        var nodes = root.querySelectorAll('.character-build-slot'), descriptors = [], byKey = {};
+        for (var i = 0; i < nodes.length; i++) {
+            var key = String(nodes[i].getAttribute('data-roving-key') || '');
+            if (!key) continue;
+            descriptors.push({rovingKey:key, kind:String(nodes[i].getAttribute('data-slot-kind') || ''), id:String(nodes[i].getAttribute('data-slot-id') || '')});
+            byKey[key] = nodes[i];
+        }
+        var resolved = defaultPolicy.resolve('backpack', '', candidate, descriptors), fallback = null;
+        if (!resolved || !resolved.slots || !resolved.slots.length) return null;
+        for (var j = 0; j < resolved.slots.length; j++) {
+            var node = byKey[resolved.slots[j]];
+            if (!node || node.disabled || node.getAttribute('data-blocked') === 'true') continue;
+            var info = {key:resolved.slots[j], label:String(node.getAttribute('data-focus-label') || ''), isDrug:node.getAttribute('data-slot-kind') === 'drug'};
+            if (node.getAttribute('data-empty') === 'true') return info;
+            if (!fallback) fallback = info;
+        }
+        return fallback;
+    }
+
     return {
         create:create,
         resolve:defaultPolicy.resolve,
+        resolveSmartSlot:resolveSmartSlot,
         decide:defaultPolicy.decide,
         rejectCopy:defaultPolicy.rejectCopy,
         isDrugRow:defaultIsDrugRow,

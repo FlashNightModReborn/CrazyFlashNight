@@ -53,7 +53,7 @@ loadout[11].skillKey='遗留未知技';loadout[11].level=null;loadout[11].iconKe
 
 function trainerEntries(){return[
   {skillKey:'闪现',currentLevel:3,maxLevel:20,type:'武术-内力',passive:false,equippable:true,unlockLevel:15,unlockSP:20,upgradeSP:20,mp:14,cooldownMs:1700,iconKey:'闪现',description:'教师提供的闪现说明',stateHealth:'ok',writeBlocked:false},
-  {skillKey:'新手冲拳',currentLevel:0,maxLevel:10,type:'武术-拳法',passive:false,equippable:true,unlockLevel:1,unlockSP:5,upgradeSP:5,mp:3,cooldownMs:500,iconKey:'新手冲拳',description:'尚未学习，目标只能为 1。',stateHealth:'ok',writeBlocked:false},
+  {skillKey:'新手冲拳',currentLevel:0,maxLevel:10,type:'武术-拳法',passive:false,equippable:true,unlockLevel:1,unlockSP:5,upgradeSP:5,mp:3,cooldownMs:500,iconKey:'新手冲拳',description:'未学技能也可直接选择目标等级。',stateHealth:'ok',writeBlocked:false},
   {skillKey:'预算训练',currentLevel:1,maxLevel:10,type:'武术-内力',passive:false,equippable:true,unlockLevel:1,unlockSP:5,upgradeSP:30,mp:3,cooldownMs:500,iconKey:'预算训练',description:'用于验证可负担等级上限。',stateHealth:'ok',writeBlocked:false},
   {skillKey:'重复技',currentLevel:2,maxLevel:10,type:'武术-异常',passive:false,equippable:true,unlockLevel:1,unlockSP:1,upgradeSP:1,mp:1,cooldownMs:100,iconKey:'重复技',description:'坏档展示',stateHealth:'duplicate',writeBlocked:true}
 ]}
@@ -95,7 +95,11 @@ function applyWrite(message){var p=message.payload;
     var source=learnedRows.find(function(x){return x.skillKey===p.skillKey}),target=learnedRows.find(function(x){return x.orderIndex===p.targetIndex});
     if(source&&target){var old=source.orderIndex;source.orderIndex=target.orderIndex;target.orderIndex=old}
   }else if(message.cmd==='learnCommit'){
-    var entry=learnedRows.find(function(x){return x.skillKey==='新手冲拳'});if(!entry)learnedRows.push(learned('新手冲拳',14,{level:1,type:'武术-拳法'}));else entry.level=Math.max(entry.level,4)
+    var learnSkill=(__host.lastPreview&&__host.lastPreview.skillKey)||'新手冲拳';
+    var learnTarget=(__host.lastPreview&&__host.lastPreview.desiredLevel)||1;
+    var entry=learnedRows.find(function(x){return x.skillKey===learnSkill});
+    if(!entry)learnedRows.push(learned(learnSkill,14,{level:learnTarget,type:'武术-拳法'}));
+    else entry.level=Math.max(entry.level,learnTarget);
   }
   __host.revision++;__host.writeEpoch++
 }
@@ -111,9 +115,12 @@ function respond(message,ctx){var base=responseBase(message,ctx),p=message.paylo
   }
   if(message.cmd==='learnPreview'){
     if(__host.expireNextPreview){__host.expireNextPreview=false;Object.assign(base,{success:false,v:1,error:'trainer_session_expired',revision:__host.revision});emit(base);return}
-    var blocked=__host.previewBlocked,trainerEntry=trainerEntries().find(function(entry){return entry.skillKey===p.skillKey});
+    var blocked=__host.previewBlocked,trainerEntry=(__host.trainerEntriesOverride||trainerEntries()).find(function(entry){return entry.skillKey===p.skillKey});
     var previewCurrent=trainerEntry?trainerEntry.currentLevel:0;
-    var previewCost=previewCurrent<=0?(trainerEntry?trainerEntry.unlockSP:0):(p.desiredLevel-previewCurrent)*(trainerEntry?trainerEntry.upgradeSP:0);
+    var previewCost=previewCurrent<=0
+      ?((trainerEntry?trainerEntry.unlockSP:0)+Math.max(0,p.desiredLevel-1)*(trainerEntry?trainerEntry.upgradeSP:0))
+      :(p.desiredLevel-previewCurrent)*(trainerEntry?trainerEntry.upgradeSP:0);
+    __host.lastPreview={skillKey:p.skillKey,desiredLevel:p.desiredLevel,cost:previewCost};
     Object.assign(base,{success:true,v:1,trainerSession:p.trainerSession,skillKey:p.skillKey,
       currentLevel:previewCurrent,desiredLevel:p.desiredLevel,cost:previewCost,
       revision:__host.revision,canCommit:!blocked,blockingError:blocked?'insufficient_sp':null,learnToken:blocked?null:'learn.harness.token'});emit(base);return
@@ -223,8 +230,7 @@ window.Icons={
         &&document.querySelector('[data-instance-key="skills:library"]')
         &&document.querySelector('[data-instance-key="skills:actions"]'));
     var skillFrames=document.querySelectorAll('.skills-panel .workbench-slot'),skillMarkers=document.querySelectorAll('.skills-panel .workbench-slot-marker');
-    ok('redundant L/R marker bars are visually removed while slot semantics remain',skillMarkers.length===2
-      &&Array.prototype.every.call(skillMarkers,function(node){return getComputedStyle(node).display==='none'})
+    ok('redundant L/R marker bars are omitted by default while slot semantics remain',skillMarkers.length===0
       &&skillFrames[0].getAttribute('aria-label').indexOf('技能库')>=0
       &&skillFrames[1].getAttribute('aria-label').indexOf('快捷技能带')>=0);
     ok('manage removes routine technical chrome',document.querySelectorAll('.workbench-metric').length===0
@@ -234,24 +240,18 @@ window.Icons={
       &&document.querySelector('.skills-panel').textContent.indexOf('版本')<0);
     ok('direct manage entry exposes no contextual return action',!document.querySelector('.skills-switch-trainer-btn')
       &&!document.querySelector('.skills-return-character-btn'));
-    var confirmationToggle=document.querySelector('.skills-confirmation-toggle');
-    var safeConfirmation=document.querySelector('[data-confirmation-mode="safe"]');
-    var fastConfirmation=document.querySelector('[data-confirmation-mode="fast"]');
-    ok('manage exposes the current loadout confirmation mode beside the density switch',confirmationToggle
-      &&confirmationToggle.querySelector('.item-grid-mode-label').textContent==='快捷栏'
-      &&confirmationToggle.getAttribute('aria-label')==='快捷栏操作确认'
-      &&safeConfirmation.getAttribute('aria-pressed')==='true'&&fastConfirmation.getAttribute('aria-pressed')==='false');
+    ok('manage retires redundant header safe/fast confirmation toggle',!document.querySelector('.skills-confirmation-toggle')
+      &&SkillsPanel.debugState().loadoutConfirmationMode==='direct');
     var densityHeaderRect=document.querySelector('.skills-density-toggle').getBoundingClientRect();
-    var confirmationHeaderRect=confirmationToggle.getBoundingClientRect();
     var headerActionsRect=document.querySelector('.skills-panel .workbench-header-actions').getBoundingClientRect();
-    ok('density and confirmation controls remain equal-width ordered groups inside the header',Math.abs(confirmationHeaderRect.width-densityHeaderRect.width)<=1
-      &&confirmationHeaderRect.left>=densityHeaderRect.right-1
-      &&confirmationHeaderRect.right<=headerActionsRect.right+1&&confirmationHeaderRect.top>=headerActionsRect.top-1
-      &&confirmationHeaderRect.bottom<=headerActionsRect.bottom+1);
-    var headerModeTypography=Array.prototype.map.call(document.querySelectorAll('.skills-density-toggle .item-grid-mode-option,.skills-confirmation-toggle .item-grid-mode-option'),function(node){
+    ok('density control remains inside the header',densityHeaderRect.width>0
+      &&densityHeaderRect.left>=headerActionsRect.left-1
+      &&densityHeaderRect.right<=headerActionsRect.right+1&&densityHeaderRect.top>=headerActionsRect.top-1
+      &&densityHeaderRect.bottom<=headerActionsRect.bottom+1);
+    var headerModeTypography=Array.prototype.map.call(document.querySelectorAll('.skills-density-toggle .item-grid-mode-option'),function(node){
       var style=getComputedStyle(node);return [style.fontSize,style.fontWeight,style.fontFamily,style.lineHeight,style.letterSpacing].join('|');
     });
-    ok('all four header mode options share one computed typography contract',headerModeTypography.length===4
+    ok('header density mode options share one computed typography contract',headerModeTypography.length===2
       &&headerModeTypography.every(function(value){return value===headerModeTypography[0]})
       &&headerModeTypography[0].indexOf('11px|600|')===0,JSON.stringify(headerModeTypography));
     var skillScrollProbe=document.querySelector('.skills-library-list'),skillScrollStyle=skillScrollProbe.style.cssText;
@@ -271,8 +271,8 @@ window.Icons={
       &&document.querySelector('.workbench-modal').textContent.indexOf('Alt + ↑ / ↓')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('形态、配置和流派')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('按 /')>=0
-      &&document.querySelector('.workbench-modal').textContent.indexOf('当前：安全模式')>=0
-      &&document.querySelector('.workbench-modal').textContent.indexOf('顶栏始终显示当前模式')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('双击技能格')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('右键快捷槽')>=0
       &&!document.querySelector('[data-action="confirmation-mode"]')&&__sent.length===beforeHelp);
     var helpRect=document.querySelector('.workbench-modal').getBoundingClientRect(),panelRect=document.querySelector('.skills-panel').getBoundingClientRect();
     ok('help modal stays inside the smallest scaled panel canvas',helpRect.top>=panelRect.top-1&&helpRect.left>=panelRect.left-1
@@ -356,7 +356,8 @@ window.Icons={
     row('闪现').focus();
     ok('uses exact snapshot iconKey values',__iconKeys.indexOf('闪现')>=0&&__iconKeys.indexOf('不存在的精确键')>=0);
     ok('missing icon has visible fallback',document.querySelector('.skills-row-icon.missing .skills-icon-fallback'));
-    ok('manage removes the permanent description hero',!document.querySelector('.skills-detail-hero')&&!document.querySelector('.skills-detail-copy'));
+    ok('manage removes the permanent description hero while surfacing compact inline description',!document.querySelector('.skills-detail-hero')&&!document.querySelector('.skills-detail-copy')
+      &&document.querySelector('.skills-manage-desc')&&document.querySelector('.skills-manage-desc').textContent.indexOf('跨越短距离')>=0);
     row('闪现').dispatchEvent(new PointerEvent('pointerenter',{pointerId:7,clientX:180,clientY:180}));await wait(20);
     ok('skill annotation safely translates the AS2 htmlText subset',document.querySelector('#panel-tooltip .skills-tooltip span[style*="color"]')
       &&document.getElementById('panel-tooltip').textContent.indexOf('<font')<0&&!document.querySelector('#panel-tooltip font'));
@@ -410,30 +411,32 @@ window.Icons={
     var first=document.querySelector('.skills-library-row');first.focus();first.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));
     ok('keyboard arrows move library focus',document.activeElement!==first&&document.activeElement.classList.contains('skills-library-row'));
     row('闪现').click();document.querySelector('[data-slot="2"] .skills-slot-main').click();
-    ok('slot replacement is explicit before write',document.querySelector('.workbench-modal-detail').textContent.indexOf('将替换「旧技能」')>=0&&sent('equip').length===0);
-    clickModalConfirm();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey==='闪现'});
+    ok('R1 direct slot replacement commits without modal',!document.querySelector('.workbench-modal')&&sent('equip').length===1);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey==='闪现'});
     var equip=sent('equip').slice(-1)[0];
     ok('equip sends one atomic write with revision',equip&&equip.payload.skillKey==='闪现'&&equip.payload.slot===2&&equip.payload.expectedRevision===7);
     ok('equip success redraws authoritative snapshot',document.querySelector('[data-slot="2"] .skills-slot-name').textContent==='闪现');
-    var fastPreferenceTraffic=__sent.length;fastConfirmation.click();
-    ok('header switches and persists the opt-in fast loadout mode without authority traffic',!document.querySelector('.workbench-modal')
-      &&SkillsPanel.debugState().loadoutConfirmationMode==='fast'
-      &&localStorage.getItem('cf7.skills.loadoutConfirmationMode')==='fast'
-      &&fastConfirmation.getAttribute('aria-pressed')==='true'&&safeConfirmation.getAttribute('aria-pressed')==='false'
-      &&__sent.length===fastPreferenceTraffic&&__toasts[__toasts.length-1].indexOf('替换和卸载将直接执行')>=0);
-    row('旋风斩').click();var fastEquipCount=sent('equip').length;document.querySelector('[data-slot="2"] .skills-slot-main').click();
-    ok('fast mode bypasses replacement confirmation and starts the same atomic equip',!document.querySelector('.workbench-modal')&&sent('equip').length===fastEquipCount+1);
-    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey==='旋风斩'},300);
-    var fastUnequipCount=sent('unequip').length;document.querySelector('[data-slot="2"] .skills-slot-clear').click();
-    ok('fast mode bypasses unequip confirmation without changing the write contract',!document.querySelector('.workbench-modal')&&sent('unequip').length===fastUnequipCount+1);
+    var dblEquipCount=sent('equip').length;row('旋风斩').dispatchEvent(new MouseEvent('dblclick',{bubbles:true}));
+    ok('double-clicking a skill row equips it into the first empty hotbar slot directly',!document.querySelector('.workbench-modal')&&sent('equip').length===dblEquipCount+1&&sent('equip').slice(-1)[0].payload.slot===1);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[0].skillKey==='旋风斩'},300);
+    var ctxUnequipCount=sent('unequip').length;document.querySelector('[data-slot="1"] .skills-slot-main').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true}));
+    ok('right-clicking an occupied hotbar slot unequips directly without modal',!document.querySelector('.workbench-modal')&&sent('unequip').length===ctxUnequipCount+1&&sent('unequip').slice(-1)[0].payload.slot===1);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[0].skillKey===null},300);
+    var clearUnequipCount=sent('unequip').length;document.querySelector('[data-slot="2"] .skills-slot-clear').click();
+    ok('clicking clear button on occupied hotbar slot unequips directly without modal',!document.querySelector('.workbench-modal')&&sent('unequip').length===clearUnequipCount+1);
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[1].skillKey===null},300);
-    safeConfirmation.click();
-    ok('confirmation preference can return to the safe default in place',SkillsPanel.debugState().loadoutConfirmationMode==='safe'
-      &&localStorage.getItem('cf7.skills.loadoutConfirmationMode')==='safe'
-      &&safeConfirmation.getAttribute('aria-pressed')==='true'&&fastConfirmation.getAttribute('aria-pressed')==='false'
-      &&__toasts[__toasts.length-1].indexOf('替换和卸载前会确认')>=0);
     row('闪现').click();var emptyEquipCount=sent('equip').length;document.querySelector('[data-slot="4"] .skills-slot-main').click();
-    ok('safe mode equips an empty slot directly without a redundant modal',!document.querySelector('.workbench-modal')&&sent('equip').length===emptyEquipCount+1);
+    ok('equipping an empty slot executes directly without a modal',!document.querySelector('.workbench-modal')&&sent('equip').length===emptyEquipCount+1);
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[3].skillKey==='闪现'},300);
+    var dragOffCount=sent('unequip').length;
+    var dragOffSlot=document.querySelector('[data-slot="4"]'),dragOffRect=dragOffSlot.getBoundingClientRect(),libRect=document.querySelector('.skills-library-view').getBoundingClientRect();
+    dragOffSlot.querySelector('.skills-slot-main').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:49,button:0,isPrimary:true,clientX:dragOffRect.left+24,clientY:dragOffRect.top+24}));
+    document.dispatchEvent(new PointerEvent('pointermove',{bubbles:true,pointerId:49,clientX:libRect.left+80,clientY:libRect.top+80}));
+    document.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:49,clientX:libRect.left+80,clientY:libRect.top+80}));
+    await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[3].skillKey===null},300);
+    ok('dragging a hotbar slot back onto the skill library unequips directly',!document.querySelector('.workbench-modal')&&sent('unequip').length===dragOffCount+1&&sent('unequip').slice(-1)[0].payload.slot===4);
+    await wait(90);
+    row('闪现').click();document.querySelector('[data-slot="4"] .skills-slot-main').click();
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[3].skillKey==='闪现'},300);
     row('铁壁').click();var passiveButton=document.querySelector('.skills-detail-actions .skills-action-btn.primary');passiveButton.click();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&learnedRows[2].enabled===false});
     ok('pure passive uses setPassive rather than a slot',sent('setPassive').slice(-1)[0].payload.enabled===false);
@@ -449,7 +452,7 @@ window.Icons={
       &&keyboardReorder.payload.targetIndex===keyboardTargetIndex&&document.activeElement===keyboardOrderFocused
       &&keyboardOrderFocusedRect.top>=keyboardOrderListRect.top-1&&keyboardOrderFocusedRect.bottom<=keyboardOrderListRect.bottom+1);
     keyboardOrderList.style.cssText=keyboardOrderListStyle;keyboardOrderList.scrollTop=0;
-    var unknownClear=document.querySelector('[data-slot="12"] .skills-slot-clear');unknownClear.click();clickModalConfirm();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);
+    var unknownClear=document.querySelector('[data-slot="12"] .skills-slot-clear');unknownClear.click();await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},300);
     ok('unknown legacy slot remains safely unequippable',sent('unequip').some(function(x){return x.payload.slot===12})&&loadout[11].skillKey===null);
     row('重复技').click();
     ok('duplicate skill exposes a player-facing warning and blocks writes',document.querySelector('.skills-corrupt-warning')
@@ -533,14 +536,9 @@ window.Icons={
     ok('pointer/touch drag to an empty slot shares the direct safe-mode equip path',!document.querySelector('.workbench-modal')&&sent('equip').slice(-1)[0].payload.slot===7);
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[6].skillKey==='旋风斩'},300);
     var slotSevenClear=document.querySelector('[data-slot="7"] .skills-slot-clear');slotSevenClear.focus();slotSevenClear.click();
-    ok('safe-mode unequip still asks before the reversible write',document.querySelector('.workbench-modal[data-modal-kind="skills-unequip-confirm"]'));
-    document.querySelector('.workbench-modal-action[data-action="cancel"]').click();
-    ok('modal cancel restores keyboard focus',document.activeElement===slotSevenClear);
-    document.querySelector('[data-slot="7"] .skills-slot-clear').click();clickModalConfirm();
+    ok('direct unequip clears slot immediately without modal',!document.querySelector('.workbench-modal')&&sent('unequip').slice(-1)[0].payload.slot===7);
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&loadout[6].skillKey===null},300);
 
-    document.querySelector('[data-confirmation-mode="fast"]').click();
-    ok('fast confirmation preference remains active for trainer safety coverage',SkillsPanel.debugState().loadoutConfirmationMode==='fast');
     __host.snapshotDelay=90;document.querySelector('.skills-refresh-btn').click();
     setHost({instance:'inst-trainer-A',view:'trainer',trainerSession:'trainer-A',snapshotDelay:0});
     await until(function(){return SkillsPanel.debugState().view==='trainer'&&document.querySelector('.skills-trainer-actions')});await wait(110);
@@ -552,7 +550,7 @@ window.Icons={
         &&trainerProfileShell.getAttribute('data-profile')==='library-decision'
         &&trainerProfileShell.scrollWidth<=trainerProfileShell.clientWidth+1);
     ok('trainer omits the manage-only loadout confirmation control',!document.querySelector('.skills-confirmation-toggle')
-      &&document.querySelector('.skills-density-toggle')&&SkillsPanel.debugState().loadoutConfirmationMode==='fast');
+      &&document.querySelector('.skills-density-toggle')&&SkillsPanel.debugState().loadoutConfirmationMode==='direct');
     ok('trainer consumes full projected entries',row('新手冲拳')&&document.querySelector('.skills-detail-meta').textContent.indexOf('MP')>=0);
     ok('trainer decision rail uses the right pane for persistent description and authority-backed balance',document.querySelector('.skills-trainer-summary')
       &&document.querySelector('.skills-trainer-description').textContent.indexOf('教师提供的闪现说明')>=0
@@ -570,7 +568,7 @@ window.Icons={
     var trainerHelpCapabilityDuring=helpCapability();
     ok('trainer help switches to learning rules and page navigation',document.querySelector('.workbench-modal').getAttribute('aria-label')==='技能研习帮助'
       &&document.querySelector('.workbench-modal').textContent.indexOf('自动计算消耗')>=0
-      &&document.querySelector('.workbench-modal').textContent.indexOf('第一次固定学习 1 级')>=0
+      &&document.querySelector('.workbench-modal').textContent.indexOf('未学与已学技能均可直接选择任意可负担目标等级')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('“管理技能”')>=0
       &&document.querySelector('.workbench-modal').textContent.indexOf('直接拖到目标槽位')<0);
     document.querySelector('.workbench-modal-action.primary').click();
@@ -581,7 +579,10 @@ window.Icons={
     var wrongTrainerSession=authoritativeSnapshot('trainer');wrongTrainerSession.trainer.session='trainer-other';
     ok('trainer rejects a snapshot from another capability',SkillsPanel.validateSnapshot(wrongTrainerSession).ok===false);
     var previewCountBeforeSelection=sent('learnPreview').length;row('新手冲拳').click();
-    ok('unlearned target is frozen to level one',document.querySelector('.skills-level-stepper').textContent.indexOf('Lv.1（初学固定）')>=0&&!document.querySelector('.skills-level-btn'));
+    var initRange=document.querySelector('.skills-level-range'),initPreset=document.querySelector('.skills-target-preset');
+    ok('unlearned skill exposes direct multi-level target selector up to affordable max',initRange
+      &&initRange.min==='1'&&initRange.max==='10'&&document.querySelectorAll('.skills-level-btn').length===2
+      &&initPreset&&initPreset.textContent==='学至满级');
     await until(function(){return sent('learnPreview').length>previewCountBeforeSelection&&document.querySelector('.skills-trainer-commit')&&!document.querySelector('.skills-trainer-commit').disabled},300);
     var preview=sent('learnPreview').slice(-1)[0];
     ok('selection automatically previews with trainer session revision and desired level',preview.payload.trainerSession==='trainer-A'&&preview.payload.desiredLevel===1&&Number.isInteger(preview.payload.expectedRevision));
@@ -590,15 +591,21 @@ window.Icons={
     trainerCommit.focus();
     ok('valid preview fills cost, balance and requirements before enabling the sticky action',validPreviewNode.textContent.indexOf('160 → 155')>=0
       &&getComputedStyle(validPreviewNode).backgroundImage!=='none'
-      &&document.querySelectorAll('.skills-trainer-requirements .ok').length===3
+      &&document.querySelectorAll('.skills-trainer-requirements .ok').length===2
       &&!trainerCommit.disabled&&document.activeElement===trainerCommit);
-    var previewCountBeforeFreshen=sent('learnPreview').length;await wait(170);document.querySelector('.skills-trainer-commit').click();
-    await until(function(){return sent('learnPreview').length>previewCountBeforeFreshen&&document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')},300);
-    ok('stale automatic preview is silently refreshed before confirmation',sent('learnPreview').length===previewCountBeforeFreshen+1);
-    ok('fast loadout mode never bypasses the skill-point learning confirmation',document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')
-      &&SkillsPanel.debugState().loadoutConfirmationMode==='fast'&&sent('learnCommit').length===0);
-    clickModalConfirm();await wait(40);
-    ok('learn commit sends only opaque token in nested payload',sent('learnCommit').slice(-1)[0].payload.expectedLearnToken==='learn.harness.token'&&Object.keys(sent('learnCommit').slice(-1)[0].payload).sort().join(',')==='expectedLearnToken,v');
+    var previewCountBeforeInitMulti=sent('learnPreview').length;
+    document.querySelector('.skills-level-mark[data-level="4"]').click();
+    await until(function(){return sent('learnPreview').length>previewCountBeforeInitMulti&&!SkillsPanel.debugState().previewLoading},300);
+    ok('unlearned multi-level selection previews UnlockSP + (N-1)*UpgradeSP accurately',
+      sent('learnPreview').slice(-1)[0].payload.desiredLevel===4
+      &&document.querySelector('.skills-cost-card').textContent.indexOf('160 → 140')>=0);
+    var previewCountBeforeFreshen=sent('learnPreview').length,commitCountBeforeFreshen=sent('learnCommit').length;await wait(170);document.querySelector('.skills-trainer-commit').click();
+    await until(function(){return sent('learnPreview').length>previewCountBeforeFreshen&&sent('learnCommit').length>commitCountBeforeFreshen},300);
+    ok('stale automatic preview is silently refreshed before R2 button-is-confirm commit',sent('learnPreview').length===previewCountBeforeFreshen+1&&!document.querySelector('.workbench-modal'));
+    await wait(40);
+    ok('learn commit sends only opaque token in nested payload and applies direct target level',sent('learnCommit').slice(-1)[0].payload.expectedLearnToken==='learn.harness.token'
+      &&Object.keys(sent('learnCommit').slice(-1)[0].payload).sort().join(',')==='expectedLearnToken,v'
+      &&learnedRows.find(function(x){return x.skillKey==='新手冲拳'}).level===4);
     row('闪现').click();await until(function(){return !SkillsPanel.debugState().previewLoading&&document.querySelectorAll('.skills-level-btn').length===2},300);
     var targetRange=document.querySelector('.skills-level-range'),targetValue=document.querySelector('.skills-level-value');
     ok('learned skills expose one exact integer range with number entry and no redundant plus-one preset',targetRange&&targetValue
@@ -714,7 +721,7 @@ window.Icons={
       if(node.getAttribute&&node.getAttribute('data-skill-key')===firstResponseKey)fullRefreshes++
     })})});responseObserver.observe(responseList,{childList:true});
     var previewBeforeCommit=sent('learnPreview').length;
-    document.querySelector('.skills-trainer-commit').click();clickModalConfirm();
+    document.querySelector('.skills-trainer-commit').click();
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&sent('learnPreview').length>previewBeforeCommit
       &&!SkillsPanel.debugState().previewLoading},400);await wait(30);responseObserver.disconnect();
     var responseCommit=sent('learnCommit').slice(-1)[0];
@@ -745,7 +752,7 @@ window.Icons={
     document.querySelector('.skills-trainer-expired .skills-action-btn.primary').click();await until(function(){return Panels.getActive()===null});
     setHost({instance:'inst-trainer-expired-commit',view:'trainer',trainerSession:'trainer-EC'});await until(function(){return row('新手冲拳')&&!SkillsPanel.debugState().previewLoading});
     row('新手冲拳').click();await until(function(){return document.querySelector('.skills-trainer-commit')&&!document.querySelector('.skills-trainer-commit').disabled});
-    __host.expireNextWrite=true;document.querySelector('.skills-trainer-commit').click();await until(function(){return document.querySelector('.workbench-modal[data-modal-kind="skills-learn-confirm"]')});clickModalConfirm();
+    __host.expireNextWrite=true;document.querySelector('.skills-trainer-commit').click();
     await until(function(){return SkillsPanel.debugState().trainerExpired&&document.querySelector('.skills-trainer-expired')});
     ok('expired commit stops in place without replaying the write',Panels.getActive()==='skills'&&sent('learnCommit').slice(-1)[0].payload.expectedLearnToken==='learn.harness.token');
     document.querySelector('.skills-trainer-expired .skills-action-btn.primary').click();await until(function(){return Panels.getActive()===null});
@@ -755,7 +762,7 @@ window.Icons={
     row('新手冲拳').click();await until(function(){return document.querySelector('.skills-trainer-commit')&&!document.querySelector('.skills-trainer-commit').disabled});
     var recoveryCommits=sent('learnCommit').length,recoveryPreviews=sent('learnPreview').length;
     __host.malformedNextWrite=true;__host.expireTrainerReconcile=true;
-    document.querySelector('.skills-trainer-commit').click();clickModalConfirm();
+    document.querySelector('.skills-trainer-commit').click();
     await until(function(){return SkillsPanel.debugState().view==='manage'&&SkillsPanel.debugState().coordinator.state==='idle'},600);
     var recoveryReads=sent('snapshot').filter(function(x){return x.panelInstanceId==='inst-trainer-recovery'&&x.payload.reconcileId});
     ok('expired teacher is reconciled in place through management with no new permission or learning replay',
@@ -860,7 +867,7 @@ window.Icons={
       &&returnEscapeClose.reason===undefined);
     setHost({instance:'inst-manage-B',view:'manage',canReturnTrainer:false,returnSession:null});await until(function(){return row('闪现')});
 
-    row('闪现').click();__host.writeDelay=75;document.querySelector('[data-slot="1"] .skills-slot-main').click();clickModalConfirm();
+    row('闪现').click();__host.writeDelay=75;document.querySelector('[data-slot="1"] .skills-slot-main').click();
     __host.instance='inst-trainer-queued';__host.view='trainer';__host.trainerSession='trainer-Q';Panels.open('skills',{panelInstanceId:'inst-trainer-queued',view:'trainer',trainerSession:'trainer-Q'});
     __host.instance='inst-manage-last';__host.view='manage';Panels.open('skills',{panelInstanceId:'inst-manage-last',view:'manage'});
     ok('write-pending rebind keeps old session busy',SkillsPanel.debugState().coordinator.queuedRebind&&SkillsPanel.debugState().coordinator.state==='write_pending');
@@ -868,7 +875,7 @@ window.Icons={
     ok('pending rebind applies only the last intent after settlement',SkillsPanel.debugState().view==='manage'&&SkillsPanel.debugState().coordinator.panelInstanceId==='inst-manage-last');
 
     row('旋风斩').click();__host.unknownNextWrite=true;__host.writeDelay=8;
-    document.querySelector('[data-slot="5"] .skills-slot-main').click();clickModalConfirm();
+    document.querySelector('[data-slot="5"] .skills-slot-main').click();
     await until(function(){return SkillsPanel.debugState().coordinator.state==='needs_reconcile'},500);
     var reconcileRequest=sent('snapshot').filter(function(x){return x.payload.reconcileId}).slice(-1)[0];
     ok('client timeout enters needs_reconcile',SkillsPanel.debugState().coordinator.state==='needs_reconcile');
@@ -881,13 +888,13 @@ window.Icons={
     ok('post-write reconciled watermark is the only clear path',SkillsPanel.debugState().coordinator.lastAppliedWriteEpoch===__host.writeEpoch);
     ok('unknown writes are never automatically replayed',sent('equip').filter(function(x){return x.payload.slot===5}).length===1);
 
-    row('闪现').click();__host.malformedNextWrite=true;document.querySelector('[data-slot="6"] .skills-slot-main').click();clickModalConfirm();
+    row('闪现').click();__host.malformedNextWrite=true;document.querySelector('[data-slot="6"] .skills-slot-main').click();
     await until(function(){return sent('snapshot').filter(function(x){return x.payload.reconcileId}).length>=2},500);
     ok('Host requiresReconcile starts a player-facing automatic check',__toasts.some(function(x){return x.indexOf('正在自动核对')>=0}));
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'},500);
 
     __host.snapshotDelay=115;var revisionBeforeLate=__host.revision;document.querySelector('.skills-refresh-btn').click();
-    row('闪现').click();document.querySelector('[data-slot="8"] .skills-slot-main').click();clickModalConfirm();
+    row('闪现').click();document.querySelector('[data-slot="8"] .skills-slot-main').click();
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&__host.revision>revisionBeforeLate},500);
     var appliedAfterWrite=SkillsPanel.debugState().snapshotRevision;await wait(140);__host.snapshotDelay=0;
     ok('same-instance R1 then write then late R1 cannot roll revision back',SkillsPanel.debugState().snapshotRevision===appliedAfterWrite&&appliedAfterWrite===__host.revision);

@@ -4,7 +4,13 @@
     var facets = typeof module !== 'undefined' && module.exports
         ? require('./character-build-facet-counts.js')
         : root && root.CharacterBuildFacetCounts;
-    var api = factory(facets);
+    var drugControls = typeof module !== 'undefined' && module.exports
+        ? require('./character-build-drug-controls.js')
+        : root && (root.CharacterBuildDrugControls || root.CF7 && root.CF7.CharacterBuildDrugControls);
+    var dropPolicy = typeof module !== 'undefined' && module.exports
+        ? require('../loadout-picker/loadout-picker-drop-policy.js')
+        : root && (root.LoadoutPickerDropPolicy || root.CF7 && root.CF7.LoadoutPickerDropPolicy);
+    var api = factory(facets, dropPolicy, drugControls);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) {
         root.CF7 = root.CF7 || {};
@@ -12,7 +18,7 @@
         root.CharacterBuildLoadoutPresenter = api;
     }
 })(typeof window !== 'undefined' ? window : globalThis,
-function(FacetCountsModule) {
+function(FacetCountsModule, DropPolicyModule, DrugControlsModule) {
     'use strict';
     if (!FacetCountsModule || typeof FacetCountsModule.decorateSlot !== 'function') {
         throw new Error('CharacterBuildLoadoutPresenter requires CharacterBuildFacetCounts');
@@ -153,6 +159,13 @@ function(FacetCountsModule) {
                 } : null
             });
         };
+        var quickMod = DrugControlsModule || (typeof window !== 'undefined'
+            && (window.CharacterBuildDrugControls || window.CF7 && window.CF7.CharacterBuildDrugControls));
+        var dropMod = DropPolicyModule || (typeof window !== 'undefined'
+            && (window.LoadoutPickerDropPolicy || window.CF7 && window.CF7.LoadoutPickerDropPolicy));
+        if (quickMod && typeof quickMod.installSlotQuickActions === 'function') {
+            quickMod.installSlotQuickActions(prototype, dropMod);
+        }
         return prototype;
     }
 

@@ -61,6 +61,15 @@
             var nav = navOf(navRef);
             return nav ? nav.request(sourceId, {opener:opener}) : false;
         };
+        ports.acquireLoadoutSession = function(callback) {
+            var nav = navOf(navRef);
+            return nav ? nav.acquireLoadoutSession(callback)
+                : (typeof callback === 'function' && callback(null), false);
+        };
+        ports.canFinalizeClose = function() {
+            var nav = navOf(navRef);
+            return nav && typeof nav.canFinalizeClose === 'function' ? nav.canFinalizeClose() : true;
+        };
         return ports;
     }
 
@@ -121,9 +130,10 @@
                     return context().panelInstanceId || '';
                 },
                 onStatus:function(state, reason) {
-                    var shell = context().shell;
+                    var cur = context();
+                    var shell = cur.shell;
                     if (shell) shell.setStatus(
-                        reason === 'idle' ? '已同步' : '正在同步暂存',
+                        reason === 'idle' ? '已同步' : (cur.view === 'tuning' ? '正在同步装备' : '正在同步暂存'),
                         reason === 'idle' ? 'ready' : 'busy');
                 },
                 toast:toast
@@ -276,8 +286,9 @@
                 if (!_authority) return proceed();
                 _authority.release();
                 // A headless session must finish before Build opens its own session.
-                // A borrowed Build session stays live and resumes the same generation.
-                if (!_authority.debugState().session) return proceed();
+                // Standalone tuning reuses the same headless session, and a borrowed
+                // Build session stays live across local views.
+                if (next !== 'build' || !_authority.debugState().session) return proceed();
                 _switching = true;
                 var started = _authority.finalize(function(accepted) {
                     _switching = false;
@@ -328,7 +339,7 @@
         function finalizeClose(reason) {
             var build = context().build;
             if (_authority && !_authority.canClose()) {
-                toast('暂存领取仍在确认，请稍候关闭。');
+                toast(context().view === 'tuning' ? '装备修改仍在确认，请稍候关闭。' : '暂存领取仍在确认，请稍候关闭。');
                 return false;
             }
             var owner = build || _authority;
@@ -370,8 +381,27 @@
             _pendingEntry = null;
             _switching = false;
         }
+        function canFinalizeClose() {
+            return !_authority || _authority.canClose();
+        }
+        function acquireLoadoutSession(callback) {
+            callback = typeof callback === 'function' ? callback : function() {};
+            var c = context();
+            if (_destroyed || c.closing || (!isActive() && !c.panelInstanceId)) {
+                callback(null);
+                return false;
+            }
+            var authority = ensureAuthority();
+            if (!authority || typeof authority.acquireSession !== 'function') {
+                callback(null);
+                return false;
+            }
+            return authority.acquireSession(callback);
+        }
         return {
             request:request,
+            acquireLoadoutSession:acquireLoadoutSession,
+            canFinalizeClose:canFinalizeClose,
             prepareView:prepareView,
             consumeEscape:consumeEscape,
             onView:onView,

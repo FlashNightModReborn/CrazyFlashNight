@@ -10,24 +10,32 @@
     function affordableMaxLevel(entry, skillPoints) {
         var current = Number(entry && entry.currentLevel || 0);
         var max = Number(entry && entry.maxLevel || 1);
+        var unlockSP = Number(entry && entry.unlockSP);
         var upgradeSP = Number(entry && entry.upgradeSP);
         var points = Number(skillPoints);
         if (!isFinite(current)) current = 0;
         if (!isFinite(max)) max = 1;
         current = Math.max(0, Math.floor(current));
         max = Math.max(1, Math.floor(max));
-        if (current <= 0) return 1;
+        if (!isFinite(points) || points < 0) points = 0;
+        var available = Math.floor(points);
+        if (current <= 0) {
+            if (!isFinite(unlockSP) || unlockSP < 0) unlockSP = 0;
+            if (available < unlockSP) return 0;
+            if (max <= 1) return 1;
+            if (upgradeSP === 0) return max;
+            if (!isFinite(upgradeSP) || upgradeSP < 0) return 1;
+            return Math.min(max, 1 + Math.floor((available - unlockSP) / upgradeSP));
+        }
         if (current >= max) return max;
         if (upgradeSP === 0) return max;
         if (!isFinite(upgradeSP) || upgradeSP < 0) return current;
-        if (!isFinite(points) || points < 0) points = 0;
-        return Math.min(max, current + Math.floor(Math.floor(points) / upgradeSP));
+        return Math.min(max, current + Math.floor(available / upgradeSP));
     }
 
     function initialDesiredLevel(entry, skillPoints) {
         var current = Number(entry && entry.currentLevel || 0);
         var max = affordableMaxLevel(entry, skillPoints);
-        if (current <= 0) return 1;
         return max > current ? current + 1 : current;
     }
 
@@ -52,10 +60,10 @@
         var current = Number(entry && entry.currentLevel || 0);
         var max = affordableMaxLevel(entry, skillPoints);
         var numeric = Number(level);
-        if (current > 0 && max <= current) return current;
+        if (max <= current) return current;
         if (!isFinite(numeric)) numeric = current + 1;
         numeric = Math.round(numeric);
-        return current <= 0 ? 1 : Math.max(current + 1, Math.min(max, numeric));
+        return Math.max(current + 1, Math.min(max, numeric));
     }
 
     function previewMatches(preview, entry, desiredLevel) {

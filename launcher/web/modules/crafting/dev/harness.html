@@ -419,6 +419,7 @@ function snapshot(category){
     nestedRecipe.plannedCrafts=Number(plannedCraftsByRecipe[nestedRecipe.recipeId]||0);
     return{success:true,v:1,category:category,gender:'女',note:'跨分类嵌套配方',
       procurement:{revision:planRevision,directShopNavigation:window.__procurementDirectShopNavigation===true},
+      battleBoxAccessible:true,
       balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
       recipes:[nestedRecipe]}
   }
@@ -426,6 +427,7 @@ function snapshot(category){
     note:window.__previewEnhancementLevel===1
       ?'改装后的装备默认强化等级为 1':'铁匠效果：减少货币消耗',
     procurement:{revision:planRevision,directShopNavigation:window.__procurementDirectShopNavigation===true},
+    battleBoxAccessible:true,
     balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},recipes:[
     recipe(0,{recipeIndex:0,title:'新测试枪图纸',batchEligible:false,output:catalogOutput(weaponOutput(false)),baseCost:{money:100,kpoints:0},materialCount:2}),
     recipe(1,{recipeIndex:1,title:'测试药剂图纸',batchEligible:true,output:catalogOutput(stackOutput(1)),baseCost:{money:0,kpoints:0},materialCount:1})
@@ -446,20 +448,23 @@ function materialRecipeSnapshot(category){
   }
   return value
 }
-function preview(index,count,category){
+function preview(index,count,category,useBattleBox){
   category=String(category||'武器合成');
   count=Number(count)||1;
+  useBattleBox=useBattleBox===true;
   if(category==='基础防具'){
     var nestedOutput=stackOutput(count),nestedMaterial=projectedMaterial(
       '测试矿石',count,materials,true,materials>=count,'material_collection');
     var nestedDelivery=deliveryFor(nestedOutput),nestedCanCommit=materials>=count;
-    return{success:true,v:1,category:category,recipeIndex:index,craftCount:count,
+    var nestedResult={success:true,v:1,category:category,recipeIndex:index,craftCount:count,
       batchEligible:true,maxCraftCount:Math.min(99,materials),output:nestedOutput,
       materials:[nestedMaterial],cost:{money:0,kpoints:0},
       balance:{money:money,kpoints:100},skills:{reverseLevel:2,smithEnabled:true,smithLevel:2},
       levelAllowed:true,enoughMaterials:nestedCanCommit,enoughMoney:true,enoughKpoints:true,
       enoughSpace:true,canCommit:nestedCanCommit,
-      blockingError:nestedCanCommit?'':'material_missing',outputDelivery:nestedDelivery}
+      blockingError:nestedCanCommit?'':'material_missing',outputDelivery:nestedDelivery};
+    if(useBattleBox)nestedResult.useBattleBox=true;
+    return nestedResult
   }
   var batch=index===1,max=batch?Math.min(99,materials):1;
   var enoughMaterials=index===0?materials>=2:materials>=count;
@@ -472,8 +477,9 @@ function preview(index,count,category){
   if(index===0&&window.__craftingHarnessScenario==='pg-crafting-procurement'){
     materialPlan.push(projectedEquipmentMaterial('缺失的测试装备',1,0,0,0,0));
     materialPlan.push(projectedEquipmentMaterial('强化不足的测试装备',13,1,1,1,1));
-    materialPlan.push(projectedEquipmentMaterial(
-      '战备箱中的测试装备',1,0,1,0,1,0,1,0,1));
+    var bbEquip=projectedEquipmentMaterial('战备箱中的测试装备',1,0,1,0,1,0,1,0,1);
+    if(useBattleBox){bbEquip.owned=1;bbEquip.maxEnhancement=1;bbEquip.enough=true;bbEquip.storageKind='battlebox'}
+    materialPlan.push(bbEquip);
     materialPlan.push(projectedEquipmentMaterial(
       '已装备的测试装备',1,0,1,0,1,1,0,1,0));
     materialPlan.push(projectedMaterial('测试药剂',1,0,true,false,'unavailable',[
@@ -493,12 +499,14 @@ function preview(index,count,category){
     enoughSpace:outputDelivery.available,canCommit:canCommit,
     blockingError:canCommit?'':(enoughMaterials?'insufficient_money':'material_missing'),
     outputDelivery:outputDelivery};
+  if(useBattleBox)result.useBattleBox=true;
   if(canCommit){
     result.craftToken='craft.harness.'+index+'.'+commitCount;
     result.acceptedPlan={category:result.category,recipeIndex:index,craftCount:count,
       output:JSON.parse(JSON.stringify(output)),materials:JSON.parse(JSON.stringify(materialPlan)),
       outputDelivery:JSON.parse(JSON.stringify(outputDelivery)),
       outputPrototype:outputPrototypeFor(output),cost:JSON.parse(JSON.stringify(cost))};
+    if(useBattleBox)result.acceptedPlan.useBattleBox=true;
     lastAcceptedPlan=JSON.parse(JSON.stringify(result.acceptedPlan));
   }else lastAcceptedPlan=null;
   return result
@@ -721,7 +729,7 @@ function respond(message){
     panelInstanceId:message.panelInstanceId,cmd:message.cmd,callId:message.callId};
   if(message.cmd==='snapshot')Object.assign(result,materialRecipeSnapshot(message.payload&&message.payload.category));
   else if(message.cmd==='preview')Object.assign(result,preview(message.payload.recipeIndex,
-    message.payload.craftCount,message.payload.category));
+    message.payload.craftCount,message.payload.category,message.payload.useBattleBox===true));
   else if(message.cmd==='setPlan'){
     var requestedRecipeId=String(message.payload.recipeId||''),requestedPlan=Number(message.payload.plannedCrafts),
       expectedRevision=Number(message.payload.expectedRevision);
@@ -863,6 +871,7 @@ async function exerciseAuthorityRefresh(name,error){
 var pgOrganizerDeps=[
   'modules/inventory-runtime.js','modules/grade-presentation.js','modules/inventory-ui.js','modules/inventory-workbench-config.js',
   'modules/inventory-workbench-quick-transfer.js','modules/inventory-workbench-owned-view.js',
+  'modules/inventory-workbench-stash-source.js','modules/inventory-workbench-storage-source.js','modules/inventory-workbench-storage-controls.js',
   'modules/inventory-storage-workbench.js','modules/crafting-inventory-organizer.js'
 ];
 function sameLifecycle(left,right){return !!left&&!!right&&left.owner===right.owner
@@ -986,9 +995,9 @@ async function runPgCraftCurrentCoverage(){
   var organizerState=typeof CraftingInventoryOrganizer!=='undefined'&&CraftingInventoryOrganizer.debugState
     ?CraftingInventoryOrganizer.debugState():null;
   var dependencyNodes=document.querySelectorAll('script[data-pg-craft-dependency]');
-  ok('PG current coverage loads the exact eight production organizer dependencies in order',
+  ok('PG current coverage loads the exact production organizer dependencies in order',
     mounted&&__organizerDeps.join('|')===pgOrganizerDeps.join('|')
-      &&__organizerLoadedDeps.join('|')===pgOrganizerDeps.join('|')&&dependencyNodes.length===8
+      &&__organizerLoadedDeps.join('|')===pgOrganizerDeps.join('|')&&dependencyNodes.length===pgOrganizerDeps.length
       &&typeof CraftingInventoryOrganizer.debugState==='function'
       &&typeof InventoryStorageWorkbench.debugState==='function',
     JSON.stringify({requested:__organizerDeps,loaded:__organizerLoadedDeps,nodes:dependencyNodes.length}));
@@ -2075,7 +2084,7 @@ async function runPgCraftingProcurement(){
       &&outputSummary.textContent.indexOf('已装备 1')>=0
       &&outputSummary.textContent.indexOf('战备箱 1')>=0
       &&outputSummary.textContent.indexOf('强化 +1')<0
-      &&detailMeta&&detailMeta.textContent==='提交前会再次校验材料与费用'
+      &&detailMeta&&detailMeta.textContent==='改装后的装备默认强化等级为 1'
       &&outputIconButton&&outputIconButton.offsetWidth===68
       &&parseFloat(getComputedStyle(outputIconButton).borderTopWidth)===0
       &&outputIconImage&&outputIconImage.offsetWidth===64&&outputIconImage.offsetHeight===64,
@@ -2253,6 +2262,25 @@ async function runPgCraftingProcurement(){
       enhancement:weakEquipment&&weakEquipment.textContent,
       battleBox:battleBoxEquipment&&battleBoxEquipment.textContent,
       equipped:equippedEquipment&&equippedEquipment.textContent}));
+
+  var bbToggle=document.querySelector('.crafting-battlebox-toggle');
+  var bbPreviewBefore=__sent.filter(function(m){return m.cmd==='preview'&&m.payload&&m.payload.useBattleBox===true}).length;
+  if(bbToggle)bbToggle.click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().useBattleBox===true},1200);
+  var bbToggleOn=document.querySelector('.crafting-battlebox-toggle');
+  var bbStatusOn=document.querySelector('[data-material-name="战备箱中的测试装备"] .crafting-material-status');
+  var bbRowOn=document.querySelector('[data-material-name="战备箱中的测试装备"]');
+  var bbPreviewAfter=__sent.filter(function(m){return m.cmd==='preview'&&m.payload&&m.payload.useBattleBox===true}).length;
+  if(bbToggleOn)bbToggleOn.click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().useBattleBox===false},1200);
+  ok('PG procurement opt-in BattleBox toggle sends useBattleBox preview and resolves BattleBox material ready state',
+    bbToggle&&bbPreviewAfter===bbPreviewBefore+1
+      &&bbToggleOn&&bbToggleOn.getAttribute('aria-checked')==='true'
+      &&bbStatusOn&&bbStatusOn.textContent==='装备满足 · 含战备箱'
+      &&bbRowOn&&bbRowOn.classList.contains('ok')&&!bbRowOn.classList.contains('procurement-relocate')
+      &&CraftingPanel.debugState().useBattleBox===false,
+    JSON.stringify({before:bbPreviewBefore,after:bbPreviewAfter,
+      status:bbStatusOn&&bbStatusOn.textContent,rowClass:bbRowOn&&bbRowOn.className}));
 
   window.__nextMaterialShopNavigationFailure='access_denied';
   var v2CatalogBefore=__sent.filter(function(message){return message.domain==='crafting'&&message.cmd==='materials'&&message.payload.v===2}).length;
@@ -2597,15 +2625,15 @@ try{
     JSON.stringify({catalog:fallbackCatalog.scrollTop,detail:fallbackDetail.scrollTop,selected:CraftingPanel.debugState().selectedIndex}));
   document.querySelector('.crafting-craftable-toggle').click();fallbackCatalog.style.cssText=fallbackCatalogStyle;fallbackDetail.style.cssText=fallbackDetailStyle;
   materials=30;Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelector('.crafting-output-card')});
-  var reconcileToasts=__toasts.filter(function(x){return x.indexOf('对账')>=0}).length;
+  var reconcileToasts=__toasts.filter(function(x){return x.indexOf('重新同步')>=0}).length;
   __queueCraftingFault({cmd:'commit',mode:'send_false'});document.querySelector('.crafting-commit-btn').click();await wait();
-  ok('commit rejected before dispatch stays definitive and operable',!CraftingPanel.debugState().needsReconcile&&__toasts.filter(function(x){return x.indexOf('对账')>=0}).length===reconcileToasts&&!document.querySelector('.crafting-commit-btn').disabled,JSON.stringify(CraftingPanel.debugState()));
+  ok('commit rejected before dispatch stays definitive and operable',!CraftingPanel.debugState().needsReconcile&&__toasts.filter(function(x){return x.indexOf('重新同步')>=0}).length===reconcileToasts&&!document.querySelector('.crafting-commit-btn').disabled,JSON.stringify(CraftingPanel.debugState()));
   var previewsBeforeDroppedWrite=__sent.filter(function(x){return x.cmd==='preview'}).length;
   __queueCraftingFault({cmd:'commit',mode:'drop'});document.querySelector('.crafting-commit-btn').click();
-  await waitFor(function(){return __toasts.filter(function(x){return x.indexOf('对账')>=0}).length>reconcileToasts&&!CraftingPanel.debugState().previewBusy},1400);
-  ok('issued commit drop enters reconcile and obtains fresh preview',__toasts.filter(function(x){return x.indexOf('对账')>=0}).length===reconcileToasts+1&&__sent.filter(function(x){return x.cmd==='preview'}).length>previewsBeforeDroppedWrite&&!CraftingPanel.debugState().needsReconcile&&!document.querySelector('.crafting-commit-btn').disabled,JSON.stringify(CraftingPanel.debugState()));
+  await waitFor(function(){return __toasts.filter(function(x){return x.indexOf('重新同步')>=0}).length>reconcileToasts&&!CraftingPanel.debugState().previewBusy},1400);
+  ok('issued commit drop enters reconcile and obtains fresh preview',__toasts.filter(function(x){return x.indexOf('重新同步')>=0}).length===reconcileToasts+1&&__sent.filter(function(x){return x.cmd==='preview'}).length>previewsBeforeDroppedWrite&&!CraftingPanel.debugState().needsReconcile&&!document.querySelector('.crafting-commit-btn').disabled,JSON.stringify(CraftingPanel.debugState()));
   window.__ambiguous=true;document.querySelector('.crafting-commit-btn').click();await wait();await wait();
-  ok('ambiguous commit triggers preview reconcile',__toasts.some(function(x){return x.indexOf('对账')>=0})&&__sent.filter(function(x){return x.cmd==='preview'}).length>=3);
+  ok('ambiguous commit triggers preview reconcile',__toasts.some(function(x){return x.indexOf('重新同步')>=0})&&__sent.filter(function(x){return x.cmd==='preview'}).length>=3);
   ok('preview clears reconcile gate',!CraftingPanel.debugState().needsReconcile&&!document.querySelector('.crafting-commit-btn').disabled);
   window.__previewDelay=60;var cards=document.querySelectorAll('.crafting-recipe-card');cards[1].click();cards[0].click();await new Promise(function(r){setTimeout(r,160)});window.__previewDelay=0;
   ok('rapid switch releases preview gate',!CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().previewCheckpoint.craftCount===1&&document.querySelector('.crafting-output-card').textContent.indexOf('新测试枪')>=0);
@@ -2739,7 +2767,7 @@ try{
       &&stableQuantity.getAttribute('data-max')==='99'&&stableQuantity.getAttribute('data-slider-max')==='99'
       &&stableQuantity.getAttribute('data-preset-max')==='30'&&!quantityInput.disabled&&stableCommit.disabled);
   var maximumRequests=__sent.filter(function(x){return x.cmd==='preview'}).length;
-  quantityButton('设为当前权威可合成上限').click();
+  quantityButton('设为当前可合成上限').click();
   await waitFor(function(){return !CraftingPanel.debugState().previewBusy&&CraftingPanel.debugState().craftCount===30});
   ok('maximum recovery uses preview max once and restores commit',
     __sent.filter(function(x){return x.cmd==='preview'}).length===maximumRequests+1&&!stableCommit.disabled);
@@ -3252,7 +3280,7 @@ try{
   ok('an undiscovered material creates no hidden source DOM, portrait mount, or resource hint',
     __portraitHarness.enemyCalls.length===enemyCallsBeforeUndiscovered
       &&__portraitHarness.shopCalls.length===shopCallsBeforeUndiscovered
-      &&document.querySelector('.crafting-material-sources').textContent.indexOf('尚未发现可核验的结构化来源')>=0
+      &&document.querySelector('.crafting-material-sources').textContent.indexOf('尚未发现该材料的获取途径')>=0
       &&!document.querySelector('.crafting-material-sources article')
       &&document.querySelectorAll('link[rel="prefetch"],link[rel="preload"][as="image"]').length===0);
 
@@ -3313,8 +3341,42 @@ try{
       disabled:materialReturnButton.disabled,message:materialReturn,
       keys:materialReturn&&Object.keys(materialReturn).sort()}));
   Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelectorAll('.crafting-recipe-card').length===2});
+  materials=30;
+  Panels.open('crafting',{category:'武器合成'});await waitFor(function(){return document.querySelectorAll('.crafting-recipe-card').length===2});
   document.querySelectorAll('.crafting-recipe-card')[1].click();
-  await waitFor(function(){var card=document.querySelector('.crafting-output-card');return card&&card.textContent.indexOf('测试药剂')>=0});
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&!document.querySelector('.crafting-commit-btn').disabled});
+  window.__previewDelay=80;
+  var queueCommitsBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
+  quantityButton('增加 1').click();
+  var queueCommitBtn=document.querySelector('.crafting-commit-btn');
+  var enabledDuringQtyPreview=!queueCommitBtn.disabled;
+  queueCommitBtn.dispatchEvent(new MouseEvent('mousedown',{bubbles:true,button:2}));
+  queueCommitBtn.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2}));
+  var rightClickQueued=!!CraftingPanel.debugState().queuedCommit;
+  queueCommitBtn.click();
+  var queuedDuringPreview=CraftingPanel.debugState().queuedCommit;
+  await waitFor(function(){return __sent.filter(function(x){return x.cmd==='commit'}).length===queueCommitsBefore+1&&!CraftingPanel.debugState().busy&&!CraftingPanel.debugState().previewBusy},1400);
+  ok('quantity change allows single-click queued commit after preview settles without right-click trigger',
+    enabledDuringQtyPreview&&!rightClickQueued&&queuedDuringPreview&&queuedDuringPreview.craftCount===2
+      &&__sent.filter(function(x){return x.cmd==='commit'}).length===queueCommitsBefore+1
+      &&!CraftingPanel.debugState().queuedCommit);
+  var cancelCommitsBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
+  quantityButton('增加 1').click();
+  document.querySelector('.crafting-commit-btn').click();
+  quantityButton('增加 1').click();
+  await waitFor(function(){var state=CraftingPanel.debugState();return !state.previewBusy&&state.craftCount===4},1200);
+  ok('changing quantity again cancels a previously queued commit intent',
+    !CraftingPanel.debugState().queuedCommit
+      &&__sent.filter(function(x){return x.cmd==='commit'}).length===cancelCommitsBefore);
+  var bbToggleCommitsBefore=__sent.filter(function(x){return x.cmd==='commit'}).length;
+  document.querySelector('.crafting-battlebox-toggle').click();
+  var commitDisabledDuringBbToggle=document.querySelector('.crafting-commit-btn').disabled;
+  document.querySelector('.crafting-commit-btn').click();
+  await waitFor(function(){return !CraftingPanel.debugState().previewBusy},1200);
+  ok('toggling battlebox clears stale preview and disables commit until authoritative preview settles',
+    commitDisabledDuringBbToggle&&!CraftingPanel.debugState().queuedCommit
+      &&__sent.filter(function(x){return x.cmd==='commit'}).length===bbToggleCommitsBefore);
+  window.__previewDelay=0;
   var routedQuantity=document.querySelector('.crafting-quantity-inputs'),routedPlus=quantityButton('增加 1'),routeRafBaseline=__rafStats.active;
   var snapshotsBeforeRoute=__sent.filter(function(x){return x.cmd==='snapshot'}).length;document.querySelector('.crafting-organizer-btn').click();await wait();await wait();
   ok('organizer revokes token then mounts an explicit crafting-owned child route',

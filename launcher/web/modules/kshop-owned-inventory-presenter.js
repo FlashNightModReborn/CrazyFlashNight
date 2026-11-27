@@ -203,30 +203,34 @@
                     targetRef:transfer.target, hint:transfer.meta && transfer.meta.hint}, done);
             },
             onQuickTransferResult:function(result) {
-                self.render();
-                if (result && result.success) {
-                    var label = result.operation === 'merge' ? '物品已合并。'
-                        : result.operation === 'swap' ? '物品已交换。' : '物品已移动。';
-                    self._intent.toast(label, 'success', {silent:true});
-                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
-                    if (A && typeof A.cue === 'function') A.cue('success');
-                } else {
-                    var errCode = result && result.error || 'unknown';
-                    if (typeof console !== 'undefined' && console.warn) console.warn('[KShop inventory transfer]', errCode);
-                    var errText = errCode === 'target_full' || errCode === 'backpack_full' || errCode === 'inventory_full'
-                        ? '目标容器已满，请先整理空间。'
-                        : errCode === 'slot_locked' ? '目标栏位尚未解锁，请先扩容或切换容器。'
-                        : errCode === 'stale_state' || errCode === 'stale_lease' ? '库存状态已变化，请重试。'
-                        : errCode === 'client_timeout' || errCode === 'timeout' ? '库存响应超时，请重试。'
-                        : '移动失败，请重试。';
-                    self._intent.toast(errText + (result && result.reconciled ? '（库存已刷新）' : ''), 'error', {silent:true});
-                    var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
-                    if (A && typeof A.cue === 'function') A.cue('rejected');
-                }
+                self._handleTransferResult(result);
             }
         });
         this._panes[containerId] = pane;
         return pane.view;
+    };
+
+    OwnedInventoryPresenter.prototype._handleTransferResult = function(result) {
+        this.render();
+        if (result && result.success) {
+            var label = result.operation === 'merge' ? '物品已合并。'
+                : result.operation === 'swap' ? '物品已交换。' : '物品已移动。';
+            this._intent.toast(label, 'success', {silent:true});
+            var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+            if (A && typeof A.cue === 'function') A.cue('success');
+        } else {
+            var errCode = result && result.error || 'unknown';
+            if (typeof console !== 'undefined' && console.warn) console.warn('[KShop inventory transfer]', errCode);
+            var errText = errCode === 'target_full' || errCode === 'backpack_full' || errCode === 'inventory_full'
+                ? '目标栏位已满，请先整理空间。'
+                : errCode === 'slot_locked' ? '目标栏位尚未解锁，请先扩容或切换栏位。'
+                : errCode === 'stale_state' || errCode === 'stale_lease' ? '库存状态已变化，请重试。'
+                : errCode === 'client_timeout' || errCode === 'timeout' ? '库存响应超时，请重试。'
+                : '移动失败，请重试。';
+            this._intent.toast(errText + (result && result.reconciled ? '（库存已刷新）' : ''), 'error', {silent:true});
+            var A = typeof window !== 'undefined' ? window.BootstrapAudio : null;
+            if (A && typeof A.cue === 'function') A.cue('rejected');
+        }
     };
 
     OwnedInventoryPresenter.prototype._bindSlot = function(containerId, node, slot) {
@@ -246,6 +250,19 @@
             onActivate:function(event, context) {
                 var broker = self._broker();
                 if (!broker || self.consumedClick()) return;
+                if (event && (event.ctrlKey || event.metaKey) && slot.occupied
+                        && typeof self._intent.autoTransfer === 'function') {
+                    if (event.preventDefault) event.preventDefault();
+                    if (event.stopPropagation) event.stopPropagation();
+                    self._clearSelection();
+                    var targetId = containerId === '背包' ? '战备箱' : '背包';
+                    if (!self._intent.autoTransfer(ownedSlotRef(containerId, slot), targetId, function(result) {
+                        self._handleTransferResult(result);
+                    })) {
+                        self._intent.toast('库存正在处理另一笔写入。', 'warning');
+                    }
+                    return;
+                }
                 var selected = broker.debugState().selectedInstanceKey;
                 var view = self.getView(containerId);
                 if (selected && selected !== 'shop:catalog') broker.activateSelected(view, {item:slot, node:node}, context.origin);
@@ -309,24 +326,12 @@
         var status = this._state.getStatus();
         if (!status.ready || status.busyOwner || status.refreshRequired) return;
         methodName = methodName || 'byType'; label = label || methodName;
-        var battlebox = containerId === '战备箱';
-        this._state.getWorkbenchShell().openModal({
-            kind:'warehouse-sort', kicker:'', title:'按' + label + '整理' + containerId + '？',
-            message:'将重新排列' + (battlebox ? '当前已解锁区域' : containerId + '全部物品') + '，并合并可堆叠物品。',
-            detail:battlebox ? '未解锁的存档保留区不会被读取或移动。'
-                : '原有摆放顺序会改变，完成后仍停留在当前页。',
-            actions:[
-                {id:'cancel', label:'取消', audioCue:'back'},
-                {id:'sort', label:'整理并合并', primary:true, audioCue:'activate', onSelect:function() {
-                    self._clearSelection();
-                    if (!self._intent.sortAndMerge(containerId, methodName, function(result) {
-                        self.render();
-                        if (result.success) self._intent.toast(containerId + '整理完成。');
-                        else self._intent.toast(containerId + '整理失败，请重试。');
-                    })) self._intent.toast('库存正在处理另一笔写入。');
-                }}
-            ]
-        });
+        self._clearSelection();
+        if (!self._intent.sortAndMerge(containerId, methodName, function(result) {
+            self.render();
+            if (result.success) self._intent.toast(containerId + '已按' + label + '整理并合并。');
+            else self._intent.toast(containerId + '整理失败，请重试。');
+        })) self._intent.toast('库存正在处理另一笔写入。');
     };
 
     OwnedInventoryPresenter.prototype.showDiscardConfirm = function(containerId, slot) {

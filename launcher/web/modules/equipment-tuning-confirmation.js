@@ -60,17 +60,16 @@ function(InventoryWorkbenchConfig, global) {
     }
 
     function helpDetail() {
-        return '确认方式\n'
-            + '• “逐次确认”：所有操作都停在权威预览，确认材料与前后结果后再提交。\n'
-            + '• “单件快捷”：只有无连带变化的单件安装、替换或卸下会在权威预览后自动提交。\n'
-            + '• ' + BOUNDARY_TEXT + '；强化、交换与进阶也始终停在预览等待确认。';
+        return '操作与确认规则\n'
+            + '• 无连带变化的单件配件安装、替换或卸下会一步直接生效。\n'
+            + '• ' + BOUNDARY_TEXT + '；强化、交换与进阶会先显示属性与材料预览，确认后再提交。';
     }
 
     function helpSpec() {
         return {
             kind:'equipment-tuning-help',
             title:'装备调制帮助',
-            message:'当前装备调制\n• 左侧槽位切换当前调制装备；右侧按强化度、进阶与配件查看权威预览。\n• 打开或关闭本帮助只解释操作，不会解锁配件能力，也不会改变确认方式。',
+            message:'当前装备调制\n• 左侧槽位切换当前调制装备；右侧按强化度、进阶与配件查看消耗与结果预览。\n• 打开或关闭本帮助只解释操作，不会改变当前状态。',
             detail:helpDetail()
                 + '\n\n浏览\n• “调制说明”随当前操作和聚焦候选更新；紧凑模式只改变候选密度。',
             actions:[{id:'close', label:'知道了', primary:true, audioCue:'confirm'}]

@@ -1076,7 +1076,7 @@ function activeResponse(message){var response=common(message);response.snapshots
       tasks('claimBatch').length===unprovenBatchesBefore+1&&tasks('close').length===unprovenClosesBefore
       &&remaining()===2&&Panels.getActive()==='loot'&&LootPanel.debugState().phase==='reconcile_required'
       &&document.querySelector('[data-commit-primary]').textContent!=='整理背包'
-      &&__toasts.slice(unprovenToastsBefore).some(function(value){return value.indexOf('未满足零写证明')>=0}));
+      &&__toasts.slice(unprovenToastsBefore).some(function(value){return value.indexOf('状态校验未通过')>=0}));
     Panels.forceClose();await delay();
 
     resetMixedClaimAllAuthority();__mode='mixed_full_then_stale';var lateFailureBatchesBefore=tasks('claimBatch').length,lateFailureClosesBefore=tasks('close').length;
@@ -1184,7 +1184,7 @@ function activeResponse(message){var response=common(message);response.snapshots
       settlementRoot.classList.contains('loot-stage-settlement')
       &&settlementRoot.getAttribute('data-workbench-skin')==='terminal'
       &&settlementBrand&&settlementBrand.textContent==='CF7·ME'
-      &&settlementEyebrow&&settlementEyebrow.textContent==='θ-FLOOD / SETTLEMENT LINK'
+      &&(!settlementEyebrow||settlementEyebrow.textContent==='')
       &&getComputedStyle(settlementBrand).clipPath!=='none'
       &&getComputedStyle(settlementTerminalButton).clipPath!=='none');
     var settlementReport=settlementRoot.querySelector('.loot-settlement-report');

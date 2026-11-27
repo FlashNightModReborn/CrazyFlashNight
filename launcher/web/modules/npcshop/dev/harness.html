@@ -272,6 +272,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   else if(message.cmd==='tradeCommit'){
     if(window.__malformedCommit){Object.assign(result,{success:false,error:'malformed_response',requiresReconcile:true});emit(result);return}
     var plan=window.__lastTrade;balance=plan.projectedBalance;
+    if(window.__afterQuickSale){window.__afterQuickSale();window.__afterQuickSale=null}
     plan.purchaseLines.forEach(function(line){if(line.itemName==='强化石')materialQty+=line.quantity});
     Object.assign(result,state(message.payload&&message.payload.shopId),{operation:'tradeCommit',trade:{buyTotal:plan.buyTotal,sellTotal:plan.sellTotal,netDelta:plan.netDelta}})
   }
@@ -852,8 +853,8 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   var bagFilter=document.querySelector('.npcshop-bag-view .inventory-filter-control.tree');
   var bagFilterTrigger=bagFilter&&bagFilter.querySelector('.inventory-filter-tree-trigger'),bagFilterNavigator=bagFilter&&bagFilter.querySelector('.inventory-filter-navigator');
   ok('shop bag and catalog use the same inline current-level drilldown',bagFilter&&!bagFilterTrigger&&bagFilter.querySelector('select').hidden&&getComputedStyle(bagFilterNavigator).display==='flex'&&bagFilterNavigator.classList.contains('item-filter-drilldown')&&document.querySelector('.npcshop-category-tabs.item-filter-drilldown')&&bagFilterNavigator.querySelectorAll('.item-filter-row').length===1);
-  var bagToolbar=document.querySelector('.npcshop-bag-toolbar'),bagHint=document.querySelector('.npcshop-selection-hint');
-  ok('shop bag hint stays beside the title and leaves the full toolbar row to facets',bagHint&&bagHint.parentNode.classList.contains('workbench-view-title')&&!bagToolbar.querySelector('.npcshop-selection-hint')&&bagFilter.getBoundingClientRect().width>=bagToolbar.getBoundingClientRect().width-1&&bagFilterNavigator.getBoundingClientRect().width>=bagFilter.getBoundingClientRect().width-1);
+  var bagToolbar=document.querySelector('.npcshop-bag-toolbar'),liveTradeBar=document.querySelector('.npcshop-live-trade-bar');
+  ok('live trade bar mounts in shell footer and leaves the full toolbar row to facets',!!liveTradeBar&&!bagToolbar.querySelector('.npcshop-selection-hint')&&bagFilter.getBoundingClientRect().width>=bagToolbar.getBoundingClientRect().width-1&&bagFilterNavigator.getBoundingClientRect().width>=bagFilter.getBoundingClientRect().width-1);
   ok('shop bag inline facets remain inside the available toolbar width',bagFilterNavigator.querySelector('[data-filter-path="weapon"]')&&bagFilterNavigator.querySelector('[data-filter-path="consumable"]')&&bagFilterNavigator.scrollWidth<=bagFilterNavigator.clientWidth+1);
   bagFilter.querySelector('[data-filter-path="weapon"]').click();await wait();
   var bagFilterRequest=__sent.filter(function(message){return message.domain==='inventory'&&message.cmd==='snapshot'&&message.payload.requests.some(function(request){return request.containerId==='背包'&&request.filterSpec&&request.filterSpec.major==='weapon'&&request.filterSpec.use==='手枪'})}).pop();
@@ -868,7 +869,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   catalogScrollTarget.focus({preventScroll:true});var catalogScrollBefore=catalogScrollProbe.scrollTop,catalogScrollKey=catalogScrollTarget.getAttribute('data-workbench-key');catalogScrollTarget.click();
   var catalogScrollSelected=Array.prototype.find.call(catalogScrollProbe.querySelectorAll('[data-workbench-key]'),function(node){return node.getAttribute('data-workbench-key')===catalogScrollKey});
   var catalogScrollAfter=catalogScrollProbe.scrollTop,catalogScrollPreserved=catalogScrollBefore>0&&Math.abs(catalogScrollAfter-catalogScrollBefore)<=1&&document.activeElement===catalogScrollSelected&&catalogScrollSelected===catalogScrollTarget;
-  catalogScrollSelected.click();catalogScrollProbe.scrollTop=catalogScrollProbe.scrollHeight;var catalogNavigationBefore=catalogScrollProbe.scrollTop;
+  catalogScrollSelected.querySelector('.npcshop-intent-remove').click();catalogScrollProbe.scrollTop=catalogScrollProbe.scrollHeight;var catalogNavigationBefore=catalogScrollProbe.scrollTop;
   document.querySelector('.npcshop-category-tabs [data-filter-path="weapon"]').click();var catalogNavigationReset=catalogNavigationBefore>0&&catalogScrollProbe.scrollTop===0;
   document.querySelector('.npcshop-category-tabs [data-filter-path=""]').click();catalogScrollProbe.style.cssText=catalogScrollStyle;catalogScrollProbe.scrollTop=0;
   var ownedScrollProbe=document.querySelector('.npcshop-owned-grid'),ownedScrollStyle=ownedScrollProbe.style.cssText;
@@ -895,7 +896,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
     &&npcKeyboardCatalog.getAttribute('tabindex')==='0'&&npcKeyboardCatalog.getAttribute('aria-disabled')==='false'
     &&npcKeyboardCatalog.getAttribute('aria-label').indexOf(npcKeyboardCatalogName)>=0
     &&npcKeyboardCatalogSelected&&npcKeyboardCatalogSelected.getAttribute('aria-selected')==='true';
-  if(npcKeyboardCatalogSelected)npcKeyboardCatalogSelected.dispatchEvent(new KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true}));
+  if(npcKeyboardCatalogSelected)npcKeyboardCatalogSelected.querySelector('.npcshop-intent-remove').click();
   var npcKeyboardOwned=document.querySelector('.npcshop-bag-view .npcshop-owned-card');
   var npcKeyboardOwnedName=npcKeyboardOwned&&npcKeyboardOwned.querySelector('.inventory-slot-copy b').textContent;
   if(npcKeyboardOwned)npcKeyboardOwned.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));
@@ -949,7 +950,7 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   var compactCatalogMarker=compactSelectedCatalogCard&&compactSelectedCatalogCard.querySelector('.npcshop-selection-marker');
   var compactCatalogMarkerStyle=compactCatalogMarker&&getComputedStyle(compactCatalogMarker);
   ok('compact catalog card uses readable icon tile',compactCopyHidden&&compactSelectedCatalogCard&&!!compactSelectedCatalogCard.querySelector('.npcshop-card-icon')&&parseFloat(getComputedStyle(compactSelectedCatalogCard).height)>=54&&compactCatalogMarkerStyle&&compactCatalogMarkerStyle.top==='2px'&&compactCatalogMarkerStyle.width==='16px'&&compactCatalogMarkerStyle.fontSize==='0px');
-  compactSelectedCatalogCard.click();
+  compactSelectedCatalogCard.querySelector('.npcshop-intent-remove').click();
   var compactOwnedStack=document.querySelector('.npcshop-owned-grid .inventory-slot-card[data-physical-slot="3"]');
   compactOwnedStack.click();
   var compactSelectedOwnedStack=document.querySelector('.npcshop-owned-grid .inventory-slot-card[data-physical-slot="3"].selected');
@@ -1010,8 +1011,8 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
       &&helpActiveMotion.pointerEvents==='auto'&&helpActiveMotion.transform==='none',
     JSON.stringify(helpActiveMotion));
   ok('help page covers four workflows without canvas overflow',document.querySelectorAll('.npcshop-help-card').length===4&&helpPage.textContent.indexOf('选择 ≠ 交易')>=0&&helpPage.textContent.indexOf('商品不会直接购买到战备箱')>=0&&helpPage.scrollWidth<=helpPage.clientWidth+1&&helpPage.scrollHeight<=helpPage.clientHeight+1);
-  var helpRect=helpPage.getBoundingClientRect(),body=document.querySelector('.npcshop-panel .workbench-body'),bodyRect=body.getBoundingClientRect();
-  ok('help secondary page exactly covers the dual-pane body',Math.abs(helpRect.top-bodyRect.top)<1&&Math.abs(helpRect.bottom-bodyRect.bottom)<1&&getComputedStyle(body).visibility==='hidden');
+  var helpRect=helpPage.getBoundingClientRect(),shellRect=document.querySelector('.npcshop-panel').getBoundingClientRect(),headerRect=document.querySelector('.npcshop-panel .workbench-header').getBoundingClientRect(),body=document.querySelector('.npcshop-panel .workbench-body');
+  ok('help secondary page covers the workbench shell with unified header',Math.abs(helpRect.top-headerRect.top)<=1&&Math.abs(helpRect.bottom-shellRect.bottom)<=2&&getComputedStyle(body).visibility==='hidden');
   var lowerHeader=document.querySelector('.npcshop-panel .workbench-header');
   var lowerHeaderActions=document.querySelector('.npcshop-panel .workbench-header-actions');
   var lowerHeaderRect=lowerHeaderActions.getBoundingClientRect(),lowerHelp=document.querySelector('.npcshop-help-btn');
@@ -1050,9 +1051,9 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   ok('shared NPC HelpAction preserves capability before during and after help',
     document.querySelector('.npcshop-help-btn').getAttribute('data-header-action')==='help'
       &&capabilityBeforeHelp===capabilityDuringHelp&&capabilityBeforeHelp===capabilityAfterHelp);
-  document.querySelector('[data-view-id="collection"]').click();
-  ok('collection defaults to material child',document.querySelector('[data-instance-key="npcshop:material"]'));
-  document.querySelector('[data-collection-view="intelligence"]').click();
+  document.querySelector('[data-view-id="material"]').click();
+  ok('material header tab mounts material view directly',document.querySelector('[data-instance-key="npcshop:material"]'));
+  document.querySelector('[data-view-id="intelligence"]').click();
   var intelligenceCard=document.querySelector('.npcshop-intelligence-view .read-only');
   var intelligenceReason=intelligenceCard&&intelligenceCard.querySelector('.workbench-entity-lock-reason');
   ok('intelligence stays inspectable read-only with an exact reason',intelligenceCard
@@ -1164,10 +1165,10 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   var spacePage=document.querySelector('.npcshop-space-page');
   var spaceStyle=getComputedStyle(spacePage),spaceRect=spacePage.getBoundingClientRect();
   var settlementRect=settlementPage.getBoundingClientRect();
-  ok('nested space organizer retains its explicit settlement-local inset and stacking exception',
-    spaceStyle.display==='grid'&&spaceStyle.zIndex==='4'
-      &&Math.abs(spaceRect.top-settlementRect.top)<=1&&Math.abs(spaceRect.right-settlementRect.right)<=1
-      &&Math.abs(spaceRect.bottom-settlementRect.bottom)<=1&&Math.abs(spaceRect.left-settlementRect.left)<=1,
+  ok('space organizer overlays settlement cleanly with exact full-shell inset',
+    spaceStyle.display==='grid'&&Number(spaceStyle.zIndex)>=55
+      &&Math.abs(spaceRect.top-settlementRect.top)<=2&&Math.abs(spaceRect.right-settlementRect.right)<=2
+      &&Math.abs(spaceRect.bottom-settlementRect.bottom)<=2&&Math.abs(spaceRect.left-settlementRect.left)<=2,
     JSON.stringify({display:spaceStyle.display,zIndex:spaceStyle.zIndex,
       space:{top:spaceRect.top,right:spaceRect.right,bottom:spaceRect.bottom,left:spaceRect.left},
       settlement:{top:settlementRect.top,right:settlementRect.right,bottom:settlementRect.bottom,left:settlementRect.left}}));
@@ -1565,6 +1566,161 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   var snapshotsBeforeMalformed=__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length;
   window.__malformedCommit=true;document.querySelector('[data-trade-commit]').click();await wait();await wait();window.__malformedCommit=false;
   ok('malformed write response reconciles by snapshot without replay',__sent.filter(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'}).length===snapshotsBeforeMalformed+1&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===2);
+
+  // Direct-trade financial safeguards: >=50,000 single sale review, price drift redirect,
+  // AS2 permille rounding parity, and in-flight direct preview draft lock.
+  await reopenNpcShopReady();
+  var origTradePreviewFn=window.tradePreview;
+  window.tradePreview=function(payload){
+    var q=origTradePreviewFn(payload);
+    if(q.saleLines&&q.saleLines.length===1){
+      q.saleLines[0].total=60000;q.sellTotal=60000;
+      q.netDelta=q.sellTotal-q.buyTotal;q.projectedBalance=balance+q.netDelta;
+    }
+    return q;
+  };
+  var commitsBeforeHighSale=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length;
+  document.querySelector('.npcshop-bag-view .inventory-slot-card[data-physical-slot="0"]').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true}));
+  await wait();
+  ok('high-value single right-click sale (>=50,000) routes to settlement review without direct commit',
+    NpcShop.debugState().settling&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsBeforeHighSale);
+  window.tradePreview=origTradePreviewFn;
+
+  await reopenNpcShopReady();
+  var origPrice1=catalog.find(function(item){return item.catalogIndex===1}).basePrice;
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
+  catalog.find(function(item){return item.catalogIndex===1}).basePrice=200;
+  var commitsBeforeDrift=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length;
+  document.querySelector('[data-live-commit]').click();await wait();
+  ok('direct trade price drift redirects to settlement review without silent overcharge',
+    NpcShop.debugState().settling&&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsBeforeDrift
+      &&document.querySelector('[data-trade-error]').textContent.indexOf('报价已更新')>=0);
+  catalog.find(function(item){return item.catalogIndex===1}).basePrice=origPrice1;
+
+  Panels.close();
+  var origBuyRate=buyRatePermille;
+  buyRatePermille=850;
+  catalog.find(function(item){return item.catalogIndex===1}).basePrice=101;
+  await reopenNpcShopReady();
+  var roundCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]');
+  roundCard.click();roundCard.click();
+  var roundSummary=document.querySelector('[data-live-trade-summary]').textContent;
+  var commitsBeforeRound=__sent.filter(function(m){return m.cmd==='tradeCommit'}).length;
+  document.querySelector('[data-live-commit]').click();await wait();await wait();
+  ok('live trade bar purchase rounding matches AS2 floor(basePrice*qty*rate/1000) without false drift',
+    roundSummary.indexOf('171')>=0&&__lastTrade.buyTotal===171
+      &&__sent.filter(function(m){return m.cmd==='tradeCommit'}).length===commitsBeforeRound+1);
+  buyRatePermille=origBuyRate;
+  catalog.find(function(item){return item.catalogIndex===1}).basePrice=origPrice1;
+
+  await reopenNpcShopReady();
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]').click();
+  window.__nextTradePreviewDelay=100;
+  document.querySelector('[data-live-commit]').click();
+  var raceRemoveBtn=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"] .npcshop-intent-remove');
+  var raceRemoveDisabled=!!raceRemoveBtn&&raceRemoveBtn.disabled;
+  document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();
+  var raceCountDuringPreview=NpcShop.debugState().purchaseCount;
+  await wait(180);
+  ok('in-flight direct preview locks draft mutations and clears only the committed draft',
+    raceRemoveDisabled&&raceCountDuringPreview===1&&NpcShop.debugState().purchaseCount===0);
+
+  // Each case starts with the same four units. Inspect both the wire order and the underlying cart.
+  async function quickCartCase(branch){
+    balance=10000;
+    var stone=catalog.find(function(item){return item.catalogIndex===1});
+    stone.basePrice=100;
+    await reopenNpcShopReady();
+    var stoneCard=document.querySelector('.npcshop-catalog-card[data-catalog-index="1"]');
+    stoneCard.click();stoneCard.click();stoneCard.click();
+    document.querySelector('.npcshop-catalog-card[data-catalog-index="0"]').click();
+    var offset=__sent.length;
+    if(branch==='no_funds') balance=0;
+    else if(branch==='unknown') window.__malformedCommit=true;
+    else if(branch!=='direct') stone.basePrice=200;
+    stoneCard.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true}));
+    var direct=branch==='direct'||branch==='unknown';
+    await waitForCondition(function(){return direct?__sent.slice(offset).some(function(m){return m.cmd==='tradeCommit'}):NpcShop.debugState().settling},'quick quote');
+    if(branch==='unknown'){
+      await waitForCondition(function(){return __sent.slice(offset).some(function(m){return m.domain==='npcshop'&&m.cmd==='snapshot'})&&!NpcShop.debugState().needsReconcile},'unknown shortcut recovers');
+      window.__malformedCommit=false;
+    }
+    if(!direct){
+      await waitForCondition(function(){return NpcShop.debugState().settling},'quick review');
+      ok('quick '+branch+' waits for confirmation',!__sent.slice(offset).some(function(m){return m.cmd==='tradeCommit'}));
+      if(branch==='edit'){
+        quantityButton('[data-purchase-lines]','+').click();
+        await waitForCondition(function(){return __lastTrade.purchaseLines.some(function(l){return l.catalogIndex===1&&l.quantity===2})},'edited shortcut');
+      }
+      document.querySelector(branch==='cancel'||branch==='no_funds'?'[data-trade-back]':'[data-trade-commit]').click();
+    }
+    await wait();
+    var commands=__sent.slice(offset);
+    var previews=commands.filter(function(m){return m.cmd==='tradePreview'});
+    var order=previews[previews.length-1].payload;
+    var commitCount=commands.filter(function(m){return m.cmd==='tradeCommit'}).length;
+    ok('quick '+branch+' sends precisely the reviewed order',order.purchases.length===1&&order.sales.length===0
+      &&order.purchases[0].catalogIndex===1&&order.purchases[0].quantity===(branch==='edit'?2:1)
+      &&commitCount===(branch==='no_funds'||branch==='cancel'?0:1));
+    await waitForCondition(function(){var s=NpcShop.debugState(),button=document.querySelector('.npcshop-checkout-btn');return !s.settling&&!s.busy&&s.inventory.ready&&button&&!button.disabled},'cart unlocked after '+branch);
+    document.querySelector('.npcshop-checkout-btn').click();
+    await waitForCondition(function(){return __lastTrade.purchaseLines.length===2},'original shopping cart after '+branch);
+    var draft=__lastTrade.purchaseLines;
+    ok('quick '+branch+' preserves both original cart quantities',
+      draft.some(function(l){return l.catalogIndex===1&&l.quantity===3})&&draft.some(function(l){return l.catalogIndex===0&&l.quantity===1}));
+    stone.basePrice=100;
+  }
+  for(var branch of ['direct','no_funds','cancel','confirm','edit','unknown']) await quickCartCase(branch);
+
+  await reopenNpcShopReady();
+  var saleSeed=document.querySelector('.npcshop-bag-view .inventory-slot-card[data-physical-slot="0"]');
+  saleSeed.click();
+  document.querySelector('.npcshop-checkout-btn').click();await wait();
+  Array.from(document.querySelectorAll('[data-sale-lines] button')).find(function(el){return el.textContent==='同名全售'}).click();await wait();
+  document.querySelector('[data-trade-back]').click();
+  window.tradePreview=function(payload){
+    var quote=origTradePreviewFn(payload);
+    if(quote.saleLines.length){quote.saleLines[0].total=50000;quote.sellTotal=50000}
+    return quote;
+  };
+  saleSeed=document.querySelector('.npcshop-bag-view .inventory-slot-card[data-physical-slot="0"]');
+  saleSeed.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true}));await wait();
+  ok('quick sale at 50000 reviews one slot',NpcShop.debugState().settling&&__lastTrade.saleLines[0].scope==='slot');
+  document.querySelector('[data-trade-back]').click();
+  window.tradePreview=origTradePreviewFn;
+  document.querySelector('.npcshop-checkout-btn').click();await wait();
+  ok('return from quick sale preserves same-name sale intent',__lastTrade.saleLines.length===1&&__lastTrade.saleLines[0].scope==='same_name');
+
+  async function refreshFilteredCart(bulk){
+    var plain={name:'训练手枪',displayName:'训练手枪',itemKind:'equipment',majorType:'武器',use:'手枪',weaponType:'手枪',quantity:1,enhancementLevel:1};
+    var drug={name:'药剂',displayName:'药剂',itemKind:'stack',majorType:'消耗品',use:'消耗品',quantity:5,enhancementLevel:0};
+    bagItems=[plain,drug,Object.assign({},plain)];inventoryRevision++;
+    await reopenNpcShopReady();
+    document.querySelector('.npcshop-bag-view [data-physical-slot="0"]').click();
+    if(bulk){
+      document.querySelector('.npcshop-checkout-btn').click();
+      await waitForCondition(function(){return document.querySelector('[data-sale-lines] .npcshop-settlement-line')},'sale line');
+      Array.from(document.querySelectorAll('[data-sale-lines] button')).find(function(el){return el.textContent==='同名全售'}).click();await wait();
+      document.querySelector('[data-trade-back]').click();
+    }
+    document.querySelector('.npcshop-bag-view [data-filter-path="consumable"]').click();await wait();
+    var offset=__sent.length;
+    window.__afterQuickSale=function(){
+      bagItems=[Object.assign({},plain,{name:'替换物',displayName:'替换物'}),Object.assign({},drug,{quantity:4}),plain];inventoryRevision++;
+    };
+    document.querySelector('.npcshop-bag-view [data-physical-slot="1"]').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true}));
+    await waitForCondition(function(){return NpcShop.debugState().settling||__sent.slice(offset).some(function(m){return m.cmd==='tradeCommit'})},'filtered quick sale');
+    if(NpcShop.debugState().settling)document.querySelector('[data-trade-commit]').click();
+    await waitForCondition(function(){var s=NpcShop.debugState();return !window.__afterQuickSale&&s.inventory.ready&&s.inventorySurface.snapshots[0].containerVersion===inventoryRevision},'post-trade full bag');
+    if(!bulk)ok('filtered quick sale drops a replaced hidden slot',NpcShop.debugState().saleCount===0);
+    else{
+      document.querySelector('.npcshop-checkout-btn').click();await wait();
+      var sale=__sent.filter(function(m){return m.cmd==='tradePreview'}).pop().payload.sales[0];
+      ok('filtered quick sale rebinds same-name cart to surviving plain item',sale.scope==='same_name'&&sale.source.slot===2&&sale.source.expectedLease==='iw.r'+inventoryRevision+'.bag.2');
+    }
+  }
+  await refreshFilteredCart(false);await refreshFilteredCart(true);
+
   window.__qaResult={total:checks.length,passed:checks.filter(function(c){return c.ok}).length,checks:checks};window.__qaDone=true;
   document.getElementById('qa-output').textContent=JSON.stringify(__qaResult,null,2);
 })().catch(function(error){window.__qaError=error.stack||String(error);

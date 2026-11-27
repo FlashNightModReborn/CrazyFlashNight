@@ -114,9 +114,10 @@
     var _commitBar = null;
     var _detailPage = null, _detailBodyEl = null, _detailTitleEl = null, _detailChipsEl = null;
     var _detailActionsEl = null, _detailDressupHost = null;
-    var _detailRightEl = null, _detailDollViewport = null, _detailDollControls = null;
+    var _detailRightEl = null, _detailTabsEl = null, _detailDollViewport = null, _detailDollControls = null;
     var _detailCamera = null;       // 内嵌 inspection 瞬态相机（随 detail canvas 建销）
     var _detailSlot = -1;
+    var _detailTab = 'profile';     // profile | loadout
 
     // 培养页保留单个 live renderer；卡片/右栏快照由共享 MercPortraits 缓存与销毁。
     var _dressupManifest = null;
@@ -225,7 +226,8 @@
         if (_detailPage) { _detailPage.destroy(); _detailPage = null; }
         _detailBodyEl = null; _detailTitleEl = null; _detailChipsEl = null;
         _detailActionsEl = null; _detailDressupHost = null;
-        _detailRightEl = null; _detailDollViewport = null; _detailDollControls = null;
+        _detailRightEl = null; _detailTabsEl = null; _detailDollViewport = null; _detailDollControls = null;
+        _detailTab = 'profile';
         if (_commitBar) { _commitBar.destroy(); _commitBar = null; }
         if (_helpAction) { _helpAction.destroy(); _helpAction = null; }
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
@@ -825,6 +827,10 @@
             });
             fixupCardA11y(card, merc.slotIndex === _selectedSlot);
             if (merc.slotIndex === _selectedSlot) card.setAttribute('data-state', 'selected');
+            card.addEventListener('dblclick', function(event) {
+                if (event.target && event.target.closest && event.target.closest('button')) return;
+                openDetail(merc.slotIndex);
+            });
             bindCardTip(card, function() { return cardTipText(merc); });
         } else if (mode === 'hire') {
             Workbench.EntityTile.bindActivation(card, {
@@ -1103,7 +1109,7 @@
 
         var note = document.createElement('div');
         note.className = 'team-cand-note';
-        note.textContent = '雇佣成功后关闭面板返回场景；门控按实时数据复算。';
+        note.textContent = '雇佣成功后关闭面板并返回场景。';
         _detailEl.appendChild(note);
     }
 
@@ -1571,13 +1577,20 @@
                     _snapshot.kpoint = data.kpointRemaining;
                 }
                 // 雇佣会 splice 佣兵池导致后续 poolIndex 整体位移，已加载分页全部失效；
-                // 成功流程回名册 + 重拉 snapshot，下次进市场由 resetHireList 从第一页重拉
+                // 栏位未满时留在市场刷新池并同步余额，满员时自动返回名册。
                 TeamShared.toast('成功雇佣 ' + data.mercName + '！', 'success');
                 _selectedPoolIdx = -1;
-                if (_commitBar) _commitBar.update({ busy: false, status: '已雇佣', state: 'ready' });
-                backToRoster();
-                requestSnapshot();
-                if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
+                var slotsFull = !!(_snapshot && _snapshot.maxSlots > 0 && ((_hiredMercs ? _hiredMercs.length : 0) + 1 >= _snapshot.maxSlots));
+                if (slotsFull) {
+                    if (_commitBar) _commitBar.update({ busy: false, status: '佣兵栏已满，返回名册', state: 'ready' });
+                    backToRoster();
+                    requestSnapshot();
+                    if (_shell) _shell.setStatus('就绪', Workbench.WorkbenchState.READY);
+                } else {
+                    updateHeaderMetrics();
+                    requestSnapshot();
+                    resetHireList();
+                }
             } else if (data.error === 'pool_changed') {
                 // 结果不可知（契约 §2 unknown）：权威池已变、本次雇佣未成交，列表刷新后需重新确认
                 cue('unknown');
@@ -1603,14 +1616,17 @@
     // ═══════════════════════════════════════════════════════════
     // detail 培养页（SecondaryPage 覆盖 body）
     // ═══════════════════════════════════════════════════════════
-    function openDetail(slotIndex) {
+    function openDetail(slotIndex, initialTab) {
         if (_busy) { notifyBusy(); return; }
         var merc = findMercBySlot(slotIndex);
         if (!merc) return;
+        var switchingMerc = _detailSlot !== slotIndex;
         _detailSlot = slotIndex;
+        if (initialTab === 'loadout' || initialTab === 'profile') _detailTab = initialTab;
+        else if (switchingMerc) _detailTab = 'profile';
         if (!_detailPage) buildDetailPage();
         // 先 open 后 render：renderDetailPage 对未激活页早退（不重建 DOM / 不发 manifest promise）
-        _detailPage.open({ initialFocus: _detailRightEl });
+        if (!_detailPage.isActive()) _detailPage.open({ initialFocus: _detailRightEl });
         renderDetailPage();
     }
 
@@ -1694,12 +1710,61 @@
         leftCol.appendChild(dollSection);
         _detailBodyEl.appendChild(leftCol);
 
+        var rightShell = document.createElement('div');
+        rightShell.className = 'team-merc-detail-right-shell';
+        _detailTabsEl = document.createElement('div');
+        _detailTabsEl.className = 'team-merc-detail-tabs';
+        _detailTabsEl.setAttribute('role', 'tablist');
+        _detailTabsEl.setAttribute('aria-label', '佣兵培养分页');
+        [{ id: 'profile', label: '档案与技能' }, { id: 'loadout', label: '装备调配' }].forEach(function(item) {
+            var tabBtn = button(item.label, 'team-merc-detail-tab', function() {
+                setDetailTab(item.id);
+            });
+            tabBtn.setAttribute('role', 'tab');
+            tabBtn.setAttribute('data-detail-tab', item.id);
+            tabBtn.setAttribute('aria-selected', _detailTab === item.id ? 'true' : 'false');
+            tabBtn.setAttribute('data-audio-cue', 'select');
+            _detailTabsEl.appendChild(tabBtn);
+        });
+        rightShell.appendChild(_detailTabsEl);
+
         _detailRightEl = document.createElement('div');
         _detailRightEl.className = 'team-scroll team-merc-detail-right';
         _detailRightEl.setAttribute('data-scroll-region', '');
         _detailRightEl.setAttribute('tabindex', '0');
-        _detailBodyEl.appendChild(_detailRightEl);
+        rightShell.appendChild(_detailRightEl);
+        _detailBodyEl.appendChild(rightShell);
         rootEl.appendChild(_detailBodyEl);
+    }
+
+    function setDetailTab(tab) {
+        tab = tab === 'loadout' ? 'loadout' : 'profile';
+        if (_detailTab === tab) return;
+        _detailTab = tab;
+        syncDetailTabs(findMercBySlot(_detailSlot));
+        if (_detailRightEl) _detailRightEl.scrollTop = 0;
+    }
+
+    function syncDetailTabs(merc) {
+        if (_detailTabsEl) {
+            var custodyCount = merc ? mercCustodySlots(merc).length : 0;
+            var tabs = _detailTabsEl.querySelectorAll('.team-merc-detail-tab[data-detail-tab]');
+            for (var i = 0; i < tabs.length; i++) {
+                var id = tabs[i].getAttribute('data-detail-tab');
+                var active = id === _detailTab;
+                tabs[i].setAttribute('aria-selected', active ? 'true' : 'false');
+                tabs[i].classList.toggle('team-merc-detail-tab-active', active);
+                if (id === 'loadout') {
+                    tabs[i].textContent = custodyCount > 0 ? ('装备调配 · ' + custodyCount + ' 托管') : '装备调配';
+                }
+            }
+        }
+        if (_detailRightEl) {
+            var panels = _detailRightEl.querySelectorAll('.team-merc-detail-tab-panel[data-tab-panel]');
+            for (var p = 0; p < panels.length; p++) {
+                panels[p].hidden = panels[p].getAttribute('data-tab-panel') !== _detailTab;
+            }
+        }
     }
 
     function renderDetailPage() {
@@ -1779,19 +1844,30 @@
         if (!pickerRoot) destroyLoadoutPicker();
         else if (pickerRoot.parentNode) pickerRoot.parentNode.removeChild(pickerRoot);
         Workbench.clearElement(_detailRightEl);
+        var profilePanel = document.createElement('div');
+        profilePanel.className = 'team-merc-detail-tab-panel';
+        profilePanel.setAttribute('role', 'tabpanel');
+        profilePanel.setAttribute('data-tab-panel', 'profile');
+
         var traitSection = detailSection('性格特质');
         var traitsGrid = document.createElement('div');
         traitsGrid.className = 'team-merc-traits-grid';
         renderTraits(merc, traitsGrid);
         traitSection.appendChild(traitsGrid);
-        _detailRightEl.appendChild(traitSection);
+        profilePanel.appendChild(traitSection);
 
         var skillSection = detailSection('战斗技能');
         var skillRows = document.createElement('div');
         skillRows.className = 'team-merc-skill-rows';
         renderSkillRows(merc, skillRows);
         skillSection.appendChild(skillRows);
-        _detailRightEl.appendChild(skillSection);
+        profilePanel.appendChild(skillSection);
+        _detailRightEl.appendChild(profilePanel);
+
+        var loadoutPanel = document.createElement('div');
+        loadoutPanel.className = 'team-merc-detail-tab-panel';
+        loadoutPanel.setAttribute('role', 'tabpanel');
+        loadoutPanel.setAttribute('data-tab-panel', 'loadout');
 
         var equipSection = detailSection('装备调配');
         var hint = document.createElement('div');
@@ -1803,7 +1879,9 @@
         var pickerHost = document.createElement('div');
         pickerHost.className = 'team-merc-loadout-picker-host';
         equipSection.appendChild(pickerHost);
-        _detailRightEl.appendChild(equipSection);
+        loadoutPanel.appendChild(equipSection);
+        _detailRightEl.appendChild(loadoutPanel);
+        syncDetailTabs(merc);
         if (pickerRoot) pickerHost.appendChild(pickerRoot);
         else createLoadoutPicker(pickerHost);
         _loadoutPicker.setMerc(merc);
@@ -1990,7 +2068,7 @@
     // 可操作门（含对账锁；旧 renderEquipManage 锁存语义平移）：'' 可写，否则可读原因
     function loadoutOperateReasonFull(merc) {
         var reason = loadoutOperateReason(merc);
-        if (!reason && hasActiveReconcile()) reason = '权威状态核对中，暂时无法调整装备';
+        if (!reason && hasActiveReconcile()) reason = '正在确认上次操作结果，暂时无法调整装备';
         return reason;
     }
 
@@ -2255,7 +2333,7 @@
             invalid_item: '该物品无法用于佣兵托管',
             custody_exists: '该槽位已有托管装备，请改用替换',
             no_custody: '该槽位没有托管装备',
-            custody_corrupt: '托管快照异常，已失败关闭',
+            custody_corrupt: '装备数据异常，已暂停修改',
             inventory_full: '背包没有空位',
             inventory_unavailable: '背包尚未就绪',
             busy: '上一项操作尚未结束',
@@ -2295,10 +2373,49 @@
         return map[String(code || '')] || '操作未完成，请重试';
     }
 
-    // 解雇：共享 modal（danger 主按钮），替代自绘 confirm overlay
+    function mercCustodySlots(merc) {
+        var slots = merc && merc.loadout && merc.loadout.slots;
+        if (!slots) return [];
+        var list = [];
+        for (var s = 6; s <= 15; s++) {
+            var info = slots[String(s)];
+            if (info && (info.state === 'custody' || info.state === 'custody_corrupt')) {
+                list.push({
+                    slotId: s,
+                    slotName: (MercData.SLOT_NAMES && MercData.SLOT_NAMES[s]) || ('槽位 ' + s),
+                    state: info.state,
+                    itemName: info.custody && (info.custody.displayname || info.custody.name) || ''
+                });
+            }
+        }
+        return list;
+    }
+
+    // 解雇：托管装备前置拦截 + 共享 modal（danger 主按钮），替代自绘 confirm overlay
     function confirmDismiss(merc) {
         if (guardMutation()) return;
         if (!_shell) return;
+        var custody = mercCustodySlots(merc);
+        if (custody.length > 0) {
+            cue('illegal');
+            var names = [];
+            for (var i = 0; i < custody.length; i++) {
+                names.push(custody[i].slotName + (custody[i].itemName ? '「' + custody[i].itemName + '」' : '（异常占位）'));
+            }
+            _shell.openModal({
+                kind: 'info',
+                kicker: '无法解雇',
+                title: '请先取回托管装备',
+                message: merc.name + ' 仍有 ' + custody.length + ' 处托管装备未取回：' + names.join('、') + '。',
+                detail: '为防止背包装备丢失，请先取回全部托管装备后再解雇。',
+                actions: [
+                    { id: 'cancel', label: '知道了', audioCue: 'back' },
+                    { id: 'goto-loadout', label: '前往装备调配', primary: true, audioCue: 'navigate',
+                        onSelect: function() { openDetail(merc.slotIndex, 'loadout'); } }
+                ]
+            });
+            return;
+        }
         _shell.openModal({
             kind: 'confirm',
             // 名册卡直操解雇也触发此 modal，kicker 用中性的「佣兵管理」（不只培养页入口）
@@ -2424,7 +2541,7 @@
         if (_busy) { notifyBusy(); return true; }
         if (!hasActiveReconcile()) return false;
         projectReconcileLock();
-        TeamShared.toast('权威状态尚未核对完成，本次写入未发出。');
+        TeamShared.toast('正在确认上次操作结果，请稍候再试。');
         return true;
     }
 

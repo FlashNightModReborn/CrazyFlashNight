@@ -211,11 +211,133 @@
         }
         return true;
     }
+    function installSlotQuickActions(prototype, DropPolicyModule) {
+        prototype._resolveSmartSlot = function(candidate) {
+            return DropPolicyModule && typeof DropPolicyModule.resolveSmartSlot === 'function'
+                ? DropPolicyModule.resolveSmartSlot(this.root, candidate) : null;
+        };
+        prototype._syncSlotFilterChip = function() {
+            var chip = this.root && this.root.querySelector('[data-build-slot-filter-chip]');
+            if (!chip) return false;
+            var key = this._selectedSlotKey;
+            if (!key) { chip.hidden = true; chip.textContent = ''; return true; }
+            var slot = this.root.querySelector('[data-roving-key="' + String(key).replace(/"/g, '\\"') + '"]');
+            var label = slot ? String(slot.getAttribute('data-focus-label') || '') : '';
+            chip.hidden = !label;
+            chip.textContent = label ? '【' + label + '】×' : '';
+            chip.title = label ? '正在为【' + label + '】挑选 · 点击返回背包总览' : '';
+            chip.setAttribute('aria-label', label ? '清除【' + label + '】筛选，返回背包总览' : '返回背包总览');
+            chip.disabled = this._interactionState !== 'idle';
+            return true;
+        };
+        prototype._hideSlotQuickBar = function() {
+            var bar = this.root && this.root.querySelector('[data-slot-quickbar]');
+            if (!bar) return false;
+            bar.hidden = true; bar.removeAttribute('data-slot-key'); bar.innerHTML = ''; return true;
+        };
+        prototype._isFocusInSlotQuickBar = function() {
+            var bar = this.root && this.root.querySelector('[data-slot-quickbar]');
+            return !!(bar && !bar.hidden && this._document.activeElement && bar.contains(this._document.activeElement));
+        };
+        prototype._dismissSlotQuickBar = function(restoreFocus) {
+            var bar = this.root && this.root.querySelector('[data-slot-quickbar]');
+            if (!bar || bar.hidden) return false;
+            var slotKey = bar.getAttribute('data-slot-key');
+            bar.hidden = true; bar.removeAttribute('data-slot-key'); bar.innerHTML = '';
+            if (restoreFocus && slotKey) {
+                var slot = this.root.querySelector('[data-roving-key="' + String(slotKey).replace(/"/g, '\\"') + '"]');
+                if (slot && typeof slot.focus === 'function') slot.focus();
+            }
+            return true;
+        };
+        prototype._installSlotQuickBar = function() {
+            var self = this, column = this.root && this.root.querySelector('.character-build-loadout-column');
+            var bar = this.root && this.root.querySelector('[data-slot-quickbar]');
+            var chip = this.root && this.root.querySelector('[data-build-slot-filter-chip]');
+            if (chip) {
+                var onChipClick = function() { if (self._interactionState === 'idle') self.showBackpackOverview(); };
+                chip.addEventListener('click', onChipClick);
+                this._listeners.push(function() { chip.removeEventListener('click', onChipClick); });
+            }
+            if (!column || !bar) return false;
+            function showForSlot(slot) {
+                if (!slot || slot.getAttribute('data-empty') === 'true' || self._interactionState !== 'idle'
+                        || self._candidateDragActive || self.root.getAttribute('data-build-subview') === 'tuning') {
+                    self._hideSlotQuickBar(); return;
+                }
+                var slotKey = String(slot.getAttribute('data-roving-key') || '');
+                if (!slotKey) return;
+                var kind = String(slot.getAttribute('data-slot-kind') || '');
+                var slotId = String(slot.getAttribute('data-slot-id') || '');
+                var tunable = kind !== 'drug' && slot.getAttribute('data-tunable') === 'true'
+                    && slot.getAttribute('data-blocked') !== 'true';
+                var bagFull = self.root.getAttribute('data-backpack-full') === 'true'
+                    && kind !== 'drug' && slotId !== '手雷';
+                if (bar.getAttribute('data-slot-key') !== slotKey || bar.hidden) {
+                    bar.setAttribute('data-slot-key', slotKey); bar.innerHTML = '';
+                    var unequipBtn = self._document.createElement('button');
+                    unequipBtn.type = 'button'; unequipBtn.className = 'character-build-slot-quick-btn';
+                    unequipBtn.textContent = '卸下'; unequipBtn.setAttribute('data-quick-slot-action', 'unequip');
+                    unequipBtn.setAttribute('data-audio-cue', 'activate');
+                    if (bagFull) {
+                        unequipBtn.setAttribute('data-capacity-blocked', 'true');
+                        unequipBtn.title = '背包已满（50/50），无法卸下；请先整理背包';
+                    }
+                    bar.appendChild(unequipBtn);
+                    if (tunable) {
+                        var tuneBtn = self._document.createElement('button');
+                        tuneBtn.type = 'button'; tuneBtn.className = 'character-build-slot-quick-btn is-tune';
+                        tuneBtn.textContent = '调制'; tuneBtn.setAttribute('data-quick-slot-action', 'tune');
+                        tuneBtn.setAttribute('data-audio-cue', 'navigate');
+                        bar.appendChild(tuneBtn);
+                    }
+                }
+                var colRect = column.getBoundingClientRect(), slotRect = slot.getBoundingClientRect();
+                bar.style.top = Math.max(0, Math.round(slotRect.bottom - colRect.top - 22)) + 'px';
+                bar.style.left = Math.max(0, Math.round(slotRect.left - colRect.left)) + 'px';
+                bar.hidden = false;
+            }
+            function onOver(event) {
+                var target = event && event.target;
+                if (bar.contains(target)) return;
+                var slot = target && target.closest ? target.closest('.character-build-slot') : null;
+                if (slot && column.contains(slot)) showForSlot(slot); else self._hideSlotQuickBar();
+            }
+            function onContext(event) {
+                var target = event && event.target;
+                var slot = target && target.closest ? target.closest('.character-build-slot') : null;
+                if (!slot || !column.contains(slot) || slot.getAttribute('data-empty') === 'true') return;
+                event.preventDefault(); showForSlot(slot);
+                var firstBtn = bar.querySelector('button');
+                if (firstBtn && typeof firstBtn.focus === 'function') firstBtn.focus();
+            }
+            function onLeave() { self._hideSlotQuickBar(); }
+            function onBarClick(event) {
+                var btn = event && event.target && event.target.closest
+                    ? event.target.closest('[data-quick-slot-action]') : null;
+                if (!btn || self._interactionState !== 'idle') return;
+                var slotKey = bar.getAttribute('data-slot-key'), action = btn.getAttribute('data-quick-slot-action');
+                self._hideSlotQuickBar();
+                if (!slotKey) return;
+                if (action === 'unequip' && typeof self._onQuickUnequip === 'function') self._onQuickUnequip(slotKey);
+                else if (action === 'tune' && typeof self._onQuickTune === 'function') self._onQuickTune(slotKey);
+            }
+            column.addEventListener('mouseover', onOver); column.addEventListener('contextmenu', onContext);
+            column.addEventListener('mouseleave', onLeave); bar.addEventListener('click', onBarClick);
+            this._listeners.push(function() {
+                column.removeEventListener('mouseover', onOver); column.removeEventListener('contextmenu', onContext);
+                column.removeEventListener('mouseleave', onLeave); bar.removeEventListener('click', onBarClick);
+            });
+            return true;
+        };
+    }
+
     return {supportsChestItem:supportsChestItem, validEmergencyInjection:validEmergencyInjection,
         validChestTarget:validChestTarget, chestTargetFromSource:chestTargetFromSource,
         buildChestTargetPayload:buildChestTargetPayload,
         validProjectionEmergency:validProjectionEmergency,
         slotPresentation:slotPresentation, validMutationProof:validMutationProof,
         sameEmergencyState:sameEmergencyState,
-        drugDefinitions:drugDefinitions, switchSummary:switchSummary, intent:intent};
+        drugDefinitions:drugDefinitions, switchSummary:switchSummary, intent:intent,
+        installSlotQuickActions:installSlotQuickActions};
 });

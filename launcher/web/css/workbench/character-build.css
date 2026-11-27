@@ -510,7 +510,7 @@
 }
 .character-build-candidate-heading-copy {
     display:grid;
-    grid-template-columns:max-content max-content;
+    grid-template-columns:max-content max-content max-content;
     grid-template-rows:auto auto;
     align-items:center;
     flex:0 0 auto;
@@ -720,6 +720,7 @@
     white-space:nowrap;
 }
 .character-build-loadout-column {
+    position:relative;
     display:flex;
     flex-direction:column;
     justify-self:end;
@@ -832,8 +833,8 @@
     overflow:hidden;
 }
 .character-build-tuning-heading {
-    min-height:48px;
-    padding:7px 9px;
+    min-height:36px;
+    padding:4px 9px;
     box-sizing:border-box;
     display:flex;
     align-items:center;
@@ -857,22 +858,19 @@
     padding:0 7px;
 }
 .character-build-tuning-heading span {
-    display:block;
-    color:var(--wb-muted);
-    font:600 10px/1.15 "Consolas","Microsoft YaHei",monospace;
-    letter-spacing:.6px;
+    display:none;
 }
 .character-build-tuning-heading h2 {
     overflow:hidden;
-    margin:2px 0 0;
+    margin:0;
     color:var(--wb-text);
-    font-size:14px;
+    font-size:13px;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
 .character-build-tuning-heading [data-build-tuning-return] {
-    min-height:40px;
-    padding:0 11px;
+    min-height:30px;
+    padding:0 10px;
     color:var(--wb-accent);
     background:var(--wb-bg);
     border:1px solid var(--wb-accent);

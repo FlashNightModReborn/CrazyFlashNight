@@ -378,8 +378,18 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
     }
 
     private static function testInitialPreviewRejectsLevelSkip():Void {
-        var p:Object = freshPreview("闪现", 2);
-        check(p.success && !p.canCommit && p.blockingError == "initial_level_must_be_one" && p.learnToken == null, "unlearned level skip is a deterministic business rejection");
+        var f:Object = fixture();
+        var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
+        var rev:Number = SkillLoadoutService.getRevision();
+        var p:Object = SkillPanelService.execute("learnPreview", {v:1, skillKey:"闪现", desiredLevel:3,
+            trainerSession:opened.trainerSession, expectedRevision:rev});
+        var committed:Object = SkillPanelService.execute("learnCommit", {v:1, view:"trainer",
+            trainerSession:opened.trainerSession, expectedLearnToken:p.learnToken});
+        var overMax:Object = freshPreview("闪现", 11);
+        check(p.success && p.canCommit && p.currentLevel == 0 && p.desiredLevel == 3 && p.cost == 30 && p.learnToken != null
+            && committed.success && f.root.主角技能表[0][0] == "闪现" && f.root.主角技能表[0][1] == 3 && f.root.技能点数 == 70
+            && overMax.success && !overMax.canCommit && overMax.blockingError == "invalid_level" && overMax.learnToken == null,
+            "unlearned skill previews and commits directly to target level with UnlockSP + (N-1)*UpgradeSP while rejecting above MaxLevel");
     }
 
     private static function testUpgradePreviewUsesDeltaCost():Void {

@@ -943,8 +943,13 @@ test('batch mode sends one ordered lease-bound authority call and marks every so
     assert.strictEqual(f.controller.debugState().entries['背包:2'].inflight, true);
     assert.strictEqual(f.controller.isBusy(), true);
     f.batchCalls[0].done({success:true, completedCount:2});
-    assert.strictEqual(f.controller.getMode(), null);
+    assert.strictEqual(f.controller.getMode(), 'deposit');
     assert.strictEqual(f.controller.debugState().completed, 2);
+    assert.strictEqual(f.controller.enqueue('背包', f.slots['背包:1'], true), true);
+    assert.strictEqual(f.controller.commit({exitAfter:true}), true);
+    f.batchCalls[1].done({success:true, completedCount:1});
+    assert.strictEqual(f.controller.getMode(), null);
+    assert.strictEqual(f.controller.debugState().completed, 3);
 });
 
 test('fifty staged transfers remain one batch RPC in exact selection order', () => {

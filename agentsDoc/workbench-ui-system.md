@@ -5,7 +5,7 @@
 **2026-08-28 双药剂组与八槽共享冷却**：`HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口 identity/lifecycle 窄纵切达 `standard_entry_verified`，但未执行 Character Build 写、八槽切换、旧档迁移与重启读回，不称这些业务旅程 `standard_entry_verified`；完整边界见 [双药剂组 ADR](../docs/双药剂组-八槽共享冷却-ADR-2026-08-27.md)。
 **2026-08-27 库存批量转移**：`HUMAN_ACCEPTANCE_PASSED / promoted`；正式入口只完成身份/生命周期窄纵切，未重跑库存写或写后重启读回，逐命令证据见发布记录。更早 2026-08-08 P4/P5 与 A1–A6 口径只保留为发布记录中的历史分层证据。
 
-**当前工作树增量（未发布）**：共享 `PanelTooltip` 已按本节收敛为 `simple-tooltip / dense-inspect / pinned-inspector` 三种宿主 profile，并新增真实 AS2 语料、DOM 排版矩阵与轨迹交互门。该状态只表示源码和自动门已闭合，不外推为 Launcher runtime promotion、标准入口或玩家目视签收。
+**当前工作树增量（未发布）**：共享 `PanelTooltip` 已按本节收敛为 `simple-tooltip / dense-inspect / pinned-inspector` 三种宿主 profile，并新增真实 AS2 语料、DOM 排版矩阵与轨迹交互门；另已完成双栏工作台系列 P0–P3 纯 Web 体验打磨（共享壳瘦身、玩家术语净化、R0–R3 风险分级确认模型及 11 个工作台的排版/交互收敛）以及 P4 跨层能力扩展（合成面板显式 opt-in `useBattleBox` 战备箱扣料且默认关闭并排除锁区；独立 `view:"tuning"` 复用共享无头 `CharacterBuildSession` 开放左栏 `背包`/`已穿戴` 11 槽调制与 61 胸甲「机制」页签；战宠面板投影灵石与逐级费用并支持单事务原子批量升级；技能教师支持未学技能直学目标等级）。上述增量不外推为 Launcher runtime promotion、真实 Host/Flash 游戏 E2E 或 `standard_entry_verified`。
 **最后核对代码基线**：release source commit `b2bc05775c621616fe64be55354aebe21c63a2af`（2026-08-27；deployment `6902b2b6ed067c4882e9a67267d055ce0db90b34`）。
 
 <a id="ui-core"></a>
@@ -124,7 +124,7 @@ profile 只定义**可用的壳级 track 和列宽**，不根据 `transfer-pair`
 
 ### 2.2 纵向节奏
 
-生产工作台通常按“`48px` 顶栏 → PaneChrome / 筛选 → 可滚内容 → 决策 footer”排列。Character Build 是受控例外：左侧“外观与配置 / 当前构筑”的 PaneChrome 以标题复制区承载当前浏览摘要，摘要位于“当前构筑”右侧、放大预览入口左侧；固定 11+8 槽与“护具/武装/药剂”分组不再重复显示 `19 / 19`、`· 6/5/8` 等可从结构直接得出的计数。未选候选时保留语义 overlay 节点但整层隐藏，选中后才显示一行“预览 · 名称”。routine 浏览/读取/恢复提示不得再占用 pane 底部空间，底部只为 blocked/write/reconcile/error 等必须持续可读的异常信息让位。Character Build 右栏 body 固定三行：PaneChrome 标题、紧凑单行候选上下文、候选网格占用全部剩余高度；范围控件与焦点摘要同处上下文行，长摘要省略但保留可访问名称，禁止说明区成为隐式弹性行或把候选网格推到底部，兼容/背包 scope 共享同一 scroll viewport 几何。右侧候选动作直接并入“背包候选 / 候选对比”同一 PaneChrome 标题行；删除无领域决策价值的通用“详情”和任何钉住动作，装备上下文最多显示“装备 / 调制 / 卸下”三项，药剂提交短标签改为“装入”。完整动作语义保留在 `aria-label`；“装备/装入”是唯一主 CTA。1024×576 下动作组必须单行、不换行、不横向溢出；删除独立动作行以扩大候选区，候选可滚区底部也不再复制 action rail 或长快捷键说明。常态状态、指标和 action group 不应因为文字变化推动标题或关闭按钮。二级页从顶栏下沿覆盖整个 workbench body，不在底层双栏上叠半透明可点击内容。
+生产工作台通常按“`48px` 顶栏 → PaneChrome / 筛选 → 可滚内容 → 决策 footer”排列。Character Build 是受控例外：左侧“外观与配置 / 当前构筑”的 PaneChrome 以标题复制区承载当前浏览摘要，摘要位于“当前构筑”右侧、放大预览入口左侧；固定 11+8 槽与“护具/武装/药剂”分组不再重复显示 `19 / 19`、`· 6/5/8` 等可从结构直接得出的计数。未选候选时保留语义 overlay 节点但整层隐藏，选中后才显示一行“预览 · 名称”。routine 浏览/读取/恢复提示不得再占用 pane 底部空间，底部只为 blocked/write/reconcile/error 等必须持续可读的异常信息让位。Character Build 右栏 body 固定三行：PaneChrome 标题、紧凑单行候选上下文、候选网格占用全部剩余高度；范围控件与焦点摘要同处上下文行，长摘要省略但保留可访问名称，禁止说明区成为隐式弹性行或把候选网格推到底部，兼容/背包 scope 共享同一 scroll viewport 几何。右侧候选动作直接并入“背包候选 / 候选对比”同一 PaneChrome 标题行；删除无领域决策价值的通用“详情”和任何钉住动作，装备上下文最多显示“装备 / 调制 / 卸下”三项，药剂提交短标签改为“装入”。完整动作语义保留在 `aria-label`；“装备/装入”是唯一主 CTA。1024×576 下动作组必须单行、不换行、不横向溢出；删除独立动作行以扩大候选区，候选可滚区底部也不再复制 action rail 或长快捷键说明。常态状态、指标和 action group 不应因为文字变化推动标题或关闭按钮；顶栏 `workbench-status` 在 `idle/ready` 常态下静默隐藏，仅在 `loading/pending/warning/error/success` 时显现；密度切换默认采用图标优先紧凑胶囊（保留完整 `title` 与 `aria-label`）。二级页默认以 `inset: 0` 覆盖整个工作台壳层（含顶栏位置），并在自身页头固定左侧 `‹ 返回`、最右端 `×` 面板级关闭，不在底层双栏上叠半透明可点击内容。
 
 > **现役实现（ADR A3、G1–G5 已完成；G6+ 仍未完成）**：共享 `SecondaryPage` 取得 FocusScope 时，以引用计数抑制底层 header action，并在自己的可访问树中投影 exact Back / Help / 面板级 Close（二级页 `×` = 关闭整个面板，见 §5.5）；嵌套或异常卸载只释放本 owner 的 suppression。Loot、Skills 与 NPC secondary page 已接入该合同，底层已 inert 的 Help、模式、密度和 `×` 不再保留可点击外观。KShop settlement、NPC settlement 与 NPC help 的 shell-level 结构和进退场已由 shared selector 接管；生产 DualPane 的 button、EntityTile、input、select、range 与可聚焦 scroll region 也已由最终 computed gate 证明消费 focus role。G3 已收敛既定 workbench fragments 与现役 KShop consumer 的语义 motion；G4 又删除工作台 skin/Character Build 的 `.001s/.001ms` 伪关闭及 Loot/Equipment Inspector 的重复 local reduced block，把 shell 内关闭唯一交给 shared root，并以 exact workbench `data-panel` owner 覆盖壳外 Tooltip。G5 已删除历史 feature/skin 的焦点 outline 重置并退出 G2 unlayered bridge；`@layer workbench.states` 现在唯一提供 `2px solid var(--wb-focus)`、`2px` offset 的生产基线。`.character-build-slot` 是唯一显式排除项：外层不画环，inner card 使用 exact focus token，selected 继续独立使用 `--wb-role-selected`。`WB135` 同时拒绝 bridge 回流和未登记的 unlayered focus outline。Equipment Inspector、Character renderer 与 Tuning 图标的现役有界 `matchMedia` 分支均已用真实行为门证明静态终态，因此这些批次没有引入 helper、registry 或常驻 listener。其余 structural motion 绕过与 named-layer 扩围按 G6+ 单独收敛。若后续某页确需让外露 header action 保持可用，必须把该 action 排除出 inert underlay，并补真实行为门；不能通过 feature CSS 绕过 shared owner。
 
@@ -275,9 +275,20 @@ hover/focus 反馈只走 paint（阴影、边框、背景、光晕），不用 `
 
 Selection 不能伪装成写入成功。每个决策面只保留一个主 CTA；余额、成本、阻断原因和提交后的剩余量在同一区域呈现。Web 的 disabled 只是 UX，领域服务仍须复核全部安全条件。
 
+**确认方式按 R0–R3 风险等级分级，禁止对低风险操作滥用二次确认弹窗或维护多余的“安全/快速”全局切换**：
+
+| 级别 | 适用动作 | 交互合同 |
+|------|----------|----------|
+| **R0 只读浏览** | 选中、切换页签/筛选/排序/密度、打开详情或预览 | 零确认、即时响应；首次打开存在主列表的工作台（如竞技场、商店、配方）优先自动选中首项，消除空白右栏 |
+| **R1 可逆/零损直达** | 装备穿卸、背包↔战备箱/仓库快捷转移（含单击单件/右键/双击）、暂存领取、技能快捷栏绑定/替换/移出、伙伴/佣兵出战与休息、免费 PvE 入场 | 零弹窗一步生效；主交互配合双击、右键或拖拽快捷路径 |
+| **R2 常规交易与培养** | KShop/NPCShop 买卖、合成制作、技能学习、强化/进阶/交换 | 按钮即确认（CommitBar 或行内主 CTA 直接提交）；预览 token 过期但成本与结果未变时由前端静默刷新后继续提交，仅当价格/结果发生漂移时阻断并提示玩家复核；KShop 购物车支持可堆叠项行内 `− / +` 步进与 `快速结账` 弹窗，同时保留完整结算二级页 |
+| **R2+ / R3 不可逆·高成本·连锁破坏** | 丢弃物品、高价/批量卖出与制作、5 万金栏位扩容、解雇佣兵/放生战宠、清空定制赛名单、删除已存阵容、训练进行中关闭健身房、连锁卸下/卸下全部插件 | 显式确认（共享 Modal 或 CommitBar 预览停顿）；佣兵含托管装备时解雇入口须前置拦截并提供直达「装备调配」页签入口 |
+
+常态玩家文案统一执行术语净化：禁用 `Slot/Lease/Preview Token/Revision/Snapshot/Reconcile/Fallback/Commit/Authority/FlowRail/Pending/已标定/待标定/只读说明` 等工程或测试用语，统一以玩家词汇（`栏位/格子/预设/托管/整理/对账中/暂不可用/确认`）表达，且不展示无行动价值的废话导语。
+
 背包—战备箱与背包—仓库的普通点击在批量模式下只暂存选择：再次点击同一格取消，玩家显式点击“执行转移”后才把最多 50 个有序、同源、lease-bound 来源作为**一次** `autoTransferBatch(mergeThenEmpty)` 权威写提交；AS2 仍按选择顺序执行“已有堆优先、否则首空位”，目标不足只提交失败项之前的前缀，不跳项。任一 stale、timeout、断线、`commit_failed` 或畸形回包立即清空本地选择并进入既有对账，绝不把未确认项拆成单件写或重放不确定写入。`Ctrl+单击` 保留为旧 `autoTransfer` 单件立即转移，不进入批量暂存。批量入口、模式、计数、退出与唯一提交按钮属于双栏下方的正文命令栏，不得塞回全局顶栏或覆盖任一物品格；空闲态保持低高度，进入模式后扩展为可读操作栏。最低画布必须分别验证暂存 `0/1/5/50` 件时栏体位于 body 内、零横纵溢出、零子控件重叠。批量模式和密度都不得改变 AS2 落位策略、目标容器可访问容量或 slot lease 复核。
 
-> **现役实现（ADR A2a / A2b 已完成）**：Equipment Tuning 的 confirmation mode 玩家标签固定为“逐次确认 / 单件快捷”。“单件快捷”只跳过符合白名单的单件 install / replace / detach 的**人工确认动作**，仍必须先取得权威 preview、opaque token，并复核 source lease、revision、写入单飞与未知结果 reconcile；它不跳过任何 authority gate。批量、cascade 与“卸下全部”绝不自动提交，触发后直接进入现有 CommitBar 的一次显式确认，不再叠加第二个确认模态。独立与 Character Build 嵌入态消费同一 live mode 与偏好；`ChoiceGroup` 的 reject/throw 会回滚 pressed 投影，不能留下视觉成功假象。HelpAction 只解释，不解锁 mode 或配件操作。
+> **现役实现（ADR A2a / A2b 及 P1 交互收敛）**：Equipment Tuning 已退役顶栏“逐次确认 / 单件快捷”双模式切换，改为按风险分级直达：无连带依赖的单件配件安装、替换或卸下在取得 fresh 权威 preview 与 opaque token 并复核 source lease / revision / 单飞写锁后一步直接生效；批量、连锁依赖、“卸下全部”以及强化、交换与进阶始终停在 CommitBar 等待一次显式确认，不再叠加第二个确认模态。所有路径均不跳过任何 authority gate 或未知结果 reconcile。HelpAction 只解释，不解锁 mode 或配件操作。
 
 Tuning 的 preview detail 与唯一非滚动 CommitBar 已分离；preview 更新复用稳定 DOM，并保留合法 draft、字段焦点与滚动位置。`inventory` / `loadout` exact authority source 以常驻可见标记和等价测试语义分型；当前 source 使用 `12×12px` source-port glyph 标识 exact 调制源，不再用粗重文字贴纸占据卡面，仍须通过 `aria-current` 与“当前调制装备 / 用于交换”的完整名称表达，颜色和 glyph 不能成为唯一语义。插件槽容量只消费当前权威 `snapshot.equipment.modSlotCapacity` 与同一 snapshot 的 `snapshot.equipment.mods`；inventory/loadout 物品格另行消费 presentation projection 的 `modSlots[]`，两者不得混写。capacity 仅接受 `0..64` 的有限整数且 installed 不大于 capacity；`64` 是防止异常快照制造无界 DOM 的展示安全上限，不是本地三槽业务规则。`0` 明示“无插件槽”，字段缺失不猜测，畸形或超限值明示“容量未知”。顶部当前装备区是持久快捷总览：进阶、已装插件与低噪声空插件槽均为同角色按钮，可从任意 tab 一步进入进阶、替换或安装候选，但空槽点击不得提前 preview/commit；配件页槽位区以同一 capacity 全量显示更大的详细操作面，已装槽可替换或专门卸下，空槽可聚焦并进入 `install_mod` 候选，不存在槽不渲染。空槽序号只表达容量位置，当前协议不携目标槽号，任一空槽都是等价安装入口，最终位置仍由 AS2 权威规则决定。真实剑圣腿甲固定证明 `1 个进阶槽 + 3 个插件槽`；`1/3 + 2` 个空插件槽用于可用容量演示，另保留 4+ synthetic capacity 只证明 Web 没有写死三槽。“卸下全部”等批量命令位于槽位 group 之外，不得伪装成额外槽。summary / operation 使用带 surface 与槽序号的唯一 focus key，详细槽重渲不得把焦点跳回顶部。`readPending / busy / reconcile / detaching / retry` 经 feature-local 单一锁投影同步覆盖 operation tabs、已安装 tier、强化 input/stepper/range/marks/cap、两处空槽与主 CTA；source/loadout 锁必须保存 owner/base/original `disabled` 与 `aria-disabled`，解除时只恢复自己持有的节点，drug、empty、blocked 和原生 disabled 状态不得被误解锁。number/range/mark/stepper/cap 发起强化 preview 时保持发起控件焦点；只有候选/交换 preview 才可把确认区带入可见范围并迁移 CommitBar 语义焦点。confirmation wrapper 使用有名称的 `role="group"`，busy/`aria-disabled` 下沉到真实控件族，不污染 generic section。阻断原因保持正文可读，只有 exact ready owner 可以提交。
 
@@ -289,7 +300,7 @@ Character Build 的已选择候选优先成为 tuning action target；只有未�
 
 数量控件同时接收领域提供的合法意图上限 `A` 与当前可直接提交上限 `E`。数字框、range 与键盘可达完整 `1..A`，`E` 只作为“可用”预设按钮和轨道标记，不能把超出余额/容量但仍合法的预览意图裁掉；最终提交继续由权威 preview 阻断。`A≤200` 使用线性轨道，`A>200` 使用对数位置映射，但 ARIA、方向键与回调始终表达真实数量：方向键 `±1`、Shift+方向键 `±5`、Home/End 到边界、PageUp/PageDown 跳实际数量级节点。数字草稿只接受范围内整数；空值、小数、负数或越界值保留在本地并显示关联错误，不触发 preview。草稿存在时第一次 Esc 只撤销字段编辑，第二次 Esc 才交给二级页；preview 临时锁定后必须复用行和控件节点，恢复原字段焦点与列表滚动。
 
-KShop 只保留一处精确数量编辑入口：目录的单击或 `+` 每次加购 1 件，购物车只显示 `×N`、小计和整行移除，`QuantityControl` 只出现在“核对并结账”的 SecondaryPage。目录数量弹层、购物车 `− / +` 与第二套数字框均属重复入口，禁止恢复；可选拖拽仍只产生加购意图。
+KShop 目录单击或 `+` 每次加购 1 件（可选拖拽同样产生加购意图）；购物车对可堆叠项提供轻量行内 `− / +` 步进与整行移除，并支持经 fresh `checkoutPreview` token 的 `快速结账` 弹窗一步完成；需要逐项核对或精确编辑大量数量时进入“核对并结账”二级页，由 `QuantityControl` 统一承担大额输入与阻断核对。目录不再另开数量弹层。
 
 调制配件候选是“完整兼容目录 + 权威持有数”，不是“全部已拥有”。筛选树的根层包含“持有 / 档级 / 用途 / 定位 / 状态”；fresh open 固定进入 `持有 / 已拥有`，只显示持有数大于 0 的项。玩家显式返回“持有”根后才显示全目录，其中数量 0 项必须保留明确的未拥有/不可提交状态。候选区标题使用“配件候选”，不得用“可安装配件”暗示所有可见项都已持有。
 
@@ -417,7 +428,7 @@ tooltip 的内容视觉可以继续复用 AS2 `TooltipComposer` 的 intro/desc �
 
 | primitive | 共享职责 | 不应承担 |
 |-----------|----------|----------|
-| `DualPaneShell` | 画布、header、profile、slot、FlowRail；`slotMarkers:false` 是官方 opt-out（领域自带栏位标签时可关闭 L/R marker 条，root 与 slot frame 投影 `data-slot-markers="off"`，core.css 以槽级选择器收单行 grid，frame aria-label 保留；默认 true，其他消费方零影响） | 领域请求与 ViewModel |
+| `DualPaneShell` | 画布、header、profile、slot、FlowRail；`slotMarkers` 默认关闭（`false`），仅显式传 `slotMarkers:true` 时挂载 L/R marker 条；关闭时 root 与 slot frame 投影 `data-slot-markers="off"`，core.css 以槽级选择器收单行 grid，frame aria-label 仍保留栏位语义 | 领域请求与 ViewModel |
 | `WorkbenchDialog/SecondaryPage` | focus stack、inert、Esc、opener restore | 交易/学习/调制规则 |
 | feature `HeaderProjection` / `ChoiceGroup` | 当前 view 的 action 可见/禁用/标签纯投影；ChoiceGroup 负责 pressed/disabled 机械 | action descriptor DSL、动态 toolbar registry、领域路由与 wire |
 | `Dropdown` | 单值 listbox 的键盘、outside-close、焦点归还与销毁 | 领域 comparator、持久偏好、权威筛选与数据排序 |

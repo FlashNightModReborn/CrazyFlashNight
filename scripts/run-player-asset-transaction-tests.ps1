@@ -384,7 +384,7 @@ $directAuthorityContracts = @(
         FirstWrite='ItemUtil.acquireReward('; Catch='claimAssetError'; DirtyExact=1 },
     @{ Name='crafting'; Path=$craftingPath; Start='private static function executeCommit';
         End='private static function restoreState'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
-        FirstWrite='ItemUtil.submit('; Catch=$null; DirtyExact=1 },
+        FirstWrite='submitCraftingRequirements('; Catch=$null; DirtyExact=1 },
     @{ Name='item-use-open'; Path=$itemUsePath; Start='private static function executeOpen';
         End='private static function executeOpenMany'; Dirty='PlayerAssetTransaction.markDirtyRequired(';
         FirstWrite='bag.addValue(String(source.slot), -1);'; Catch=$null; DirtyExact=1 },

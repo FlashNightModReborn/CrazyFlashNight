@@ -95,7 +95,8 @@
 
     function projectLoadout(root, slotKey, locked) {
         if (!root) return null;
-        var customizationMode = root.getAttribute('data-build-tuning-mode') === 'customization';
+        var customizationMode = typeof root.getAttribute === 'function'
+            && root.getAttribute('data-build-tuning-mode') === 'customization';
         var nodes = root.querySelectorAll('.character-build-slot');
         var marked = null;
         for (var i = 0; i < nodes.length; i++) {

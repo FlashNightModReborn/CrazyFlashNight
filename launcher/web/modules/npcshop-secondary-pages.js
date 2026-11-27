@@ -28,17 +28,19 @@
         var context = '待购和待售都只是清单；点击“确认交易”后整单才会一次生效。';
         if (blockingError === 'inventory_full') {
             context = '背包空间不足：可先整理背包与战备箱，返回后订单会自动重新核算。';
+        } else if (ui.driftNotice) {
+            context = String(ui.driftNotice);
         } else if (sales.some(function(line) { return line.scope === 'same_name'; })) {
-            context = '同名全售只出售普通实例，强化、进阶和带插件装备会自动保护。';
+            context = '同名全售只出售未强化且无插件的基础装备，强化、进阶和带插件装备会自动保护。';
         }
         return {
-            status:blockingError ? errorMessage(blockingError) : '整单可提交',
+            status:blockingError ? errorMessage(blockingError) : (ui.driftNotice ? '报价已更新 · 请确认' : '整单可提交'),
             context:context,
             organizeVisible:blockingError === 'inventory_full',
             organizeDisabled:!!(ui.busy || ui.previewBusy || ui.spaceBusy),
             commitBusy:!!(ui.busy || ui.previewBusy),
-            canCommit:!!settlement.canCommit,
-            commitState:blockingError ? 'blocked' : 'ready'
+            canCommit:!!settlement.canCommit && !ui.draftStale,
+            commitState:blockingError || ui.draftStale ? 'blocked' : 'ready'
         };
     }
 
@@ -136,6 +138,9 @@
         this._organizeButton = this.root.querySelector('[data-space-organize]');
         this._organizeHandler = this._ports.onOrganize;
         this._organizeButton.addEventListener('click', this._organizeHandler);
+        this._columns = this.root.querySelector('.npcshop-settlement-columns');
+        this._purchaseSection = this._columns.children[0];
+        this._saleSection = this._columns.children[1];
         this.commitBar = new this._components.CommitBar({
             root:this.root.querySelector('.npcshop-settlement-summary'),
             statusNode:this.root.querySelector('[data-trade-error]'),
@@ -154,6 +159,9 @@
     SettlementPresenter.prototype.setOrganizing = function(active) { this.root.classList.toggle('organizing-space', !!active); };
     SettlementPresenter.prototype.reset = function() {
         this._renderLines('purchase', [], {}); this._renderLines('sale', [], {});
+        if (this._purchaseSection) this._purchaseSection.hidden = false;
+        if (this._saleSection) this._saleSection.hidden = false;
+        if (this._columns) this._columns.classList.remove('is-single-column');
         this.root.querySelector('[data-trade-economy]').textContent = '';
         this.root.querySelector('[data-trade-context]').textContent = '价格与容量由游戏实时核算；确认后整单一次生效。';
         this._organizeButton.hidden = true;
@@ -173,8 +181,15 @@
         if (!settlement) return false;
         intents = intents || {purchases:{}, sales:{}};
         ui = ui || {};
-        this._renderLines('purchase', settlement.purchaseLines || [], intents.purchases || {}, ui);
-        this._renderLines('sale', settlement.saleLines || [], intents.sales || {}, ui);
+        var purchaseLines = settlement.purchaseLines || [];
+        var saleLines = settlement.saleLines || [];
+        var purchaseOnly = purchaseLines.length > 0 && saleLines.length === 0;
+        var saleOnly = saleLines.length > 0 && purchaseLines.length === 0;
+        if (this._purchaseSection) this._purchaseSection.hidden = saleOnly;
+        if (this._saleSection) this._saleSection.hidden = purchaseOnly;
+        if (this._columns) this._columns.classList.toggle('is-single-column', purchaseOnly || saleOnly);
+        this._renderLines('purchase', purchaseLines, intents.purchases || {}, ui);
+        this._renderLines('sale', saleLines, intents.sales || {}, ui);
         this.root.querySelector('[data-trade-economy]').innerHTML = '<b>购买 -$' + Number(settlement.buyTotal || 0).toLocaleString() + '</b>'
             + '<b>出售 +$' + Number(settlement.sellTotal || 0).toLocaleString() + '</b>'
             + '<strong>结余 $' + Number(settlement.projectedBalance || 0).toLocaleString() + '</strong>'
@@ -436,10 +451,10 @@
             + '<div><h2>商店操作帮助</h2><p>所有选择都可以在确认交易前调整或取消。</p></div>'
             + '<button type="button" data-help-close data-audio-cue="back" aria-label="关闭 NPC 商店">×</button></header>'
             + '<div class="npcshop-help-grid">'
-            + helpCard('01','选择商品','左侧点击商品加入待购；右侧点击背包或材料加入待售。','此时不会扣钱，也不会移除物品。','待购','待售')
-            + helpCard('02','调整并结算','在结算页直接输入数字、拖动滑条，或用 −、+、+5、“最大”调整数量，再确认整张订单。','“最多可购”由金币、背包容量和商店限制共同决定。','调整数量','确认交易')
-            + helpCard('03','同名全售','装备待售行可切换为“同名全售”，快速清理重复装备。','只出售普通实例；强化、进阶和带插件装备自动保护。','同名匹配','保护特殊装备')
-            + helpCard('04','整理空间','背包不足时进入背包—战备箱整理页，点击物品即可快速转移。','返回后订单自动重算；商品不会直接购买到战备箱。','整理空间','返回重算')
+            + helpCard('01','选购与快捷交易','左栏单击商品每次加购 1 件，右栏单击背包或材料加入待售；双击或右键可直接单件快捷交易。','选中的卡片可直接点“×”移出，未点击完成交易前不会扣钱。','加购 / 待售','快捷交易')
+            + helpCard('02','底条直结与明细核对','底部交易条实时汇总收支金币，可直接“完成交易”；需要滑条、+5 或“可用”/“全部”调数时点“明细核对”。','“可用”上限由金币、背包容量和商店限制共同决定。','底条直结','明细核对')
+            + helpCard('03','同名全售','背包中的基础装备可直接点击“同名全售”，或在结算页切换。','只出售未强化且无插件的同名装备；强化、进阶和带插件装备自动保护。','同名匹配','保护特殊装备')
+            + helpCard('04','整理背包','随时可从顶栏“整理背包”在背包与战备箱之间快速转移物品。','返回后订单会自动重算；商品不会直接购买到战备箱。','整理背包','返回重算')
             + '</div><footer class="npcshop-help-rules"><b>记住三件事</b><span>选择 ≠ 交易</span><span>最大数量会动态变化</span><span>移动后的待售项可能被安全移除</span>'
             + '<small>关键提示只自动出现一次；本页可随时从标题栏“？”重新打开。</small></footer>';
         this.backButton = this.root.querySelector('[data-help-back]');
@@ -476,6 +491,25 @@
         var reason = item.locked
             ? (item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁')
             : (atLimit ? '已达持有上限' : '');
+        var removeBtn = options.node && options.node.querySelector('.npcshop-intent-remove');
+        if (removeBtn && typeof options.onRemove === 'function') {
+            removeBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                options.onRemove(item);
+            });
+        }
+        if (options.node && !item.locked && !atLimit && typeof options.onQuickTrade === 'function') {
+            options.node.addEventListener('dblclick', function(event) {
+                if (event.target && event.target.closest && event.target.closest('button')) return;
+                event.preventDefault();
+                options.onQuickTrade(item, true);
+            });
+            options.node.addEventListener('contextmenu', function(event) {
+                if (event.target && event.target.closest && event.target.closest('button')) return;
+                event.preventDefault();
+                options.onQuickTrade(item, false);
+            });
+        }
         return options.workbench.EntityTile.bindActivation(options.node, {
             itemName:item.displayName,
             label:options.node.getAttribute('aria-label') || '',
@@ -550,8 +584,8 @@
             shop_not_found:'未找到该 NPC 的商店。', item_not_found:'商品或待售物品已经变化。', locked:'尚未获得所需情报。', insufficient_money:'金币不足。', inventory_full:'背包空间不足。',
             destination_full:'对应收集项已达持有上限。',
             access_denied:'当前角色暂不能使用这家商店，请确认剧情和关卡条件后重新进入。', stale_state:'物品状态已经变化。', invalid_price:'商品或售卖价格已经变化。', sell_forbidden:'该容器不允许出售。', insufficient_quantity:'物品数量不足。', duplicate_line:'交易清单包含重复物品。',
-            invalid_payload:'交易清单包含无效数据。', invalid_quantity:'购买或出售数量无效。', nothing_to_sell:'没有可批量出售的普通实例。', target_full:'目标容器已满。', slot_locked:'该战备箱槽位尚未解锁。',
-            busy:'商店正在处理另一项交易。', reconcile_required:'交易结果需要重新同步。', malformed_response:'交易回包不完整，需要重新核算。', invalid_response:'交易回包无效，需要重新核算。',
+            invalid_payload:'交易清单包含无效数据。', invalid_quantity:'购买或出售数量无效。', nothing_to_sell:'没有可批量出售的普通装备。', target_full:'目标栏位已满。', slot_locked:'该战备箱槽位尚未解锁。',
+            busy:'商店正在处理另一项交易。', reconcile_required:'交易结果需要重新同步。', malformed_response:'交易响应不完整，需要重新核算。', invalid_response:'交易响应无效，需要重新核算。',
             timeout:'商店响应超时。', client_timeout:'商店响应超时。', disconnected:'连接已断开。'
         };
         return messages[error] || '操作失败，请重试。';
@@ -601,7 +635,8 @@
             + '<div class="npcshop-space-columns"><section><h3>背包 <small data-space-meta="背包"></small></h3><div class="npcshop-space-grid" data-space-grid="背包"></div></section>'
             + '<section><h3>战备箱 <span data-space-pager></span><small data-space-meta="战备箱"></small></h3><div class="npcshop-space-grid battlebox" data-space-grid="战备箱"></div></section></div>';
         this.secondary = new this._components.SecondaryPage({root:this.root, role:'dialog', ariaLabel:'整理购买空间'});
-        this.secondary.bindBack(this.root.querySelector('[data-space-back]'), this._ports.onBack);
+        this._backButton = this.root.querySelector('[data-space-back]');
+        this.secondary.bindBack(this._backButton, this._ports.onBack);
         this.secondary.bindClose(this.root.querySelector('[data-space-close]'), this._ports.onClose);
         this._grids = {
             '背包':this.root.querySelector('[data-space-grid="背包"]'),
@@ -639,7 +674,10 @@
         });
         this.secondary.mount(options.host);
     }
-    SpaceOrganizerPresenter.prototype.open = function() { return this.secondary.open(); };
+    SpaceOrganizerPresenter.prototype.open = function(backLabel) {
+        if (this._backButton) this._backButton.textContent = backLabel || '← 返回结算';
+        return this.secondary.open();
+    };
     SpaceOrganizerPresenter.prototype.close = function(reason) { return this.secondary.close(reason || 'return'); };
     SpaceOrganizerPresenter.prototype.isActive = function() { return this.secondary.isActive(); };
     SpaceOrganizerPresenter.prototype.render = function(state) {
@@ -736,6 +774,191 @@
         return true;
     };
 
+    function isPlainBagEquipment(viewId, slot) {
+        if (viewId !== 'bag' || !slot || !slot.occupied || !slot.item) return false;
+        var item = slot.item;
+        if (item.itemKind !== 'equipment') return false;
+        if (typeof NpcShopRuntime !== 'undefined' && NpcShopRuntime
+                && typeof NpcShopRuntime.isPlainProjectedItem === 'function') {
+            return NpcShopRuntime.isPlainProjectedItem(item);
+        }
+        if (Number(item.enhancementLevel || 0) > 1 || Number(item.level || 0) > 1) return false;
+        if (item.tierSlotUsed === true || item.tier || item.hasTier || item.upgraded) return false;
+        if (Number(item.modSlotUsed || 0) > 0 || Number(item.modCount || 0) > 0) return false;
+        if (Array.isArray(item.modSlots) && item.modSlots.length > 0) return false;
+        if (Array.isArray(item.mods) && item.mods.length > 0) return false;
+        return true;
+    }
+
+    function LiveTradeBar(options) {
+        options = options || {};
+        this._document = options.document || document;
+        this._ports = {
+            onClear:requirePort(options, 'onClear'),
+            onOpenSettlement:requirePort(options, 'onOpenSettlement'),
+            onDirectTrade:requirePort(options, 'onDirectTrade')
+        };
+        this.root = this._document.createElement('footer');
+        this.root.className = 'npcshop-live-trade-bar workbench-commit-bar';
+        this.root.setAttribute('data-workbench-shell-footer', '');
+        this.root.innerHTML = '<div class="npcshop-live-trade-summary" data-live-trade-summary></div>'
+            + '<div class="npcshop-live-trade-actions">'
+            + '<button type="button" class="workbench-mode-btn npcshop-bar-clear-btn" data-live-clear data-audio-cue="back" hidden>清空</button>'
+            + '<button type="button" class="workbench-mode-btn npcshop-checkout-btn" data-live-detail data-audio-cue="open">明细核对</button>'
+            + '<button type="button" class="workbench-mode-btn npcshop-bar-commit-btn" data-live-commit data-audio-cue="activate">完成交易</button>'
+            + '</div>';
+        this._summary = this.root.querySelector('[data-live-trade-summary]');
+        this._clearBtn = this.root.querySelector('[data-live-clear]');
+        this._detailBtn = this.root.querySelector('[data-live-detail]');
+        this._commitBtn = this.root.querySelector('[data-live-commit]');
+        this._clearBtn.addEventListener('click', this._ports.onClear);
+        this._detailBtn.addEventListener('click', this._ports.onOpenSettlement);
+        this._commitBtn.addEventListener('click', this._ports.onDirectTrade);
+        if (options.host) options.host.appendChild(this.root);
+    }
+    function computePurchaseLineTotal(item, quantity, buyRatePermille) {
+        var qty = Math.max(1, Math.floor(Number(quantity) || 1));
+        var base = item && item.basePrice != null ? Number(item.basePrice) : NaN;
+        var rate = buyRatePermille != null ? Number(buyRatePermille) : NaN;
+        if (isFinite(base) && base >= 0 && isFinite(rate) && rate >= 0) {
+            return Math.floor((base * qty * rate) / 1000);
+        }
+        return qty * Number(item && item.unitPrice || 0);
+    }
+
+    function captureDirectQuote(payload, purchaseIntents, saleIntents, shortcutIntent, state) {
+        payload = payload || {};
+        var purchases = Array.isArray(payload.purchases) ? payload.purchases : [];
+        var sales = Array.isArray(payload.sales) ? payload.sales : [];
+        var catalog = state && Array.isArray(state.catalog) ? state.catalog : [];
+        var rate = state && state.buyRatePermille != null ? state.buyRatePermille : null;
+        var buyLines = {}, buyTotal = 0;
+        for (var i = 0; i < purchases.length; i++) {
+            var req = purchases[i], key = String(req.catalogIndex);
+            var item = (shortcutIntent && shortcutIntent.kind === 'purchase' && String(shortcutIntent.key) === key)
+                ? shortcutIntent.intent && shortcutIntent.intent.item
+                : (purchaseIntents && purchaseIntents[key] && purchaseIntents[key].item);
+            if (!item) {
+                for (var c = 0; c < catalog.length; c++) {
+                    if (Number(catalog[c].catalogIndex) === Number(req.catalogIndex)) { item = catalog[c]; break; }
+                }
+            }
+            var qty = Math.max(1, Math.floor(Number(req.quantity) || 1));
+            var total = computePurchaseLineTotal(item, qty, rate);
+            buyLines[key] = {quantity:qty, total:total};
+            buyTotal += total;
+        }
+        var hasBulkSale = false, saleLines = {}, sellTotal = 0, hasUnknownSellPrice = false;
+        for (var j = 0; j < sales.length; j++) {
+            var sReq = sales[j] || {};
+            if (sReq.scope === 'same_name') hasBulkSale = true;
+            var src = sReq.source || {};
+            var sId = src.containerId === '背包' ? ('bag:' + Number(src.slot)) : ('material:' + String(src.key || ''));
+            var sIntent = (shortcutIntent && shortcutIntent.kind === 'sale' && String(shortcutIntent.key) === sId)
+                ? shortcutIntent.intent : (saleIntents && saleIntents[sId]);
+            var sItem = sIntent && sIntent.item;
+            var sQty = Math.max(1, Math.floor(Number(sReq.quantity) || 1));
+            var rawSell = sItem && sItem.sellPrice != null ? Number(sItem.sellPrice) : NaN;
+            var knownTotal = isFinite(rawSell) && rawSell >= 0 ? Math.floor(rawSell * sQty) : null;
+            if (knownTotal == null) hasUnknownSellPrice = true; else sellTotal += knownTotal;
+            saleLines[sId] = {scope:String(sReq.scope || 'slot'), quantity:sQty, knownTotal:knownTotal};
+        }
+        return {purchaseCount:purchases.length, buyLines:buyLines, buyTotal:buyTotal,
+            saleCount:sales.length, saleLines:saleLines, sellTotal:sellTotal,
+            hasBulkSale:hasBulkSale, hasUnknownSellPrice:hasUnknownSellPrice};
+    }
+
+    function describeQuoteDrift(expected, preview) {
+        if (!expected || !preview) return '';
+        var pLines = Array.isArray(preview.purchaseLines) ? preview.purchaseLines : [];
+        var sLines = Array.isArray(preview.saleLines) ? preview.saleLines : [];
+        if (pLines.length !== expected.purchaseCount) return '待购清单项数与当前核价不一致，请核对后再确认交易。';
+        for (var i = 0; i < pLines.length; i++) {
+            var line = pLines[i], exp = expected.buyLines[String(line.catalogIndex)];
+            if (!exp || Number(line.quantity) !== exp.quantity) return '待购数量已变化，请核对最新报价后再确认交易。';
+            if (Number(line.total) !== exp.total) {
+                return '商品报价已变化（原显示 $' + expected.buyTotal.toLocaleString()
+                    + ' → 最新 $' + Number(preview.buyTotal || 0).toLocaleString() + '），请核对后再确认交易。';
+            }
+        }
+        if (expected.purchaseCount > 0 && Number(preview.buyTotal || 0) !== expected.buyTotal) {
+            return '商品报价已变化（原显示 $' + expected.buyTotal.toLocaleString()
+                + ' → 最新 $' + Number(preview.buyTotal || 0).toLocaleString() + '），请核对后再确认交易。';
+        }
+        if (!expected.hasBulkSale) {
+            if (sLines.length !== expected.saleCount) return '待售清单与当前核价不一致，请核对后再确认交易。';
+            if (expected.saleCount > 0 && expected.hasUnknownSellPrice) {
+                return '出售价格已核定（$' + Number(preview.sellTotal || 0).toLocaleString() + '），请确认后再交易。';
+            }
+            for (var s = 0; s < sLines.length; s++) {
+                var sLine = sLines[s], sExp = expected.saleLines && expected.saleLines[String(sLine.sourceIdentity || '')];
+                if (!sExp || String(sLine.scope || 'slot') !== sExp.scope || Number(sLine.quantity) !== sExp.quantity) {
+                    return '待售条目已变化，请核对最新报价后再确认交易。';
+                }
+                if (sExp.knownTotal != null && Number(sLine.total) !== sExp.knownTotal) {
+                    return '出售报价已变化（原显示 $' + expected.sellTotal.toLocaleString()
+                        + ' → 最新 $' + Number(preview.sellTotal || 0).toLocaleString() + '），请核对后再确认交易。';
+                }
+            }
+            if (expected.saleCount > 0 && !expected.hasUnknownSellPrice && Number(preview.sellTotal || 0) !== expected.sellTotal) {
+                return '出售报价已变化（原显示 $' + expected.sellTotal.toLocaleString()
+                    + ' → 最新 $' + Number(preview.sellTotal || 0).toLocaleString() + '），请核对后再确认交易。';
+            }
+        }
+        return '';
+    }
+
+    LiveTradeBar.prototype.update = function(state) {
+        state = state || {};
+        var purchases = state.purchases || {};
+        var sales = state.sales || {};
+        var buyLines = Object.keys(purchases), sellLines = Object.keys(sales);
+        var buyCount = 0, buyTotal = 0, sellCount = 0, sellTotal = 0, hasBulk = false;
+        for (var i = 0; i < buyLines.length; i++) {
+            var p = purchases[buyLines[i]];
+            var pq = Math.max(1, Number(p && p.quantity) || 1);
+            buyCount += pq;
+            buyTotal += computePurchaseLineTotal(p && p.item, pq, state.buyRatePermille);
+        }
+        for (var j = 0; j < sellLines.length; j++) {
+            var s = sales[sellLines[j]];
+            var sq = Math.max(1, Number(s && s.quantity) || 1);
+            if (s && s.scope === 'same_name') hasBulk = true;
+            sellCount += sq;
+            var unitSell = Number(s && s.item && (s.item.sellPrice != null ? s.item.sellPrice : s.item.unitPrice) || 0);
+            sellTotal += sq * unitSell;
+        }
+        var totalLines = buyLines.length + sellLines.length;
+        if (!totalLines) {
+            this._summary.innerHTML = '<span class="npcshop-live-hint">单击商品加购 · 单击背包待售 · 双击快捷交易</span>';
+        } else {
+            var parts = [];
+            if (buyLines.length) parts.push('<span class="npcshop-live-buy">待购 ' + buyCount + ' 件 (-' + buyTotal.toLocaleString() + ' 金币)</span>');
+            if (sellLines.length) parts.push('<span class="npcshop-live-sell">待售 ' + sellCount + ' 件' + (hasBulk ? ' · 含同名全售' : '（结算核价）') + '</span>');
+            var authTrade = state.preview && (state.preview.buyTotal != null && state.preview.sellTotal != null ? state.preview : state.preview.trade);
+            if (authTrade && authTrade.buyTotal != null && authTrade.sellTotal != null) {
+                var authNet = Number(authTrade.sellTotal) - Number(authTrade.buyTotal);
+                var authSign = authNet >= 0 ? '+' : '−';
+                parts.push('<strong class="npcshop-live-net ' + (authNet < 0 ? 'negative' : 'positive') + '">净变动 ' + authSign + Math.abs(authNet).toLocaleString() + ' 金币</strong>');
+            } else if (!sellLines.length && buyTotal > 0) {
+                parts.push('<strong class="npcshop-live-net negative">净变动 −' + buyTotal.toLocaleString() + ' 金币</strong>');
+            }
+            this._summary.innerHTML = parts.join('');
+        }
+        var blocked = !!state.disabled;
+        this._clearBtn.hidden = !totalLines;
+        this._clearBtn.disabled = blocked || !totalLines;
+        this._detailBtn.textContent = totalLines ? '明细核对 (' + totalLines + ')' : '明细核对';
+        this._detailBtn.disabled = blocked || !totalLines;
+        this._commitBtn.disabled = blocked || !totalLines;
+    };
+    LiveTradeBar.prototype.destroy = function() {
+        this._clearBtn.removeEventListener('click', this._ports.onClear);
+        this._detailBtn.removeEventListener('click', this._ports.onOpenSettlement);
+        this._commitBtn.removeEventListener('click', this._ports.onDirectTrade);
+        if (this.root.parentNode) this.root.parentNode.removeChild(this.root);
+    };
+
     function createOwnedView(options) {
         options = options || {};
         var documentRef = options.document;
@@ -753,6 +976,9 @@
         var interaction = requirePort(options, 'interaction');
         var toast = requirePort(options, 'toast');
         var toggleSale = requirePort(options, 'toggleSale');
+        var onRemoveSale = typeof options.onRemoveSale === 'function' ? options.onRemoveSale : null;
+        var onQuickBulkSale = typeof options.onQuickBulkSale === 'function' ? options.onQuickBulkSale : null;
+        var onQuickTrade = typeof options.onQuickTrade === 'function' ? options.onQuickTrade : null;
         var ownedShell = new inventoryUI.OwnedInventoryViewShell({
             containerId:viewId,
             instanceKey:'npcshop:' + viewId,
@@ -772,15 +998,32 @@
                 if (canSell) {
                     var intents = getSaleIntents();
                     var identity = saleIdentity(viewId, slot);
-                    var selected = !!intents[identity];
+                    var intent = intents[identity];
+                    var selected = !!intent;
                     node.classList.toggle('selected', selected);
                     node.classList.toggle('item-card-selected', selected);
                     node.setAttribute('aria-pressed', selected ? 'true' : 'false');
                     var marker = documentRef.createElement('span');
                     marker.className = 'item-card-auxiliary item-card-selection-marker npcshop-selection-marker';
-                    marker.textContent = selected ? '待售 ×' + intents[identity].quantity
-                        : '点击加入待售';
+                    marker.textContent = selected
+                        ? (intent.scope === 'same_name' ? '同名全售' : '待售 ×' + intent.quantity) : '';
+                    marker.hidden = !selected;
                     node.appendChild(marker);
+                    var removeBtn = documentRef.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'npcshop-intent-remove';
+                    removeBtn.textContent = '×';
+                    removeBtn.setAttribute('aria-label', '取消待售');
+                    removeBtn.hidden = !selected;
+                    node.appendChild(removeBtn);
+                    if (onQuickBulkSale && isPlainBagEquipment(viewId, slot)) {
+                        var bulkBtn = documentRef.createElement('button');
+                        bulkBtn.type = 'button';
+                        bulkBtn.className = 'npcshop-same-name-btn';
+                        bulkBtn.textContent = '同名全售';
+                        bulkBtn.setAttribute('aria-label', '按同名全售未强化且无插件的基础装备');
+                        node.appendChild(bulkBtn);
+                    }
                 } else {
                     node.classList.add('read-only');
                     node.setAttribute('aria-readonly', 'true');
@@ -792,6 +1035,32 @@
                 var item = slot && slot.item || {};
                 var itemName = String(item.displayName || '未知物品');
                 var reasonNode = ensureReasonNode(node);
+                var removeBtn = node.querySelector('.npcshop-intent-remove');
+                if (removeBtn && canSell && slot && slot.occupied && onRemoveSale) {
+                    removeBtn.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        onRemoveSale(viewId, slot);
+                    });
+                }
+                var bulkBtn = node.querySelector('.npcshop-same-name-btn');
+                if (bulkBtn && canSell && slot && slot.occupied && onQuickBulkSale) {
+                    bulkBtn.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        onQuickBulkSale(slot);
+                    });
+                }
+                if (canSell && slot && slot.occupied && onQuickTrade) {
+                    node.addEventListener('dblclick', function(event) {
+                        if (event.target && event.target.closest && event.target.closest('button')) return;
+                        event.preventDefault();
+                        onQuickTrade(viewId, slot, true);
+                    });
+                    node.addEventListener('contextmenu', function(event) {
+                        if (event.target && event.target.closest && event.target.closest('button')) return;
+                        event.preventDefault();
+                        onQuickTrade(viewId, slot, false);
+                    });
+                }
                 workbench.EntityTile.bindActivation(node, {
                     itemName:itemName,
                     label:node.getAttribute('aria-label') || itemName,
@@ -807,7 +1076,7 @@
                     reasonNode:reasonNode,
                     onBlocked:function() { toast(interaction(viewId).reason); cue('illegal'); },
                     onActivate:canSell && slot && slot.occupied
-                        ? function() { toggleSale(viewId, slot); } : null
+                        ? function(event) { toggleSale(viewId, slot, event); } : null
                 });
                 node.__npcOwnedInteractionRefresh = function() {
                     var projection = interaction(viewId);
@@ -847,12 +1116,44 @@
         return {view:pane.view, pane:pane};
     }
 
+    function syncOwnedIntentCard(options, viewId, slot, targetNode) {
+        if (viewId === 'intelligence') return;
+        var view = options.getRightView(viewId);
+        var renderer = view && view.ownedInventoryShell && view.ownedInventoryShell.view.renderer;
+        if (!renderer || !slot) return;
+        var key = String(viewId === 'bag' ? slot.physicalSlot : slot.collectionKey);
+        var nodes = targetNode ? [targetNode] : renderer.root.querySelectorAll('[data-workbench-key]');
+        var intents = options.getSaleIntents();
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].getAttribute('data-workbench-key') !== key) continue;
+            var identity = options.saleIdentity(viewId, slot);
+            var intent = intents[identity];
+            var selected = !!intent;
+            var pane = options.getOwnedPane(viewId);
+            if (pane) pane.setSelected(slot, selected);
+            nodes[i].classList.toggle('selected', selected);
+            nodes[i].classList.toggle('item-card-selected', selected);
+            nodes[i].setAttribute('aria-pressed', selected ? 'true' : 'false');
+            options.workbench.EntityTile.setSelected(nodes[i], selected);
+            var marker = nodes[i].querySelector('.npcshop-selection-marker');
+            if (marker) {
+                marker.textContent = selected
+                    ? (intent.scope === 'same_name' ? '同名全售' : '待售 ×' + intent.quantity) : '';
+                marker.hidden = !selected;
+            }
+            var removeBtn = nodes[i].querySelector('.npcshop-intent-remove');
+            if (removeBtn) removeBtn.hidden = !selected;
+            return;
+        }
+    }
+
     function renderCatalogCard(options, item) {
         var intents = options.getPurchaseIntents();
-        var selected = !!intents[String(item.catalogIndex)];
+        var intent = intents[String(item.catalogIndex)];
+        var selected = !!intent;
         var atLimit = isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
         var markerText = item.locked ? '未解锁' : (atLimit ? '已达持有上限'
-            : (selected ? '待购 ×' + intents[String(item.catalogIndex)].quantity : '点击加入待购'));
+            : (selected ? '待购 ×' + intent.quantity : ''));
         var lockTitle = atLimit ? '已达持有上限'
             : (item.requiredInfo ? '需要情报：' + item.requiredInfo : '尚未解锁');
         var card = options.workbench.ItemCard.renderCatalog({
@@ -869,9 +1170,21 @@
             balanceSummary:item.balanceSummary,
             markerText:markerText
         });
+        var marker = card.querySelector('.npcshop-selection-marker');
+        if (marker) marker.hidden = !markerText;
+        var doc = options.document || document;
+        if (!item.locked && !atLimit) {
+            var removeBtn = doc.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'npcshop-intent-remove';
+            removeBtn.textContent = '×';
+            removeBtn.setAttribute('aria-label', '取消待购 ' + item.displayName);
+            removeBtn.hidden = !selected;
+            card.appendChild(removeBtn);
+        }
         if (options.components && options.components.ProcurementHighlight) {
             options.components.ProcurementHighlight.decorateCard(
-                card, item.procurement, options.document || document);
+                card, item.procurement, doc);
         }
         return card;
     }
@@ -885,17 +1198,182 @@
             : renderer.root.querySelectorAll('[data-workbench-key]');
         for (var index = 0; index < nodes.length; index++) {
             if (nodes[index].getAttribute('data-workbench-key') !== key) continue;
-            var selected = !!intents[key];
+            var intent = intents[key];
+            var selected = !!intent;
             nodes[index].classList.toggle('selected', selected);
             nodes[index].classList.toggle('item-card-selected', selected);
             nodes[index].setAttribute('aria-pressed', selected ? 'true' : 'false');
             options.workbench.EntityTile.setSelected(nodes[index], selected);
             var marker = nodes[index].querySelector('.npcshop-selection-marker');
             var atLimit = isFinite(Number(item.maxQuantity)) && Number(item.maxQuantity) <= 0;
-            if (marker) marker.textContent = item.locked ? '未解锁'
-                : (atLimit ? '已达持有上限'
-                    : (selected ? '待购 ×' + intents[key].quantity : '点击加入待购'));
+            var text = item.locked ? '未解锁'
+                : (atLimit ? '已达持有上限' : (selected ? '待购 ×' + intent.quantity : ''));
+            if (marker) {
+                marker.textContent = text;
+                marker.hidden = !text;
+            }
+            var removeBtn = nodes[index].querySelector('.npcshop-intent-remove');
+            if (removeBtn) removeBtn.hidden = !selected;
             return;
+        }
+    }
+
+    function decorateCategoryButtons(toolbar, tree, itemFilter, mode) {
+        if (!toolbar) return;
+        var buttons = toolbar.querySelectorAll('[data-filter-path]');
+        for (var i = 0; i < buttons.length; i++) {
+            var path = String(buttons[i].getAttribute('data-filter-path') || '').split('/').filter(Boolean);
+            var labels = [], node = tree;
+            for (var depth = 0; depth < path.length; depth++) {
+                node = itemFilter.nodeAt(node, [path[depth]]);
+                if (!node) break;
+                labels.push(node.label);
+            }
+            var legacyPath = mode === 'auto' ? labels : path;
+            buttons[i].setAttribute('data-category', mode + ':' + (legacyPath.length ? legacyPath.join(':') : 'all'));
+            buttons[i].setAttribute('data-audio-cue', 'select');
+        }
+    }
+
+    function matchesCategory(state, category, itemFilter, item) {
+        var sections = state && state.layout && Array.isArray(state.layout.sections) ? state.layout.sections : [];
+        if (category && category.mode === 'combined') {
+            var browsePath = category.path || [];
+            if (!browsePath.length) return true;
+            if (browsePath.length === 1) return browsePath[0] === 'set' ? itemFilter.setPath(item).length > 0 : true;
+            if (browsePath[0] === 'category') return itemFilter.matchesPath(item, browsePath.slice(1), function(e) { return itemFilter.catalogPath(e); });
+            if (browsePath[0] === 'set') return itemFilter.matchesPath(item, browsePath.slice(1), itemFilter.setPath);
+            if (browsePath[0] === 'curated') {
+                for (var i = 0; i < sections.length; i++) {
+                    if (String(sections[i].id) === String(browsePath[1])) return (sections[i].entries || []).indexOf(Number(item.catalogIndex)) >= 0;
+                }
+            }
+            return false;
+        }
+        var selected = category && category.mode === 'auto' ? (category.path || []) : [];
+        return itemFilter.matchesPath(item, selected, function(e) { return itemFilter.catalogPath(e); });
+    }
+
+    function fullBag(snapshots) {
+        if (!Array.isArray(snapshots)) return null;
+        return snapshots.find(function(snapshot) {
+            return snapshot && snapshot.containerId === '背包' && String(snapshot.filterKey || 'all') === 'all'
+                && !snapshot.filterSpec && !snapshot.offset && Array.isArray(snapshot.slots);
+        }) || null;
+    }
+
+    function selectionPayload(shopId, draft) {
+        var purchases = [], sales = [];
+        Object.keys(draft.purchases).sort(function(a,b) { return Number(a)-Number(b); }).forEach(function(key) {
+            var line = draft.purchases[key]; purchases.push({catalogIndex:line.catalogIndex, quantity:line.quantity});
+        });
+        Object.keys(draft.sales).sort().forEach(function(key) {
+            var line = draft.sales[key];
+            if (line.scope === 'same_name') sales.push({source:line.source, scope:'same_name', policy:'plain_only'});
+            else sales.push({source:line.source, quantity:line.quantity, scope:'slot'});
+        });
+        return {shopId:shopId, purchases:purchases, sales:sales};
+    }
+
+    function requiresTradeReview(payload, preview, sc, saleIntents, isPlain) {
+        var sales = payload && Array.isArray(payload.sales) ? payload.sales : [], qty = 0;
+        for (var i = 0; i < sales.length; i++) {
+            if (sales[i].scope === 'same_name') return true;
+            qty += Number(sales[i].quantity || 0);
+        }
+        var sellTotal = Number(preview && (preview.sellTotal != null ? preview.sellTotal : preview.trade && preview.trade.sellTotal) || 0);
+        if (qty > 1 || sellTotal >= 50000) return true;
+        var list = sc ? (sc.kind === 'sale' ? [sc.intent] : []) : Object.keys(saleIntents).map(function(k) { return saleIntents[k]; });
+        for (var j = 0; j < list.length; j++) {
+            var it = list[j] && list[j].item;
+            if (it && it.itemKind === 'equipment' && !isPlain(it)) return true;
+        }
+        return false;
+    }
+
+    function rebindSaleIntents(saleIntents, views, isPlainFn) {
+        var bag = views && views.bag, material = views && views.material;
+        var next = {}, dropped = 0, changed = false;
+        Object.keys(saleIntents || {}).forEach(function(oldIdentity) {
+            var intent = saleIntents[oldIdentity], slot = null, identity = oldIdentity;
+            var previousLease = intent.source && intent.source.expectedLease;
+            if (intent.source && intent.source.containerId === '背包' && !bag) {
+                next[oldIdentity] = intent;
+                return;
+            }
+            if (intent.source && intent.source.containerId === '背包') {
+                var slots = bag && bag.slots ? bag.slots : [];
+                for (var i = 0; i < slots.length; i++) {
+                    if (!slots[i].occupied || String(slots[i].item && slots[i].item.name) !== String(intent.item && intent.item.name)) continue;
+                    if (intent.scope === 'same_name' && isPlainFn(slots[i].item)) {
+                        slot = slots[i]; break;
+                    }
+                    if (intent.scope !== 'same_name'
+                            && Number(slots[i].physicalSlot) === Number(intent.source.slot)
+                            && String(slots[i].slotLease) === String(intent.source.expectedLease)
+                            && Number(slots[i].item.quantity) >= Number(intent.quantity)) {
+                        slot = slots[i]; break;
+                    }
+                }
+                if (slot) {
+                    intent.maxQuantity = Number(slot.item.quantity);
+                    identity = 'bag:' + Number(slot.physicalSlot);
+                    intent.identity = identity;
+                    intent.source = {containerId:'背包', slot:Number(slot.physicalSlot), expectedLease:String(slot.slotLease)};
+                }
+            } else if (!material) {
+                slot = {slotLease:intent.source && intent.source.expectedLease};
+            } else {
+                var materialSlots = material && material.slots ? material.slots : [];
+                for (var j = 0; j < materialSlots.length; j++) {
+                    if (String(materialSlots[j].collectionKey) === String(intent.source && intent.source.key)) { slot = materialSlots[j]; break; }
+                }
+                if (slot && (!slot.occupied || !slot.item || !intent.item || String(slot.item.name) !== String(intent.item.name)
+                        || Number(slot.item.quantity) < Number(intent.quantity))) slot = null;
+                if (slot) {
+                    intent.maxQuantity = Number(slot.item.quantity);
+                    intent.source.expectedLease = String(slot.slotLease);
+                }
+            }
+            if (slot && !next[identity]) {
+                next[identity] = intent;
+                if (oldIdentity !== identity || previousLease !== intent.source.expectedLease) changed = true;
+            } else dropped++;
+        });
+        return {next:next, dropped:dropped, changed:changed || dropped > 0};
+    }
+
+    function buildSingleTradePayload(shopId, kind, target) {
+        var payload = {shopId:shopId, purchases:[], sales:[]};
+        if (kind === 'purchase') {
+            if (!target || target.locked || (isFinite(Number(target.maxQuantity)) && Number(target.maxQuantity) <= 0)) return null;
+            payload.purchases.push({catalogIndex:Number(target.catalogIndex), quantity:1});
+            return payload;
+        }
+        var vid = target && target.viewId, slot = target && target.slot;
+        if (!slot || !slot.occupied || vid === 'intelligence') return null;
+        var src = vid === 'bag'
+            ? {containerId:'背包', slot:Number(slot.physicalSlot), expectedLease:String(slot.slotLease)}
+            : {viewId:'material', key:String(slot.collectionKey), expectedLease:String(slot.slotLease)};
+        payload.sales.push({source:src, quantity:1, scope:'slot'});
+        return payload;
+    }
+
+    function syncAllIntentCards(options) {
+        var catalogRenderer = options.getCatalogRenderer();
+        var catalogNodes = catalogRenderer ? catalogRenderer.root.querySelectorAll('[data-workbench-key]') : [];
+        for (var c = 0; c < catalogNodes.length; c++) {
+            syncCatalogIntentCard(options, catalogNodes[c].__workbenchItem, catalogNodes[c]);
+        }
+        var rightViews = options.rightViews || {};
+        for (var viewId in rightViews) {
+            var view = rightViews[viewId];
+            var renderer = view && view.ownedInventoryShell && view.ownedInventoryShell.view.renderer;
+            var slotNodes = renderer ? renderer.root.querySelectorAll('[data-workbench-key]') : [];
+            for (var s = 0; s < slotNodes.length; s++) {
+                var slot = slotNodes[s].__workbenchItem;
+                if (slot && slot.occupied) syncOwnedIntentCard(options, viewId, slot, slotNodes[s]);
+            }
         }
     }
 
@@ -903,12 +1381,25 @@
         SettlementPresenter:SettlementPresenter,
         HelpPresenter:HelpPresenter,
         SpaceOrganizerPresenter:SpaceOrganizerPresenter,
+        LiveTradeBar:LiveTradeBar,
+        decorateCategoryButtons:decorateCategoryButtons,
+        matchesCategory:matchesCategory,
+        fullBag:fullBag,
+        requiresTradeReview:requiresTradeReview,
+        selectionPayload:selectionPayload,
+        rebindSaleIntents:rebindSaleIntents,
+        buildSingleTradePayload:buildSingleTradePayload,
+        computePurchaseLineTotal:computePurchaseLineTotal,
+        captureDirectQuote:captureDirectQuote,
+        describeQuoteDrift:describeQuoteDrift,
+        syncAllIntentCards:syncAllIntentCards,
         settlementViewModel:settlementViewModel,
         settlementInspection:settlementInspection,
         spaceStatus:spaceStatus,
         ownedInteraction:ownedInteraction,
         bindCatalogActivation:bindCatalogActivation,
         createOwnedView:createOwnedView,
+        syncOwnedIntentCard:syncOwnedIntentCard,
         renderCatalogCard:renderCatalogCard,
         syncCatalogIntentCard:syncCatalogIntentCard,
         ensureReasonNode:ensureReasonNode,

@@ -92,9 +92,22 @@ equal(Trainer.affordableMaxLevel({currentLevel:1,maxLevel:10,upgradeSP:30}, 20),
     'insufficient SP leaves no learned-skill upgrade target');
 equal(Trainer.affordableMaxLevel({currentLevel:2,maxLevel:10,upgradeSP:0}, 0), 10,
     'zero-cost upgrades keep the metadata maximum');
-equal(Trainer.affordableMaxLevel({currentLevel:0,maxLevel:20,upgradeSP:30}, 0), 1,
-    'initial learn remains fixed to level one');
-equal(Trainer.initialDesiredLevel({currentLevel:0,maxLevel:20,upgradeSP:30}, 0), 1, 'initial learn fixed to one');
+equal(Trainer.affordableMaxLevel({currentLevel:0,maxLevel:20,unlockSP:10,upgradeSP:30}, 100), 4,
+    'initial learn computes affordable target level from unlockSP + (N-1)*upgradeSP');
+equal(Trainer.affordableMaxLevel({currentLevel:0,maxLevel:20,unlockSP:10,upgradeSP:30}, 10), 1,
+    'exact unlockSP affords level one');
+equal(Trainer.affordableMaxLevel({currentLevel:0,maxLevel:20,unlockSP:10,upgradeSP:30}, 9), 0,
+    'below unlockSP leaves no affordable initial-learn target');
+equal(Trainer.affordableMaxLevel({currentLevel:0,maxLevel:10,unlockSP:5,upgradeSP:0}, 5), 10,
+    'zero upgradeSP lets initial learn reach maxLevel once unlockSP is met');
+equal(Trainer.initialDesiredLevel({currentLevel:0,maxLevel:20,unlockSP:10,upgradeSP:30}, 100), 1,
+    'affordable initial learn starts at level one');
+equal(Trainer.initialDesiredLevel({currentLevel:0,maxLevel:20,unlockSP:10,upgradeSP:30}, 0), 0,
+    'unaffordable initial learn stays at non-target level zero');
+equal(Trainer.normalizedDesiredLevel({currentLevel:0,maxLevel:20,unlockSP:10,upgradeSP:30}, 99, 100), 4,
+    'initial learn upper clamp uses affordable max level');
+equal(Trainer.normalizedDesiredLevel({currentLevel:0,maxLevel:20,unlockSP:10,upgradeSP:30}, 0, 100), 1,
+    'initial learn lower clamp stays at level one');
 equal(Trainer.initialDesiredLevel({currentLevel:4,maxLevel:5,upgradeSP:10}, 10), 5, 'next affordable learned level');
 equal(Trainer.initialDesiredLevel({currentLevel:4,maxLevel:10,upgradeSP:10}, 0), 4,
     'no affordable upgrade keeps the current level as a non-target state');
@@ -118,18 +131,16 @@ equal(Loadout.moveBlockReason(snapshot.loadout[0], snapshot.loadout[1], false), 
 equal(Loadout.moveBlockReason(snapshot.loadout[0], snapshot.loadout[2], false), 'slot_locked',
     'unknown target blocks move');
 equal(Loadout.equipPlan(learned[0], snapshot.loadout[1],
-    {mode:'safe',revision:7,writesDisabled:false}).direct, true, 'safe mode still fills empty slot directly');
+    {revision:7,writesDisabled:false}).direct, true, 'empty slot fills directly');
 const replacePlan = Loadout.equipPlan(learned[0],
-    {slot:4,skillKey:'闪现',writeBlocked:false}, {mode:'safe',revision:7,writesDisabled:false});
+    {slot:4,skillKey:'闪现',writeBlocked:false}, {revision:7,writesDisabled:false});
 equal({direct:replacePlan.direct,replacing:replacePlan.replacingSkill,payload:replacePlan.payload},
-    {direct:false,replacing:true,payload:{skillKey:'旋风斩',slot:4,expectedRevision:7}},
-    'safe replacement produces confirmation plan');
-equal(Loadout.unequipPlan(snapshot.loadout[0], {mode:'fast',revision:9,writeBlocked:false}),
-    {allowed:true,direct:true,payload:{slot:1,expectedRevision:9}}, 'fast unload plan');
-const storage = {value:'fast',getItem(){return this.value;},setItem(_,value){this.value=value;}};
-equal(Loadout.readConfirmationMode(storage, 'key'), 'fast', 'read confirmation preference');
-equal(Loadout.writeConfirmationMode(storage, 'key', 'invalid'), 'safe', 'invalid preference normalizes safe');
-equal(storage.value, 'safe', 'normalized preference persisted');
+    {direct:true,replacing:true,payload:{skillKey:'旋风斩',slot:4,expectedRevision:7}},
+    'R1 direct replacement produces immediate equip plan');
+equal(Loadout.unequipPlan(snapshot.loadout[0], {revision:9,writeBlocked:false}),
+    {allowed:true,direct:true,payload:{slot:1,expectedRevision:9}}, 'R1 direct unload plan');
+equal(Interactions.probeUnequip(Interactions.quickSlotOffer(snapshot.loadout[0]), false),
+    {accepted:true,operationId:'unequip_quick_slot',targetRef:{slot:1}}, 'drag-off unequip intent');
 
 equal(Interactions.skillOffer(learned[0], false),
     {subjectKind:'skill',sourceRef:{skillKey:'旋风斩',equippable:true}}, 'skill drag offer');

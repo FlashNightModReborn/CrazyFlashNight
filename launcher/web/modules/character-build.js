@@ -189,9 +189,11 @@ function(Debug, SessionModule, ViewModule, TuningModule, Mutation, Pose, Project
                 : state === 'flush_failed' ? '应用或保存失败'
                 : debug && debug.liveRefreshDirty ? '构筑待应用' : '已同步';
             this._ports.setStatus(label, itemUseUnknown
-                || state === 'flush_failed' || state === 'needs_reconcile'
-                ? 'warning' : state === 'opening' || state === 'opening_reconcile'
-                    || state === 'flush_pending' || itemUsePending ? 'busy' : 'ready');
+                || state === 'flush_failed' || state === 'needs_reconcile' || state === 'exit_query'
+                ? 'warning' : tuningLocked || state === 'opening' || state === 'opening_reconcile'
+                    || state === 'write_pending' || state === 'flush_pending'
+                    || state === 'exit_pending' || itemUsePending ? 'busy'
+                    : debug && debug.liveRefreshDirty ? 'pending' : 'ready');
         }
         if (this._view) {
             this._view.setInteractionState(itemUsePending ? 'write_pending'
@@ -216,7 +218,7 @@ function(Debug, SessionModule, ViewModule, TuningModule, Mutation, Pose, Project
                 : itemUsePending ? '物品使用正在处理，完成后才能切换整备目标。'
                 : tuningLocked
                 ? this._tuning.lockReason() : state === 'needs_reconcile'
-                ? '写入结果尚待确认，完成对账后才能进入收纳。'
+                ? '上次写入结果尚待确认，完成后才能进入收纳。'
                 : state === 'write_pending' ? '构筑正在写入，完成后才能进入收纳。'
                     : locked ? '构筑正在结算，完成后才能进入收纳。' : '');
         }
@@ -289,8 +291,8 @@ function(Debug, SessionModule, ViewModule, TuningModule, Mutation, Pose, Project
             onSlotDropEquip:function(slotKey, candidate) {
                 return self._equipDroppedCandidate(slotKey, candidate);
             },
-            onTune:function() { return self._enterTuning(); },
-            onUnequip:function() { return self._mutations.unequip(self._selectedTarget); },
+            onTune:function(slotKey) { return self._enterTuning(slotKey); },
+            onUnequip:function(slotKey) { var t = slotKey ? self._targetFromSlotKey(slotKey) : self._selectedTarget; return t ? self._mutations.unequip(t) : false; },
             onReconcile:function() { return self._mutations.reconcile(); },
             onPersistAndExit:function() { return self._session.persistAndExit(); },
             onCustomizationDrugClick:function(slot) { return !!(self._tuning && self._tuning.handleCustomizationDrugSlot(slot)); },
@@ -450,12 +452,18 @@ function(Debug, SessionModule, ViewModule, TuningModule, Mutation, Pose, Project
             if (deferCandidates !== true) this._view.showBackpackOverview();
         }
     };
-    CharacterBuildController.prototype._enterTuning = function() {
-        var target = Projection.tuningTarget(
+    CharacterBuildController.prototype._targetFromSlotKey = function(slotKey) {
+        var parts = String(slotKey || '').split(':'), kind = parts.shift(), id = parts.join(':');
+        if (kind === 'drug') { var m = /^drug([1-8])$/.exec(id); return m ? {kind:'drug', drugSlot:Number(m[1]) - 1} : null; }
+        return (kind === 'armor' || kind === 'weapon') && id ? {kind:'equipment', slotKey:id} : null;
+    };
+    CharacterBuildController.prototype._enterTuning = function(slotKey) {
+        if (slotKey && this._view && this._selectedSlotKey !== slotKey) this._view.restoreSlot(slotKey);
+        var target = slotKey ? this._targetFromSlotKey(slotKey) : Projection.tuningTarget(
             this._selectedTarget, this._candidateScope, this._selectedCandidate);
         if (!this._tuning || !target || !this._snapshotPayload) return false;
         var entered = false;
-        if (this._selectedCandidate) {
+        if (!slotKey && this._selectedCandidate) {
             if (this._candidateTooltip) this._candidateTooltip.invalidate();
             entered = this._tuning.enterCandidate(
                 this._selectedCandidate, target, this._panelInstanceId);

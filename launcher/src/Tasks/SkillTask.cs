@@ -1833,7 +1833,9 @@ namespace CF7Launcher.Tasks
         {
             value = 0;
             if (token == null || token.Type != JTokenType.Integer) return false;
-            long candidate = token.Value<long>();
+            long candidate;
+            try { candidate = token.ToObject<long>(); }
+            catch { return false; }
             if (candidate < min || candidate > max) return false;
             value = (int)candidate;
             return true;

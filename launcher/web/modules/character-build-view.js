@@ -171,12 +171,14 @@ function(WorkbenchFocus, WorkbenchComponents,
             glyph:this._statsScrollGlyph
         });
         this._createFocusControllers();
+        this._onQuickUnequip = options.onUnequip; this._onQuickTune = options.onTune;
         this._bindInteractions();
+        this._installSlotQuickBar();
         LoadoutPickerModule.createActionView(this, {
             onCommit:this._onCommitCandidate,
-            onTune:options.onTune,
-            onUnequip:options.onUnequip,
-            onReconcile:options.onReconcile
+            resolveSmartSlot:function(c) { return self._resolveSmartSlot(c); },
+            onSmartCommit:function(k, c) { return self._onSlotDropEquip(k, c); },
+            onTune:options.onTune, onUnequip:options.onUnequip, onReconcile:options.onReconcile
         });
         LoadoutPickerModule.createCandidateState(this, {
             bindTooltip:function(node, candidate) {
@@ -328,20 +330,16 @@ function(WorkbenchFocus, WorkbenchComponents,
                 return;
             }
             var candidate = closest(event.target, '[data-roving-key]', self._candidateList);
-            if (!candidate || self._interactionState !== 'idle') return;
+            if (self._interactionState !== 'idle') return;
+            if (!candidate) { self.clearCandidateSelection(); return; }
             var key = candidate.getAttribute('data-roving-key');
-            if (key === self._selectedCandidateKey) self.clearCandidateSelection();
-            else self._selectCandidate(key, 'pointer');
+            if (key !== self._selectedCandidateKey) self._selectCandidate(key, 'pointer');
         });
-        // 双击 = 选中并直接提交。双击前的两次 click 会选中再清预览，
-        // 这里按事件目标强制重选后提交，不依赖当前选择态。
         listen(this._listeners, this._candidateList, 'dblclick', function(event) {
             var node = closest(event.target, '[data-candidate-key]', self._candidateList);
             if (!node || self._interactionState !== 'idle') return;
             var candidate = self._candidateByKey(node.getAttribute('data-candidate-key'));
-            if (!candidate || candidate.blocked === true) return;
-            // Item use is deliberately explicit: double-click remains equip-only.
-            if (candidate.useAction) return;
+            if (!candidate || candidate.blocked === true || candidate.useAction) return;
             if (event.preventDefault) event.preventDefault();
             if (event.stopPropagation) event.stopPropagation();
             if (self._selectCandidate(candidate.key)) self._actionView.commitCandidate(candidate);
@@ -377,10 +375,12 @@ function(WorkbenchFocus, WorkbenchComponents,
             }
             if (!event || (event.key !== 'Escape' && event.key !== 'Esc')
                     || self._statsPage.isActive()) return;
-            if (self._selectedCandidateKey) {
-                event.preventDefault();
-                if (event.stopPropagation) event.stopPropagation();
-                self.clearCandidateSelection();
+            if (self._isFocusInSlotQuickBar && self._isFocusInSlotQuickBar() && self._dismissSlotQuickBar(true)) {
+                event.preventDefault(); if (event.stopPropagation) event.stopPropagation(); return;
+            }
+            if (self._selectedCandidateKey || (self._dismissSlotQuickBar && self._dismissSlotQuickBar(true))) {
+                event.preventDefault(); if (event.stopPropagation) event.stopPropagation();
+                if (self._selectedCandidateKey) self.clearCandidateSelection();
                 return;
             }
             event.preventDefault();
@@ -442,7 +442,7 @@ function(WorkbenchFocus, WorkbenchComponents,
         var commit = this.root.querySelector('[data-build-action="commit"]');
         var tune = this.root.querySelector('[data-build-action="tune"]');
         var unequip = this.root.querySelector('[data-build-action="unequip"]');
-        if (commit) commit.hidden = !!action;
+        if (commit) commit.hidden = !!action && !this._selectedSlotKey;
         if (unequip) unequip.hidden = !!action;
         if (action && tune) tune.hidden = true;
         this._useButton.hidden = !action;
@@ -645,7 +645,7 @@ function(WorkbenchFocus, WorkbenchComponents,
         this._focusSlot(this._activeSlotKey);
         this._setCandidateState('unselected', [], '');
         this._notice.textContent = this._snapshot.blocked
-            ? text(this._snapshot.blockedReason, '当前候选不满足权威条件。')
+            ? text(this._snapshot.blockedReason, '当前候选不满足装备条件。')
             : '正在打开背包总览；选择槽位后会切换为该栏位的兼容候选。';
         this._notice.setAttribute('data-notice-kind', this._snapshot.blocked ? 'blocked' : 'browsing');
         this._syncSlotSelection();
@@ -676,7 +676,8 @@ function(WorkbenchFocus, WorkbenchComponents,
     CharacterBuildView.prototype.consumeEscape = function() {
         if (this._dollPreview.isOpen()) return this._dollPreview.close('escape');
         if (this._statsPage.isActive()) return this.closeStats('escape');
-        return this.clearCandidateSelection();
+        if (this._isFocusInSlotQuickBar && this._isFocusInSlotQuickBar() && this._dismissSlotQuickBar(true)) return true;
+        return this.clearCandidateSelection() || !!(this._dismissSlotQuickBar && this._dismissSlotQuickBar(true));
     };
 
     CharacterBuildView.prototype.debugState = function() {

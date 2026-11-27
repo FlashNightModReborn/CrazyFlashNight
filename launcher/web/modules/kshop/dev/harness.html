@@ -1491,7 +1491,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && keyboardCatalogActivated && keyboardCatalogAction
                 && keyboardCatalogAction.getAttribute('aria-label').indexOf(keyboardCatalogName) >= 0
                 && lockedCatalogCard && lockedCatalogCard.getAttribute('aria-disabled') === 'true'
-                && lockedCatalogCard.getAttribute('tabindex') === '-1');
+                && lockedCatalogCard.getAttribute('tabindex') === '0');
         var catalogEntityFocus=focusRingSnapshot(keyboardCatalogCard);
         assert('g2-focus-entity','真实 EntityTile 的最终 focus-visible 轮廓消费工作台 focus 角色 token',
             consumesFocusRing(catalogEntityFocus),JSON.stringify(catalogEntityFocus));
@@ -1638,18 +1638,18 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 && shell.querySelector('[data-header-action="help"]').getAttribute('aria-label') === '查看 K 点商城帮助'
                 && !/(PROCUREMENT|WORKBENCH|CATALOG|INTENT|RECEIPT|DRAG|LOCKED|权威|AS2)/.test(shopPlayerText)
                 && !shell.querySelector('.kshop-card-drag-hint')
-                && getComputedStyle(shell.querySelector('.workbench-slot-marker')).display === 'none'
+                && !shell.querySelector('.workbench-slot-marker')
                 && readyStatus.getAttribute('data-state') === 'ready'
                 && readyStatus.getAttribute('aria-label') === '已同步'
-                && parseFloat(getComputedStyle(readyStatus).width) <= 24,
+                && getComputedStyle(readyStatus).display === 'none',
             shopPlayerText.replace(/\s+/g,' ').trim());
         var kshopHelpButton=shell.querySelector('.workbench-help-btn');
         kshopHelpButton.focus();kshopHelpButton.click();
         var kshopHelpModal=document.querySelector('.workbench-modal[data-modal-kind="kshop-help"]');
-        assert('kshop-ui2help','K 点商城采用标准工作台帮助，明确单击加购与结算页单一数量入口',
+        assert('kshop-ui2help','K 点商城采用标准工作台帮助，明确单击加购、行内调数与快速结账入口',
             kshopHelpButton&&kshopHelpModal
                 &&kshopHelpModal.textContent.indexOf('每次加购 1 件')>=0
-                &&kshopHelpModal.textContent.indexOf('核对并结账')>=0
+                &&kshopHelpModal.textContent.indexOf('核对明细')>=0
                 &&shell.querySelector('.workbench-body').inert);
         click('.workbench-modal-action[data-action="close"]');
         assert('kshop-ui2help-focus','关闭商城帮助后焦点返回标准帮助入口',
@@ -2151,10 +2151,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         addStackable(2);
         await wait(100);
         var staticStackCartRow=document.querySelector('.kshop-cart-row[data-idx="1"]');
-        assert('kshop-ui8quantity-entry','目录与购物车移除重复数量编辑，购物车只显示数量并允许整行移除',
+        assert('kshop-ui8quantity-entry','购物车可堆叠行内嵌精简 − / + 与整行移除，不渲染大滑条弹窗',
             staticStackCartRow
                 &&staticStackCartRow.querySelector('.kshop-cart-qty').textContent.indexOf('×2')>=0
-                &&staticStackCartRow.querySelectorAll('button').length===1
+                &&staticStackCartRow.querySelectorAll('.kshop-cart-step-btn').length===2
                 &&staticStackCartRow.querySelector('.kshop-cart-remove-btn')
                 &&!staticStackCartRow.querySelector('.workbench-quantity-control')
                 &&!document.querySelector('.kshop-qty-popup')
@@ -2172,7 +2172,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
                 &&settlementInactiveMotion.visibility==='hidden'
                 &&settlementInactiveMotion.opacity===0
                 &&settlementInactiveMotion.pointerEvents==='none'
-                &&settlementInactiveMotion.top==='48px'
+                &&settlementInactiveMotion.top==='0px'
                 &&settlementInactiveMotion.right==='0px'
                 &&settlementInactiveMotion.bottom==='0px'
                 &&settlementInactiveMotion.left==='0px',
@@ -2372,7 +2372,7 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
 
         await Host.open();
         var dragCard = document.querySelector('.kshop-card[data-idx="0"]');
-        var dragTarget = document.querySelector('.kshop-cart-drop-target');
+        var dragTarget = document.querySelector('.kshop-cart-list');
         var from = dragCard.getBoundingClientRect();
         var to = dragTarget.getBoundingClientRect();
         dragCard.dispatchEvent(new MouseEvent('mouseenter',{bubbles:false,clientX:from.left + 10,clientY:from.top + 10}));
@@ -2700,14 +2700,15 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var backpackButtonTops=Array.prototype.map.call(
             backpackRow.querySelectorAll('.item-filter-option'),
             function(node){return Math.round(node.getBoundingClientRect().top);});
-        assert('kshop-ui8gcv','宽屏背包保持上层标题面包屑、下层当前层级选项，选项不提前换行',
+        assert('kshop-ui8gcv','宽屏背包保持上层标题面包屑、下层单行紧凑工具栏，选项不提前换行',
             getComputedStyle(backpackChrome).gridTemplateRows.trim().split(/\s+/).length>=2
                 &&Math.max.apply(Math,backpackTopCenters)-Math.min.apply(Math,backpackTopCenters)<=2
                 &&backpackToolbarRect.top>=backpackHeadingRect.bottom-1
                 &&backpackChrome.scrollWidth<=backpackChrome.clientWidth+1
                 &&backpackRow.scrollWidth<=backpackRow.clientWidth+1
                 &&getComputedStyle(backpackRow).flexWrap==='wrap'
-                &&backpackFilterRect.width>=backpackToolbarRect.width-1
+                &&backpackFilterRect.right<=backpackToolbarRect.right+1
+                &&backpackToolbarRect.height<=42
                 &&backpackButtonTops.every(function(top){return top===backpackButtonTops[0];})
                 &&getComputedStyle(backpackRow.querySelector('.item-filter-parent-option')).display!=='none'
                 &&getComputedStyle(backpackRow.querySelector('.item-filter-context-option')).display!=='none'
@@ -2789,12 +2790,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         backpackAuthority.value = 'byName';
         click('.inventory-owned-backpack .inventory-sort-commit');
         var backpackSortModal = document.querySelector('.workbench-modal[data-modal-kind="warehouse-sort"]');
-        click('.workbench-modal-action[data-action="sort"]');
         await waitFor(function(){ return countInventoryCmd('sortAndMerge') === 1 && !KShop.debugState().inventory.busyOwner; }, 700);
         var backpackSortMessage = Host.sent.find(function(message){ return message.domain === 'inventory' && message.cmd === 'sortAndMerge'; });
         var backpackMerged = Host.state.inventory.背包.filter(function(item){ return item && item.name === '背包药剂' && item.quantity === 5; }).length === 1;
-        assert('kshop-ui8gc','背包权威整理走通用确认与 inventory transaction，并合并堆叠',
-            backpackSortModal && backpackSortMessage.payload.container.containerId === '背包'
+        assert('kshop-ui8gc','背包权威整理直接执行 inventory transaction 并合并堆叠，无阻塞确认弹窗',
+            !backpackSortModal && backpackSortMessage.payload.container.containerId === '背包'
                 && backpackSortMessage.payload.methodName === 'byName'
                 && Host.inventoryEpochs.背包 === 2 && backpackMerged);
 
@@ -2995,14 +2995,10 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         authoritySelect.value = 'byName';
         click('.inventory-owned-warehouse .inventory-sort-commit');
         var sortModalNode = document.querySelector('.workbench-modal[data-modal-kind="warehouse-sort"]');
-        var sortModal = !!sortModalNode
-            && !/(physicalSlot|slot|lease|AS2|权威)/i.test(sortModalNode.innerText)
-            && sortModalNode.innerText.indexOf('未解锁的存档保留区不会被读取或移动') >= 0;
-        click('.workbench-modal-action[data-action="sort"]');
         await waitFor(function(){ return countInventoryCmd('sortAndMerge') === 1 && !KShop.debugState().inventory.busyOwner; }, 700);
         var sortMessage = Host.sent.find(function(message){ return message.domain === 'inventory' && message.cmd === 'sortAndMerge'; });
-        assert('kshop-ui8o','权威 sortAndMerge 携当前窗口与严格策略，epoch+1 并使旧 page lease 失效',
-            sortModal && sortMessage && sortMessage.payload.methodName === 'byName'
+        assert('kshop-ui8o','权威 sortAndMerge 无阻塞弹窗并携当前窗口与严格策略，epoch+1 并使旧 page lease 失效',
+            !sortModalNode && sortMessage && sortMessage.payload.methodName === 'byName'
                 && sortMessage.payload.container.containerId === '战备箱'
                 && sortMessage.payload.container.offset === 40 && sortMessage.payload.container.limit === 40
                 && Host.inventoryEpochs.战备箱 === 2
@@ -3275,13 +3271,12 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var tuningHelpMode = InventoryWorkbench.debugState().tuning.modConfirmationMode;
         if (tuningHelpButton) tuningHelpButton.click();
         var tuningHelpModal = document.querySelector('.workbench-modal[data-modal-kind="equipment-tuning-help"]');
-        assert('workbench-tuning-help','调制帮助通过共享 modal 解释确认方式且不伪装为能力开关',
+        assert('workbench-tuning-help','调制帮助通过共享 modal 解释配件快捷与安全边界且不伪装为能力开关',
             !!tuningHelpButton && !tuningHelpButton.hidden && !!tuningHelpModal
-                && tuningHelpModal.textContent.indexOf('逐次确认') >= 0
-                && tuningHelpModal.textContent.indexOf('单件快捷') >= 0
+                && tuningHelpModal.textContent.indexOf('直接生效') >= 0
                 && tuningHelpModal.textContent
                     .indexOf('批量、连锁与卸下全部始终需要确认') >= 0
-                && tuningHelpModal.textContent.indexOf('不会解锁配件能力') >= 0
+                && tuningHelpModal.textContent.indexOf('不会改变当前状态') >= 0
                 && Host.sent.length === tuningHelpTraffic
                 && InventoryWorkbench.debugState().tuning.modConfirmationMode
                     === tuningHelpMode);
@@ -3292,27 +3287,9 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
             && Host.sent.length === tuningHelpTraffic
             && InventoryWorkbench.debugState().tuning.modConfirmationMode
                 === tuningHelpMode);
-        var tuningConfirmation = document.querySelector('.equipment-tuning-confirmation-toggle');
-        var tuningFast = tuningConfirmation && tuningConfirmation.querySelector('[data-confirmation-mode="fast"]');
-        var tuningSafe = tuningConfirmation && tuningConfirmation.querySelector('[data-confirmation-mode="safe"]');
-        if (tuningFast) tuningFast.click();
-        var fastPersisted = window.localStorage.getItem('cf7.equipmentTuning.modConfirmationMode');
-        var fastState = InventoryWorkbench.debugState();
-        if (tuningSafe) tuningSafe.click();
-        assert('workbench-tuning-confirmation','调制决策区用共享 ChoiceGroup 持久化逐次确认/单件快捷且不改变协议',
-            !!tuningConfirmation && !tuningConfirmation.hidden && !!tuningFast && !!tuningSafe
-                && tuningConfirmation.parentNode.classList.contains(
-                    'equipment-tuning-confirmation')
-                && tuningSafe.textContent.trim() === '逐次确认'
-                && tuningFast.textContent.trim() === '单件快捷'
-                && document.querySelector(
-                    '.workbench-header [data-confirmation-mode]') === null
-                && document.querySelector(
-                    '.equipment-tuning-confirmation-boundary').textContent.trim()
-                    === '批量、连锁与卸下全部始终需要确认'
-                && fastPersisted === 'fast' && fastState.modConfirmationMode === 'fast'
-                && fastState.tuning && fastState.tuning.modConfirmationMode === 'fast'
-                && InventoryWorkbench.debugState().modConfirmationMode === 'safe');
+        assert('workbench-tuning-confirmation','调制决策区移除常驻确认方式横幅并保持 header 干净',
+            !document.querySelector('.equipment-tuning-confirmation')
+                && document.querySelector('.workbench-header [data-confirmation-mode]') === null);
         click('.equipment-tuning-view-switch');
         await waitFor(function(){
             return InventoryWorkbench.debugState().view === 'storage'
@@ -3592,13 +3569,11 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         battleboxAuthority.value = 'byName';
         click('.inventory-owned-battlebox .inventory-sort-commit');
         var battleboxSortModal = document.querySelector('.workbench-modal[data-modal-kind="inventory-sort"]');
-        var battleboxSortCopy = battleboxSortModal && battleboxSortModal.innerText.indexOf('未解锁的存档保留区不会被读取或移动') >= 0;
-        click('.workbench-modal-action[data-action="sort"]');
         await waitFor(function(){ return countInventoryCmd('sortAndMerge') === battleboxSortBefore + 1
             && !InventoryWorkbench.debugState().coordinator.busyOwner; }, 700);
         var battleboxSortMessage = Host.sent.filter(function(message){ return message.domain === 'inventory' && message.cmd === 'sortAndMerge'; }).pop();
-        assert('workbench-ui1d','战备箱权威整理只提交已解锁前缀并逐槽保留锁定区',
-            battleboxSortCopy && battleboxSortMessage.payload.container.containerId === '战备箱'
+        assert('workbench-ui1d','战备箱权威整理直接提交已解锁前缀并逐槽保留锁定区，无阻塞确认弹窗',
+            !battleboxSortModal && battleboxSortMessage.payload.container.containerId === '战备箱'
                 && Host.state.inventory.战备箱[300] === reservedBattleboxItem
                 && Host.inventoryEpochs.战备箱 === 2);
 
@@ -3747,8 +3722,8 @@ if (window.Icons && typeof window.Icons.deferMs === 'number') window.Icons.defer
         var rapidBatchMessage = Host.sent.filter(function(message) {
             return message.domain === 'inventory' && message.cmd === 'autoTransferBatch';
         }).pop();
-        assert('workbench-ui7','战备箱批量存入先暂存多选，一次执行只提交一个批量写请求',
-            rapidPendingVisual && rapidState.mode === null && rapidState.pending === 0
+        assert('workbench-ui7','战备箱批量存入先暂存多选，一次执行只提交一个批量写请求且保持批量模式便于连续操作',
+            rapidPendingVisual && rapidState.mode === 'deposit' && rapidState.pending === 0
                 && !rapidState.inFlight && !rapidState.committing && rapidState.completed === 2
                 && rapidBatchMessage && rapidBatchMessage.payload.sources.length === 2
                 && rapidBatchMessage.payload.policy === 'mergeThenEmpty'

@@ -9,7 +9,7 @@ var InventoryWorkbench = (function() {
     var _runtimeConfig = (typeof window !== 'undefined'
         && window.__INVENTORY_WORKBENCH_CONFIG__) || {};
     var _activationEpoch = 0;
-    var _closing = false, _statsMode = false, _buttons = {};
+    var _closing = false, _statsMode = false, _buildMounted = false, _buttons = {};
     var _buildInteractionLocked = false, _buildLockReason = '';
     var _preparationNavigationV1 = false;
     var _featureGate = null, _stashNav = null;
@@ -206,6 +206,7 @@ var InventoryWorkbench = (function() {
             statsMode:statsMode,
             onSessionState:function(_, reason) {
                 if (reason === 'opened' || reason === 'snapshot') {
+                    _buildMounted = true;
                     setTimeout(function() {
                         acceptBuildMount(_panelInstanceId, activationEpoch);
                     }, 0);
@@ -219,7 +220,9 @@ var InventoryWorkbench = (function() {
                 return _shell.openModal(spec);
             },
             toast:function(message, cmdOrSev, respOrOpts) {
-                if (cmdOrSev === 'snapshot') rejectBuildMount(_panelInstanceId, activationEpoch);
+                if (cmdOrSev === 'snapshot' && (!_buildMounted && _view === 'build' || _navigation && _navigation.isPending())) {
+                    rejectBuildMount(_panelInstanceId, activationEpoch);
+                }
                 var sev = /^(error|warning|success|info)$/.test(String(cmdOrSev || '')) ? cmdOrSev
                     : (respOrOpts && respOrOpts.success === false || cmdOrSev === 'finalize' || cmdOrSev === 'snapshot' ? 'error' : undefined);
                 toast(message, sev, respOrOpts && respOrOpts.persistAfterClose ? respOrOpts : undefined);
@@ -238,7 +241,7 @@ var InventoryWorkbench = (function() {
             if (activationEpoch !== _activationEpoch
                     || String(panelInstanceId || '') !== _panelInstanceId) return;
             if (_navigation && _navigation.buildFailed()) return;
-            if (Panels.rejectActiveMount) {
+            if (_view === 'build' && !_buildMounted && Panels.rejectActiveMount) {
                 Panels.rejectActiveMount('workbench', _panelInstanceId);
             }
         }, 0);
@@ -415,8 +418,7 @@ var InventoryWorkbench = (function() {
         _preparationMenu = null;
         _density = null; _densityToggle = null; _helpAction = null; _scale = null;
         _shell = null; _root = null; _body = null; _buildHost = null;
-        _closing = false;
-        _statsMode = false;
+        _closing = false; _statsMode = false; _buildMounted = false;
         _buttons = {};
         _buildInteractionLocked = false;
         _buildLockReason = '';

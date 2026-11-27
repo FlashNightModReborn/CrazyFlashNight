@@ -49,6 +49,92 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void LevelUp_ForwardsSingleCountTargetAndMaxMode()
+        {
+            var sent = new List<JObject>();
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent.Add(JObject.Parse(payload.TrimEnd('\0'))); }));
+
+            task.HandleWebRequest("level_up", LevelRequest("{\"callId\":\"lv-1\",\"slotIndex\":0}"));
+            task.HandleWebRequest("level_up", LevelRequest("{\"callId\":\"lv-5\",\"slotIndex\":1,\"count\":5}"));
+            task.HandleWebRequest("level_up", LevelRequest("{\"callId\":\"lv-t\",\"slotIndex\":2,\"targetLevel\":25}"));
+            task.HandleWebRequest("level_up", LevelRequest("{\"callId\":\"lv-m\",\"slotIndex\":3,\"mode\":\"max\"}"));
+
+            Assert.Equal(4, sent.Count);
+            Assert.Equal("petLevelUp", (string)sent[0]["action"]);
+            Assert.Equal(0, (int)sent[0]["slotIndex"]);
+            Assert.Equal(5, (int)sent[1]["count"]);
+            Assert.Equal(25, (int)sent[2]["targetLevel"]);
+            Assert.Equal("max", (string)sent[3]["mode"]);
+        }
+
+        [Theory]
+        [InlineData("{\"callId\":\"bad-1\"}", "invalid_slot")]
+        [InlineData("{\"callId\":\"bad-2\",\"slotIndex\":-1}", "invalid_slot")]
+        [InlineData("{\"callId\":\"bad-3\",\"slotIndex\":0,\"count\":0}", "invalid_count")]
+        [InlineData("{\"callId\":\"bad-4\",\"slotIndex\":0,\"count\":1.5}", "invalid_count")]
+        [InlineData("{\"callId\":\"bad-5\",\"slotIndex\":0,\"targetLevel\":1}", "invalid_target_level")]
+        [InlineData("{\"callId\":\"bad-6\",\"slotIndex\":0,\"mode\":\"all\"}", "invalid_level_up_mode")]
+        [InlineData("{\"callId\":\"bad-7\",\"slotIndex\":0,\"count\":5,\"mode\":\"max\"}", "invalid_level_up_request")]
+        [InlineData("{\"callId\":\"bad-8\",\"slotIndex\":0,\"count\":9223372036854775808}", "invalid_count")]
+        [InlineData("{\"callId\":\"bad-9\",\"slotIndex\":0,\"targetLevel\":9223372036854775808}", "invalid_target_level")]
+        [InlineData("{\"callId\":\"bad-10\",\"slotIndex\":9223372036854775808}", "invalid_slot")]
+        [InlineData("{\"callId\":\"bare\",\"slotIndex\":0,\"targetLevel\":25}", "stale_level_quote")]
+        [InlineData("{\"callId\":\"badquote\",\"slotIndex\":0,\"targetLevel\":25,\"levelQuote\":{\"token\":\"q\",\"fromLevel\":20,\"toLevel\":26,\"stoneCost\":225}}", "stale_level_quote")]
+        public void LevelUp_RejectsInvalidPayloadWithoutSending(string json, string expectedError)
+        {
+            string sent = null, posted = null;
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
+            task.SetPostToWeb(delegate(string payload) { posted = payload; });
+
+            task.HandleWebRequest("level_up", Request(json));
+
+            Assert.Null(sent);
+            Assert.Equal(expectedError, (string)JObject.Parse(posted)["error"]);
+        }
+
+        [Fact]
+        public void LevelUp_MalformedSuccessReply_ConvertsToRequiresReconcile()
+        {
+            string sent = null, posted = null;
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
+            task.SetPostToWeb(delegate(string payload) { posted = payload; });
+
+            task.HandleWebRequest("level_up", LevelRequest("{\"callId\":\"lv-bad-reply\",\"slotIndex\":1,\"count\":5}"));
+            int fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+            task.HandleFlashResponse(JObject.Parse("{\"task\":\"pet_response\",\"callId\":" + fid + ",\"success\":true}"), null);
+
+            var resp = JObject.Parse(posted);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("malformed_response", (string)resp["error"]);
+            Assert.True((bool)resp["requiresReconcile"]);
+        }
+
+        [Fact]
+        public void LevelUp_MismatchedTargetOrCountReply_ConvertsToRequiresReconcile()
+        {
+            string sent = null, posted = null;
+            var task = Bind(new PetTask(delegate { return true; }, delegate(string payload) { sent = payload; }));
+            task.SetPostToWeb(delegate(string payload) { posted = payload; });
+
+            task.HandleWebRequest("level_up", LevelRequest("{\"callId\":\"lv-target-drift\",\"slotIndex\":2,\"targetLevel\":25}"));
+            int fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+            task.HandleFlashResponse(JObject.Parse("{\"task\":\"pet_response\",\"callId\":" + fid + ",\"success\":true,\"slotIndex\":2,\"oldLevel\":10,\"newLevel\":11,\"levelsGained\":1,\"stoneCost\":5}"), null);
+
+            var resp = JObject.Parse(posted);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("malformed_response", (string)resp["error"]);
+            Assert.True((bool)resp["requiresReconcile"]);
+
+            task.HandleWebRequest("level_up", LevelRequest("{\"callId\":\"lv-nonbool\",\"slotIndex\":2,\"count\":5}"));
+            fid = (int)JObject.Parse(sent.TrimEnd('\0'))["callId"];
+            task.HandleFlashResponse(JObject.Parse("{\"task\":\"pet_response\",\"callId\":" + fid + ",\"success\":\"true\",\"slotIndex\":2,\"newLevel\":15,\"levelsGained\":5,\"stoneCost\":10}"), null);
+            resp = JObject.Parse(posted);
+            Assert.False((bool)resp["success"]);
+            Assert.Equal("malformed_response", (string)resp["error"]);
+            Assert.True((bool)resp["requiresReconcile"]);
+        }
+
+        [Fact]
         public void HandleWebRequest_Disconnected_ReturnsPanelError()
         {
             string posted = null;
@@ -386,6 +472,46 @@ namespace CF7Launcher.Tests.Tasks
 
             throw new FileNotFoundException(
                 "Unable to locate launcher/src/Guardian/WebOverlayForm.cs.");
+        }
+
+        private static JObject LevelRequest(string json)
+        {
+            JObject request = Request(json);
+            int target = (int?)request["targetLevel"] ?? (20 + ((int?)request["count"] ?? 1));
+            request["levelQuote"] = new JObject
+            {
+                ["token"] = "pet.quote.1", ["fromLevel"] = 20, ["toLevel"] = target, ["stoneCost"] = 225
+            };
+            return request;
+        }
+
+        [Theory]
+        [InlineData("ok", true)]
+        [InlineData("other_token", false)]
+        [InlineData("wrong_base", false)]
+        [InlineData("wrong_cost", false)]
+        [InlineData("missing_binding", false)]
+        public void LevelUp_SuccessMustMatchTheConfirmedQuote(string variant, bool accepted)
+        {
+            string sent = null, posted = null;
+            using var task = Bind(new PetTask(() => true, payload => sent = payload));
+            task.SetPostToWeb(payload => posted = payload);
+            JObject request = LevelRequest("{\"callId\":\"bound\",\"slotIndex\":0,\"targetLevel\":25}");
+            task.HandleWebRequest("level_up", request);
+            JObject wire = JObject.Parse(sent.TrimEnd('\0'));
+            Assert.True(JToken.DeepEquals(request["levelQuote"], wire["levelQuote"]));
+            var response = new JObject
+            {
+                ["task"]="pet_response", ["callId"]=wire["callId"], ["success"]=true, ["slotIndex"]=0,
+                ["oldLevel"]=variant == "wrong_base" ? 1 : 20, ["newLevel"]=25,
+                ["levelsGained"]=variant == "wrong_base" ? 24 : 5, ["stoneCost"]=variant == "wrong_cost" ? 227 : 225,
+                ["levelUpToken"]=variant == "other_token" ? "pet.quote.2" : "pet.quote.1"
+            };
+            if (variant == "missing_binding") response.Remove("levelUpToken");
+            task.HandleFlashResponse(response, null);
+            JObject result = JObject.Parse(posted);
+            Assert.Equal(accepted, (bool)result["success"]);
+            if (!accepted) Assert.True((bool)result["requiresReconcile"]);
         }
 
         private static PetTask Bind(PetTask task)

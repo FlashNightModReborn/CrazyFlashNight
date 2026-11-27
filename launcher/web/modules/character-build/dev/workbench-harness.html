@@ -4129,7 +4129,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && preparationItem('battlebox')
                         .getAttribute('aria-disabled') === 'true'
                     && preparationItem('battlebox').getAttribute('title')
-                        .indexOf('完成对账后才能进入收纳') >= 0
+                        .indexOf('完成后才能进入收纳') >= 0
                     && roving.every(function(node) {
                         return node.matches('.character-build-candidate')
                             ? node.hasAttribute('inert')
@@ -4242,7 +4242,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && Toast.messages.length === toastCountWhileLocked
             && preparationItem('battlebox').getAttribute('aria-disabled') === 'true'
             && preparationItem('battlebox').getAttribute('title')
-                .indexOf('完成对账后才能进入收纳') >= 0
+                .indexOf('完成后才能进入收纳') >= 0
             && document.querySelector(
                 '[data-header-action="preparation-menu"]')
                 .getAttribute('aria-expanded') === 'true'
@@ -4752,47 +4752,20 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         tuningCommitBase = tuningMessages('commit').length;
         tuningCompleteBase = window.__routeHarness.storage.externalCompletes;
         tuningBackpackBase = window.__routeHarness.storage.appliedSnapshots;
-        var embeddedConfirmation = document.querySelector(
-            '.equipment-tuning-confirmation');
-        var embeddedChoices = Array.prototype.slice.call(document.querySelectorAll(
-            '.equipment-tuning-confirmation [data-confirmation-mode]'));
-        check('embedded tuning owns one decision-area ChoiceGroup instead of a global-header selector',
-            embeddedConfirmation
-            && embeddedConfirmation.parentNode.classList.contains(
-                'equipment-tuning-summary')
-            && embeddedChoices.map(function(node) {
-                return node.textContent.trim();
-            }).join('|') === '逐次确认|单件快捷'
-            && embeddedChoices[0].getAttribute('aria-pressed') === 'true'
-            && document.querySelector(
-                '.workbench-header [data-confirmation-mode]') === null);
-        check('embedded confirmation keeps the exact safety boundary adjacent',
-            embeddedConfirmation.querySelector(
-                '.equipment-tuning-confirmation-boundary').textContent.trim()
-                === '批量、连锁与卸下全部始终需要确认');
-        var confirmationTrafficBase = tuningMessages().length;
-        document.querySelector('[data-confirmation-mode="fast"]').click();
-        check('embedded ChoiceGroup writes the one shared persistent preference',
-            InventoryWorkbench.debugState().build.tuning.tuning.modConfirmationMode
-                === 'fast'
-            && EquipmentTuningConfirmation.shared.read() === 'fast'
-            && localStorage.getItem('cf7.equipmentTuning.modConfirmationMode') === 'fast'
-            && tuningMessages().length === confirmationTrafficBase);
+        check('embedded tuning retires the permanent confirmation banner and keeps header clean',
+            document.querySelector('.equipment-tuning-confirmation') === null
+            && document.querySelector('.workbench-header [data-confirmation-mode]') === null);
         var helpTrafficBase = tuningMessages().length;
         openPreparationMenu();
         document.querySelector('[data-header-action="help"]').click();
         var confirmationHelpModal = document.querySelector(
             '.workbench-modal[data-modal-kind="equipment-tuning-help"]');
-        check('Character HelpAction explains confirmation without changing capability',
+        check('Character HelpAction explains direct single-mod and R2+ boundary without changing capability',
             confirmationHelpModal
-            && confirmationHelpModal.textContent.indexOf('逐次确认') >= 0
-            && confirmationHelpModal.textContent.indexOf('单件快捷') >= 0
             && confirmationHelpModal.textContent
                 .indexOf('批量、连锁与卸下全部始终需要确认') >= 0
             && confirmationHelpModal.textContent
-                .indexOf('不会解锁配件能力') >= 0
-            && InventoryWorkbench.debugState().build.tuning.tuning.modConfirmationMode
-                === 'fast'
+                .indexOf('不会改变当前状态') >= 0
             && preparationTrigger.getAttribute('aria-expanded') === 'false'
             && preparationPopover.hidden
             && tuningMessages().length === helpTrafficBase);
@@ -4801,13 +4774,7 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         check('closing Character tuning help preserves the same capability',
             !document.querySelector(
                 '.workbench-modal[data-modal-kind="equipment-tuning-help"]')
-            && InventoryWorkbench.debugState().build.tuning.tuning.modConfirmationMode
-                === 'fast'
             && tuningMessages().length === helpTrafficBase);
-        document.querySelector('[data-confirmation-mode="safe"]').click();
-        check('embedded ChoiceGroup restores progressive confirmation through the same port',
-            EquipmentTuningConfirmation.shared.read() === 'safe'
-            && localStorage.getItem('cf7.equipmentTuning.modConfirmationMode') === 'safe');
         var tuningTabSize = parseFloat(getComputedStyle(
             document.querySelector('.equipment-tuning-tab')).fontSize);
         var tuningCommitHeight = parseFloat(getComputedStyle(
@@ -4934,23 +4901,13 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                     && barrier.sessionGeneration === 17
                     && barrier.slotKey === '长枪';
             }));
-        var embeddedConfirmation = document.querySelector('.equipment-tuning-confirmation');
-        var embeddedConfirmationModes = document.querySelectorAll(
-            '.equipment-tuning-confirmation [data-confirmation-mode]');
-        var embeddedConfirmationReason = document.querySelector(
-            '.equipment-tuning-confirmation-reason');
-        check('embedded reconcile visibly locks the same ChoiceGroup with one readable reason',
-            embeddedConfirmation.getAttribute('data-confirmation-disabled') === 'true'
-            && Array.prototype.every.call(embeddedConfirmationModes,
-                function(node) { return node.disabled; })
-            && embeddedConfirmationReason.textContent.indexOf('正在核对调制结果') === 0,
-            JSON.stringify({
-                disabled:embeddedConfirmation.getAttribute('data-confirmation-disabled'),
-                choices:Array.prototype.map.call(embeddedConfirmationModes,
-                    function(node) { return node.disabled; }),
-                reason:embeddedConfirmationReason.textContent,
-                interaction:InventoryWorkbench.debugState().build.tuning.tuning.interaction
-            }));
+        var barrierInteraction = InventoryWorkbench.debugState().build.tuning.tuning.interaction;
+        check('embedded reconcile visibly locks tuning controls with one readable reason',
+            document.querySelector('.equipment-tuning-confirmation') === null
+            && barrierInteraction && barrierInteraction.confirmation === false
+            && String(barrierInteraction.reason || '').indexOf('正在核对') >= 0
+            && document.querySelectorAll('.equipment-tuning-view [data-tuning-capability]:not(:disabled)').length === 0,
+            JSON.stringify({interaction:barrierInteraction}));
         window.__routeHarness.releaseSnapshot();
         check('known tuning commit adopts a fresh full loadout before releasing the global lock',
             await until(function() {

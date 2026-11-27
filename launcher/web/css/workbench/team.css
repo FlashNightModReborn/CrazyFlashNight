@@ -424,6 +424,10 @@
     color: var(--team-kpoint);
     text-shadow: 0 0 6px color-mix(in srgb, var(--dls-memetic) 42%, transparent);
 }
+.team-workbench[data-workbench-skin="team"] .workbench-metric[data-metric="stones"] b {
+    color: var(--dls-cyan);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--dls-cyan) 36%, transparent);
+}
 
 /* 右栏决策面：细角标框点缀（.team-card-frame 同一 8 层 gradient 技法的容器变体，
    伪元素实现、无需 JS 挂载；pointer-events:none 不挡交互） */
@@ -2951,6 +2955,60 @@
     border-color: color-mix(in srgb, var(--wb-bg) 30%, var(--wb-line-soft));
     text-shadow: none;
     cursor: not-allowed;
+}
+
+/* ── 佣兵培养页右栏两分页：档案与技能 / 装备调配（消除竖向嵌套滚动与裁切）── */
+.team-workbench .team-merc-detail-right-shell {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+.team-workbench .team-merc-detail-tabs {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--wb-line-soft);
+}
+.team-workbench .team-merc-detail-tab {
+    min-height: 28px;
+    padding: 0 12px;
+    color: var(--wb-muted);
+    background: var(--wb-surface-2);
+    border: 1px solid var(--wb-line-soft);
+    font: 600 12px/1 "Microsoft YaHei", sans-serif;
+    cursor: pointer;
+    transition: color var(--wb-motion-micro) var(--wb-ease-standard),
+        border-color var(--wb-motion-micro) var(--wb-ease-standard),
+        background-color var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.team-workbench .team-merc-detail-tab:hover {
+    color: var(--wb-text);
+    border-color: var(--wb-accent);
+}
+.team-workbench .team-merc-detail-tab[aria-selected="true"] {
+    color: var(--wb-accent);
+    background: color-mix(in srgb, var(--wb-accent) 12%, var(--wb-surface));
+    border-color: var(--wb-accent);
+    box-shadow: inset 0 -2px 0 var(--wb-accent);
+}
+.team-workbench .team-merc-detail-right-shell > .team-merc-detail-right {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-top: 8px;
+}
+.team-workbench .team-merc-detail-tab-panel {
+    display: grid;
+    gap: 10px;
+}
+.team-workbench .team-merc-detail-tab-panel[hidden] {
+    display: none;
+}
+.team-workbench .team-merc-detail-tab-panel[data-tab-panel="loadout"] .merc-loadout-candidate-scroll {
+    max-height: 310px;
 }
 
 /* ── 佣兵装备托管（二期 2026-08-24）：LoadoutPicker 常驻两栏 —— 左列槽位图标网格

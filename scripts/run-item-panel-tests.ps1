@@ -75,13 +75,13 @@ $suiteConfigs = @{
             '(?m)^ArrayInventoryIndexTest Tests Failed: 0\r?$'
             '(?m)^InventoryPanelServiceTest Tests Passed: 194\r?$'
             '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
-            '(?m)^CraftingPanelServiceTest Tests Passed: 186\r?$'
+            '(?m)^CraftingPanelServiceTest Tests Passed: 204\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
             '(?m)^--- SynthesisIndexTest: 18/18 passed, 0 failed ---\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Passed: 108\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'ArrayInventoryIndex 31/31, EquipmentInventory 28/28, Inventory 194/194, Crafting 186/186, Synthesis 18/18, NPC 108/108'
+        Summary = 'ArrayInventoryIndex 31/31, EquipmentInventory 28/28, Inventory 194/194, Crafting 204/204, Synthesis 18/18, NPC 108/108'
     }
     Shared = @{
         DomainId = 'item-panels-shared'
@@ -120,11 +120,11 @@ $suiteConfigs = @{
         )
         Additional = @('scripts\逻辑系统分区\商店系统_兼容.as')
         Patterns = @(
-            '(?m)^CraftingPanelServiceTest Tests Passed: 186\r?$'
+            '(?m)^CraftingPanelServiceTest Tests Passed: 204\r?$'
             '(?m)^CraftingPanelServiceTest Tests Failed: 0\r?$'
             '(?m)^--- SynthesisIndexTest: 18/18 passed, 0 failed ---\r?$'
         )
-        Summary = 'Crafting 186/186, Synthesis 18/18'
+        Summary = 'Crafting 204/204, Synthesis 18/18'
     }
     Npc = @{
         DomainId = 'item-panels-npc'

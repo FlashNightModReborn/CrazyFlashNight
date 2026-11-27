@@ -41,6 +41,15 @@
             targetRef:{sourceSlot:Number(source.slot), targetSlot:Number(target.slot)}};
     }
 
+    function probeUnequip(offer, writeBlocked) {
+        if (!offer || offer.subjectKind !== 'quick_slot' || !offer.sourceRef || !offer.sourceRef.slot) {
+            return {accepted:false, reason:'invalid_skill'};
+        }
+        if (writeBlocked === true) return {accepted:false, reason:'slot_locked'};
+        return {accepted:true, operationId:'unequip_quick_slot',
+            targetRef:{slot:Number(offer.sourceRef.slot)}};
+    }
+
     function probeReorder(offer, target, lookupEntry, blockReason) {
         var source = offer && offer.sourceRef && typeof lookupEntry === 'function'
             ? lookupEntry(offer.sourceRef.skillKey) : null;
@@ -178,6 +187,7 @@
         quickSlotOffer:quickSlotOffer,
         probeEquip:probeEquip,
         probeMove:probeMove,
+        probeUnequip:probeUnequip,
         probeReorder:probeReorder,
         rejectMessage:rejectMessage,
         canReturnCharacterBuild:canReturnCharacterBuild,

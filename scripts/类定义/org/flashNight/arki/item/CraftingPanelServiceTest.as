@@ -52,6 +52,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testStalePlanHasNoWrite();
         testProjectionDriftHasNoWrite();
         testAtomicCommitAndReplay();
+        testBattleBoxOptInDeductionAndRollback();
         testFiniteBookVoucher();
         testBlockedPreviewHasNoToken();
         testResponseWire();
@@ -2741,6 +2742,372 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         });
         check(!replay.success && replay.error == "stale_state" && _root.金钱 == 910,
             "craft token cannot be replayed");
+    }
+
+    private static function testChangedBattleBoxOwner(missing:Boolean):Void {
+        resetOwned();
+        var original:Object = _root.物品栏.战备箱;
+        var other:Object = new ArrayInventory(null, 80);
+        var sentinel:Object = BaseItem.create("旧测试枪", 12);
+        var tail:Object = BaseItem.create("旧测试枪", 9);
+        other.add(0, sentinel);
+        original.add(45, tail);
+        _root.物品栏.背包.remove(0);
+        var ingredient:BaseItem = BaseItem.create("旧测试枪", 5, 1700000123);
+        ingredient.value.mods = ["测试配件A"];
+        ingredient.value.tier = "二阶";
+        original.add(0, ingredient);
+        ProcurementPlanService.setPlan({v:1, recipeId:"craft.weapon.001", plannedCrafts:1, expectedRevision:0});
+        var receipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void { receipts.push(receipt); });
+        _root.存档系统.dirtyMark = false;
+        _root.存档系统.markDirty = function():Void {
+            _root.物品栏.战备箱 = missing ? null : other;
+            throw "mock battlebox owner switch";
+        };
+        var params:Object = {category:"武器合成", recipeIndex:0, craftCount:1, useBattleBox:true};
+        var prev:Object = CraftingPanelService.execute("preview", params);
+        var oldCommit:Object = {category:"武器合成", expectedCraftToken:prev.craftToken};
+        var response:Object = CraftingPanelService.execute("commit", oldCommit);
+        var item:Object = original.getItem(0);
+        check(!response.success && response.error == "commit_failed"
+                && item instanceof BaseItem && item.value.level == 5 && item.value.tier == "二阶"
+                && item.value.mods[0] == "测试配件A" && other.getItem(0) === sentinel
+                && original.getItem(45) === tail && _root.存档系统.dirtyMark === true
+                && _root.金钱 == 1000 && _root.虚拟币 == 100 && _root.收集品栏.材料.getValue("测试矿石") == 5
+                && receipts.length == 0 && PlayerAssetTransaction.current() == null,
+            "detached or absent BattleBox restores original only and withholds uncertain receipt: " + missing);
+        _root.物品栏.战备箱 = original;
+        _root.存档系统.markDirty = function():Void {};
+        var replay:Object = CraftingPanelService.execute("commit", oldCommit);
+        var fresh:Object = CraftingPanelService.execute("preview", params);
+        var allowed:Object = CraftingPanelService.execute("commit", {category:"武器合成", expectedCraftToken:fresh.craftToken});
+        check(replay.error == "stale_state" && allowed.success === true
+                && receipts.length == 1 && receipts[0].effects.length > 0 && original.getItem(45) === tail,
+            "old token rejects and fresh craft publishes one receipt after owner recovery: " + missing);
+        PlayerAssetTransaction.setTestSink(null);
+    }
+
+    private static function testBattleBoxOptInDeductionAndRollback():Void {
+        resetOwned();
+        var legacySnap:Object = CraftingPanelService.execute("snapshot", {category:"武器合成"});
+        var openSnap:Object = CraftingPanelService.execute("snapshot", {category:"武器合成", supportsBattleBox:true});
+        _root.主线任务进度 = 13;
+        var lockedSnap:Object = CraftingPanelService.execute("snapshot", {category:"武器合成", supportsBattleBox:true});
+        _root.主线任务进度 = 14;
+        check(legacySnap.success && !legacySnap.hasOwnProperty("battleBoxAccessible")
+                && openSnap.success && openSnap.battleBoxAccessible === true
+                && lockedSnap.success && lockedSnap.battleBoxAccessible === false,
+            "snapshot emits battleBoxAccessible only when Host advertises supportsBattleBox capability");
+
+        // Move required equipment out of bag into unlocked BattleBox slot 0 and add split stack recipe
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.战备箱.add(0, BaseItem.create("旧测试枪", 5));
+        _root.物品栏.背包.add(1, BaseItem.create("测试药剂", 2));
+        _root.物品栏.战备箱.add(1, BaseItem.create("测试药剂", 3));
+        _root.改装清单["武器合成"].push({
+            recipeId:"craft.weapon.bb-split", title:"战备箱混扣图纸", name:"光棱射线弹-强化",
+            price:10, kprice:0, materials:["旧测试枪#3", "测试药剂#5"]
+        });
+
+        var defaultBlocked:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:2, craftCount:1
+        });
+        check(defaultBlocked.success && !defaultBlocked.canCommit
+                && defaultBlocked.blockingError == "material_missing"
+                && defaultBlocked.useBattleBox === undefined
+                && defaultBlocked.materials[0].storageKind == "unavailable",
+            "default crafting preview never reads or deducts BattleBox items");
+
+        var optInPreview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:2, craftCount:1, useBattleBox:true
+        });
+        var optInCommit:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:optInPreview.craftToken
+        });
+        check(optInPreview.success && optInPreview.canCommit
+                && optInPreview.useBattleBox === true
+                && optInPreview.acceptedPlan.useBattleBox === true
+                && optInPreview.materials[0].storageKind == "battlebox"
+                && optInPreview.materials[1].storageKind == "bag_and_battlebox"
+                && optInCommit.success && optInCommit.acceptedPlan.useBattleBox === true
+                && _root.物品栏.战备箱.getItem(0) == null
+                && _root.物品栏.战备箱.getItem(1) == null
+                && _root.物品栏.背包.getItem(1) == null
+                && _root.物品栏.背包.getItem(0) != null
+                && _root.物品栏.背包.getItem(0).name == "光棱射线弹-强化"
+                && _root.存档系统.dirtyMark === true,
+            "opt-in BattleBox preview and atomic commit deduct unlocked BattleBox and bag materials");
+
+        // Locked BattleBox tail (slot >= accessibleCapacity = 40 at progress 14) must NEVER be read
+        resetOwned();
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.战备箱.add(45, BaseItem.create("旧测试枪", 5));
+        var lockedTailPreview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1, useBattleBox:true
+        });
+        check(lockedTailPreview.success && !lockedTailPreview.canCommit
+                && lockedTailPreview.materials[1].storageKind == "unavailable"
+                && _root.物品栏.战备箱.getItem(45) != null
+                && _root.物品栏.战备箱.getItem(45).name == "旧测试枪",
+            "opt-in BattleBox deduction never accesses locked tail slots beyond accessibleCapacity");
+
+        var invalidFlag:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1, useBattleBox:"true"
+        });
+        check(!invalidFlag.success && invalidFlag.error == "invalid_payload",
+            "non-boolean useBattleBox is rejected before planning");
+
+        // Commit fault rollback must restore BattleBox BaseItem prototype/serialization, bag, money, and PAT/EventBus state
+        resetOwned();
+        _root.物品栏.背包.remove(0);
+        var rbGun:BaseItem = BaseItem.create("旧测试枪", 5, 1700000123);
+        rbGun.value.mods = ["测试配件A"];
+        rbGun.value.tier = "二阶";
+        _root.物品栏.战备箱.add(0, rbGun);
+        var beforeBbSerialized:Object = _root.物品栏.战备箱.toObject();
+        ProcurementPlanService.setPlan({
+            v:1, recipeId:"craft.weapon.001", plannedCrafts:1, expectedRevision:0
+        });
+        _root.存档系统.dirtyMark = false;
+        _root.存档系统.markDirty = function():Void {
+            throw "mock battlebox commit failure";
+        };
+        var rollbackReceipts:Array = [];
+        PlayerAssetTransaction.setTestSink(function(receipt:Object):Void { rollbackReceipts.push(receipt); });
+        var rollbackPreview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1, useBattleBox:true
+        });
+        var rollbackCommit:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:rollbackPreview.craftToken
+        });
+        _root.存档系统.markDirty = function():Void {};
+        var restoredBbGun:Object = _root.物品栏.战备箱.getItem(0);
+        var afterBbSerialized:Object = _root.物品栏.战备箱.toObject();
+        var serializedMatch:Boolean = afterBbSerialized != null && afterBbSerialized["0"] != null
+            && String(afterBbSerialized["0"].name) == String(beforeBbSerialized["0"].name)
+            && Number(afterBbSerialized["0"].value.level) == 5
+            && String(afterBbSerialized["0"].value.tier) == "二阶"
+            && afterBbSerialized["0"].value.mods instanceof Array
+            && afterBbSerialized["0"].value.mods.length == 1
+            && String(afterBbSerialized["0"].value.mods[0]) == "测试配件A"
+            && Number(afterBbSerialized["0"].lastUpdate) == 1700000123;
+        check(rollbackPreview.success && rollbackPreview.canCommit
+                && !rollbackCommit.success && rollbackCommit.error == "commit_failed"
+                && restoredBbGun != null && (restoredBbGun instanceof BaseItem)
+                && typeof restoredBbGun.toObject == "function"
+                && typeof restoredBbGun.getData == "function"
+                && restoredBbGun.name == "旧测试枪"
+                && restoredBbGun.value.level == 5
+                && rollbackReceipts.length == 0 && serializedMatch
+                && _root.收集品栏.材料.getValue("测试矿石") == 5
+                && _root.金钱 == 1000 && _root.虚拟币 == 100
+                && _root.存档系统.dirtyMark === false
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "failed opt-in BattleBox commit restores BaseItem prototype, serialization, bag, balance, and PAT state");
+
+        // Rollback transactionWrite failure must fail closed and settle PAT without swallowing error
+        resetOwned();
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.战备箱.add(0, BaseItem.create("旧测试枪", 5));
+        ProcurementPlanService.setPlan({
+            v:1, recipeId:"craft.weapon.001", plannedCrafts:1, expectedRevision:0
+        });
+        _root.存档系统.dirtyMark = false;
+        _root.存档系统.markDirty = function():Void {
+            _root.物品栏.战备箱._setTransactionWriteFaultHookForTests(function():Void {
+                throw "mock transactionWrite restore fault";
+            });
+            throw "mock trigger restore fault";
+        };
+        var rbFaultPrev:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1, useBattleBox:true
+        });
+        var rbFaultCommit:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:rbFaultPrev.craftToken
+        });
+        _root.物品栏.战备箱._setTransactionWriteFaultHookForTests(null);
+        _root.存档系统.markDirty = function():Void {};
+        check(!rbFaultCommit.success && rbFaultCommit.error == "commit_failed"
+                && rollbackReceipts.length == 0
+                && _root.物品栏.战备箱.getItem(0) == null && _root.物品栏.背包.getItem(0) == null
+                && _root.存档系统.dirtyMark === true
+                && _root.收集品栏.材料.getValue("测试矿石") == 5
+                && _root.金钱 == 1000 && _root.虚拟币 == 100
+                && ProcurementPlanService.getRevision() == 1
+                && ProcurementPlanService.getPlannedCrafts("craft.weapon.001") == 1
+                && PlayerAssetTransaction.current() == null
+                && Number(EventBus.getInstance()["_dispatchDepth"]) == 0,
+            "failed BattleBox transactionWrite during rollback still restores other domains and settles PAT");
+
+        PlayerAssetTransaction.setTestSink(null);
+        testChangedBattleBoxOwner(false);
+        testChangedBattleBoxOwner(true);
+
+        // Pre-write exception inside executeCommit must still release _busy via execute() finally
+        resetOwned();
+        var busyPreview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        var origBagToObject:Function = _root.物品栏.背包.toObject;
+        _root.物品栏.背包.toObject = function():Object {
+            throw new Error("mock pre-write backup fault");
+            return null;
+        };
+        var threwPreWrite:Boolean = false;
+        try {
+            CraftingPanelService.execute("commit", {
+                category:"武器合成", expectedCraftToken:busyPreview.craftToken
+            });
+        } catch (preWriteErr) {
+            threwPreWrite = true;
+        }
+        _root.物品栏.背包.toObject = origBagToObject;
+        var afterPreWritePreview:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:0, craftCount:1
+        });
+        check(threwPreWrite && afterPreWritePreview.success === true,
+            "pre-write exception releases _busy so subsequent previews are not permanently locked");
+
+        // Smithing must inherit only from the consumed equipment slot, never from a kept +13 copy in BattleBox
+        resetOwned();
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.背包.add(0, BaseItem.create("旧测试枪", 1));
+        _root.物品栏.战备箱.add(0, BaseItem.create("旧测试枪", 13));
+        _root.改装清单["武器合成"].push({
+            recipeId:"craft.weapon.smith-inherit", title:"锻造继承边界", name:"光棱射线弹-强化",
+            value:1, price:0, kprice:0, materials:["旧测试枪#1"]
+        });
+        var smithPrev:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:2, craftCount:1, useBattleBox:true
+        });
+        var smithCommit:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:smithPrev.craftToken
+        });
+        var keptBbGun:Object = _root.物品栏.战备箱.getItem(0);
+        check(smithPrev.success && smithPrev.canCommit && smithPrev.output.enhancementLevel == 1
+                && smithCommit.success && smithCommit.crafted.enhancementLevel == 1
+                && keptBbGun != null && keptBbGun.value.level == 13,
+            "smithing inherits enhancement only from selected deducted equipment, never kept BattleBox +13 copy");
+
+        // Equipment enhancement threshold requirement reserves qualifying copy before quantity requirement
+        resetOwned();
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.背包.add(0, BaseItem.create("旧测试枪", 5));
+        _root.物品栏.战备箱.add(0, BaseItem.create("旧测试枪", 1));
+        _root.改装清单["武器合成"].push({
+            recipeId:"craft.weapon.equip-order", title:"装备预约顺序", name:"光棱射线弹-强化",
+            value:1, price:0, kprice:0, materials:["旧测试枪##1", "旧测试枪#5"]
+        });
+        var orderPrev:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:2, craftCount:1, useBattleBox:true
+        });
+        check(orderPrev.success && orderPrev.canCommit,
+            "opt-in planner reserves equipment enhancement threshold before quantity equipment requirements");
+
+        // Duplicate material rows with useBattleBox:true execute aggregate plan even when BattleBox map is empty
+        resetOwned();
+        _root.收集品栏.材料.addValue("测试矿石", 0);
+        _root.改装清单["武器合成"].push({
+            recipeId:"craft.weapon.dup-mat", title:"重复材料汇总", name:"测试药剂",
+            value:1, price:0, kprice:0, materials:["测试矿石#2", "测试矿石#3"]
+        });
+        var dupPrev:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:2, craftCount:1, useBattleBox:true
+        });
+        var dupCommit:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:dupPrev.craftToken
+        });
+        check(dupPrev.success && dupPrev.canCommit && dupCommit.success
+                && _root.收集品栏.材料.getValue("测试矿石") == 0,
+            "opt-in commit executes aggregate duplicate-material plan even with zero BattleBox deductions");
+
+        // Rollback preserves locked BattleBox tail reference and restores _saveExt.drugLoadout
+        resetOwned();
+        var prevGetItemData = _root.getItemData;
+        _root.getItemData = function(itemName:String):Object {
+            return ItemUtil.getRawItemData(itemName);
+        };
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.药剂栏.add(0, BaseItem.create("测试药剂", 1));
+        _root.物品栏.战备箱.add(0, BaseItem.create("测试药剂", 1));
+        var lockedTailItem:Object = BaseItem.create("旧测试枪", 9);
+        _root.物品栏.战备箱.add(45, lockedTailItem);
+        _root._saveExt = {};
+        _root.改装清单["武器合成"].push({
+            recipeId:"craft.weapon.drug-bb-rb", title:"药剂战备箱回滚", name:"测试矿石",
+            value:1, price:0, kprice:0, materials:["测试药剂#2"]
+        });
+        var drugRbIdx:ItemObtainIndex = ItemObtainIndex.getInstance();
+        drugRbIdx.reset(true);
+        drugRbIdx.buildIndex(_root.改装清单, _root.shops, _root.kshop_list);
+        SynthesisIndex.reset();
+        ProcurementPlanService.setPlan({
+            v:1, recipeId:"craft.weapon.drug-bb-rb", plannedCrafts:1, expectedRevision:0
+        });
+        _root.存档系统.dirtyMark = false;
+        _root.存档系统.markDirty = function():Void { throw "mock drug affinity rollback"; };
+        var drugRbPrev:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:2, craftCount:1, useBattleBox:true
+        });
+        var drugRbCommit:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:drugRbPrev.craftToken
+        });
+        _root.存档系统.markDirty = function():Void {};
+        check(drugRbPrev.success && drugRbPrev.canCommit
+                && !drugRbCommit.success && drugRbCommit.error == "commit_failed"
+                && _root.物品栏.战备箱.getItem(45) === lockedTailItem
+                && _root.物品栏.药剂栏.getItem(0) != null && _root.物品栏.药剂栏.getItem(0).value == 1
+                && !_root._saveExt.hasOwnProperty("drugLoadout"),
+            "opt-in BattleBox rollback leaves locked tail untouched and restores drugLoadout affinity");
+
+        // Reserved drug affinity slot projects drug+insert and commits cleanly without stale_state
+        resetOwned();
+        _root.getItemData = function(itemName:String):Object {
+            return ItemUtil.getRawItemData(itemName);
+        };
+        _root._saveExt = {};
+        var depletedRec:Object = org.flashNight.arki.item.DrugSlotAffinityService.recordDepleted(
+            _root, _root.物品栏.药剂栏, 2, "测试药剂");
+        _root.收集品栏.材料.addValue("测试矿石", 20);
+        var affinityPrev:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:1, craftCount:1, useBattleBox:true
+        });
+        var affinityCommit:Object = CraftingPanelService.execute("commit", {
+            category:"武器合成", expectedCraftToken:affinityPrev.craftToken
+        });
+        _root.getItemData = prevGetItemData;
+        check(depletedRec.success && affinityPrev.success && affinityPrev.canCommit
+                && affinityPrev.outputDelivery.storageKind == "drug"
+                && affinityPrev.outputDelivery.mode == "insert"
+                && affinityPrev.outputDelivery.physicalSlot == 2
+                && affinityCommit.success
+                && _root.物品栏.药剂栏.getItem(2) != null
+                && _root.物品栏.药剂栏.getItem(2).value == 3,
+            "preview and commit agree on reserved drug-slot affinity insert delivery");
+
+        // Full bag non-monotonic maxCraftCount finds valid batch when clearing a bag stack frees space
+        resetOwned();
+        _root._saveExt = {};
+        _root.物品栏.背包.remove(0);
+        _root.物品栏.背包.add(0, BaseItem.create("测试药剂", 4));
+        _root.物品栏.背包.add(1, BaseItem.create("旧测试枪", 1));
+        _root.物品栏.背包.add(2, BaseItem.create("旧测试枪", 1));
+        _root.物品栏.背包.add(3, BaseItem.create("旧测试枪", 1));
+        _root.物品栏.背包.add(4, BaseItem.create("旧测试枪", 1));
+        _root.物品栏.战备箱.add(0, BaseItem.create("测试药剂", 1));
+        ItemUtil.itemDataDict["测试礼包"] = itemData("测试礼包", "消耗品", "礼包", 1);
+        _root.改装清单["武器合成"].push({
+            recipeId:"craft.weapon.fullbag-batch", title:"满包腾格批量", name:"测试礼包",
+            value:1, price:0, kprice:0, materials:["测试药剂#1"]
+        });
+        var fullBagPrev:Object = CraftingPanelService.execute("preview", {
+            category:"武器合成", recipeIndex:2, craftCount:4, useBattleBox:true
+        });
+        delete ItemUtil.itemDataDict["测试礼包"];
+        check(fullBagPrev.success && fullBagPrev.canCommit && fullBagPrev.maxCraftCount == 5,
+            "full-bag non-monotonic maxCraftCount searches affordable bound downward for delivery");
     }
 
     private static function testBlockedPreviewHasNoToken():Void {

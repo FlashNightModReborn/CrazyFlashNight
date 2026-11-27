@@ -29,7 +29,7 @@ var CraftingDetailPresenter = (function() {
         this.root.className = 'workbench-view crafting-detail-view';
         this.chrome = new Workbench.ViewChrome({
             title:'合成详情',
-            kicker:'权威核算',
+            kicker:'',
             meta:'请选择配方'
         });
         this.scroller = this._document.createElement('div');
@@ -43,7 +43,7 @@ var CraftingDetailPresenter = (function() {
         this.quantityHeading = this._document.createElement('div');
         this.quantityHeading.className = 'crafting-quantity-heading';
         this.quantityHeading.appendChild(textNode(this._document, 'b', '', '合成份数'));
-        this.quantityHint = textNode(this._document, 'small', 'crafting-quantity-hint', '等待权威上限');
+        this.quantityHint = textNode(this._document, 'small', 'crafting-quantity-hint', '计算中');
         this.quantityHeading.appendChild(this.quantityHint);
 
         var self = this;
@@ -54,13 +54,18 @@ var CraftingDetailPresenter = (function() {
             inputAriaLabel:'输入合成份数',
             rangeAriaLabel:'拖动选择合成份数',
             maxLabel:'最大',
-            maxAriaLabel:'设为当前权威可合成上限',
+            maxAriaLabel:'设为当前可合成上限',
             showPlusFive:false,
             showMax:true,
             showRange:true,
             onChange:function(value, reason, event) {
                 if (typeof self._options.onQuantityChange === 'function') {
                     self._options.onQuantityChange(value, reason, event);
+                }
+            },
+            onDraftChange:function(dirty) {
+                if (typeof self._options.onQuantityDraftChange === 'function') {
+                    self._options.onQuantityDraftChange(dirty);
                 }
             }
         });
@@ -212,11 +217,37 @@ var CraftingDetailPresenter = (function() {
     };
 
     Presenter.prototype._renderMaterials = function(model) {
+        var activeEl = this._document.activeElement;
+        var restoreBbFocus = !!(activeEl && this.materialHost.contains(activeEl)
+            && activeEl.classList && activeEl.classList.contains('crafting-battlebox-toggle'));
         this._releaseTooltips(this.materialHost);
         clear(this.materialHost);
         var list = this._document.createElement('section');
         list.className = 'crafting-material-list';
-        list.appendChild(textNode(this._document, 'h3', '', '所需材料'));
+        var head = this._document.createElement('div');
+        head.className = 'crafting-material-head';
+        head.appendChild(textNode(this._document, 'h3', '', '所需材料'));
+        var bbToggle = null;
+        if (model.battleBoxAccessible === true && typeof this._options.onToggleBattleBox === 'function') {
+            var self = this;
+            var toggle = this._document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'workbench-mode-btn crafting-battlebox-toggle';
+            toggle.setAttribute('role', 'switch');
+            toggle.setAttribute('aria-checked', model.useBattleBox === true ? 'true' : 'false');
+            toggle.setAttribute('data-audio-cue', 'toggle');
+            toggle.disabled = !!model.battleBoxToggleDisabled;
+            toggle.textContent = model.useBattleBox === true ? '已启用战备箱直扣' : '使用战备箱材料';
+            toggle.setAttribute('aria-label', model.useBattleBox === true
+                ? '已启用战备箱直扣：合成时可自动从已解锁战备箱扣除所需材料'
+                : '使用战备箱材料：默认只扣除背包、药剂栏与材料栏，开启后可直扣已解锁战备箱材料');
+            toggle.addEventListener('click', function() {
+                self._options.onToggleBattleBox();
+            });
+            head.appendChild(toggle);
+            bbToggle = toggle;
+        }
+        list.appendChild(head);
         var rows = model.materials || [];
         if (!rows.length) {
             list.appendChild(textNode(this._document, 'div', 'crafting-material-empty', '该配方不消耗材料'));
@@ -226,6 +257,9 @@ var CraftingDetailPresenter = (function() {
             }
         }
         this.materialHost.appendChild(list);
+        if (restoreBbFocus && bbToggle && !bbToggle.disabled && typeof bbToggle.focus === 'function') {
+            try { bbToggle.focus({preventScroll:true}); } catch (_) { bbToggle.focus(); }
+        }
     };
 
     Presenter.prototype._renderSummary = function(model) {
@@ -257,11 +291,11 @@ var CraftingDetailPresenter = (function() {
         var previewState = model.previewState || (hasPreview ? 'ready' : selected ? 'waiting' : 'empty');
 
         this.root.setAttribute('data-preview-state', previewState);
-        this.chrome.setTitle(model.title || '合成详情', model.kicker || '权威核算');
-        this.chrome.setMeta(model.meta || (selected ? '等待权威预览' : '请选择配方'));
+        this.chrome.setTitle(model.title || '合成详情', model.kicker || '');
+        this.chrome.setMeta(model.meta || (selected ? '正在计算…' : '请选择配方'));
 
         this.empty.hidden = hasPreview;
-        this.empty.textContent = model.emptyText || (selected ? '等待权威预览' : '从左侧选择一项配方');
+        this.empty.textContent = model.emptyText || (selected ? '正在计算合成预览…' : '从左侧选择一项配方');
         this.heroHost.hidden = !hasPreview;
         this.materialHost.hidden = !hasPreview;
         this.summaryHost.hidden = !hasPreview;
@@ -288,14 +322,19 @@ var CraftingDetailPresenter = (function() {
             showRange:true
         });
 
+        var interactiveCommit = model.canCommit === true || model.canQueueCommit === true;
         this.commitBar.update({
             label:model.commitLabel || '确认合成',
-            status:model.commitStatus || (selected ? '等待权威预览' : '请先选择配方'),
-            canCommit:model.canCommit === true,
-            disabled:model.canCommit !== true,
-            busy:!!model.commitBusy,
+            status:model.commitStatus || (selected ? '正在计算…' : '请先选择配方'),
+            canCommit:interactiveCommit,
+            disabled:!interactiveCommit,
+            busy:!!model.commitBusy && !model.canQueueCommit,
             state:model.commitState || (model.canCommit ? 'ready' : 'blocked')
         });
+        this.commitBar.primaryButton.setAttribute('aria-busy', model.commitBusy ? 'true' : 'false');
+        this.commitBar.root.classList.toggle('busy', !!model.commitBusy);
+        if (model.commitQueued) this.commitBar.primaryButton.setAttribute('data-commit-queued', 'true');
+        else this.commitBar.primaryButton.removeAttribute('data-commit-queued');
         this.commitBar.primaryButton.setAttribute('aria-label',
             model.commitAriaLabel || '确认合成');
         this.commitBar.primaryButton.setAttribute('data-title',
@@ -331,6 +370,16 @@ var CraftingDetailPresenter = (function() {
             quantityAttached:this.quantity.root.parentNode === this.quantityPanel,
             commitAttached:this.commitBar.root.parentNode === this.root
         };
+    };
+
+    Presenter.prototype.hasPendingQuantityDraft = function() {
+        return !!(this.quantity && typeof this.quantity.hasPendingDraft === 'function'
+            && this.quantity.hasPendingDraft());
+    };
+
+    Presenter.prototype.revertQuantityDraft = function() {
+        return !!(this.quantity && typeof this.quantity.revertDraft === 'function'
+            && this.quantity.revertDraft());
     };
 
     Presenter.prototype.destroy = function() {

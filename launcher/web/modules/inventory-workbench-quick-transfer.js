@@ -94,6 +94,8 @@
             this._portDefaults[SOURCE_PORTS[portIndex]] = this['_' + SOURCE_PORTS[portIndex]];
         }
         this._mode = null;
+        this._exitBatchAfterCommit = false;
+        this._lastBatchAnchor = null;
         this._pending = [];
         this._inFlight = null;
         this._batchInFlight = [];
@@ -163,6 +165,8 @@
         if (this._inFlight || this._batchInFlight.length || this._committing) { this._onNotice('in_flight'); return false; }
         this._clearPending();
         this._mode = mode;
+        this._exitBatchAfterCommit = false;
+        this._lastBatchAnchor = null;
         this._completed = 0;
         this._accepted = 0;
         this._haltError = '';
@@ -173,12 +177,16 @@
         if (this._inFlight || this._batchInFlight.length || this._committing) return false;
         if (!this._mode && !this._pending.length) return false;
         this._mode = null;
+        this._exitBatchAfterCommit = false;
+        this._lastBatchAnchor = null;
         this._clearPending();
         this._emit();
         return true;
     };
     QuickTransferController.prototype.reset = function() {
         this._mode = null;
+        this._exitBatchAfterCommit = false;
+        this._lastBatchAnchor = null;
         this._pending = [];
         this._inFlight = null;
         this._batchInFlight = [];
@@ -214,7 +222,49 @@
             this._onNotice('withdraw_source'); return true;
         }
         if (context.slot && context.slot.occupied) {
+            var isTransferable = function(row) {
+                return !!(row && row.occupied && !(this._sourceKind === 'stash' && row.clearableOverflow === true));
+            }.bind(this);
+            if (this._mode && event && event.shiftKey && this._lastBatchAnchor
+                    && this._lastBatchAnchor.containerId === context.containerId
+                    && Array.isArray(context.slots) && context.slots.length) {
+                var targetKey = this._keyOf(context.containerId, context.slot);
+                var startIdx = -1, endIdx = -1, anchorRow = null;
+                for (var s = 0; s < context.slots.length; s++) {
+                    var rowKey = this._keyOf(context.containerId, context.slots[s]);
+                    if (rowKey === this._lastBatchAnchor.key) { startIdx = s; anchorRow = context.slots[s]; }
+                    if (rowKey === targetKey) endIdx = s;
+                }
+                var anchorLease = anchorRow && anchorRow.slotLease != null ? String(anchorRow.slotLease) : '';
+                if (startIdx >= 0 && endIdx >= 0 && isTransferable(anchorRow)
+                        && (!this._lastBatchAnchor.lease || anchorLease === this._lastBatchAnchor.lease)) {
+                    var lo = Math.min(startIdx, endIdx), hi = Math.max(startIdx, endIdx);
+                    for (var r = lo; r <= hi; r++) {
+                        var candidate = context.slots[r];
+                        if (!isTransferable(candidate)) continue;
+                        var candidateKey = this._keyOf(context.containerId, candidate);
+                        if (!this._entries[candidateKey]) this.enqueue(context.containerId, candidate, true);
+                    }
+                    if (isTransferable(context.slot)) {
+                        this._lastBatchAnchor = {
+                            containerId:context.containerId,
+                            key:targetKey,
+                            lease:context.slot.slotLease != null ? String(context.slot.slotLease) : ''
+                        };
+                    }
+                    return true;
+                }
+            }
+            if (!isTransferable(context.slot)) return true;
             this.enqueue(context.containerId, context.slot, !!this._mode, context.quantity);
+            if (this._mode) {
+                var slotKey = this._keyOf(context.containerId, context.slot);
+                this._lastBatchAnchor = this._entries[slotKey] ? {
+                    containerId:context.containerId,
+                    key:slotKey,
+                    lease:context.slot.slotLease != null ? String(context.slot.slotLease) : ''
+                } : null;
+            }
         }
         return true;
     };
@@ -279,11 +329,12 @@
         }
         return true;
     };
-    QuickTransferController.prototype.commit = function() {
+    QuickTransferController.prototype.commit = function(options) {
         if (!this._mode) { this._onNotice('no_mode'); return false; }
         if (!this._authorityReady()) { this._onNotice('busy'); return false; }
         if (this._inFlight || this._batchInFlight.length || this._committing) { this._onNotice('in_flight'); return false; }
         if (!this._pending.length) { this._onNotice('nothing_selected'); return false; }
+        this._exitBatchAfterCommit = !!(options && options.exitAfter);
         this._committing = true;
         this._emit();
         return this._commitBatch();
@@ -375,7 +426,9 @@
         this._batchInFlight = [];
         this._completed += Number(completedCount);
         this._committing = false;
-        this._mode = null;
+        this._lastBatchAnchor = null;
+        if (failure || this._exitBatchAfterCommit) this._mode = null;
+        this._exitBatchAfterCommit = false;
         this._emit();
         if (failure) this._onError(failure);
     };
@@ -645,10 +698,10 @@
             cancelButton.hidden = !mode || !!state.committing;
             cancelButton.disabled = !!state.committing;
             statusNode.textContent = mode === 'deposit'
-                ? '批量存入：选择背包物品后执行'
+                ? '批量存入：点击或 Shift 连选背包物品后执行'
                 : mode === 'withdraw'
-                    ? '批量取出：选择' + rightContainerId + '物品后执行'
-                    : state.sourceKind === 'stash' ? '选中物品后点击领取 · Ctrl 单击快领' : '选中物品后点击存入 / 取出 · Ctrl 单击快移';
+                    ? '批量取出：点击或 Shift 连选' + rightContainerId + '物品后执行'
+                    : state.sourceKind === 'stash' ? '双击或 Ctrl 单击快领 · 选中可调数量' : '双击或 Ctrl 单击快移 · 选中可调数量';
             if (state.committing) {
                 statusNode.textContent += ' · 待处理 ' + state.queued + ' · 已完成 ' + state.completed;
             } else if (state.staged) {

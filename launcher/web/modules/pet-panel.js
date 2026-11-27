@@ -119,6 +119,7 @@
     var _rosterLeftRoot = null, _rosterRightRoot = null;
     var _storeLeftRoot = null, _storeRightRoot = null;
     var _gridEl = null, _rosterScrollEl = null, _detailEl = null;
+    var _adoptEntryBtn = null, _expandSlotBtn = null, _storeBackBtn = null;
     var _storeTabsEl = null, _storeGridEl = null, _storeScrollEl = null, _storePreviewEl = null;
     var _rosterL = null, _rosterR = null, _storeL = null, _storeR = null;
     var _commitBar = null;
@@ -229,6 +230,7 @@
         _rosterLeftRoot = null; _rosterRightRoot = null;
         _storeLeftRoot = null; _storeRightRoot = null;
         _gridEl = null; _rosterScrollEl = null; _detailEl = null;
+        _adoptEntryBtn = null; _expandSlotBtn = null; _storeBackBtn = null;
         _storeTabsEl = null; _storeGridEl = null; _storeScrollEl = null; _storePreviewEl = null;
         _view = 'roster';
         if (_scaleEl) Workbench.clearElement(_scaleEl);
@@ -336,15 +338,15 @@
         });
         tools.appendChild(_filterDropdown.root);
 
-        var adoptEntry = button('＋ 领养' + noun, 'team-pane-btn team-goto-store', enterStore);
-        adoptEntry.setAttribute('data-tone', 'primary');
-        adoptEntry.setAttribute('aria-label', '打开领养' + noun + '目录');
-        tools.appendChild(adoptEntry);
-        var expandBtn = button('扩容', 'team-pane-btn team-expand-slot', function() { onExpandSlot(this); });
-        expandBtn.setAttribute('data-tone', 'primary');
-        expandBtn.title = '花费 50,000 金币扩充一个' + noun + '栏位';
-        expandBtn.setAttribute('aria-label', '花费 50,000 金币扩充一个' + noun + '栏位');
-        tools.appendChild(expandBtn);
+        _adoptEntryBtn = button('＋ 领养' + noun, 'team-pane-btn team-goto-store', enterStore);
+        _adoptEntryBtn.setAttribute('data-tone', 'primary');
+        _adoptEntryBtn.setAttribute('aria-label', '打开领养' + noun + '目录');
+        tools.appendChild(_adoptEntryBtn);
+        _expandSlotBtn = button('扩容 · 5万金', 'team-pane-btn team-expand-slot', function() { onExpandSlot(this); });
+        _expandSlotBtn.setAttribute('data-tone', 'primary');
+        _expandSlotBtn.title = '花费 50,000 金币扩充 1 个共用栏位（伙伴 / 战宠 / 机械共享）';
+        _expandSlotBtn.setAttribute('aria-label', '花费 50,000 金币扩充 1 个共用栏位（伙伴 / 战宠 / 机械共享）');
+        tools.appendChild(_expandSlotBtn);
         paneHeader.appendChild(tools);
         _rosterLeftRoot.appendChild(paneHeader);
 
@@ -381,9 +383,9 @@
         // Phase F 排版收紧：store 页头并条——返回钮 + 分类 tabs 同一行 chrome（去掉大标题）
         var paneHeader = document.createElement('div');
         paneHeader.className = 'team-pane-header';
-        var backBtn = button('‹ 返回名册', 'team-pane-btn team-back-roster', backToRoster);
-        backBtn.setAttribute('aria-label', '返回' + noun + '名册');
-        paneHeader.appendChild(backBtn);
+        _storeBackBtn = button('‹ 返回名册', 'team-pane-btn team-back-roster', backToRoster);
+        _storeBackBtn.setAttribute('aria-label', '返回' + noun + '名册');
+        paneHeader.appendChild(_storeBackBtn);
         _storeTabsEl = document.createElement('div');
         _storeTabsEl.className = 'team-store-tabs';
         _storeTabsEl.setAttribute('role', 'group');
@@ -450,8 +452,10 @@
     }
 
     function isUnknownMutationResponse(data) {
-        if (!data || data.success === true) return false;
-        return data.error === 'timeout'
+        if (!data) return true;
+        if (data.success === true) return false;
+        return data.requiresReconcile === true
+            || data.error === 'timeout'
             || data.error === 'delivery_unknown'
             || data.error === 'client_timeout';
     }
@@ -472,7 +476,7 @@
         _reconcileMutationCmd = cmd;
         _reconcileHireCandidate = cmd === 'world_adopt' ? _hireCandidate : null;
         projectReconcileState();
-        TeamShared.toast('上一次操作可能已生效，正在重新读取权威状态；不会自动重试。', 'error');
+        TeamShared.toast('上一次操作可能已生效，正在重新同步状态；不会自动重试。', 'error');
         return _reconcileEpoch;
     }
 
@@ -503,8 +507,17 @@
         return true;
     }
 
-    function mutationCallback(cmd, instance, requestSession, cb) {
+    function mutationCallback(cmd, instance, requestSession, cb, request) {
         return function(data) {
+            if (cmd === 'level_up' && data && data.success === true) {
+                var quote = request && request.levelQuote;
+                if (!quote || data.slotIndex !== request.slotIndex || data.levelUpToken !== quote.token
+                        || data.oldLevel !== quote.fromLevel || data.newLevel !== quote.toLevel
+                        || data.levelsGained !== quote.toLevel - quote.fromLevel || data.stoneCost !== quote.stoneCost) {
+                    data = {type:'panel_resp', panel:'pets', cmd:cmd, callId:data.callId, panelInstanceId:instance,
+                        success:false, error:'malformed_response', requiresReconcile:true};
+                }
+            }
             var reconcileEpoch = 0;
             if (isMutationCommand(cmd) && isUnknownMutationResponse(data)) {
                 reconcileEpoch = enterReconcile(instance, requestSession, cmd);
@@ -527,7 +540,7 @@
         var callId = 'pet_' + (++_reqSeq) + '_' + Date.now();
         var instance = _panelInstanceId;
         var requestSession = _session;
-        var deliver = cb ? mutationCallback(cmd, instance, requestSession, cb) : null;
+        var deliver = cb ? mutationCallback(cmd, instance, requestSession, cb, extra) : null;
         // 对账锁存期间的写请求在本层短路（reconcile_required），不发给权威；
         // 锁存状态机仍为本 controller 私有，共享传输层不参与。
         if (isMutationCommand(cmd) && _reconcileRequired) {
@@ -563,6 +576,8 @@
             && Array.isArray(data.snapshot.pets));
     }
 
+    var _awaitingPostWriteSnapshot = false;
+
     function requestSnapshot(reconcileEpoch) {
         var snapSession = _session;
         var snapInstance = _panelInstanceId;
@@ -583,6 +598,7 @@
                 renderRosterGrid();
                 return;
             }
+            _awaitingPostWriteSnapshot = false;
             _snapshot = data.snapshot;
             _pets = data.snapshot.pets || [];
             // 旧 snapshot 的 expectedReconcileEpoch=0，或者属于旧 epoch，因而永远不能解开新的未知写。
@@ -620,7 +636,8 @@
     }
 
     function requestAdoptList(catIdx, cb) {
-        var cacheKey = _rosterType + ':' + catIdx;
+        var reqRoster = _rosterType;
+        var cacheKey = reqRoster + ':' + catIdx;
         var reqSession = _session;
         // 乱序回包守卫：连切分类时同 session 可能有多个请求在飞（缓存命中也自增序号），
         // 只接受最新一次写回 _storeData / _storeCategoryIdx，迟到回包直接丢弃
@@ -631,8 +648,8 @@
             if (cb) cb(true);
             return;
         }
-        sendPanelMsg('adopt_list', { categoryIndex: catIdx, rosterType: _rosterType }, function(data) {
-            if (reqSession !== _session) return;
+        sendPanelMsg('adopt_list', { categoryIndex: catIdx, rosterType: reqRoster }, function(data) {
+            if (reqSession !== _session || reqRoster !== _rosterType) return;
             if (reqAdoptSeq !== _adoptListSeq) return;   // 已有更新的请求 / 缓存命中接管
             if (!data.success) {
                 TeamShared.toast('获取领养列表失败：' + (data.error || '超时'), 'error');
@@ -642,7 +659,7 @@
             _storeData = data.adoptable || [];
             if (data.categories) _storeCategories = data.categories;
             if (typeof data.selectedCategoryIndex === 'number') _storeCategoryIdx = data.selectedCategoryIndex;
-            cacheKey = _rosterType + ':' + _storeCategoryIdx;
+            cacheKey = reqRoster + ':' + _storeCategoryIdx;
             _storeCache[cacheKey] = { adoptable: _storeData, categories: _storeCategories };
             if (cb) cb(true);
         });
@@ -733,8 +750,8 @@
         tile.type = 'button';
         tile.className = 'team-slot-empty';
         // 领养入口真 button：名册网格 listbox→list 后不再投 option，保留原生按钮无语义角色（入口永不被选中）
-        tile.setAttribute('aria-label', '空栏位：前往领养' + noun);
-        tile.title = '空栏位：前往领养' + noun;
+        tile.setAttribute('aria-label', '共用空栏位：前往领养' + noun);
+        tile.title = '伙伴 / 战宠 / 机械共用空位：前往领养' + noun;
         var plus = document.createElement('span');
         plus.className = 'team-slot-plus';
         plus.textContent = '＋';
@@ -856,6 +873,10 @@
         });
         fixupCardA11y(card, pet.slotIndex === _selectedSlot);
         if (pet.slotIndex === _selectedSlot) card.setAttribute('data-state', 'selected');
+        card.addEventListener('dblclick', function(event) {
+            if (event.target && event.target.closest && event.target.closest('button')) return;
+            openAdvance(pet.slotIndex);
+        });
         bindCardTip(card, function() { return cardTipText(pet); });
         return card;
     }
@@ -1214,7 +1235,7 @@
 
         var note = document.createElement('div');
         note.className = 'team-cand-note';
-        note.textContent = '招募成功后关闭面板返回场景；门控按实时数据复算。';
+        note.textContent = '招募成功后关闭面板并返回场景。';
         _detailEl.appendChild(note);
     }
 
@@ -1270,8 +1291,8 @@
         if (!state || !state.supported) return null;
         if (state.custodyCorrupt) {
             return {
-                mode: '异常', name: '托管快照', icon: '', enhancementLevel: 0,
-                tone: TeamShared.custodyBadgeSpec('custody_corrupt').tone, title: '托管快照异常，已停止写入', item: null
+                mode: '异常', name: '托管武器', icon: '', enhancementLevel: 0,
+                tone: TeamShared.custodyBadgeSpec('custody_corrupt').tone, title: '托管武器数据异常，已暂停修改', item: null
             };
         }
         var weapon = state.weapon;
@@ -1412,9 +1433,14 @@
                 + ' · 栏位 ' + (_pets ? _pets.length : 0) + '/' + (_snapshot.maxSlots || 0);
         }
         _shell.setTitle(noun + '管理', subtitle);
+        var subtitleEl = _shell.getRoot && _shell.getRoot().querySelector('.workbench-subtitle');
+        if (subtitleEl) subtitleEl.title = '伙伴 / 战宠 / 机械共享同一总栏位上限';
         if (!_snapshot) return;
         _shell.setMetric('gold', '金币', TeamShared.fmtMoney(_snapshot.gold));
         _shell.setMetric('kpoint', 'K点', TeamShared.fmtMoney(_snapshot.kpoint));
+        if (typeof _snapshot.stones === 'number') {
+            _shell.setMetric('stones', '灵石', TeamShared.fmtMoney(_snapshot.stones));
+        }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -1667,9 +1693,17 @@
                 _storeCache = {};   // 领养改变拥有态 / 价格，失效缓存
                 TeamShared.toast('领养成功！', 'success');
                 _adoptPetId = null;
-                if (_commitBar) _commitBar.update({ busy: false, status: '已领养', state: 'ready' });
-                backToRoster();
-                requestSnapshot();
+                var slotsFull = !!(_snapshot && _snapshot.maxSlots > 0 && ((_pets ? _pets.length : 0) + 1 >= _snapshot.maxSlots));
+                if (slotsFull) {
+                    if (_commitBar) _commitBar.update({ busy: false, status: '栏位已满，返回名册', state: 'ready' });
+                    backToRoster();
+                    requestSnapshot();
+                } else {
+                    updateHeaderMetrics();
+                    if (_commitBar) _commitBar.update({ busy: false, status: '已领养 · 可继续挑选或返回名册', disabled: true, state: '' });
+                    requestSnapshot();
+                    renderStoreContent();
+                }
             } else {
                 var msg = '领养失败：' + (data.reason || data.error || '未知错误');
                 _commitError = msg;   // error 投影保留到用户改选 / 重新提交
@@ -1804,6 +1838,8 @@
         actions.appendChild(restoreBtn);
 
         var levelLimit = _snapshot ? (_snapshot.levelLimit || 100) : 100;
+        var ownedStones = (_snapshot && typeof _snapshot.stones === 'number') ? _snapshot.stones : null;
+        var levelCosts = Array.isArray(pet.levelUpCosts) ? pet.levelUpCosts : null;
         var levelupBtn = button('', 'team-action-btn team-act-levelup', null);
         levelupBtn.setAttribute('data-tone', 'primary');
         if (pet.level >= levelLimit) {
@@ -1811,17 +1847,68 @@
             setActionBlocked(levelupBtn, '已达等级上限');
         } else {
             var xpNeededForCost = pet.xpNeeded || 0;
-            var stoneCost = pet.level * 2 + Math.floor(xpNeededForCost / 10000);
-            if (stoneCost < 1) stoneCost = 1;
+            var stoneCost = (levelCosts && levelCosts.length > 0)
+                ? Number(levelCosts[0])
+                : (pet.level * 2 + Math.floor(xpNeededForCost / 10000));
+            if (!isFinite(stoneCost) || stoneCost < 1) stoneCost = 1;
             levelupBtn.textContent = '强化 · 灵石×' + stoneCost;
             levelupBtn.title = '消耗战宠灵石：' + stoneCost + '  |  经验：' + (pet.xp || 0) + '/' + (xpNeededForCost || '--');
+            if (ownedStones !== null && ownedStones < stoneCost) {
+                setActionBlocked(levelupBtn, '战宠灵石不足（需 ' + stoneCost + '）');
+            }
         }
         levelupBtn.setAttribute('aria-label', '强化 ' + pet.name);
+        if (_awaitingPostWriteSnapshot) setActionBlocked(levelupBtn, '正在同步升级后的最新状态…');
         levelupBtn.addEventListener('click', function() {
             if (guardBlocked(this)) return;
-            onLevelUp(this);
+            onLevelUp(this, pet, pet.level + 1, stoneCost);
         });
         actions.appendChild(levelupBtn);
+
+        if (pet.level < levelLimit && levelCosts && levelCosts.length > 1) {
+            var batchN = Math.min(5, levelCosts.length);
+            var batchCost = 0;
+            for (var bi = 0; bi < batchN; bi++) batchCost += Number(levelCosts[bi]) || 1;
+            var batchBtn = button('强化 +' + batchN + ' · 灵石×' + batchCost,
+                'team-action-btn team-act-levelup-batch', null);
+            batchBtn.setAttribute('data-tone', 'primary');
+            batchBtn.setAttribute('aria-label', '强化 ' + pet.name + ' 连升 ' + batchN + ' 级（战宠灵石 ×' + batchCost + '）');
+            batchBtn.title = '一次连升 ' + batchN + ' 级至 Lv.' + (pet.level + batchN) + '，消耗战宠灵石 ' + batchCost;
+            if (_awaitingPostWriteSnapshot) {
+                setActionBlocked(batchBtn, '正在同步升级后的最新状态…');
+            } else if (ownedStones !== null && ownedStones < batchCost) {
+                setActionBlocked(batchBtn, '战宠灵石不足（需 ' + batchCost + '）');
+            }
+            batchBtn.addEventListener('click', function() {
+                if (guardBlocked(this)) return;
+                onLevelUp(this, pet, pet.level + batchN, batchCost);
+            });
+            actions.appendChild(batchBtn);
+
+            if (ownedStones !== null) {
+                var maxSteps = 0, maxCost = 0;
+                for (var mi = 0; mi < levelCosts.length; mi++) {
+                    var sc = Number(levelCosts[mi]) || 1;
+                    if (maxCost + sc > ownedStones) break;
+                    maxCost += sc;
+                    maxSteps++;
+                }
+                if (maxSteps > 1 && maxSteps !== batchN) {
+                    var reachCap = (pet.level + maxSteps) >= levelLimit;
+                    var maxLabel = (reachCap ? '升至满级' : ('升至 Lv.' + (pet.level + maxSteps))) + ' · 灵石×' + maxCost;
+                    var maxBtn = button(maxLabel, 'team-action-btn team-act-levelup-max', null);
+                    maxBtn.setAttribute('data-tone', 'primary');
+                    maxBtn.setAttribute('aria-label', '将 ' + pet.name + ' 升至 Lv.' + (pet.level + maxSteps) + '（战宠灵石 ×' + maxCost + '）');
+                    maxBtn.title = '按当前灵石一次升至 Lv.' + (pet.level + maxSteps) + '，消耗战宠灵石 ' + maxCost;
+                    if (_awaitingPostWriteSnapshot) setActionBlocked(maxBtn, '正在同步升级后的最新状态…');
+                    maxBtn.addEventListener('click', function() {
+                        if (guardBlocked(this)) return;
+                        onLevelUp(this, pet, pet.level + maxSteps, maxCost);
+                    });
+                    actions.appendChild(maxBtn);
+                }
+            }
+        }
 
         var deleteBtn = button('删除', 'team-action-btn team-act-delete', function() {
             confirmDelete(pet);
@@ -1978,8 +2065,8 @@
         metaEl.className = 'team-managed-gun-meta';
         if (state.custodyCorrupt) {
             current.classList.add('team-managed-gun-error');
-            title.textContent = '托管快照异常';
-            metaEl.textContent = '已失败关闭：不会删除或覆盖原始存档数据，请保留存档并反馈。';
+            title.textContent = '托管武器数据异常';
+            metaEl.textContent = '已暂停修改：不会删除或覆盖原始存档数据，请保留存档并反馈。';
         } else if (weapon) {
             title.textContent = weapon.displayName || weapon.name || '已托管长枪';
             var weaponBits = [];
@@ -1987,7 +2074,7 @@
             if ((weapon.enhancementLevel || 0) > 0) weaponBits.push('强化 +' + weapon.enhancementLevel);
             if ((weapon.modSlotUsed || 0) > 0) weaponBits.push('插件 ' + weapon.modSlotUsed);
             if (weapon.frozenShot != null) weaponBits.push('交付弹耗 ' + weapon.frozenShot);
-            metaEl.textContent = weaponBits.join(' · ') || '完整装备快照已冻结';
+            metaEl.textContent = weaponBits.join(' · ') || '已保存交付时的武器状态';
         } else {
             title.textContent = '预设武器 · ' + (state.defaultWeapon || 'L85A1');
             metaEl.textContent = '未交付玩家武器；出战时自动使用预设，不占背包。';
@@ -2268,21 +2355,37 @@
         });
     }
 
-    function onLevelUp(btn) {
-        if (guardMutation()) return;
-        var pet = findPetBySlot(_advanceSlot);
-        if (!pet) return;
+    function onLevelUp(btn, pet, targetLevel, cost) {
+        if (guardMutation() || _awaitingPostWriteSnapshot) return;
+        if (pet !== findPetBySlot(_advanceSlot) || !pet.levelUpToken) {
+            requestSnapshot();
+            return;
+        }
         beginOp(btn);
-        sendPanelMsg('level_up', { slotIndex: pet.slotIndex }, function(data) {
+        var req = {slotIndex:pet.slotIndex, targetLevel:targetLevel,
+            levelQuote:{token:pet.levelUpToken, fromLevel:pet.level, toLevel:targetLevel, stoneCost:cost}};
+        sendPanelMsg('level_up', req, function(data) {
             if (finishMutationOp(btn, data)) return;
             if (data.success) {
+                _awaitingPostWriteSnapshot = true;
+                renderAdvance();
                 requestSnapshot();   // 等级变化牵动门槛，需重拉
                 var levelSuffix = data.refreshDeferred ? '；出战实体将在下次重建时更新等级' : '';
-                TeamShared.toast(meta().noun + '升级！战宠灵石 -' + data.stoneCost + levelSuffix, 'success');
+                var gained = Number(data.levelsGained) || 1;
+                var lead = gained > 1
+                    ? (meta().noun + '连升 ' + gained + ' 级（Lv.' + data.newLevel + '）！战宠灵石 -' + data.stoneCost)
+                    : (meta().noun + '升级！战宠灵石 -' + data.stoneCost);
+                TeamShared.toast(lead + levelSuffix, 'success');
             } else {
                 var msg = '升级失败，请重试';
-                if (data.error === 'level_maxed') msg = '已达等级上限';
+                if (data.error === 'stale_level_quote') {
+                    msg = '战宠或强化费用已变化，请核对刷新后的报价。';
+                    _awaitingPostWriteSnapshot = true;
+                    renderAdvance();
+                    requestSnapshot();
+                } else if (data.error === 'level_maxed') msg = '已达等级上限';
                 else if (data.error === 'insufficient_stones') msg = '战宠灵石不足，需要' + (data.cost || '?') + '个';
+                else if (data.error === 'invalid_count' || data.error === 'invalid_target_level') msg = '目标等级超出范围';
                 else if (data.error === 'in_combat') msg = '战斗中无法升级';
                 else if (data.error === 'disconnected') msg = '连接已断开';
                 else if (data.error === 'timeout' || data.error === 'client_timeout') msg = '响应超时，请重试';
@@ -2336,8 +2439,8 @@
             weapon_type_locked: '当前阶位尚未开放该枪种',
             weapon_level_locked: '武器需求等级超过当前上限',
             not_long_gun: '只能交付长枪',
-            invalid_weapon: '武器快照无法安全冻结',
-            custody_corrupt: '托管快照异常，已停止写入',
+            invalid_weapon: '武器状态无法保存，请重试',
+            custody_corrupt: '托管武器数据异常，已暂停修改',
             inventory_unavailable: '背包尚未就绪',
             commit_failed: '库存提交失败，未改变所有权',
             rollback_failed: '库存回滚异常，已失败关闭，请保留存档并反馈',
@@ -2443,6 +2546,31 @@
 
     function onExpandSlot(btn) {
         if (guardMutation()) return;
+        if (_snapshot && (_snapshot.gold || 0) < 50000) {
+            cue('illegal');
+            TeamShared.toast('金币不足，扩充共用栏位需要 50,000 金币', 'error');
+            return;
+        }
+        if (!_shell) { doExpandSlot(btn); return; }
+        var curCount = _pets ? _pets.length : 0;
+        var curMax = _snapshot ? (_snapshot.maxSlots || 0) : 0;
+        var gold = _snapshot ? (_snapshot.gold || 0) : 0;
+        _shell.openModal({
+            kind: 'confirm',
+            kicker: '共用栏位扩容',
+            title: '确认扩充栏位',
+            message: '将花费 50,000 金币扩充 1 个共用栏位。',
+            detail: '伙伴 / 战宠 / 机械共享同一总栏位上限（当前 ' + curCount + '/' + curMax + '，余额 ' + TeamShared.fmtMoney(gold) + ' 金币）。',
+            actions: [
+                { id: 'cancel', label: '取消', audioCue: 'back' },
+                { id: 'confirm', label: '确认扩容', primary: true, audioCue: 'activate',
+                    onSelect: function() { doExpandSlot(btn); } }
+            ]
+        });
+    }
+
+    function doExpandSlot(btn) {
+        if (guardMutation()) return;
         beginOp(btn);
         sendPanelMsg('expand_slot', null, function(data) {
             if (finishMutationOp(btn, data)) return;
@@ -2451,7 +2579,7 @@
                 updateHeaderMetrics();
                 renderRosterGrid();
                 renderDetail();   // 扩容解除「栏位已满」blocked：右栏（含候选招募门控）同步重渲
-                TeamShared.toast(meta().noun + '栏已扩充至 ' + data.maxSlots, 'success');
+                TeamShared.toast('共用栏位已扩充至 ' + data.maxSlots, 'success');
             } else {
                 var msg = '扩充失败';
                 if (data.error === 'max_slots_reached') msg = '已达最大格子数（' + (data.maxSlots || '') + '）';
@@ -2503,7 +2631,7 @@
         if (guardBusy()) return true;
         if (!_reconcileRequired) return false;
         projectReconcileState();
-        TeamShared.toast('权威状态尚未核对完成，本次写入未发出。');
+        TeamShared.toast('正在确认上次操作结果，请稍候再试。');
         return true;
     }
 
@@ -2964,6 +3092,45 @@
     // ═══════════════════════════════════════════════════════════
     // 导出
     // ═══════════════════════════════════════════════════════════
+    function switchRoster(rosterType, hireCandidate) {
+        if (guardBusy()) return false;
+        if (!ROSTER_META[rosterType]) rosterType = 'partner';
+        if (_advancePage && _advancePage.isActive()) _advancePage.close('roster-switch');
+        if (_view === 'store') {
+            backToRoster();
+            _storeCategoryIdx = 0;
+            _storeData = [];
+            _storeCategories = [];
+            _adoptPetId = null;
+            _commitError = null;
+        }
+        _rosterType = rosterType;
+        _adoptListSeq++;
+        _awaitingPostWriteSnapshot = false;
+        _hireCandidate = hireCandidate || null;
+        var noun = meta().noun;
+        if (_shell && _shell.getRoot) {
+            var root = _shell.getRoot();
+            root.setAttribute('data-team-roster', _rosterType);
+            var flowEl = root.querySelector('.workbench-flow-label');
+            if (flowEl) flowEl.textContent = noun;
+        }
+        if (_densityToggle) _densityToggle.setAttribute('aria-label', noun + '卡片布局');
+        if (_adoptEntryBtn) {
+            _adoptEntryBtn.textContent = '＋ 领养' + noun;
+            _adoptEntryBtn.setAttribute('aria-label', '打开领养' + noun + '目录');
+        }
+        if (_gridEl) _gridEl.setAttribute('aria-label', noun + '名册');
+        if (_storeBackBtn) _storeBackBtn.setAttribute('aria-label', '返回' + noun + '名册');
+        if (_storeGridEl) _storeGridEl.setAttribute('aria-label', '领养' + noun + '目录');
+        if (_helpAction) _helpAction.update(helpSpec());
+        _selectedSlot = _hireCandidate ? CANDIDATE_SLOT : defaultSelectSlot();
+        updateHeaderMetrics();
+        renderRosterGrid();
+        renderDetail();
+        return true;
+    }
+
     function resetToList() {
         if (_advancePage && _advancePage.isActive()) _advancePage.close('reset');
         backToRoster();
@@ -2993,6 +3160,7 @@
         create: createDOM,
         onOpen: onOpen,
         onClose: onClose,
+        switchRoster: switchRoster,
         requestClose: requestClose,
         resetToList: resetToList,
         isBusy: function() { return _busy; }

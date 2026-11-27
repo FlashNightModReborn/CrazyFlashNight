@@ -104,8 +104,8 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                             source:normalizeTuningSource(self._source)
                         } : null;
                         self._status = barrierId
-                            ? '提交结果不明确，先同步完整构筑再完成调制水位对账'
-                            : '提交结果不明确，但未取得可用对账水位';
+                            ? '提交结果尚未确认，正在同步装备状态以确认结果'
+                            : '提交结果尚未确认，正在刷新状态';
                         self._emit();
                         self.render();
                         if (barrierId) self._beginLoadoutRefresh();
@@ -193,7 +193,7 @@ var EquipmentTuningLoadoutLifecycle = (function() {
             var expectedSource = barrier.source;
             if (!Model.sameLoadoutIdentity(this._source, expectedSource)) {
                 this._refreshRetryRequired = true;
-                this._status = '角色构筑会话已切换；拒绝跨会话采用快照';
+                this._status = '角色装备会话已切换，已取消同步';
                 this._emit();
                 this.render();
                 return false;
@@ -201,7 +201,7 @@ var EquipmentTuningLoadoutLifecycle = (function() {
             this._refreshRetryRequired = false;
             this._refreshRetryPending = true;
             this._busy = true;
-            this._status = '正在采用完整 11+4 角色构筑快照';
+            this._status = '正在同步角色装备数据';
             this._emit();
             this.render();
             var callbackCalled = false;
@@ -230,7 +230,7 @@ var EquipmentTuningLoadoutLifecycle = (function() {
                 self._refreshRetryRequired = false;
                 self._busy = false;
                 if (barrier.kind === 'unknown') {
-                    self._status = '完整构筑已采用，正在按新 revision 对账调制水位';
+                    self._status = '装备数据已同步，正在确认上次调制结果';
                     self._emit();
                     self.render();
                     self.requestSnapshot(barrier.callId);

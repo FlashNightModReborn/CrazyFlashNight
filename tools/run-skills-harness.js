@@ -111,10 +111,10 @@ function staticAudit() {
         || !panel.includes('function skillHelpSpec')
         || !panel.includes("kind:'skills-help'")
         || !panel.includes('skills-help-btn')) throw new Error('shared contextual skill HelpAction missing');
-    if (!panel.includes('cf7.skills.loadoutConfirmationMode') || !panel.includes('manageHelpDetail')
-        || !panel.includes('createLoadoutConfirmationToggle') || !panel.includes('skills-confirmation-toggle')
-        || panel.includes("id:'confirmation-mode'") || !panel.includes("_loadoutConfirmationMode === 'fast'")
-        || !panel.includes("kind:'skills-learn-confirm'")) throw new Error('visible header safe/fast preference or learning confirmation boundary missing');
+    if (!panel.includes('manageHelpDetail') || !panel.includes('quickEquipSkill')
+        || !panel.includes('commitLearnPreview') || !skillsSource.includes("operationId:'unequip_quick_slot'")
+        || panel.includes('createLoadoutConfirmationToggle') || panel.includes("kind:'skills-learn-confirm'"))
+        throw new Error('R1 direct loadout or R2 button-is-confirm learning contract missing');
     if (!panel.includes('function buildDiagnosticRecord') || !panel.includes('redactDiagnosticValue')
         || !diagnostics.includes('snapshotDiagnostics') || !panel.includes('skills-header-diagnostic')) throw new Error('exception-only player diagnostic copy/redaction missing');
     if (panel.includes("setMetric('revision'") || panel.includes("setStatus('权威状态已同步'")) throw new Error('routine technical skill chrome must stay hidden from players');
@@ -193,7 +193,7 @@ function staticAudit() {
         || !css.includes('.skills-trainer-summary') || !css.includes('.skills-cost-card') || !css.includes('.skills-trainer-footer')
         || !css.includes('.skills-level-range') || !css.includes('.skills-level-mark') || !css.includes('.skills-level-value')
         || !css.includes('.skills-preview-result.stale') || !css.includes('.skills-preview-result.updating')
-        || !css.includes('.skills-trainer-expired') || !css.includes('.skills-confirmation-toggle')
+        || !css.includes('.skills-trainer-expired') || !css.includes('.skills-manage-desc')
         || !css.includes('.skills-return-character-btn')
         || !css.includes('font:600 11px/1.1 Consolas,"Microsoft YaHei",sans-serif')
         || !css.includes('.skills-panel .workbench-slot-marker') || !css.includes('data-modal-kind="skills-help"')) throw new Error('skills band/tile/tooltip/filter/search/diagnostic/help CSS missing');

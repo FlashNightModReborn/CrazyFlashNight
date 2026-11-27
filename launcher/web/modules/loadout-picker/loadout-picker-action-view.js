@@ -89,6 +89,8 @@
         this._selectCandidate = options.selectCandidate;
         this._clearCandidateSelection = options.clearCandidateSelection;
         this._onCommit = options.onCommit;
+        this._resolveSmartSlot = typeof options.resolveSmartSlot === 'function' ? options.resolveSmartSlot : null;
+        this._onSmartCommit = typeof options.onSmartCommit === 'function' ? options.onSmartCommit : null;
         this._onTune = options.onTune;
         this._onUnequip = options.onUnequip;
         this._onReconcile = options.onReconcile;
@@ -119,39 +121,40 @@
     ActionView.prototype._tryCommit = function(candidate) {
         if (this._state !== 'idle' || !candidate || candidate.blocked === true
                 || this._commitButton.disabled) return false;
-        this._onCommit(candidate);
-        return true;
+        if (!this._getSlotKey() && this._resolveSmartSlot && this._onSmartCommit) {
+            var smart = this._resolveSmartSlot(candidate);
+            if (!smart || !smart.key) return false;
+            this._onSmartCommit(smart.key, candidate);
+            return true;
+        }
+        this._onCommit(candidate); return true;
     };
-    ActionView.prototype.commitCandidate = function(candidate) {
-        return this._tryCommit(candidate);
-    };
+    ActionView.prototype.commitCandidate = function(candidate) { return this._tryCommit(candidate); };
     ActionView.prototype._handleKeyDown = function(event) {
         var candidate = closest(event.target, '[data-candidate-key]', this._candidateList);
         if (!candidate || (event.key !== 'Enter' && event.key !== ' ')) return;
         event.preventDefault();
-        var key = candidate.getAttribute('data-candidate-key');
-        var selected = key === this._getCandidateKey();
+        var key = candidate.getAttribute('data-candidate-key'), selected = key === this._getCandidateKey();
         var value = this._getCandidate(key);
         if (event.key === 'Enter' && !event.repeat && selected) this._tryCommit(value);
         else if (event.key === ' ' && selected) this._clearCandidateSelection();
         else this._selectCandidate(key);
     };
     ActionView.prototype.sync = function() {
-        var texts = this._texts;
-        var candidate = this._getCandidate();
-        var slotKey = this._getSlotKey();
-        var slot = slotKey && this._root.querySelector(
-            '[data-roving-key="' + String(slotKey).replace(/"/g, '\\"') + '"]');
+        var texts = this._texts, candidate = this._getCandidate(), slotKey = this._getSlotKey();
+        var slot = slotKey && this._root.querySelector('[data-roving-key="' + String(slotKey).replace(/"/g, '\\"') + '"]');
         var reconcile = this._state === 'mutation_reconcile';
         var drug = String(slotKey).indexOf(this._drugSlotKeyPrefix) === 0;
+        var smart = !reconcile && !slotKey && candidate && candidate.blocked !== true
+            && this._resolveSmartSlot ? this._resolveSmartSlot(candidate) : null;
         this._commitButton.textContent = reconcile ? texts.commitReconcile
+            : smart ? (smart.isDrug ? '装入【' : '装备到【') + smart.label + '】'
             : !slotKey ? texts.commitNoSlot : drug ? texts.commitDrug : texts.commitEquip;
         this._commitButton.setAttribute('aria-label', reconcile ? texts.commitReconcileAria
-            : !slotKey ? texts.commitNoSlotAria
-                : drug ? texts.commitDrugAria : texts.commitEquipAria);
+            : smart ? (smart.isDrug ? '装入' : '装备到') + smart.label
+            : !slotKey ? texts.commitNoSlotAria : drug ? texts.commitDrugAria : texts.commitEquipAria);
         this._commitButton.disabled = reconcile ? false
-            : this._state !== 'idle' || !slotKey
-                || !candidate || candidate.blocked === true;
+            : this._state !== 'idle' || (!slotKey && !smart) || !candidate || candidate.blocked === true;
         if (this._tuneButton) {
             var occupiedEquipment = !!slot && slot.getAttribute('data-empty') !== 'true'
                 && slot.getAttribute('data-slot-kind') !== 'drug';

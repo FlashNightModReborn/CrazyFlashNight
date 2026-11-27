@@ -206,11 +206,14 @@ class org.flashNight.arki.skill.SkillPanelService {
         var maxLevel:Number = Number(metadata.MaxLevel);
         var cost:Number = 0;
         var blocking:String = null;
-        if (currentLevel == 0 && desiredLevel != 1) blocking = "initial_level_must_be_one";
-        else if (currentLevel > 0 && desiredLevel <= currentLevel) blocking = currentLevel >= maxLevel ? "max_level" : "invalid_level";
+        if (currentLevel > 0 && desiredLevel <= currentLevel) blocking = currentLevel >= maxLevel ? "max_level" : "invalid_level";
         else if (desiredLevel > maxLevel) blocking = "invalid_level";
         if (currentLevel == 0) {
-            cost = Number(metadata.UnlockSP);
+            var unlockSP:Number = Number(metadata.UnlockSP);
+            var initUpgradeSP:Number = Number(metadata.UpgradeSP);
+            var initExtra:Number = desiredLevel - 1;
+            if (initExtra > 0 && initUpgradeSP > Math.floor((2147483647 - unlockSP) / initExtra)) return fail("invalid_level");
+            cost = unlockSP + initExtra * initUpgradeSP;
         } else if (desiredLevel > currentLevel) {
             var delta:Number = desiredLevel - currentLevel;
             var upgradeSP:Number = Number(metadata.UpgradeSP);

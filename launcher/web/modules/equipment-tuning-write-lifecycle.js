@@ -51,11 +51,11 @@ var EquipmentTuningWriteLifecycle = (function() {
                         + (intent.replaceCandidateName || '当前配件') + '」'
                     : '安装「' + (intent.candidateName || '所选配件') + '」';
             if (phase === 'preview_pending') return '正在校验：' + action;
-            if (phase === 'write_pending') return '权威预览已确认，正在' + action;
+            if (phase === 'write_pending') return '预览已确认，正在' + action;
             if (phase === 'committed_syncing') {
                 return '已写入，正在同步：' + action;
             }
-            if (phase === 'uncertain') return '提交结果待对账：' + action;
+            if (phase === 'uncertain') return '提交结果待确认：' + action;
             return '';
         };
 
@@ -163,7 +163,7 @@ var EquipmentTuningWriteLifecycle = (function() {
                 this._preview = null;
                 this._modIntent = null;
                 this._status =
-                    '背包刷新失败；必须重试成功后才能使用新租约对账';
+                    '背包刷新失败，请先重试刷新';
                 recordRefresh(false);
                 this._emit();
                 this.render();
@@ -215,7 +215,7 @@ var EquipmentTuningWriteLifecycle = (function() {
                 this._sourceItem = null;
                 this._snapshot = null;
                 this._preview = null;
-                this._status = '背包装备租约无效，请重新选择';
+                this._status = '背包装备位置已变化，请重新选择';
                 recordRefresh(true);
                 this._emit();
                 this.render();

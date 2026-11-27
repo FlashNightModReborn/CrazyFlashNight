@@ -242,6 +242,7 @@
                 '</div>';
 
             cardEl.addEventListener('click', onCardSelect);
+            cardEl.addEventListener('dblclick', onCardDblClick);
             gridEl.appendChild(cardEl);
             S._cardEls.push(cardEl);
         }
@@ -256,7 +257,7 @@
             '<div class="arena-card-header">' +
                 '<span class="arena-card-rank">定制赛</span>' +
                 '<span class="arena-card-icon">⚔</span>' +
-                '<span class="arena-card-diff">P2</span>' +
+                '<span class="arena-card-diff">自选</span>' +
             '</div>' +
             '<div class="arena-card-body arena-custom-body">' +
                 '<div class="arena-custom-title-row">' +
@@ -461,6 +462,7 @@
         if (S._shellBodyEl) S._shellBodyEl.hidden = isCustom;
         if (S._customOverviewEl) S._customOverviewEl.hidden = !isCustom;
         if (isCustom) ArenaCustomEditor.refreshCustomMatchCard();
+        else if (S._activeCards.length > 0 && S._selectedCardIdx < 0) selectCard(0);
         ArenaShell.showGridView();
         updateCardStates();
     }
@@ -493,6 +495,16 @@
         // 摘要 ↻ 重试等嵌套控件已 stopPropagation；卡面点击 = 纯选中（本地意图，零写入）
         var idx = parseInt(e.currentTarget.getAttribute('data-index'), 10);
         selectCard(idx);
+    }
+
+    function onCardDblClick(e) {
+        if (S._busy) return;
+        var idx = parseInt(e.currentTarget.getAttribute('data-index'), 10);
+        if (isNaN(idx)) return;
+        selectCard(idx);
+        var card = S._activeCards[idx];
+        if (!card || card.isCustom || Number(card.deposit) !== 0) return;
+        commitSelectedChallenge();
     }
 
     function selectCard(idx) {
@@ -694,7 +706,7 @@
             S._activeCards = [];
             buildCards();
             ArenaPreviewAuthority.requestSnapshot();
-            ArenaCore.showToast('正在获取新的权威挑战批次');
+            ArenaCore.showToast('正在获取新的挑战批次');
             return;
         } else {
             resetCardRuntimeState();

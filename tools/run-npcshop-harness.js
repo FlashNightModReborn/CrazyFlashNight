@@ -76,12 +76,11 @@ function audit(){
       ||!harness.includes('npcshop-keeper.js'))throw new Error('npcshop independent keeper visual or faction theme contract missing');
   if(!panel.includes('new InventoryUI.InventoryFilterControl(')||!panel.includes("setFilterSpec('背包'")
       ||!panelUi.includes('workbench-secondary-page npcshop-help-page')
-      ||!css.includes('inset:var(--wb-header-height,48px) 0 0'))throw new Error('shop bag authority tree or shared secondary-page coverage contract missing');
+      ||!css.includes('inset:0;'))throw new Error('shop bag authority tree or shared secondary-page coverage contract missing');
   if(!panel.includes("presentation:'drilldown'")||panel.includes("presentation:'popover'")
       ||!panel.includes("navigatorPresentation:'drilldown'")
-      ||!panel.includes('view.chrome.title.appendChild(hint)')
       ||!itemFilter.includes('FilterNavigator.prototype._renderDrilldown'))throw new Error('unified full-width inline hierarchy navigation contract missing');
-  if(!panel.includes("scope:'same_name'")||!panel.includes("policy:'plain_only'"))throw new Error('same-name protected bulk sale flow missing');
+  if(!panel.includes('NpcShopSecondaryPages.selectionPayload(')||!secondary.includes("scope:'same_name'")||!secondary.includes("policy:'plain_only'"))throw new Error('same-name protected bulk sale flow missing');
   const workbenchComponents=fs.readFileSync(WORKBENCH_COMPONENTS_SOURCE,'utf8');
   const workbenchComponentsCss=fs.readFileSync(path.join(WEB,'css','workbench','components.css'),'utf8');
   if(!secondary.includes('new this._components.QuantityControl')

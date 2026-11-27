@@ -65,7 +65,7 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
 
     var ARMOR_IDS = ['6', '7', '8', '9', '10', '11'];
     var WEAPON_IDS = ['12', '13', '14', '15'];
-    var CORRUPT_REASON = '托管快照异常，已失败关闭；请保留存档并反馈';
+    var CORRUPT_REASON = '装备数据异常，已暂停修改；请保留存档并反馈';
     var NO_CUSTODY_REASON = '该槽位没有托管装备，无可取回';
     var POLICY = DropPolicyModule.create();
     var viewSequence = 0;
@@ -585,8 +585,8 @@ function(LoadoutPickerModule, WorkbenchComponents, WorkbenchFocus, DropPolicyMod
         // revision 的随后快照刷新不得重复发起读取，否则会在 ready 与 loading 间制造竞态。
         if (this._selectedSlotKey) {
             this.restoreSlot(this._selectedSlotKey, authorityChanged);
-        } else if (this._candidateScope === 'backpack' && this._candidateRequestKey
-                && (authorityChanged || this._candidateLoadFailed)) {
+        } else if (this._candidateScope === 'backpack'
+                && (!this._candidateRequestKey || authorityChanged || this._candidateLoadFailed)) {
             this.showBackpackOverview();
         }
         return true;

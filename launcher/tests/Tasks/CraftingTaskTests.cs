@@ -545,6 +545,124 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Fact]
+        public void BattleBoxRollbackFailure_RequiresOriginalSourceBeforeNextCommit()
+        {
+            var sent = new List<JObject>();
+            JObject posted = null;
+            using (var task = new CraftingTask(() => true, value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted = JObject.Parse(value));
+                JObject ReadBoxPreview(string id)
+                {
+                    JObject req = Request("preview", id);
+                    req["payload"]["craftCount"] = 1;
+                    req["payload"]["useBattleBox"] = true;
+                    task.HandleWebRequest("preview", req);
+                    JObject preview = RoutedPreviewResponse((int)sent[sent.Count - 1]["callId"], "battlebox", "bag", "insert", 3, true);
+                    preview["useBattleBox"] = true;
+                    preview["acceptedPlan"]["useBattleBox"] = true;
+                    task.HandleFlashResponse(preview, null);
+                    Assert.True((bool)posted["success"]);
+                    return preview;
+                }
+
+                ReadBoxPreview("craft.rollback.start");
+                task.HandleWebRequest("commit", Request("commit", "craft.rollback.fail"));
+                task.HandleFlashResponse(new JObject {
+                    ["task"] = "crafting_response", ["callId"] = sent[sent.Count - 1]["callId"],
+                    ["success"] = false, ["error"] = "commit_failed"
+                }, null);
+                Assert.Equal("commit_failed", (string)posted["error"]);
+                Assert.True((bool)posted["requiresReconcile"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                int sentBefore = sent.Count;
+                task.HandleWebRequest("commit", Request("commit", "craft.rollback.replay"));
+                Assert.Equal(sentBefore, sent.Count);
+                task.HandleWebRequest("preview", Request("preview", "craft.rollback.bag"));
+                task.HandleFlashResponse(PreviewResponse((int)sent[sent.Count - 1]["callId"]), null);
+                Assert.True((bool)posted["success"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                JObject fresh = ReadBoxPreview("craft.rollback.fresh");
+                Assert.Equal("idle", task.WriteState);
+                task.HandleWebRequest("commit", Request("commit", "craft.rollback.new"));
+                task.HandleFlashResponse(CommitResponseFromPreview((int)sent[sent.Count - 1]["callId"], fresh), null);
+                Assert.True((bool)posted["success"]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void DifferentRecipePreview_DoesNotClearReconcileLockFromUnknownCommit()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }, 20))
+            {
+                task.SetPostToWeb(value => web.Add(JObject.Parse(value)));
+                PrimeCommitAuthority(task, sent);
+                web.Clear();
+                task.HandleWebRequest("commit", Request("commit", "craft.reconcile.target.1"));
+                Assert.True(SpinWait.SpinUntil(() => web.Count > 0, 2000));
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                // Previewing another recipe (recipeIndex 4 instead of 3) must NOT clear reconcile lock
+                JObject otherPreviewReq = Request("preview", "craft.reconcile.other");
+                otherPreviewReq["payload"]["recipeIndex"] = 4;
+                task.HandleWebRequest("preview", otherPreviewReq);
+                int otherFid = (int)sent[sent.Count - 1]["callId"];
+                JObject otherResp = PreviewResponse(otherFid);
+                otherResp["recipeIndex"] = 4;
+                task.HandleFlashResponse(otherResp, null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+
+                // Previewing the exact original recipe (recipeIndex 3) clears reconcile lock
+                task.HandleWebRequest("preview", Request("preview", "craft.reconcile.exact"));
+                int exactFid = (int)sent[sent.Count - 1]["callId"];
+                task.HandleFlashResponse(PreviewResponse(exactFid), null);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void PreviewBlockedOnlyByInfrastructure_IsAcceptedAsValidBlockedPreview()
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using (var task = new CraftingTask(() => true, value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => web.Add(JObject.Parse(value)));
+                JObject req = Request("preview", "craft.infra.locked");
+                req["payload"]["category"] = "烹饪";
+                task.HandleWebRequest("preview", req);
+                int fid = (int)sent[sent.Count - 1]["callId"];
+                JObject resp = PreviewResponse(fid);
+                resp["category"] = "烹饪";
+                resp["canCommit"] = false;
+                resp["blockingError"] = "infrastructure_locked";
+                resp.Remove("craftToken");
+                resp.Remove("acceptedPlan");
+                resp["infrastructure"] = new JArray
+                {
+                    new JObject
+                    {
+                        ["name"] = "烹饪用具",
+                        ["appliance"] = "炒锅",
+                        ["required"] = 3,
+                        ["current"] = 1,
+                        ["met"] = false
+                    }
+                };
+                task.HandleFlashResponse(resp, null);
+                Assert.Single(web);
+                Assert.True((bool)web[0]["success"]);
+                Assert.False((bool)web[0]["canCommit"]);
+                Assert.Equal("infrastructure_locked", (string)web[0]["blockingError"]);
+            }
+        }
+
         [Theory]
         [InlineData("commit")]
         [InlineData("preview")]
@@ -1720,6 +1838,116 @@ namespace Launcher.Tests.Tasks
                 + AuthorityLogFormatter.CreateReference("craft.10.1"), flashLog);
             Assert.All(logs,
                 value => Assert.DoesNotContain("craft.10.1", value));
+        }
+
+        [Fact]
+        public void BattleBoxOptIn_ValidatesRequestResponseStorageKindsAndAcceptedPlan()
+        {
+            var sent = new List<JObject>();
+            var posted = new List<JObject>();
+            using (var task = new CraftingTask(
+                () => true,
+                value => { sent.Add(JObject.Parse(value.TrimEnd('\0'))); return true; }))
+            {
+                task.SetPostToWeb(value => posted.Add(JObject.Parse(value)));
+
+                // Snapshot advertises supportsBattleBox, accepts optional boolean battleBoxAccessible and rejects non-boolean
+                task.HandleWebRequest("snapshot", Request("snapshot", "craft.bb.snap.ok"));
+                JObject snapFlashCmd = sent[sent.Count - 1];
+                Assert.True((bool)snapFlashCmd["supportsBattleBox"]);
+                JObject snapOk = SnapshotResponse((int)snapFlashCmd["callId"]);
+                snapOk["battleBoxAccessible"] = true;
+                task.HandleFlashResponse(snapOk, null);
+                Assert.True((bool)posted[posted.Count - 1]["success"]);
+                Assert.True((bool)posted[posted.Count - 1]["battleBoxAccessible"]);
+
+                task.HandleWebRequest("snapshot", Request("snapshot", "craft.bb.snap.bad"));
+                JObject snapBad = SnapshotResponse((int)sent[sent.Count - 1]["callId"]);
+                snapBad["battleBoxAccessible"] = "yes";
+                task.HandleFlashResponse(snapBad, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                // Non-boolean useBattleBox rejected before Flash
+                int sendsBefore = sent.Count;
+                JObject badPreviewReq = Request("preview", "craft.bb.preview.badreq");
+                badPreviewReq["payload"]["useBattleBox"] = "true";
+                task.HandleWebRequest("preview", badPreviewReq);
+                Assert.Equal(sendsBefore, sent.Count);
+                Assert.Equal("invalid_payload", (string)posted[posted.Count - 1]["error"]);
+
+                // Valid opt-in preview forwards useBattleBox=true and validates BattleBox storageKinds
+                foreach (string kind in new[] { "battlebox", "bag_and_battlebox", "drug_and_battlebox", "bag_drug_and_battlebox" })
+                {
+                    JObject req = Request("preview", "craft.bb.preview." + kind);
+                    req["payload"]["craftCount"] = 1;
+                    req["payload"]["useBattleBox"] = true;
+                    task.HandleWebRequest("preview", req);
+                    JObject flashCmd = sent[sent.Count - 1];
+                    Assert.True((bool)flashCmd["useBattleBox"]);
+
+                    JObject preview = RoutedPreviewResponse((int)flashCmd["callId"], kind, "bag", "insert", 3, true);
+                    preview["useBattleBox"] = true;
+                    preview["acceptedPlan"]["useBattleBox"] = true;
+                    task.HandleFlashResponse(preview, null);
+                    JObject previewPosted = posted[posted.Count - 1];
+                    Assert.True((bool)previewPosted["success"]);
+                    Assert.True((bool)previewPosted["useBattleBox"]);
+                    Assert.Equal(kind, (string)previewPosted["materials"][0]["storageKind"]);
+
+                    task.HandleWebRequest("commit", Request("commit", "craft.bb.commit." + kind));
+                    int commitFid = (int)sent[sent.Count - 1]["callId"];
+                    task.HandleFlashResponse(CommitResponseFromPreview(commitFid, preview), null);
+                    Assert.True((bool)posted[posted.Count - 1]["success"]);
+                    Assert.True((bool)posted[posted.Count - 1]["acceptedPlan"]["useBattleBox"]);
+                }
+
+                // Output delivery must NEVER accept battlebox storageKind
+                JObject badDeliveryReq = Request("preview", "craft.bb.delivery.bad");
+                badDeliveryReq["payload"]["craftCount"] = 1;
+                badDeliveryReq["payload"]["useBattleBox"] = true;
+                task.HandleWebRequest("preview", badDeliveryReq);
+                JObject badDelivery = RoutedPreviewResponse((int)sent[sent.Count - 1]["callId"], "battlebox", "battlebox", "insert", 0, true);
+                badDelivery["useBattleBox"] = true;
+                badDelivery["acceptedPlan"]["useBattleBox"] = true;
+                task.HandleFlashResponse(badDelivery, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                // Drift between top-level useBattleBox and acceptedPlan.useBattleBox rejected
+                JObject driftReq = Request("preview", "craft.bb.drift");
+                driftReq["payload"]["craftCount"] = 1;
+                driftReq["payload"]["useBattleBox"] = true;
+                task.HandleWebRequest("preview", driftReq);
+                JObject drift = RoutedPreviewResponse((int)sent[sent.Count - 1]["callId"], "battlebox", "bag", "insert", 3, true);
+                drift["useBattleBox"] = true;
+                task.HandleFlashResponse(drift, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                // BattleBox storageKind rejected when useBattleBox is omitted
+                JObject optOutReq = Request("preview", "craft.bb.optout.route");
+                optOutReq["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", optOutReq);
+                JObject optOutResp = RoutedPreviewResponse((int)sent[sent.Count - 1]["callId"], "battlebox", "bag", "insert", 3, true);
+                task.HandleFlashResponse(optOutResp, null);
+                Assert.Equal("malformed_response", (string)posted[posted.Count - 1]["error"]);
+
+                // Reserved drug-slot affinity insert delivery accepted
+                JObject drugInsReq = Request("preview", "craft.drug.insert");
+                drugInsReq["payload"]["craftCount"] = 1;
+                task.HandleWebRequest("preview", drugInsReq);
+                JObject drugInsResp = RoutedPreviewResponse((int)sent[sent.Count - 1]["callId"], "bag", "drug", "insert", 2, true);
+                task.HandleFlashResponse(drugInsResp, null);
+                Assert.True((bool)posted[posted.Count - 1]["success"]);
+                Assert.Equal("drug", (string)posted[posted.Count - 1]["outputDelivery"]["storageKind"]);
+                Assert.Equal("insert", (string)posted[posted.Count - 1]["outputDelivery"]["mode"]);
+
+                // Oversized BigInteger craftCount rejected cleanly without throwing
+                int sendsBeforeBig = sent.Count;
+                JObject bigReq = Request("preview", "craft.big.int");
+                bigReq["payload"]["craftCount"] = JToken.Parse("9223372036854775808");
+                task.HandleWebRequest("preview", bigReq);
+                Assert.Equal(sendsBeforeBig, sent.Count);
+                Assert.Equal("invalid_payload", (string)posted[posted.Count - 1]["error"]);
+            }
         }
     }
 }

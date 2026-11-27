@@ -1,4 +1,4 @@
-/** 暂存领取的会话归属：借用现役构筑 exact 会话，或建立 headless 会话（无 view/renderer/manifest）。 */
+/** 暂存领取与独立调制的会话归属：借用现役构筑 exact 会话，或建立 headless 会话（无 view/renderer/manifest）。 */
 (function(root, factory) {
     'use strict';
     var session = typeof module !== 'undefined' && module.exports
@@ -40,6 +40,10 @@ function(SessionModule, ItemUseModule, Transport) {
         var _session = null;
         var _itemUse = null;
         var _waiters = [];
+        var _sessionWaiters = [];
+        var _refreshWaiters = [];
+        var _headlessSnapshotStale = false;
+        var _headlessRefreshing = false;
         var _destroyed = false;
 
         function panelInstanceId() {
@@ -81,10 +85,62 @@ function(SessionModule, ItemUseModule, Transport) {
                 setTimer:options.setTimer,
                 clearTimer:options.clearTimer,
                 onState:function(state, reason) { status('item_use_' + reason, state); },
-                onSettled:function() {},
+                onSettled:function(response, committed) {
+                    if (committed) {
+                        _headlessSnapshotStale = true;
+                        refreshHeadlessSnapshot();
+                    }
+                },
                 onInbox:function() {},
                 onCooldown:function() {}
             });
+        }
+        function flushRefreshWaiters(ok) {
+            var waiters = _refreshWaiters;
+            _refreshWaiters = [];
+            for (var index = 0; index < waiters.length; index++) {
+                try { waiters[index](ok); } catch (_) {}
+            }
+        }
+        function refreshHeadlessSnapshot(callback) {
+            if (typeof callback === 'function') _refreshWaiters.push(callback);
+            if (_destroyed || !_session) { flushRefreshWaiters(false); return false; }
+            if (!_headlessSnapshotStale && !_headlessRefreshing) {
+                flushRefreshWaiters(true);
+                return true;
+            }
+            if (_headlessRefreshing) return true;
+            if (_session.getState() !== 'idle') {
+                flushRefreshWaiters(false);
+                return false;
+            }
+            _headlessRefreshing = true;
+            var callId = _session.refreshSnapshot({}, function(_, accepted) {
+                _headlessRefreshing = false;
+                if (_destroyed) return;
+                if (accepted === true) _headlessSnapshotStale = false;
+                flushRefreshWaiters(accepted === true);
+            });
+            if (!callId) {
+                _headlessRefreshing = false;
+                flushRefreshWaiters(false);
+                return false;
+            }
+            return callId;
+        }
+        function isUnknownFinalize() {
+            var dbg = _session && typeof _session.debugState === 'function' ? _session.debugState() : null;
+            return !!(dbg && dbg.state === 'needs_reconcile' && dbg.unknown && dbg.unknown.kind === 'finalize');
+        }
+        function recoverOpeningIfIdle() {
+            var dbg = _session && typeof _session.debugState === 'function' ? _session.debugState() : null;
+            if (!dbg || dbg.state !== 'opening_reconcile' || dbg.openingCallId) return true;
+            var callId = _session.recoverOpen(function(_, accepted) {
+                if (_destroyed) return;
+                flushOpenWaiters(accepted === true);
+            });
+            if (!callId) flushOpenWaiters(false);
+            return !!callId;
         }
         function itemUseController() {
             return _handle && _handle.itemUse ? _handle.itemUse : _itemUse;
@@ -101,6 +157,26 @@ function(SessionModule, ItemUseModule, Transport) {
             for (var index = 0; index < waiters.length; index++) {
                 try { waiters[index](handle); } catch (_) {}
             }
+        }
+        function flushSessionWaiters(handle) {
+            var waiters = _sessionWaiters;
+            _sessionWaiters = [];
+            for (var index = 0; index < waiters.length; index++) {
+                try { waiters[index](handle); } catch (_) {}
+            }
+        }
+        function headlessSessionHandle() {
+            var generation = _session && _session.getSessionGeneration();
+            var pid = panelInstanceId();
+            if (!generation || !pid) return null;
+            return {session:_session, generation:generation,
+                panelInstanceId:pid, headless:true};
+        }
+        function flushOpenWaiters(accepted) {
+            var hasItemWaiters = _waiters.length > 0;
+            var hasSessionWaiters = _sessionWaiters.length > 0;
+            flushWaiters(accepted && hasItemWaiters ? headlessHandle() : null);
+            flushSessionWaiters(accepted && hasSessionWaiters ? headlessSessionHandle() : null);
         }
         function headlessHandle() {
             var generation = _session.getSessionGeneration();
@@ -122,6 +198,14 @@ function(SessionModule, ItemUseModule, Transport) {
                 headless:false};
             return _handle;
         }
+        function openHeadlessSession() {
+            var callId = _session.open(panelInstanceId(), function(_, accepted) {
+                if (_destroyed) return;
+                flushOpenWaiters(accepted === true);
+            });
+            if (!callId) flushOpenWaiters(false);
+            return callId || true;
+        }
         function acquireHeadless(callback) {
             ensureHeadless();
             var state = _session.getState();
@@ -132,15 +216,70 @@ function(SessionModule, ItemUseModule, Transport) {
             }
             if (state === 'closed') {
                 _waiters.push(callback);
-                var callId = _session.open(panelInstanceId(), function(_, accepted) {
-                    if (_destroyed) return;
-                    flushWaiters(accepted === true ? headlessHandle() : null);
-                });
-                if (!callId) flushWaiters(null);
-                return callId || true;
+                return openHeadlessSession();
             }
             if (state === 'opening' || state === 'opening_reconcile') {
                 _waiters.push(callback);
+                if (state === 'opening_reconcile') return recoverOpeningIfIdle();
+                return true;
+            }
+            callback(null);
+            return null;
+        }
+        function acquireSession(callback) {
+            callback = typeof callback === 'function' ? callback : function() {};
+            if (_destroyed) { callback(null); return null; }
+            var owner = typeof options.getBuild === 'function'
+                ? options.getBuild() : null;
+            if (owner && typeof owner.sessionAuthority === 'function') {
+                var authority = owner.sessionAuthority();
+                if (authority && authority.session && authority.generation) {
+                    var borrowed = {session:authority.session,
+                        mutations:authority.mutations || null,
+                        generation:authority.generation,
+                        panelInstanceId:authority.panelInstanceId || panelInstanceId(),
+                        headless:false};
+                    callback(borrowed);
+                    return borrowed;
+                }
+                if (typeof owner.whenItemUseReady === 'function') {
+                    _sessionWaiters.push(callback);
+                    if (_sessionWaiters.length === 1) {
+                        owner.whenItemUseReady(function() {
+                            if (_destroyed) return;
+                            var next = owner.sessionAuthority();
+                            flushSessionWaiters(next && next.session && next.generation
+                                ? {session:next.session, mutations:next.mutations || null,
+                                    generation:next.generation,
+                                    panelInstanceId:next.panelInstanceId || panelInstanceId(),
+                                    headless:false} : null);
+                        });
+                    }
+                    return true;
+                }
+                callback(null);
+                return null;
+            }
+            ensureHeadless();
+            var state = _session.getState();
+            if (state === 'idle' || state === 'flush_failed') {
+                if (state === 'idle' && (_headlessSnapshotStale || _headlessRefreshing)) {
+                    return refreshHeadlessSnapshot(function(ok) {
+                        if (_destroyed) return;
+                        callback(ok ? headlessSessionHandle() : null);
+                    });
+                }
+                var handle = headlessSessionHandle();
+                callback(handle);
+                return handle;
+            }
+            if (state === 'closed' || state === 'finalized') {
+                _sessionWaiters.push(callback);
+                return openHeadlessSession();
+            }
+            if (state === 'opening' || state === 'opening_reconcile') {
+                _sessionWaiters.push(callback);
+                if (state === 'opening_reconcile') return recoverOpeningIfIdle();
                 return true;
             }
             callback(null);
@@ -192,7 +331,8 @@ function(SessionModule, ItemUseModule, Transport) {
             if (!_session) return true;
             var state = _session.getState();
             return state === 'idle' || state === 'flush_failed'
-                || state === 'finalized' || state === 'closed';
+                || state === 'finalized' || state === 'closed'
+                || isUnknownFinalize();
         }
         function finalize(callback) {
             callback = typeof callback === 'function' ? callback : function() {};
@@ -213,6 +353,16 @@ function(SessionModule, ItemUseModule, Transport) {
                 callback(true);
                 return true;
             }
+            if (state === 'idle' && (_headlessSnapshotStale || _headlessRefreshing)) {
+                return refreshHeadlessSnapshot(function(ok) {
+                    if (_destroyed) return;
+                    if (!ok) { callback(false); return; }
+                    var retryCall = _session.finalize(function(_, accepted) {
+                        callback(accepted === true);
+                    });
+                    if (!retryCall) callback(false);
+                });
+            }
             var callId = _session.finalize(function(_, accepted) {
                 callback(accepted === true);
             });
@@ -227,6 +377,10 @@ function(SessionModule, ItemUseModule, Transport) {
             _destroyed = true;
             release();
             flushWaiters(null);
+            flushSessionWaiters(null);
+            flushRefreshWaiters(false);
+            _headlessSnapshotStale = false;
+            _headlessRefreshing = false;
             if (_itemUse) _itemUse.destroy();
             if (_session) _session.destroy();
             _itemUse = null;
@@ -235,6 +389,7 @@ function(SessionModule, ItemUseModule, Transport) {
         }
         return {
             acquire:acquire,
+            acquireSession:acquireSession,
             release:release,
             canClose:canClose,
             finalize:finalize,
@@ -242,8 +397,10 @@ function(SessionModule, ItemUseModule, Transport) {
             debugState:function() {
                 return {
                     mode:_mode || null,
-                    generation:_handle ? _handle.generation : null,
+                    generation:_handle ? _handle.generation
+                        : (_session ? _session.getSessionGeneration() : null),
                     waiters:_waiters.length,
+                    sessionWaiters:_sessionWaiters.length,
                     session:_session ? _session.debugState() : null,
                     itemUse:itemUseController()
                         ? itemUseController().debugState() : null
@@ -308,6 +465,20 @@ function(SessionModule, ItemUseModule, Transport) {
             }
             this._itemUseReadyWaiters.push(callback);
             return true;
+        };
+        prototype.sessionAuthority = function() {
+            var generation = this._session.getSessionGeneration();
+            var state = this._session.getState();
+            if (!this._panelInstanceId || !generation
+                    || (state !== 'idle' && state !== 'flush_failed')) {
+                return null;
+            }
+            return {
+                session:this._session,
+                mutations:this._mutations || null,
+                panelInstanceId:this._panelInstanceId,
+                generation:generation
+            };
         };
         prototype.holdItemUse = function() {
             this._itemUseHolds++;

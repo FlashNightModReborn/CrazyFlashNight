@@ -183,7 +183,58 @@
     font:10px/15px "Microsoft YaHei",sans-serif;
     white-space:nowrap; text-overflow:ellipsis; pointer-events:none;
 }
+.npcshop-selection-marker[hidden] { display:none; }
 .npcshop-catalog-card.selected .npcshop-selection-marker,.npcshop-owned-card.selected .npcshop-selection-marker { color:var(--npcshop-light,var(--wb-semantic-warning)); }
+.npcshop-intent-remove {
+    position:absolute; right:3px; top:3px; z-index:4;
+    display:grid; place-items:center; width:18px; height:18px; padding:0;
+    color:var(--wb-role-reject); background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
+    border:1px solid color-mix(in srgb,var(--wb-role-reject) 48%,transparent);
+    font:700 12px/1 Consolas,monospace; cursor:pointer;
+}
+.npcshop-intent-remove[hidden] { display:none; }
+.npcshop-intent-remove:hover { color:var(--wb-text); background:var(--wb-role-reject); border-color:var(--wb-role-reject); }
+.item-grid-compact .npcshop-intent-remove { opacity:0; pointer-events:none; transition:opacity var(--wb-motion-micro) var(--wb-ease-standard); }
+.item-grid-compact .selected:hover .npcshop-intent-remove,
+.item-grid-compact .selected:focus-within .npcshop-intent-remove { opacity:1; pointer-events:auto; }
+.npcshop-same-name-btn {
+    position:absolute; left:4px; bottom:3px; z-index:3;
+    padding:1px 5px; opacity:0; pointer-events:none;
+    color:var(--npcshop-light,var(--wb-semantic-warning));
+    background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
+    border:1px solid color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 45%,transparent);
+    font:600 10px/14px "Microsoft YaHei",sans-serif; cursor:pointer;
+    transition:opacity var(--wb-motion-micro) var(--wb-ease-standard);
+}
+.npcshop-owned-card:hover .npcshop-same-name-btn,
+.npcshop-owned-card:focus-within .npcshop-same-name-btn { opacity:1; pointer-events:auto; }
+.npcshop-same-name-btn:hover { color:var(--wb-bg); background:var(--npcshop-accent,var(--wb-semantic-warning)); }
+.item-grid-compact .npcshop-same-name-btn { display:none; }
+.npcshop-live-trade-bar {
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    min-height:42px; padding:5px 12px; box-sizing:border-box;
+    border-top:1px solid color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-warning)) 26%,var(--wb-line));
+    background:color-mix(in srgb,var(--npcshop-dark,var(--wb-bg)) 88%,var(--wb-bg));
+}
+.npcshop-live-trade-summary {
+    display:flex; align-items:center; flex-wrap:wrap; gap:10px; min-width:0;
+    font:11px/1.3 "Microsoft YaHei",sans-serif; color:var(--wb-text);
+}
+.npcshop-live-hint { color:var(--wb-muted); font-size:11px; }
+.npcshop-live-buy { color:var(--wb-semantic-warning); font-family:Consolas,"Microsoft YaHei",monospace; }
+.npcshop-live-sell { color:var(--wb-semantic-success); font-family:Consolas,"Microsoft YaHei",monospace; }
+.npcshop-live-net { font:700 12px/1.2 Consolas,"Microsoft YaHei",monospace; color:var(--npcshop-light,var(--wb-semantic-warning)); }
+.npcshop-live-net.negative { color:var(--wb-semantic-warning); }
+.npcshop-live-net.positive { color:var(--wb-semantic-success); }
+.npcshop-live-trade-actions { display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+.npcshop-bar-clear-btn[hidden] { display:none; }
+.npcshop-bar-commit-btn:not(:disabled) {
+    color:var(--wb-bg);
+    border-color:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 72%,var(--wb-text));
+    background:var(--npcshop-accent,var(--wb-semantic-warning));
+    font-weight:700;
+}
+.npcshop-bar-commit-btn:disabled { opacity:.35; cursor:not-allowed; }
 .npcshop-owned-grid {
     flex:1 1 auto; min-height:0; padding:7px; overflow-y:auto; overflow-x:hidden;
     display:grid; grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); align-content:start; gap:5px;
@@ -236,6 +287,8 @@
 .npcshop-settlement-header h2 { margin:0; font-size:18px; }
 .npcshop-settlement-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
 .npcshop-settlement-columns { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; padding:9px 0; }
+.npcshop-settlement-columns.is-single-column { grid-template-columns:1fr; }
+.npcshop-settlement-columns > section[hidden] { display:none; }
 .npcshop-settlement-columns > section { display:grid; grid-template-rows:auto minmax(0,1fr); min-height:0; border:1px solid var(--wb-line); background:var(--wb-bg); }
 .npcshop-settlement-columns h3 { margin:0; padding:6px 9px; color:var(--wb-muted); border-bottom:1px solid var(--wb-line); font-size:11px; }
 .npcshop-settlement-list { min-height:0; padding:6px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track); }
@@ -270,10 +323,9 @@
 .npcshop-settlement-summary [data-trade-error].error { color:var(--wb-role-reject); }
 .npcshop-settlement-summary > button { min-width:104px; min-height:40px; padding:4px 13px; }
 
-/* Explicit nested-page exception: this organizer is anchored inside settlement,
-   so its local inset/z-index/display contract must not be promoted to shell pages. */
+/* Space organizer can open directly from main header or above settlement (z=55). */
 .npcshop-space-page {
-    position:absolute; z-index:4; inset:0; display:none; grid-template-rows:auto minmax(0,1fr);
+    position:absolute; z-index:60; inset:0; display:none; grid-template-rows:auto minmax(0,1fr);
     min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     background:linear-gradient(135deg,
         color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-warning)) 5%,var(--wb-bg)),

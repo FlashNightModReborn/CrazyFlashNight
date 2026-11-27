@@ -27,6 +27,8 @@ namespace CF7Launcher.Tasks
         {
             public string WebCmd;
             public string PanelInstanceId;
+            public int? SlotIndex;
+            public JObject LevelQuote;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -226,8 +228,16 @@ namespace CF7Launcher.Tasks
                     action = "petWithdrawWeapon";
                     break;
                 case "level_up":
+                {
+                    string levelUpErr = ValidateLevelUpPayload(parsed);
+                    if (levelUpErr != null)
+                    {
+                        RespondError(webCallId, cmd, requestedInstance, levelUpErr);
+                        return;
+                    }
                     action = "petLevelUp";
                     break;
+                }
                 case "delete":
                     action = "petDelete";
                     break;
@@ -256,7 +266,10 @@ namespace CF7Launcher.Tasks
                     new PendingRequest
                     {
                         WebCmd = cmd,
-                        PanelInstanceId = requestedInstance
+                        PanelInstanceId = requestedInstance,
+                        SlotIndex = cmd == "level_up" && TryReadLong(parsed["slotIndex"], 0, 1000, out long reqSlot)
+                            ? (int?)reqSlot : null,
+                        LevelQuote = cmd == "level_up" ? (JObject)parsed["levelQuote"].DeepClone() : null
                     },
                     out fid)) return;
                 else
@@ -304,6 +317,29 @@ namespace CF7Launcher.Tasks
                 return;
             }
             PendingRequest entry = pendingCall.Context;
+
+            if (entry.WebCmd == "level_up")
+            {
+                JToken successToken = msg["success"];
+                bool hasBoolSuccess = successToken != null && successToken.Type == JTokenType.Boolean;
+                if (!hasBoolSuccess || (successToken.Value<bool>() && !IsValidLevelUpSuccess(msg, entry)))
+                {
+                    var malformed = new JObject
+                    {
+                        ["type"] = "panel_resp",
+                        ["panel"] = "pets",
+                        ["cmd"] = entry.WebCmd,
+                        ["callId"] = pendingCall.WebCallId,
+                        ["panelInstanceId"] = entry.PanelInstanceId,
+                        ["success"] = false,
+                        ["error"] = "malformed_response",
+                        ["requiresReconcile"] = true
+                    };
+                    PostToWeb(malformed.ToString(Formatting.None));
+                    if (respond != null) respond(null);
+                    return;
+                }
+            }
 
             msg.Remove("task");
             msg["type"] = "panel_resp";
@@ -540,6 +576,70 @@ namespace CF7Launcher.Tasks
         private static bool IsOpaque(string value)
         {
             return !string.IsNullOrEmpty(value) && ValidOpaque.IsMatch(value);
+        }
+
+        private static bool TryReadLong(JToken token, long min, long max, out long value)
+        {
+            value = 0;
+            if (token == null || token.Type != JTokenType.Integer) return false;
+            try { value = token.ToObject<long>(); }
+            catch { return false; }
+            return value >= min && value <= max;
+        }
+
+        private static bool IsValidLevelUpSuccess(JObject msg, PendingRequest entry)
+        {
+            if (msg == null || entry == null) return false;
+            if (!TryReadLong(msg["slotIndex"], 0, 1000, out long respSlot)) return false;
+            if (entry.SlotIndex.HasValue && respSlot != entry.SlotIndex.Value) return false;
+            JObject quote = entry.LevelQuote;
+            return quote != null && msg["levelUpToken"]?.Type == JTokenType.String
+                && string.Equals((string)msg["levelUpToken"], (string)quote["token"], StringComparison.Ordinal)
+                && TryReadLong(msg["oldLevel"], 0, 1000, out long oldLevel) && oldLevel == (long)quote["fromLevel"]
+                && TryReadLong(msg["newLevel"], 1, 1000, out long newLevel) && newLevel == (long)quote["toLevel"]
+                && TryReadLong(msg["levelsGained"], 1, 1000, out long gained) && gained == newLevel - oldLevel
+                && TryReadLong(msg["stoneCost"], 1, 100000000, out long cost) && cost == (long)quote["stoneCost"];
+        }
+
+        private static string ValidateLevelUpPayload(JObject parsed)
+        {
+            if (parsed == null) return "invalid_slot";
+            if (!TryReadLong(parsed["slotIndex"], 0, 1000, out _))
+                return "invalid_slot";
+
+            JToken countToken = parsed["count"];
+            JToken targetToken = parsed["targetLevel"];
+            JToken modeToken = parsed["mode"];
+            bool hasCount = countToken != null && countToken.Type != JTokenType.Null;
+            bool hasTarget = targetToken != null && targetToken.Type != JTokenType.Null;
+            bool hasMode = modeToken != null && modeToken.Type != JTokenType.Null;
+            int selectorCount = (hasCount ? 1 : 0) + (hasTarget ? 1 : 0) + (hasMode ? 1 : 0);
+            if (selectorCount > 1)
+                return "invalid_level_up_request";
+
+            if (hasCount)
+            {
+                if (!TryReadLong(countToken, 1, 1000, out _)) return "invalid_count";
+            }
+            else if (hasTarget)
+            {
+                if (!TryReadLong(targetToken, 2, 1000, out _)) return "invalid_target_level";
+            }
+            else if (hasMode)
+            {
+                if (modeToken.Type != JTokenType.String || modeToken.Value<string>() != "max")
+                    return "invalid_level_up_mode";
+            }
+
+            JObject quote = parsed["levelQuote"] as JObject;
+            if (quote == null || quote["token"]?.Type != JTokenType.String || !IsOpaque((string)quote["token"])
+                || !TryReadLong(quote["fromLevel"], 0, 999, out long fromLevel)
+                || !TryReadLong(quote["toLevel"], 1, 1000, out long toLevel) || toLevel <= fromLevel
+                || !TryReadLong(quote["stoneCost"], 1, 100000000, out _)
+                || (hasTarget && toLevel != (long)targetToken)
+                || (hasCount && toLevel - fromLevel != (long)countToken)
+                || (selectorCount == 0 && toLevel - fromLevel != 1)) return "stale_level_quote";
+            return null;
         }
     }
 }

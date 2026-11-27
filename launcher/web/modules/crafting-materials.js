@@ -1430,17 +1430,12 @@ var CraftingMaterials = (function() {
             hero.appendChild(copy);
             detailBody.appendChild(hero);
 
-            var summarySection = appendSection('档案摘要', 'crafting-material-summary');
             if (material.sourceSummary) {
+                var summarySection = appendSection('档案摘要', 'crafting-material-summary');
                 var summary = document.createElement('p');
                 summary.className = 'crafting-material-source-summary';
                 summary.textContent = material.sourceSummary;
                 summarySection.appendChild(summary);
-            } else {
-                var noSummary = document.createElement('p');
-                noSummary.className = 'crafting-material-empty-copy';
-                noSummary.textContent = '当前档案暂无摘要。';
-                summarySection.appendChild(noSummary);
             }
             var sourceSection = appendSection(state.protocolVersion === 2
                 ? '已发现来源' : '从哪里获得', 'crafting-material-sources');
@@ -1470,8 +1465,8 @@ var CraftingMaterials = (function() {
                 var noSource = document.createElement('p');
                 noSource.className = 'crafting-material-empty-copy';
                 noSource.textContent = state.protocolVersion === 2
-                    ? '尚未发现可核验的结构化来源。'
-                    : '旧版兼容视图中暂无来源记录。';
+                    ? '尚未发现该材料的获取途径。'
+                    : '旧版视图中暂无来源记录。';
                 sourceSection.appendChild(noSource);
             }
 

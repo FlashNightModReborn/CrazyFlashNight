@@ -168,6 +168,8 @@ function(WorkbenchComponents, CandidateStateModule, ActionViewModule, SlotGridMo
             selectCandidate:function(key) { return host._selectCandidate(key); },
             clearCandidateSelection:function() { return host.clearCandidateSelection(); },
             onCommit:typeof options.onCommit === 'function' ? options.onCommit : noop,
+            resolveSmartSlot:typeof options.resolveSmartSlot === 'function' ? options.resolveSmartSlot : null,
+            onSmartCommit:typeof options.onSmartCommit === 'function' ? options.onSmartCommit : null,
             onTune:typeof options.onTune === 'function' ? options.onTune : noop,
             onUnequip:typeof options.onUnequip === 'function' ? options.onUnequip : noop,
             onReconcile:typeof options.onReconcile === 'function' ? options.onReconcile : noop,

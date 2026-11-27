@@ -11,14 +11,14 @@ var CommunePanel = (function() {
         _veilEl = null, _closeButton = null, _moneyEl = null, _kpointsEl = null;
     var _snapshot = null, _recipes = [], _selectedIndex = -1,
         _selectedRecipe = null, _preview = null, _craftCount = 1;
-    var _busy = false, _previewBusy = false, _generation = 0;
+    var _busy = false, _previewBusy = false, _generation = 0, _previewSeq = 0;
     var _commitFeedback = null;
     var NUMERALS = ['一','二','三','四','五','六','七','八','九','十',
         '十一','十二','十三','十四','十五','十六','十七','十八','十九','二十'];
 
     function mount(shellEl, deps) {
         _host = deps;
-        _generation++;
+        _generation++; _previewSeq++;
         _snapshot = null; _recipes = []; _selectedIndex = -1;
         _selectedRecipe = null; _preview = null;
         _craftCount = 1; _busy = false; _previewBusy = false; _commitFeedback = null;
@@ -28,7 +28,7 @@ var CommunePanel = (function() {
     }
 
     function unmount() {
-        _generation++;
+        _generation++; _previewSeq++;
         releaseTooltipTree(_el);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _preview = null;
@@ -101,6 +101,7 @@ var CommunePanel = (function() {
             if (_selectedRecipe) {
                 var found = findRecipe(_selectedRecipe.recipeIndex);
                 if (!found) {
+                    _previewSeq++; _previewBusy = false;
                     _selectedRecipe = null; _selectedIndex = -1; _preview = null;
                 } else _selectedRecipe = found;
             }
@@ -128,6 +129,7 @@ var CommunePanel = (function() {
         if (_selectedRecipe && _selectedRecipe.recipeIndex === recipe.recipeIndex) {
             deselect(); return;
         }
+        _previewSeq++; _previewBusy = false;
         _selectedIndex = Number(recipeIndex);
         _selectedRecipe = recipe;
         _craftCount = 1; _preview = null; _commitFeedback = null;
@@ -135,6 +137,7 @@ var CommunePanel = (function() {
     }
 
     function deselect() {
+        _previewSeq++; _previewBusy = false;
         _selectedIndex = -1; _selectedRecipe = null;
         _preview = null; _commitFeedback = null;
         renderMinutes(); renderDoc();
@@ -142,12 +145,13 @@ var CommunePanel = (function() {
 
     function requestPreview() {
         if (!_selectedRecipe || _busy) return;
+        var seq = ++_previewSeq;
         _previewBusy = true; renderDoc();
         var generation = _generation;
         var recipeIndex = _selectedIndex, craftCount = _craftCount;
-        _host.request('preview', {category:'公社防具', recipeIndex:recipeIndex,
+        var callId = _host.request('preview', {category:'公社防具', recipeIndex:recipeIndex,
             craftCount:craftCount}, function(response) {
-            if (generation !== _generation || !_el) return;
+            if (generation !== _generation || seq !== _previewSeq || !_el) return;
             _previewBusy = false;
             if (_selectedIndex !== recipeIndex || _craftCount !== craftCount) return;
             if (!response || !response.success) {
@@ -160,6 +164,27 @@ var CommunePanel = (function() {
             }
             renderDoc();
         });
+        if (!callId && seq === _previewSeq) {
+            _previewBusy = false;
+            _preview = null;
+            _commitFeedback = errorMessage('disconnected');
+            renderDoc();
+        }
+    }
+
+    function onBattleBoxChanged() {
+        if (_busy || !_el) return false;
+        _previewSeq++;
+        _commitFeedback = null;
+        if (_selectedRecipe) {
+            if (_preview) _preview = Object.assign({}, _preview, {canCommit:false, craftToken:''});
+            requestPreview();
+        } else {
+            _preview = null;
+            _previewBusy = false;
+            renderDoc();
+        }
+        return true;
     }
 
     function commit() {
@@ -402,7 +427,7 @@ var CommunePanel = (function() {
         var confirm = document.createElement('button');
         confirm.type = 'button';
         confirm.className = 'comm-confirm';
-        confirm.textContent = _busy ? '投产中…' : '投产（确认合成）';
+        confirm.textContent = _busy ? '投产中…' : _previewBusy ? '核算中…' : '投产（确认合成）';
         var committable = !!_preview && _preview.canCommit && !_busy && !_previewBusy;
         confirm.disabled = !committable;
         if (!committable) {
@@ -602,6 +627,8 @@ var CommunePanel = (function() {
         mount:mount,
         unmount:unmount,
         refresh:refresh,
+        onBattleBoxChanged:onBattleBoxChanged,
+        isCommitting:function() { return _busy; },
         isBusy:function() { return _busy || _previewBusy; },
         debugState:function() { return {
             selectedIndex:_selectedIndex,
