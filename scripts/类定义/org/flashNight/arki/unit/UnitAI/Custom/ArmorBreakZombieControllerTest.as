@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieController;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
 
 class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieControllerTest {
     private static var passed:Number;
@@ -18,6 +19,8 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieControllerTest {
         failed = 0;
         var oldWorld:MovieClip = _root.gameworld;
         var oldEffect:Function = _root.效果;
+        var rng:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
+        var oldRandomState:Number = rng.captureState();
         var world:MovieClip = _root.createEmptyMovieClip("__armorBreakTestWorld", _root.getNextHighestDepth());
         _root.gameworld = world;
         TargetCacheManager.initialize();
@@ -40,6 +43,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieControllerTest {
             this.__testFrameLabel = label;
         };
 
+        rng.restoreState(0);
         check(ArmorBreakZombieController.tryIntercept(target) && target.__armorBreakState.active === true,
             "lethal hit enters armor break");
         check(effects.length == 1 && effects[0].kind == "兽化碎裂烟雾" && effects[0].force === true,
@@ -69,13 +73,46 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieControllerTest {
             return [near];
         };
         ArmorBreakZombieController.healAllies(target);
-        TargetCacheManager.findAlliesInCircle2D = oldCircle;
         check(circleOk, "armor healing queries a centered 2D circle with radius 180");
         check(near.hp == 2500 && outside.hp == 1, "armor healing applies 2000 HP only to injured allies within the circle");
+
+        var bloody:MovieClip = world.createEmptyMovieClip("bloody", world.getNextHighestDepth());
+        bloody.兵种 = ArmorBreakZombieController.KIND;
+        bloody.是否为敌人 = true;
+        bloody.单位编号 = 71;
+        bloody.名字 = "兽化改造僵尸";
+        bloody.hp = 0;
+        bloody.hp满血值 = 2000;
+        bloody._x = 123;
+        bloody._y = 45;
+        bloody._xscale = -100;
+        bloody.Z轴坐标 = 45;
+        bloody.gotoAndStop = function(label:String):Void {
+            this.__testFrameLabel = label;
+        };
+        near.hp = 500;
+        near.hp满血值 = 6000;
+        circleOk = false;
+        rng.restoreState(1);
+        var bloodyIntercepted:Boolean = ArmorBreakZombieController.tryIntercept(bloody);
+        TargetCacheManager.findAlliesInCircle2D = oldCircle;
+        check(!bloodyIntercepted && bloody.__armorBreakUsed === true && bloody.__armorBreakState == null,
+            "the other half of lethal hits continues the normal bloody death flow");
+        check(effects.length == 2 && effects[1].kind == "兽化碎裂烟雾" && effects[1].force === true
+                && effects[1].x == 123 && effects[1].y == 45 && effects[1].scale == -100,
+            "bloody death emits the same smoke at animation entry");
+        check(bloody.hp == 0 && bloody.__testFrameLabel == undefined,
+            "bloody death does not enter the armor break timeline");
+        check(circleOk, "bloody death healing uses the same centered 180-radius circle");
+        check(near.hp == 4500 && outside.hp == 1,
+            "bloody death healing applies twice the armor healing amount");
+        check(!ArmorBreakZombieController.tryIntercept(bloody) && effects.length == 2 && near.hp == 4500,
+            "repeated bloody death notifications do not reroll smoke or healing");
 
         trace("=== ArmorBreakZombieControllerTest result: passed=" + passed + " failed=" + failed + " ===");
         world.removeMovieClip();
         _root.gameworld = oldWorld;
         _root.效果 = oldEffect;
+        rng.restoreState(oldRandomState);
     }
 }

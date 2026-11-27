@@ -20,9 +20,9 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\unit\UnitAI\Custom\ArmorBreakZombieController.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^=== ArmorBreakZombieControllerTest result: passed=8 failed=0 ===\r?$'
+        '(?m)^=== ArmorBreakZombieControllerTest result: passed=14 failed=0 ===\r?$'
     )
-    SuccessSummary = 'ArmorBreakZombieControllerTest 8/8 assertions'
+    SuccessSummary = 'ArmorBreakZombieControllerTest 14/14 assertions'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
