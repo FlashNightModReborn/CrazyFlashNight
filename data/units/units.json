@@ -8041,5 +8041,31 @@
       "melee": null
     },
     "key": "cf2.大机器人.坦克形态"
+  },
+  {
+    "id": 484,
+    "spritename": "主角-男",
+    "level": 60,
+    "name": "Pig",
+    "is_hostile": false,
+    "height": 200,
+    "NPC": true,
+    "data": {
+      "primary": "M134",
+      "secondary": "Mossberg500",
+      "secondary2": "Mossberg500",
+      "melee": null,
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": null,
+      "head": "Pig头-NPC",
+      "body": "Pig上装-NPC",
+      "leg": "Pig下装-NPC",
+      "hand": "Pig手-NPC",
+      "foot": "Pig脚-NPC",
+      "neck": "BPK战队右前锋项链",
+      "gender": "男"
+    },
+    "key": "联合军.Pig.地铁站NPC"
   }
 ]
