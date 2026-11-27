@@ -97,12 +97,29 @@ class org.flashNight.neur.Server.test.AgentHarnessServiceTest {
             check(selected.length==1 && selected[0]=="receiver_probe","mode receiver callback is bound to current actor");
             selected.length=0;
             modeHero.按键控制攻击模式=_root.主角函数.按键控制攻击模式;
+            // 键3 辅助函数与 按键控制攻击模式 同源显式赋值（空 MovieClip 无 主角函数 原型链）
+            modeHero.键3攻击模式判定=_root.主角函数.键3攻击模式判定;
+            modeHero.键3短按切换=_root.主角函数.键3短按切换;
+            modeHero.键3长按切换=_root.主角函数.键3长按切换;
+            modeHero.手枪={}; // 键3 已改边沿+时长判定（2026-11-27）：短按回落到单持手枪模式
             for(var modeIndex:Number=0;modeIndex<5;modeIndex++) _root["键"+(modeIndex+1)]=241+modeIndex;
             for(modeIndex=0;modeIndex<5;modeIndex++) {
                 AgentHarnessService.resetVirtualInput();
-                _root.gameCommands["agentHarnessCmd"]({sub:"world_act",requestId:"mode"+modeIndex,
-                    act:"tap_key",key:String(241+modeIndex),durationFrames:5});
-                modeHero.按键控制攻击模式();
+                if (modeIndex==2) {
+                    // 键3 边沿+时长判定：先推进帧数再 tap（虚拟按键过期帧按 tap 时刻计算），
+                    // 按下帧登记（不动作），松开边沿触发短按 → 手枪模式
+                    _root.帧计时器.当前帧数 = 200;
+                    _root.gameCommands["agentHarnessCmd"]({sub:"world_act",requestId:"mode"+modeIndex,
+                        act:"tap_key",key:String(241+modeIndex),durationFrames:5});
+                    modeHero.按键控制攻击模式();
+                    AgentHarnessService.resetVirtualInput();
+                    _root.帧计时器.当前帧数 = 205;
+                    modeHero.按键控制攻击模式();
+                } else {
+                    _root.gameCommands["agentHarnessCmd"]({sub:"world_act",requestId:"mode"+modeIndex,
+                        act:"tap_key",key:String(241+modeIndex),durationFrames:5});
+                    modeHero.按键控制攻击模式();
+                }
                 check(selected.length==modeIndex+1 && selected[modeIndex]==modes[modeIndex],"virtual weapon key uses authored mode consumer "+modeIndex);
             }
             AgentHarnessService.resetVirtualInput();

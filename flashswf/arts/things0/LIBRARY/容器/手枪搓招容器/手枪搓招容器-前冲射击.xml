@@ -25,7 +25,7 @@
               <Actionscript>
                 <script><![CDATA[手枪射击许可 = false;
 手枪2射击许可 = false;
-if (_parent.手枪属性.power)
+if (_parent.手枪属性.power && _parent.__手枪搓招启用枪1)
 {
 	手枪射击许可 = true;
 	射击速度 = _parent.手枪属性.interval;
@@ -78,7 +78,7 @@ if (_parent.手枪属性.power)
 }
 
 
-if (_parent.手枪2属性.power)
+if (_parent.手枪2属性.power && _parent.__手枪搓招启用枪2)
 {
 	手枪2射击许可 = true;
 	射击速度_2 = _parent.手枪2属性.interval;

@@ -52,6 +52,18 @@ _root.技能函数.释放条件.兴奋剂 = function():Boolean {
 	return true;
 };
 
+// 追猎射击释放条件（2026-11-27 裁定：不拦双持切单枪状态释放，任意手枪模式均可放）
+_root.技能函数.释放条件.追猎射击 = function():Boolean {
+	if (this.倒地) return false;
+	return true;
+};
+
+// 死亡绽放释放条件（同上裁定）
+_root.技能函数.释放条件.死亡绽放 = function():Boolean {
+	if (this.倒地) return false;
+	return true;
+};
+
 
 
 //释放行为函数
