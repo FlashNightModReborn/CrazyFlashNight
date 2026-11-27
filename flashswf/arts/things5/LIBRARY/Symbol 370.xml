@@ -576,28 +576,6 @@ if (typeof _root.播放音效 == "function") _root.播放音效("Metal Hits" + r
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="治疗烟雾" color="#66FF99">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="1" duration="14" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="翅虎/烟雾" name="治疗烟雾">
-                  <matrix>
-                    <Matrix a="0.7" d="0.7" tx="0" ty="-20"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0.45"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">

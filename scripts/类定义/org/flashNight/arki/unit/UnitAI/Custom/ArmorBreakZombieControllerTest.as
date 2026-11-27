@@ -58,6 +58,21 @@ class org.flashNight.arki.unit.UnitAI.Custom.ArmorBreakZombieControllerTest {
         check(!ArmorBreakZombieController.tryIntercept(other) && effects.length == 1,
             "other enemy kinds do not emit armor break smoke");
 
+        var near:MovieClip = world.createEmptyMovieClip("nearAlly", world.getNextHighestDepth());
+        near._x = 223; near._y = near.Z轴坐标 = 145; near.hp = 500; near.hp满血值 = 3000;
+        var outside:MovieClip = world.createEmptyMovieClip("outsideAlly", world.getNextHighestDepth());
+        outside._x = 273; outside._y = outside.Z轴坐标 = 195; outside.hp = 1; outside.hp满血值 = 3000;
+        var circleOk:Boolean = false;
+        var oldCircle:Function = TargetCacheManager.findAlliesInCircle2D;
+        TargetCacheManager.findAlliesInCircle2D = function(source:Object, interval:Number, cx:Number, cy:Number, radius:Number):Array {
+            circleOk = interval == 5 && cx == 123 && cy == 45 && radius == 180;
+            return [near];
+        };
+        ArmorBreakZombieController.healAllies(target);
+        TargetCacheManager.findAlliesInCircle2D = oldCircle;
+        check(circleOk, "armor healing queries a centered 2D circle with radius 180");
+        check(near.hp == 2500 && outside.hp == 1, "armor healing applies 2000 HP only to injured allies within the circle");
+
         trace("=== ArmorBreakZombieControllerTest result: passed=" + passed + " failed=" + failed + " ===");
         world.removeMovieClip();
         _root.gameworld = oldWorld;
