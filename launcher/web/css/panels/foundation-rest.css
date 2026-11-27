@@ -1001,9 +1001,10 @@
     grid-column: 1 / -1;
 }
 
-/* A兵团 / 军阀行高徽标：只参与当前行内排版。 */
+/* A兵团 / 军阀 / 诺亚行高徽标：只参与当前行内排版。 */
 .ntt-a-legion-mark,
-.ntt-warlord-mark {
+.ntt-warlord-mark,
+.ntt-noah-mark {
     display: inline-block;
     width: 1em;
     height: 1em;
@@ -1012,8 +1013,10 @@
 }
 .ntt-a-legion-mark { color: var(--wb-semantic-faction-a-legion); }
 .ntt-warlord-mark { color: var(--wb-semantic-faction-warlord); }
+.ntt-noah-mark { color: var(--wb-semantic-faction-noah); }
 .ntt-a-legion-mark > svg,
-.ntt-warlord-mark > svg {
+.ntt-warlord-mark > svg,
+.ntt-noah-mark > svg {
     display: block;
     width: 100%;
     height: 100%;

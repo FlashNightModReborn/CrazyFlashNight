@@ -932,6 +932,20 @@ test('阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰
         '外圈内保留黑色底');
 });
 
+test('buildHtml：诺亚文案使用蓝黄徽标与浅蓝下划线', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: '诺亚士兵', color: '#00FFFF' }, { text: 'Noah Clone' }] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    const marks = html.match(/ntt-noah-mark/g) || [];
+    assert.strictEqual(marks.length, 2, '诺亚与 Noah 均带蓝黄徽标');
+    assert(html.indexOf('<span style="color:#7EB6FF"><u>诺亚士兵</u></span>') >= 0,
+        '诺亚文字使用浅蓝下划线');
+    assert(html.indexOf('<span style="color:#7EB6FF"><u>Noah Clone</u></span>') >= 0,
+        'Noah 英文别名使用浅蓝下划线');
+    assert(html.indexOf('ntt-noah-mark') < html.indexOf('诺亚士兵'), '诺亚徽标位于文字前');
+});
+
 test('buildHtml：物品名使用独立居中大字号标题块', () => {
     const html = Doc.buildHtml(FULL_DOC);
     assert(html.indexOf('class="ntt-title"') >= 0, 'document.title 独立标题块');

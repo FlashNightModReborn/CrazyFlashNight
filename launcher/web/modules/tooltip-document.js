@@ -823,6 +823,24 @@
             + '</svg></span>';
     }
 
+    function isNoahRun(run) {
+        return run && run.text && /诺亚|Noah/i.test(run.text);
+    }
+
+    function noahMarkHtml() {
+        return '<span class="ntt-noah-mark" aria-hidden="true">'
+            + '<svg viewBox="0 0 64 64" focusable="false">'
+            + '<circle cx="32" cy="29" r="27" fill="#fff" stroke="#000" stroke-width="1.5"/>'
+            + '<circle cx="32" cy="29" r="23.5" fill="currentColor"/>'
+            + '<path d="M11 35L32 17L34 45L54 21" fill="none" stroke="#FFFF80" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/>'
+            + '<g fill="#fff" stroke="#000" stroke-width="1.2" stroke-linejoin="round">'
+            + '<path d="M5 47H8.5L12.5 55V47H16V62H12.5L8.5 54V62H5Z"/>'
+            + '<path d="M18 47H27V62H18ZM21 50V59H24V50Z" fill-rule="evenodd"/>'
+            + '<path d="M28 62L32 47H35L39 62H35.8L35.2 59H31.8L31.2 62ZM32.4 55.5H34.6L33.5 51.5Z" fill-rule="evenodd"/>'
+            + '<path d="M40 47H43V52H46V47H49V62H46V56H43V62H40Z"/>'
+            + '</g></svg></span>';
+    }
+
     function isZombieRun(run) {
         return run && run.text && run.text.indexOf('丧尸') >= 0
             && typeof run.color === 'string' && run.color.toUpperCase() === '#B22222';
@@ -834,11 +852,13 @@
             var run = runs[i];
             var aLegion = isALegionRun(run);
             var warlord = isWarlordRun(run);
+            var noah = isNoahRun(run);
             if (aLegion) out += aLegionMarkHtml();
             if (warlord) out += warlordMarkHtml();
-            if (warlord || aLegion) {
+            if (noah) out += noahMarkHtml();
+            if (warlord || aLegion || noah) {
                 out += runHtml({ text: run.text,
-                    color: warlord ? '#FFFFE0' : '#FF0000', bold: run.bold,
+                    color: noah ? '#7EB6FF' : warlord ? '#FFFFE0' : '#FF0000', bold: run.bold,
                     italic: run.italic, underline: true,
                     fontSize: run.fontSize, fontFace: run.fontFace });
             } else if (isZombieRun(run)) {

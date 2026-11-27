@@ -950,6 +950,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (string.IsNullOrEmpty(slice.Text)) continue;
                 bool aLegion = NativeTooltipLayout.IsALegionSlice(slice);
                 bool warlord = NativeTooltipLayout.IsWarlordSlice(slice);
+                bool noah = NativeTooltipLayout.IsNoahSlice(slice);
                 int markSize = Math.Max(1, (int)Math.Round(lh));
                 if (aLegion)
                 {
@@ -963,7 +964,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         markSize, markSize), null, false, false, true);
                     cx += markSize + 2;
                 }
-                Color color = warlord ? Color.FromArgb(255, 255, 224)
+                if (noah)
+                {
+                    DrawIcon(g, new Rectangle((int)cx, (int)cy,
+                        markSize, markSize), null, false, false, false, true);
+                    cx += markSize + 2;
+                }
+                Color color = noah ? Color.FromArgb(126, 182, 255)
+                    : warlord ? Color.FromArgb(255, 255, 224)
                     : aLegion ? Color.FromArgb(255, 0, 0)
                     : IsZombieSlice(slice) ? TextDefault
                     : slice.Color.HasValue ? slice.Color.Value : TextDefault;
@@ -976,7 +984,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     }
                 }
                 NativeTooltipLayout.RunFont font = slice.FontOf();
-                if (aLegion || warlord) font.Underline = true;
+                if (aLegion || warlord || noah) font.Underline = true;
                 using (SolidBrush brush = new SolidBrush(Fade(color)))
                 {
                     g.DrawString(slice.PaintOverride ?? slice.Text, FontFor(font),
@@ -999,13 +1007,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// 缩放结果按 icon+尺寸 字典缓存（主/弹夹/插件图标同帧共存，不互相逐出）。
         /// </summary>
         private void DrawIcon(Graphics g, Rectangle rect, string iconName,
-            bool npcPortrait = false, bool aLegionMark = false, bool warlordMark = false)
+            bool npcPortrait = false, bool aLegionMark = false, bool warlordMark = false, bool noahMark = false)
         {
             Bitmap frame = null;
-            if (_icons != null && (aLegionMark || warlordMark || !string.IsNullOrEmpty(iconName)))
+            if (_icons != null && (aLegionMark || warlordMark || noahMark || !string.IsNullOrEmpty(iconName)))
             {
                 LootIconCatalog.LootIconFrames frames;
-                bool found = warlordMark ? _icons.TryGetWarlordMark(out frames)
+                bool found = noahMark ? _icons.TryGetNoahMark(out frames)
+                    : warlordMark ? _icons.TryGetWarlordMark(out frames)
                     : aLegionMark ? _icons.TryGetALegionMark(out frames)
                     : npcPortrait ? _icons.TryGetNpc(iconName, out frames)
                     : _icons.TryGet(iconName, out frames);
@@ -1028,7 +1037,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // intro/pinned 大图标从原始素材按目标尺寸重采样，避免 64px 播放缩略图放大发糊。
             if (rect.Width >= DetailIconMinPx)
             {
-                Bitmap detail = warlordMark ? _icons.TryGetWarlordDetail(rect.Width)
+                Bitmap detail = noahMark ? _icons.TryGetNoahDetail(rect.Width)
+                    : warlordMark ? _icons.TryGetWarlordDetail(rect.Width)
                     : aLegionMark ? _icons.TryGetALegionDetail(rect.Width)
                     : npcPortrait ? _icons.TryGetNpcDetail(iconName, rect.Width)
                     : _icons.TryGetDetail(iconName, rect.Width);
@@ -1039,7 +1049,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 }
             }
 
-            string key = (warlordMark ? "warlord:" : aLegionMark ? "a-legion:"
+            string key = (noahMark ? "noah:" : warlordMark ? "warlord:" : aLegionMark ? "a-legion:"
                 : npcPortrait ? "npc:" : "item:") + iconName
                 + "|" + rect.Width + "x" + rect.Height;
             Bitmap scaled;

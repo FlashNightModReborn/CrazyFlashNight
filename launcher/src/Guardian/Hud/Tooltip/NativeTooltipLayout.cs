@@ -1725,6 +1725,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 if (IsALegionSlice(slice)) width += markWidth;
                 if (IsWarlordSlice(slice)) width += markWidth;
+                if (IsNoahSlice(slice)) width += markWidth;
             }
             return Math.Max(line.IconRect.Right, width);
         }
@@ -1750,6 +1751,17 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         internal static bool IsWarlordSlice(VisualLine.Slice slice)
         {
             return WarlordNamePattern.IsMatch(slice.Text ?? "");
+        }
+
+        private static readonly System.Text.RegularExpressions.Regex NoahNamePattern =
+            new System.Text.RegularExpressions.Regex(
+                @"诺亚|Noah",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        internal static bool IsNoahSlice(VisualLine.Slice slice)
+        {
+            return NoahNamePattern.IsMatch(slice.Text ?? "");
         }
 
 
