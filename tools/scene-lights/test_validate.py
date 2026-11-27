@@ -10,7 +10,7 @@ PRESETS=json.loads((V.ROOT/'data/environment/scene_lights.v1.json').read_text(en
 
 class SceneLightValidationTests(unittest.TestCase):
     def test_live_candidate_references(self):
-        rows=V.validate_tree();self.assertEqual(len(rows),16)
+        rows=V.validate_tree();self.assertEqual(len(rows),18)
         coil_scopes={r['scope'] for r in rows if r['path']=='data/stages/基地房顶/基地.xml' and r['lights']==1}
         self.assertEqual(coil_scopes,{'SubStage 1','SubStage 2'})
         self.assertIn(9,[r['lights'] for r in rows])

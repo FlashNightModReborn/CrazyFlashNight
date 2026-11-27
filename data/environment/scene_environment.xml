@@ -1149,6 +1149,78 @@
             <Point>2190,535</Point>
         </Collision>
         <BGM>The Less I Know The Better</BGM>
+        <Lights>
+            <Light>
+                <Key>school-gate-warning-west-high</Key>
+                <Preset>lamp</Preset>
+                <X>791.1</X>
+                <Y>63.5</Y>
+                <Radius>85</Radius>
+                <Energy>1.25</Energy>
+                <Color>#FF3B30</Color>
+                <Priority>60</Priority>
+            </Light>
+            <Light>
+                <Key>school-gate-warning-west-near-a</Key>
+                <Preset>lamp</Preset>
+                <X>858.9</X>
+                <Y>141.35</Y>
+                <Radius>85</Radius>
+                <Energy>1.25</Energy>
+                <Color>#FF3B30</Color>
+                <Priority>60</Priority>
+            </Light>
+            <Light>
+                <Key>school-gate-warning-west-near-b</Key>
+                <Preset>lamp</Preset>
+                <X>866.1</X>
+                <Y>144.25</Y>
+                <Radius>85</Radius>
+                <Energy>1.25</Energy>
+                <Color>#FF3B30</Color>
+                <Priority>60</Priority>
+            </Light>
+            <Light>
+                <Key>school-gate-warning-west-far</Key>
+                <Preset>lamp</Preset>
+                <X>1018.35</X>
+                <Y>144.25</Y>
+                <Radius>85</Radius>
+                <Energy>1.25</Energy>
+                <Color>#FF3B30</Color>
+                <Priority>60</Priority>
+            </Light>
+            <Light>
+                <Key>school-gate-warning-east-high</Key>
+                <Preset>lamp</Preset>
+                <X>1270.35</X>
+                <Y>63.5</Y>
+                <Radius>85</Radius>
+                <Energy>1.25</Energy>
+                <Color>#FF3B30</Color>
+                <Priority>60</Priority>
+            </Light>
+            <Light>
+                <Key>school-gate-warning-east-near</Key>
+                <Preset>lamp</Preset>
+                <X>1345.35</X>
+                <Y>144.25</Y>
+                <Radius>85</Radius>
+                <Energy>1.25</Energy>
+                <Color>#FF3B30</Color>
+                <Priority>60</Priority>
+            </Light>
+            <Light>
+                <Key>school-gate-warning-east-far</Key>
+                <Preset>lamp</Preset>
+                <X>1497.65</X>
+                <Y>144.25</Y>
+                <Radius>85</Radius>
+                <Energy>1.25</Energy>
+                <Color>#FF3B30</Color>
+                <Priority>60</Priority>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>地图-小马地图</BackgroundURL>
@@ -1274,7 +1346,7 @@
         <Height>740</Height>
         <Horizon>280</Horizon>
         <MaxIllumination>9</MaxIllumination>
-        <MinIllumination>1</MinIllumination>
+        <MinIllumination>2</MinIllumination>
         <BGM>Dialtone</BGM>
         <Lights>
             <Light>
@@ -1283,6 +1355,9 @@
                 <X>240.4</X>
                 <Y>139.3</Y>
                 <Angle>69.6</Angle>
+                <Length>460</Length>
+                <HalfWidth>250</HalfWidth>
+                <Energy>1.3</Energy>
             </Light>
             <Light>
                 <Key>firstline-lamp-right</Key>
@@ -1290,6 +1365,9 @@
                 <X>972.1</X>
                 <Y>148.2</Y>
                 <Angle>110.6</Angle>
+                <Length>460</Length>
+                <HalfWidth>250</HalfWidth>
+                <Energy>1.3</Energy>
             </Light>
         </Lights>
     </Environment>
@@ -1779,6 +1857,28 @@
             <SpeedRate>8</SpeedRate>
         </Skybox>
         <BGM>The Less I Know The Better</BGM>
+        <Lights>
+            <Light>
+                <Key>dormitory-downstairs-street-left</Key>
+                <Preset>street</Preset>
+                <X>390.5</X>
+                <Y>167.9</Y>
+                <Angle>90</Angle>
+                <Length>460</Length>
+                <HalfWidth>250</HalfWidth>
+                <Energy>1.3</Energy>
+            </Light>
+            <Light>
+                <Key>dormitory-downstairs-street-right</Key>
+                <Preset>street</Preset>
+                <X>1018.6</X>
+                <Y>167.9</Y>
+                <Angle>90</Angle>
+                <Length>460</Length>
+                <HalfWidth>250</HalfWidth>
+                <Energy>1.3</Energy>
+            </Light>
+        </Lights>
     </Environment>
     <Environment>
         <BackgroundURL>地图-教学楼内部</BackgroundURL>
