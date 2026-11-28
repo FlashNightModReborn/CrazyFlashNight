@@ -28,6 +28,8 @@
  *      标识里缺这一项时，本工具会用 `speedFactorFromMoveSpeed()` 自动补出来并写回。
  *    - 阶段：按「首次出场关卡」的主线/支线序号反查（`npm run monster-census` 的 first-appearance 通道）。
  *      这是测量项，但**尚未实装进任何关卡的怪没有出场记录**，此时必须人工补 `阶段`。
+ *      **`阶段=0` 是人工标注的「不适用这套面板公式」**（分身、纯演出单位、机制怪等），
+ *      计算与写盘一律跳过；其他不适用的单位也用 0 标注，不要用缺字段或编个假阶段来表达。
  *    存量怪的这两项已有值一律直接沿用，重算数值时不需要重新映射；只有新怪或缺值时才反查、补算。
  *
  * 3) 人工给定类（**只有这四项允许决策**，也是调平衡时唯一该动的旋钮）
@@ -46,8 +48,11 @@
  *    - 高攻低血防系数（J）：工作簿「默认 1，范围 0.5~2。2 代表攻击力明显更高、血防明显更低；0.5 代表血防明显更高、攻击力更低」。
  *                  它同时压低 **HP 与防御**（两处都在分母），所以抬 J 会得到「薄皮高输出」。
  *    - 高防低血系数（L）：工作簿「默认 1，通常 0.2~5，最大 0.1~10。数值越高防御越高、血量越低；视觉和设定上更硬的
- *                  单位应给更高值」。它只压 HP（分母开根号，影响温和），并让**防御反而升高**
- *                  （防御公式里有 `(50+C·D)·L` 与 `30·(L-1)` 正项）。
+ *                  单位应给更高值」。当前口径 `v2` 把它折成两个常量因子（写死在 core/formulas/monsters.ts，
+ *                  **不是用户旋钮**）：防御搬运 `g=L^0.5`、物理等效血量斜率 `m=L^0.05`；HP 用守恒式反解，
+ *                  因此物理等效血量 = 基准 × m，与基础防御无关。高 L 只是物理略硬（L=10 约 +12%）、
+ *                  血量按比例下降——对魔法/真伤纯亏，7:2:1 伤害构成下综合扛伤反而更低。
+ *                  `v1`（旧口径：HP 1/√L、防御 ×L）保留为对照开关，默认不用。
  *    参考区间（`MONSTER_COEFFICIENT_RANGES`，是判断合理性的参考、不是硬边界）：
  *    档次 1~25、成长 0.2~5、高攻低血防 0.5~2、高防低血 0.1~10。
  *    工作簿另有提醒：对拥有暖机、强力 buff、多阶段等显著影响面板的特殊机制单位，「大致面板」这套估法可能不适用。
@@ -63,6 +68,7 @@
  *    - 「血厚、伤害刮」→ 高攻低血防 0.5~1、高防低血 2 以上。
  * 4. 观测类/定义类系数**不要手填**。存量怪的行内已有值直接沿用，**不重测、不重映射** —— 重算数值只动
  *    人工那四项。只有新建怪、动作或元件改过、阶段没有出场记录，或用户明确要求重新测算时，才去跑实测/反查。
+ *    `阶段=0` 的模板直接跳过（不适用公式），不进计算也不进写盘。
  * 5. 用 `preview` 看旧值 → 新值，确认后再 `apply` 写盘；`apply` 结束会自动重读文件校验。
  *
  * ============================ 三、命令 ============================
@@ -82,7 +88,9 @@
  *     --level 20                         preview 里额外算这个等级的实际血量（默认 20）。
  *     --max-level 60                     `根据等级计算值` 的分母上限，与 `_root.最大等级` 一致（默认 60）。
  *     --difficulty 1                     `出生难度` 乘数，非 CF6 关卡等于 `_root.难度等级`（默认 1）。
- *     --hp-round 100                     HP 取整步长；100 = 取整百（现网这批杂兵的惯例），0 = 四舍五入到整数。
+ *     --hp-round 100                     HP 取整步长；100 = 取整百（现网这批杂兵的惯例），0 = 四舍五入到整数，
+ *                                        auto = 按每个模板现有 HP 的粒度自动选（整百→100、整五十→50、其余→整数）。
+ *                                        批量重算请用 auto，避免把本来就是整数的行压成整百。
  *     --file "原版敌人 2011-2012.xml"     只在这些文件里找模板（默认全库按 list.xml 搜索）。
  *     --allow-measured                   允许 `--set` 覆盖观测类/定义类系数（默认拒绝，防止把手填值伪装成实测）；
  *                                        只在你明确要求重测、且拿得到实测来源时才用。
@@ -269,7 +277,19 @@ function main(argv: string[]): number {
 
   const config = loadMonsterCensusConfig(CONFIG_PATH);
   const targets = findTargets(options.templates, options.files);
-  const planned = targets.map((target) => plan(target, options, config));
+
+  // 阶段 0 = 人工标注「不适用这套面板公式」（分身、纯演出单位、机制怪等）：计算与写盘都跳过。
+  // 这里先分流再 plan，保证 apply 不会给这类模板写任何数值。
+  const skipped = targets.filter((target) => effectiveStage(target, options, config) === 0);
+  const active = targets.filter((target) => effectiveStage(target, options, config) !== 0);
+  if (skipped.length > 0) {
+    console.log(`跳过 ${skipped.length} 个：<阶段>0 = 不适用公式 → ${skipped.map((target) => target.template).join("、")}`);
+  }
+  if (active.length === 0) {
+    console.log("没有需要计算的模板（全部标注为不适用公式）。");
+    return 0;
+  }
+  const planned = active.map((target) => plan(target, options, config));
 
   warnOutOfRange(planned, config);
 
@@ -361,9 +381,15 @@ function parseArgs(argv: string[]): ParsedArgs {
       case "difficulty":
         options.difficulty = parseNumberOption(takeValue(), "--difficulty", 0.01, errors);
         break;
-      case "hp-round":
-        options.hpRound = parseNumberOption(takeValue(), "--hp-round", 0, errors);
+      case "hp-round": {
+        const value = takeValue();
+        if (value === "auto") {
+          options.hpRound = -1; // 哨兵：按模板现有粒度逐行推断
+          break;
+        }
+        options.hpRound = parseNumberOption(value, "--hp-round", 0, errors);
         break;
+      }
       case "json":
         options.json = true;
         break;
@@ -493,6 +519,19 @@ function readFlags(document: XmlDocument, node: XmlDocumentNode, config: Monster
   return flags;
 }
 
+/**
+ * 本次生效的阶段：`--set 阶段=...` 覆盖优先，其次读行内 `<标识>`。
+ * 只用来判定 `阶段=0`（人工标注「不适用公式」），这类模板在分流阶段就被跳过。
+ */
+function effectiveStage(target: Target, options: Options, config: MonsterCensusConfig): number | undefined {
+  for (let index = options.sets.length - 1; index >= 0; index -= 1) {
+    const entry = options.sets[index]!;
+    if (entry.field !== STAGE_FLAG) continue;
+    if (entry.template === undefined || entry.template === target.template) return entry.value;
+  }
+  return readFlags(target.document, target.node, config).get(STAGE_FLAG);
+}
+
 function readMoveSpeed(document: XmlDocument, node: XmlDocumentNode, config: MonsterCensusConfig): { min: number; max: number } | undefined {
   const min = Number(document.childText(node, config.moveSpeedFields.min));
   const max = Number(document.childText(node, config.moveSpeedFields.max));
@@ -524,6 +563,7 @@ function buildCoefficients(
   };
 
   const stage = valueOf(STAGE_FLAG);
+  if (stage === 0) throw new Error(`${target.template} 的 <阶段> 为 0（不适用公式），应在分流阶段跳过`);
   const tierFactor = valueOf("档次系数");
   const growthFactor = valueOf("成长系数");
   const atkSpeedFactor = valueOf("攻速系数");
@@ -596,7 +636,7 @@ function plan(target: Target, options: Options, config: MonsterCensusConfig): Pl
   for (const [xmlField, outputKey] of Object.entries(config.panelFields)) {
     const computed = output[outputKey as keyof MonsterOutput];
     if (typeof computed !== "number" || !Number.isFinite(computed)) continue;
-    const rounded = xmlField.startsWith("hp_") ? roundTo(computed, options.hpRound) : Math.round(computed);
+    const rounded = xmlField.startsWith("hp_") ? roundTo(computed, hpRoundOf(target, options)) : Math.round(computed);
     panel.set(xmlField, String(rounded));
     oldPanel.set(xmlField, target.document.childText(target.node, xmlField) ?? "");
   }
@@ -606,6 +646,22 @@ function plan(target: Target, options: Options, config: MonsterCensusConfig): Pl
   for (const [field, value] of derived) writeFlags.set(field, value);
 
   return { target, before, after, output, panel, flags: writeFlags, oldFlags: flags, oldPanel };
+}
+
+/**
+ * 每个模板实际用的 HP 取整步长。
+ * `--hp-round auto`（哨兵 -1）按盘上现有 hp_min/hp_max 的粒度推断：整百→100、整五十→50、其余→整数。
+ * 批量重算时用它，能保住各行原本的书写习惯（整百的仍整百，1110/3845 这种仍写整数）。
+ */
+function hpRoundOf(target: Target, options: Options): number {
+  if (options.hpRound !== -1) return options.hpRound;
+  const min = Number(target.document.childText(target.node, "hp_min"));
+  const max = Number(target.document.childText(target.node, "hp_max"));
+  const both = (step: number): boolean =>
+    Number.isFinite(min) && Number.isFinite(max) && min % step === 0 && max % step === 0;
+  if (both(100)) return 100;
+  if (both(50)) return 50;
+  return 0;
 }
 
 /** HP 的取整步长：100 = 整百（现网杂兵惯例），0 = 四舍五入到整数。 */
@@ -838,7 +894,7 @@ function printExplain(): void {
   const lines: string[] = [];
 
   lines.push("怪物数值重算（正算：<标识> 系数 → 面板）");
-  lines.push("公式权威：packages/core/src/formulas/monsters.ts（= 工作簿《怪物大致面板》）");
+  lines.push("公式权威：packages/core/src/formulas/monsters.ts（= 工作簿《怪物大致面板》，当前口径 v2）");
   lines.push("数据位置：data/enemy_properties/*.xml（按 list.xml 注册）");
   lines.push("");
   lines.push("一、系数分三类（下面所有区间与定义均取自工作簿，不是经验印象）");
@@ -853,13 +909,16 @@ function printExplain(): void {
   lines.push("  定义映射类（按现有数据自动定，不要手填）");
   lines.push(`    速度系数        参考 ${range("速度系数")}    移动速度落档：10~40 慢=1、40~60 中=2、60~90 快=3（区间上限归本档）`);
   lines.push(`    阶段            参考 ${range("阶段")}   首次出场关卡反查；未实装的怪必须人工补`);
+  lines.push("                                                   阶段=0 表示「不适用公式」，计算与写盘一律跳过");
   lines.push("");
   lines.push("  人工给定类（调平衡只动这四项，括注为工作簿原话）");
   lines.push(`    成长系数        参考 ${range("成长系数")}  「范围 0.5~2，默认 1；系数高代表低级时更弱但高等级时更强」`);
   lines.push(`    高攻低血防系数  参考 ${range("高攻低血防系数")}  「默认 1，范围 0.5~2；2 代表攻击力明显更高、血防明显更低，`);
   lines.push("                                0.5 代表血防明显更高、攻击力更低」；同时压 HP 与防御");
   lines.push(`    高防低血系数    参考 ${range("高防低血系数")}  「默认 1，通常 0.2~5，最大 0.1~10；数值越高防御越高、血量越低，`);
-  lines.push("                                视觉和设定上更硬的单位应给更高值」；只压 HP（开根号），防御反而升高");
+  lines.push("                                视觉和设定上更硬的单位应给更高值」");
+  lines.push("                                当前走 v2：防御 g=L^0.5、物理 EHP 斜率 m=L^0.05，HP 守恒反解；");
+  lines.push("                                物理只略硬（L=10 约 +12%），魔法/真伤纯亏，7:2:1 下综合更脆");
   lines.push("");
   lines.push("  档次系数（工作簿 B19~C32 原表，逐条抄录，只保留注释）：");
   lines.push("    系数     档次        注释");
@@ -883,13 +942,14 @@ function printExplain(): void {
   lines.push("  1. 询问用户是否指定 档次/成长/高攻低血防/高防低血；给了就照用户的值。");
   lines.push("  2. 没给的，由 AI 对照上面的档次表、按外形与定位判定，并在回报里写依据（哪一档、为什么）。");
   lines.push("  3. 观测类/定义类不准手填。存量怪行内已有值直接沿用，不重测、不重映射，重算只动人工四项；");
+  lines.push("     <阶段>=0 的模板直接跳过（不适用公式），不进计算也不进写盘；");
   lines.push("     只有新建怪、动作/元件改过、阶段无出场记录，或用户明确要求重算时才去实测/反查。");
   lines.push("  4. npm run monster-recalc -- preview --templates ... --set ...");
   lines.push("  5. 确认后 npm run monster-recalc -- apply --templates ... --set ...（写盘后自动重读校验）");
   lines.push("  提醒：工作簿写明「暖机、强力 buff、多阶段等显著影响面板的特殊机制单位」这套估法可能不适用。");
   lines.push("");
   lines.push("三、取整约定");
-  lines.push("  HP       默认取整百（--hp-round 100）；现有 2011-2012 那批杂兵就是这个口径");
+  lines.push("  HP       默认取整百（--hp-round 100，历史口径）；批量重算用 --hp-round auto 按各行现有粒度走");
   lines.push("  攻击/防御/经验  四舍五入到整数");
   lines.push("");
   lines.push("四、本次可用的命令");

@@ -45,7 +45,8 @@ describe("monsters calibration", () => {
     const name = String(row.input["B"] ?? `row${row._row}`);
     describe(name, () => {
       const input = toMonsterInput(row.input);
-      const result = computeMonsterRow(input);
+      // baseline 是从旧版工作簿抽取的缓存值，对应 v1 口径。
+      const result = computeMonsterRow(input, "v1");
 
       for (const [cnName, fieldKey] of COLUMN_MAP) {
         const cached = row.cached[cnName];

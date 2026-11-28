@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CF7Launcher.Bus;
 using CF7Launcher.Guardian;
+using CF7Launcher.Guardian.Hud;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -138,6 +139,88 @@ namespace CF7Launcher.Tests.Guardian
             Send(second, ready);
             Assert.True(SpinWait.SpinUntil(() => flow.CurrentState == GameLaunchFlow.State.Ready.ToString(), TimeSpan.FromSeconds(2)));
             SetPrivateField(flow, "_state", GameLaunchFlow.State.Idle);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void NormalFrontdoorLoad_UsesOnlyCurrentTitleAndSceneConnection(bool replaceAfterCommand)
+        {
+            const string attempt = "attempt-bound-frontdoor";
+            const string title = "{\"task\":\"bootstrap_reveal_ready\",\"payload\":{\"attemptId\":\"" + attempt + "\"}}";
+            const string ready = "{\"task\":\"bootstrap_ready\",\"payload\":{\"attemptId\":\"" + attempt + "\"}}";
+            int port = GetFreePort();
+            var router = new MessageRouter();
+            using var server = new XmlSocketServer(router, AllowLoopbackXmlSocketPeerAuthority.Instance);
+            using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
+            var flow = new GameLaunchFlow(server, router, processManager, new WindowManager(), null, null, null, null, null);
+            Assert.True(server.Start(port));
+            using var prior = new TcpClient(AddressFamily.InterNetwork);
+            prior.Connect(IPAddress.Loopback, port);
+            Send(prior, "{\"task\":\"frontdoor_prior_probe\"}");
+            ReadJsonFrame(prior);
+            int oldGeneration = server.CurrentGeneration;
+            using var peer = new TcpClient(AddressFamily.InterNetwork);
+            peer.Connect(IPAddress.Loopback, port);
+            Send(peer, "{\"task\":\"frontdoor_current_probe\"}");
+            ReadJsonFrame(peer);
+            int generation = server.CurrentGeneration;
+            Assert.True(generation > oldGeneration);
+            SetPrivateField(flow, "_currentAttemptId", attempt);
+            SetPrivateField(flow, "_pendingSlot", "slot-test");
+            SetPrivateField(flow, "_frontdoorMode", "load");
+            SetPrivateField(flow, "_revealWaitingFlash", true);
+            SetPrivateField(flow, "_revealWaitingScene", true);
+            SetPrivateField(flow, "_passiveLaunchConnection", generation);
+            SetPrivateField(flow, "_state", GameLaunchFlow.State.Embedding);
+            try
+            {
+                Assert.Null(router.ProcessMessage(title, oldGeneration, null));
+                Assert.False(flow.HasAcceptedTitleReceipt(attempt));
+                Send(peer, title);
+                Assert.True(SpinWait.SpinUntil(() => flow.HasAcceptedTitleReceipt(attempt), TimeSpan.FromSeconds(2)));
+                Assert.Equal(nameof(GameLaunchFlow.State.Embedding), flow.CurrentState);
+                Assert.False(GetPrivateField<bool>(flow, "_frontdoorEntryDispatched"));
+                Assert.False(peer.GetStream().DataAvailable);
+
+                Send(peer, ready);
+                object launchState = GetPrivateField<object>(flow, "_stateLock");
+                var cached = GetPrivateField<System.Collections.Generic.Dictionary<string, int>>(flow, "_cachedReady");
+                Assert.True(SpinWait.SpinUntil(() =>
+                {
+                    lock (launchState)
+                        return cached.TryGetValue(attempt, out int cachedGeneration) && cachedGeneration == generation;
+                }, TimeSpan.FromSeconds(2)));
+                var complete = typeof(GameLaunchFlow).GetMethod("CompleteEmbedLocked", BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.True(server.RunWithConnectionTransitionFence(() =>
+                {
+                    lock (launchState)
+                        complete.Invoke(flow, Array.Empty<object>());
+                    return true;
+                }));
+                JObject entry = ReadJsonFrame(peer);
+                Assert.Equal("frontdoorEnterResolvedSave", entry.Value<string>("action"));
+                Assert.Equal(attempt, entry.Value<string>("attemptId"));
+                Assert.Equal("slot-test", entry.Value<string>("slotKey"));
+
+                using var replacement = new TcpClient(AddressFamily.InterNetwork);
+                if (replaceAfterCommand)
+                {
+                    replacement.Connect(IPAddress.Loopback, port);
+                    Send(replacement, "{\"task\":\"frontdoor_replacement_probe\"}");
+                    ReadJsonFrame(replacement);
+                    Assert.True(server.CurrentGeneration > generation);
+                }
+                flow.ObserveUiData(new UiDataPacket("s:1|ga:" + attempt));
+                Assert.Equal(!replaceAfterCommand, flow.RevealPerformed);
+                Assert.Equal(replaceAfterCommand, GetPrivateField<bool>(flow, "_revealWaitingScene"));
+                if (replaceAfterCommand)
+                    Assert.False(replacement.GetStream().DataAvailable);
+            }
+            finally
+            {
+                SetPrivateField(flow, "_state", GameLaunchFlow.State.Idle);
+            }
         }
 
         [Fact]

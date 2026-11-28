@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace CF7Launcher.Guardian
 {
@@ -9,6 +10,20 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class ProcessManager : IDisposable
     {
+        private const uint CloseWindowMessage = 0x0010;
+        private const int UnpublishedCloseGraceMs = 700;
+        private const int UnpublishedExitWaitMs = 200;
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetParent(IntPtr window);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool PostMessageW(IntPtr window, uint message, IntPtr wParam, IntPtr lParam);
+
         private Process _flashProcess;
         private readonly object _lock = new object();
         private readonly string _flashPlayerPath;
@@ -31,7 +46,9 @@ namespace CF7Launcher.Guardian
             _configureStart = configureStart;
         }
 
-        public bool Start()
+        public bool Start() => Start(showWithoutActivating: false);
+
+        internal bool Start(bool showWithoutActivating)
         {
             try
             {
@@ -44,16 +61,12 @@ namespace CF7Launcher.Guardian
                 string flashTemp = psi.Environment["TEMP"];
                 LogManager.Log("[FlashStorage] child TEMP/TMP=" + flashTemp + " environment="
                     + CF7Launcher.Config.FlashStorageEnvironment.Snapshot().ToString(Newtonsoft.Json.Formatting.None));
-                // 注意：不要在这里设 psi.WindowStyle = ProcessWindowStyle.Hidden.
-                // 实测当前 Flash SA 直接用 WS_VISIBLE 创窗，忽略 STARTF_USESHOWWINDOW，hint 零收益；
-                // 而 WindowManager.PollMainWindowHandle 走 .NET MainWindowHandle (= IsWindowVisible
-                // 启发式)，假设主窗口最终会 visible. 一旦未来某 Flash SA 变体尊重了这个 hint，
-                // 主窗口永远不 visible，ArmEarlyReparent 与 EmbedFlashWindow 双双 timeout，整条嵌入
-                // 链路静默失败. 不要为了一个零收益 hint 留这颗雷.
+                // Passive input still needs a visible projector for MainWindowHandle discovery.
+                // Prevent initial activation at process creation, before the early reparent poll.
 
                 lock (_lock)
                 {
-                    _flashProcess = OwnedChildProcessJob.Start(psi);
+                    _flashProcess = OwnedChildProcessJob.Start(psi, showWithoutActivating);
                     if (_flashProcess == null)
                         return false;
 
@@ -61,7 +74,8 @@ namespace CF7Launcher.Guardian
                     _flashProcess.Exited += OnProcessExited;
                 }
 
-                LogManager.Log("[Guardian] Flash Player started, PID=" + _flashProcess.Id);
+                LogManager.Log("[Guardian] Flash Player started, PID=" + _flashProcess.Id
+                    + " showWithoutActivating=" + showWithoutActivating);
                 return true;
             }
             catch (Exception ex)
@@ -111,12 +125,14 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void KillFlash()
         {
-            Process target;
-            lock (_lock)
-            {
-                target = _flashProcess;
-            }
+            KillFlash(FlashProcess);
+        }
+
+        internal void KillFlash(Process target)
+        {
             if (target == null) return;
+            lock (_lock)
+                if (!ReferenceEquals(target, _flashProcess)) return;
             try
             {
                 if (!target.HasExited)
@@ -134,6 +150,59 @@ namespace CF7Launcher.Guardian
                 }
             }
             catch { }
+        }
+
+        internal static bool TryPostUnpublishedBootstrapClose(
+            WindowManager.UnpublishedBootstrapCloseTarget target, uint pid)
+        {
+            return target.Window != IntPtr.Zero && target.Host != IntPtr.Zero && pid != 0
+                && GetWindowThreadProcessId(target.Window, out uint owner) != 0 && owner == pid
+                && GetParent(target.Window) == target.Host
+                && PostMessageW(target.Window, CloseWindowMessage, IntPtr.Zero, IntPtr.Zero);
+        }
+
+#if CF7_TEST_SEAMS
+        internal Func<Process, WindowManager.UnpublishedBootstrapCloseTarget, string, bool> CloseStartupFlashForTests { get; set; }
+#endif
+
+        internal bool TryCloseStartupFlash(Process target, WindowManager.UnpublishedBootstrapCloseTarget window, string phase)
+        {
+#if CF7_TEST_SEAMS
+            if (CloseStartupFlashForTests is { } close) return close(target, window, phase);
+#endif
+            if (target == null || !ReferenceEquals(target, FlashProcess)) return false;
+            try
+            {
+                if (target.HasExited) return true;
+                bool posted;
+                lock (_lock)
+                {
+                    if (!ReferenceEquals(target, _flashProcess)) return false;
+                    // CloseMainWindow skips disabled or reparented windows. Deliver the
+                    // ordinary close message to the captured child without changing focus.
+                    posted = TryPostUnpublishedBootstrapClose(window, (uint)target.Id);
+                }
+                LogManager.Log($"[Guardian] {phase} Flash close pid={target.Id} hwnd=0x{window.Window:X} posted={posted}");
+                if (!posted) return target.HasExited;
+                if (target.WaitForExit(UnpublishedCloseGraceMs))
+                {
+                    LogManager.Log($"[Guardian] {phase} Flash exited after close message code={target.ExitCode}");
+                    return true;
+                }
+                if (target.HasExited) return true;
+                lock (_lock)
+                {
+                    if (!ReferenceEquals(target, _flashProcess)) return false;
+                    LogManager.Log($"[Guardian] {phase} Flash close grace elapsed; terminating owned pid={target.Id}");
+                    target.Kill();
+                }
+                return target.WaitForExit(UnpublishedExitWaitMs);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log($"[Guardian] {phase} Flash close failed: {ex.GetType().Name}");
+                return false;
+            }
         }
 
         public void Dispose()

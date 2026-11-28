@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cwchar>
 #include <algorithm>
+#include <climits>
 #include <string>
 
 // Loaded by a thread-specific hook into the paired x64 projector only. No
@@ -18,6 +19,8 @@ HANDLE traceMapping=nullptr;
 InputTraceShared* traceState=nullptr;
 UINT packetMessage=0;
 POINT virtualPoint{};
+POINT lastOriginalMove{};
+bool hasOriginalMove=false;
 UINT buttons=0, activeGesture=0;
 bool enabled=false, captured=false;
 LONGLONG lastPaintTicks=0;
@@ -28,7 +31,7 @@ LONG lastCursorKind=0;
 void Observe(LONG stage,UINT sequence=0,UINT epoch=0,UINT message=0,POINT point={}) {
     TraceWrite(traceState,stage,sequence,epoch,message,point,buttons,localFloor,GetFocus());
 }
-int procedureDepth=0, dispatchDepth=0, hookDepth=0;
+int procedureDepth=0, dispatchDepth=0, hookDepth=0, releasePositionDepth=0;
 volatile LONG wrapperDepth=0;
 struct WrapperScope {WrapperScope(){InterlockedIncrement(&wrapperDepth);} ~WrapperScope(){InterlockedDecrement(&wrapperDepth);} };
 SRWLOCK stateLock=SRWLOCK_INIT;
@@ -150,11 +153,18 @@ LRESULT Original(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
     if(shared)InterlockedExchange(&shared->dispatchDepth,dispatchDepth-1);
     return result;
 }
+LRESULT OriginalMouseMove(HWND hwnd,WPARAM flags,LPARAM position,POINT point) {
+    lastOriginalMove=point;
+    hasOriginalMove=true;
+    return Original(hwnd,WM_MOUSEMOVE,flags,position);
+}
+
 void CancelEndpoint() {
     if(!shared || dispatchDepth) return;
     LONG ticket=ReadAtomic(&shared->cancelTicket);
     if(ticket==ReadAtomic(&shared->cancelledTicket)) return;
     { WriteLock guard; enabled=false; buttons=0; captured=false; activeGesture=0; }
+    hasOriginalMove=false;
     InterlockedExchange(&shared->heldButtons,0);
     if(reinterpret_cast<WNDPROC>(GetWindowLongPtrW(target,GWLP_WNDPROC))!=WindowProc) {
         InterlockedExchange(&shared->restoreError,1);return; // original cancellation ownership is unconfirmed
@@ -176,6 +186,7 @@ bool Restore() {
     WriteLock guard;
     if(ReadAtomic(&wrapperDepth))return false;
     enabled=false; buttons=0; captured=false; activeGesture=0;
+    hasOriginalMove=false;
     bool okay=true;
     if(target && IsWindow(target)) {
         auto current=reinterpret_cast<WNDPROC>(GetWindowLongPtrW(target,GWLP_WNDPROC));
@@ -210,6 +221,109 @@ UINT PacketButtonBit(UINT type,UINT extra) {
         case WM_XBUTTONDOWN:case WM_XBUTTONUP:return extra==XBUTTON1 ? MK_XBUTTON1 : MK_XBUTTON2;
         default:return 0; }
 }
+
+bool MapPoints(HWND from, HWND to, POINT* points, UINT count) {
+    SetLastError(ERROR_SUCCESS);
+    return MapWindowPoints(from,to,points,count)!=0 || GetLastError()==ERROR_SUCCESS;
+}
+
+bool GetPhysicalClientBounds(HWND hwnd, RECT& bounds) {
+    const auto previous=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    if(!previous)return false;
+    // Two points intentionally form a RECT. MapWindowPoints orders the
+    // physical left and right edges even when the source window is mirrored.
+    const bool valid=GetClientRect(hwnd,&bounds) && MapPoints(hwnd,nullptr,reinterpret_cast<POINT*>(&bounds),2);
+    const auto restored=SetThreadDpiAwarenessContext(previous);
+    return restored && valid && bounds.right>bounds.left && bounds.bottom>bounds.top;
+}
+
+int ClientSide(LONG coordinate, LONG extent) {
+    if(coordinate<0)return -1;
+    return coordinate>=extent ? 1 : 0;
+}
+
+LONG ScaleClientOffset(LONG offset, LONG physicalExtent, LONG logicalExtent) {
+    const LONG scaled=MulDiv(offset,logicalExtent,physicalExtent);
+    // Rounding may hit an edge pixel. Retain the side of an outside point.
+    if(offset<0)return std::min(scaled,-1L);
+    if(offset>=physicalExtent)return std::max(scaled,logicalExtent);
+    return std::clamp(scaled,0L,logicalExtent-1);
+}
+
+bool MapPhysicalClientPoint(HWND hwnd, POINT physical, POINT& logical) {
+    RECT client{};
+    if(!GetClientRect(hwnd,&client) || client.right<1 || client.bottom<1)return false;
+    const bool mirrored=(GetWindowLongPtrW(hwnd,GWL_EXSTYLE)&WS_EX_LAYOUTRTL)!=0;
+    POINT mapped{};
+    bool converted=false;
+    if(!mirrored) {
+        POINT origin{};
+        if(ClientToScreen(hwnd,&origin) && LogicalToPhysicalPointForPerMonitorDPI(hwnd,&origin)) {
+            mapped={origin.x+physical.x,origin.y+physical.y};
+            converted=PhysicalToLogicalPointForPerMonitorDPI(hwnd,&mapped) && ScreenToClient(hwnd,&mapped);
+            // Preserve the ordinary in-client path. Near an edge, check the
+            // measured extent so rounding cannot turn an outside Up into a hit.
+            if(converted && physical.x>=0 && physical.y>=0 && mapped.x>0 && mapped.x<client.right-1
+                && mapped.y>0 && mapped.y<client.bottom-1) {logical=mapped;return true;}
+        }
+    }
+
+    RECT bounds{};
+    if(!GetPhysicalClientBounds(hwnd,bounds))return false;
+    const LONG width=bounds.right-bounds.left,height=bounds.bottom-bounds.top;
+    if(mirrored) {
+        mapped={bounds.left+physical.x,bounds.top+physical.y};
+        converted=PhysicalToLogicalPointForPerMonitorDPI(hwnd,&mapped) && MapPoints(nullptr,hwnd,&mapped,1);
+    }
+    const int horizontalSide=ClientSide(physical.x,width)*(mirrored ? -1 : 1);
+    if(converted && ClientSide(mapped.x,client.right)==horizontalSide
+        && ClientSide(mapped.y,client.bottom)==ClientSide(physical.y,height)) {
+        logical=mapped;
+        return true;
+    }
+    // The point APIs can reject an outside screen point without modifying it.
+    // Extend the target's measured physical-to-logical client scale instead of
+    // handing those unconverted screen units to ScreenToClient.
+    logical={ScaleClientOffset(physical.x,width,client.right),ScaleClientOffset(physical.y,height,client.bottom)};
+    if(mirrored)logical.x=client.right-1-logical.x;
+    return true;
+}
+
+bool FitsMouseMessage(POINT point) {
+    return point.x>=SHRT_MIN && point.x<=SHRT_MAX && point.y>=SHRT_MIN && point.y<=SHRT_MAX;
+}
+
+bool ReleaseStillCurrent(HWND hwnd,UINT seq,UINT epoch,UINT type,UINT held,LONG cancelTicket) {
+    if(shared->passiveMode!=InputPassiveDisabled || !(GetWindowLongPtrW(hwnd,GWL_STYLE)&WS_DISABLED)
+        || reinterpret_cast<WNDPROC>(GetWindowLongPtrW(hwnd,GWLP_WNDPROC))!=WindowProc) {
+        InterlockedExchange(&shared->stop,1);
+        InterlockedIncrement(&shared->invalidRejected);
+        Observe(TraceInvalid,seq,epoch,type);
+        return false;
+    }
+    const UINT floor=static_cast<UINT>(ReadAtomic(&shared->minEpoch));
+    if(floor>static_cast<UINT>(InputEpochLimit+1)) {
+        InterlockedExchange(&shared->stop,1);
+        InterlockedIncrement(&shared->invalidRejected);
+        Observe(TraceInvalid,seq,epoch,type);
+        return false;
+    }
+    localFloor=std::max(localFloor,floor);
+    const LONG currentCancel=ReadAtomic(&shared->cancelTicket);
+    if(ReadAtomic(&shared->stop) || currentCancel!=cancelTicket || currentCancel!=ReadAtomic(&shared->cancelledTicket)) {
+        Observe(TraceStopped,seq,epoch,type);
+        InterlockedIncrement(&shared->stoppedRejected);
+        CancelEndpoint();
+        return false;
+    }
+    if(epoch<localFloor || passiveSequence!=seq || lastEpoch!=epoch || buttons!=held) {
+        Observe(TraceStale,seq,epoch,type);
+        InterlockedIncrement(&shared->staleRejected);
+        return false;
+    }
+    return true;
+}
+
 LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
         UINT kind=static_cast<UINT>(wp)&255;
         // v4 bounded envelope: flags/extra share the low word with v1; the high half carries
@@ -248,27 +362,20 @@ LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
         if(seq<=passiveSequence || epoch<lastEpoch) {
             InterlockedIncrement(&shared->staleRejected);return 0;
         }
+        // A nested dequeue cannot take a later input through a partly
+        // dispatched release. Let the broker retire the held gesture.
+        if(releasePositionDepth) {
+            Observe(TraceStopped,seq,epoch,diagnosticType);
+            InterlockedIncrement(&shared->stoppedRejected);
+            InterlockedExchange(&shared->stop,1);
+            return 0;
+        }
         passiveSequence=seq;
         UINT type=kind==0xFE ? WM_CANCELMODE : WM_MOUSEFIRST+kind;
         if(type!=WM_MOUSEMOVE && type!=WM_LBUTTONDOWN && type!=WM_LBUTTONUP
             && type!=WM_RBUTTONDOWN && type!=WM_RBUTTONUP && type!=WM_MBUTTONDOWN && type!=WM_MBUTTONUP
             && type!=WM_XBUTTONDOWN && type!=WM_XBUTTONUP && type!=WM_MOUSEWHEEL && type!=WM_MOUSEHWHEEL && type!=WM_CANCELMODE) return 0;
         lastEpoch=std::max(lastEpoch,epoch);
-        POINT point{static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
-        // Registered messages are not DPI-virtualized like native mouse messages.
-        // Convert the host's physical client pixels to this projector's DPI space.
-        // The host's unheld (-1,-1) leave sentinel is not an on-screen point.
-        // Preserve it: an unsuccessful outside-window DPI conversion must not
-        // turn it into a positive client point and retain a corner button hover.
-        bool presentationLeave=type==WM_MOUSEMOVE && point.x==-1 && point.y==-1 && (flags&0x73)==0;
-        if(!presentationLeave) {
-            POINT origin{};
-            ClientToScreen(hwnd,&origin);
-            LogicalToPhysicalPointForPerMonitorDPI(hwnd,&origin);
-            point.x+=origin.x; point.y+=origin.y;
-            PhysicalToLogicalPointForPerMonitorDPI(hwnd,&point);
-            ScreenToClient(hwnd,&point);
-        }
         bool down=type==WM_LBUTTONDOWN || type==WM_RBUTTONDOWN || type==WM_MBUTTONDOWN || type==WM_XBUTTONDOWN;
         bool up=type==WM_LBUTTONUP || type==WM_RBUTTONUP || type==WM_MBUTTONUP || type==WM_XBUTTONUP;
         UINT bit=PacketButtonBit(type,extra);
@@ -282,7 +389,8 @@ LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
             InterlockedIncrement(&shared->unownedReleases);
             return 0;
         }
-        UINT nextButtons=buttons;
+        const UINT held=buttons;
+        UINT nextButtons=held;
         if(down)nextButtons|=bit;
         if(up)nextButtons&=~bit;
         if(type==WM_CANCELMODE)nextButtons=0;
@@ -290,25 +398,58 @@ LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
             InterlockedIncrement(&shared->invalidRejected);
             return 0;
         }
+        // Registered messages carry physical client pixels, unlike native mouse messages.
+        POINT point{static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
+        const bool leave=type==WM_MOUSEMOVE && point.x==-1 && point.y==-1 && (flags&0x73)==0;
+        const bool wheel=type==WM_MOUSEWHEEL || type==WM_MOUSEHWHEEL;
+        bool valid=type==WM_CANCELMODE || leave || MapPhysicalClientPoint(hwnd,point,point);
+        POINT messagePosition=point;
+        if(valid && wheel)valid=MapPoints(hwnd,nullptr,&messagePosition,1);
+        if(!valid || !FitsMouseMessage(point) || !FitsMouseMessage(messagePosition)) {
+            Observe(TraceInvalid,seq,epoch,type);
+            InterlockedIncrement(&shared->invalidRejected);
+            // The broker owns final cancellation and retirement. Do not forge
+            // an Up at an unknown location or acknowledge an original call.
+            InterlockedExchange(&shared->stop,1);
+            return 0;
+        }
+        const LPARAM nativePosition=type==WM_CANCELMODE ? 0 :
+            MAKELPARAM(static_cast<SHORT>(messagePosition.x),static_cast<SHORT>(messagePosition.y));
+        if(up && (!hasOriginalMove || lastOriginalMove.x!=point.x || lastOriginalMove.y!=point.y)) {
+            auto* const binding=shared;
+            const uint64_t session=binding->session;
+            const LONG cancelTicket=ReadAtomic(&binding->cancelTicket);
+            if(!ReleaseStillCurrent(hwnd,seq,epoch,type,held,cancelTicket))return 0;
+            {
+                WriteLock guard;
+                virtualPoint=point;
+            }
+            {
+                Depth syncing(releasePositionDepth);
+                // Update Flash's position while the releasing button is still
+                // held. Only the original Up may change the button state.
+                OriginalMouseMove(hwnd,held|(flags&(MK_SHIFT|MK_CONTROL)),nativePosition,point);
+            }
+            if(shared!=binding || target!=hwnd || binding->session!=session)return 0;
+            Observe(TraceReleasePosition,seq,epoch,WM_MOUSEMOVE,point);
+            if(!ReleaseStillCurrent(hwnd,seq,epoch,type,held,cancelTicket))return 0;
+        }
         {
             WriteLock guard;
             enabled=true; virtualPoint=point; buttons=nextButtons;
             activeGesture=buttons!=0;
             if(type==WM_CANCELMODE)captured=false;
         }
+        if(type==WM_CANCELMODE)hasOriginalMove=false;
         InterlockedExchange(&shared->heldButtons,static_cast<LONG>(buttons));
         WPARAM nativeFlags=flags;
-        LPARAM nativePosition=MAKELPARAM(static_cast<SHORT>(point.x),static_cast<SHORT>(point.y));
-        if(type==WM_MOUSEWHEEL || type==WM_MOUSEHWHEEL) {
-            nativeFlags=MAKEWPARAM(flags,extra);
-            POINT screen=point; ClientToScreen(hwnd,&screen);
-            nativePosition=MAKELPARAM(static_cast<SHORT>(screen.x),static_cast<SHORT>(screen.y));
-        } else if(type==WM_XBUTTONDOWN || type==WM_XBUTTONUP) nativeFlags=MAKEWPARAM(flags,extra);
+        if(wheel || type==WM_XBUTTONDOWN || type==WM_XBUTTONUP)nativeFlags=MAKEWPARAM(flags,extra);
         // Update the target's hover position before delivering its button edge.
-        if(down) Original(hwnd,WM_MOUSEMOVE,flags,nativePosition);
+        if(down) OriginalMouseMove(hwnd,flags,nativePosition,point);
         if(edge)Observe(TraceEnter,seq,epoch,type,point);
         else if(static_cast<SHORT>(LOWORD(lp))<0 || static_cast<SHORT>(HIWORD(lp))<0)Observe(TraceLeave,seq,epoch,type,point);
-        LRESULT result=Original(hwnd,type,nativeFlags,nativePosition);
+        LRESULT result=type==WM_MOUSEMOVE ? OriginalMouseMove(hwnd,nativeFlags,nativePosition,point)
+            : Original(hwnd,type,nativeFlags,nativePosition);
         if(edge)Observe(TraceReturn,seq,epoch,type,point);
         InterlockedExchange(&shared->completedSeq,static_cast<LONG>(seq));
         return result;
@@ -427,6 +568,7 @@ bool Initialize(HWND hwnd,uint64_t cookie) {
     targetThread=GetCurrentThreadId();lastCursorTrace=0;lastCursorKind=0;
     lastPaintTicks=0; lastPaintBounds={};
     lastEpoch=0; localFloor=0; passiveSequence=0;
+    hasOriginalMove=false;
     // The subclass and import wrappers must remain mapped until process exit even
     // if the owner dies while a callback is still unwinding.
     HMODULE pinned=nullptr;
@@ -458,6 +600,7 @@ namespace InputBridgeSelfTest {
         target=hwnd; shared=state; packetMessage=message;
         enabled=false; buttons=0; captured=false; activeGesture=0;
         lastEpoch=0; localFloor=0; passiveSequence=0;
+        hasOriginalMove=false;
         if(!originalProc)
             originalProc=reinterpret_cast<WNDPROC>(SetWindowLongPtrW(hwnd,GWLP_WNDPROC,reinterpret_cast<LONG_PTR>(&WindowProc)));
     }

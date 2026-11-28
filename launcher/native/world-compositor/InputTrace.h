@@ -7,7 +7,8 @@
 constexpr uint32_t InputTraceMagic=0xCF710D01, InputTraceCapacity=128;
 enum InputTraceStage : LONG { TraceEnter=1, TraceReturn=2, TraceStale=3,
     TraceStopped=4, TraceInvalid=5, TraceFocusLost=6, TraceCancel=7, TraceLeave=8, TraceReady=9,
-    TraceNativePointer=10, TraceCursorVirtual=11, TraceCursorPhysical=12, TraceSourceLeaveSuppressed=13 };
+    TraceNativePointer=10, TraceCursorVirtual=11, TraceCursorPhysical=12, TraceSourceLeaveSuppressed=13,
+    TraceReleasePosition=14 };
 struct InputTraceRecord {
     volatile LONG64 serial,ticks;
     volatile LONG sequence,epoch,message,stage,x,y,buttons,floor;

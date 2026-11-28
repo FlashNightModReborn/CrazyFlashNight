@@ -108,7 +108,12 @@ namespace CF7Launcher.Guardian
         private Process _currentFlashProcess;
         private int _passiveLaunchConnection;
         private CancellationTokenSource _passiveEmbeddingCancellation;
+        private StartupBootstrapClose? _frontdoorPublication;
+        private StartupBootstrapClose? _committedStartupClose;
         private int _timerGen;
+
+        internal readonly record struct StartupBootstrapClose(string AttemptId, Process Flash, uint FlashPid, int Connection,
+            CancellationToken EmbedTicket, WindowManager.UnpublishedBootstrapCloseTarget Target, bool Published);
 
         // per-attempt ready 缓存（attemptId → arrived？）不变式 #8
         private readonly Dictionary<string, int> _cachedReady = new Dictionary<string, int>();
@@ -199,6 +204,8 @@ namespace CF7Launcher.Guardian
         private bool _revealWaitingScene;
         private string _frontdoorTitleCallId;
         private bool _frontdoorEntryDispatched;
+        private int _frontdoorTitleConnection;
+        private int _frontdoorReadyConnection;
         private System.Threading.Timer _frontdoorSceneWatchdog;
         private bool _lastPlayedPersistedForAttempt;
 
@@ -249,6 +256,42 @@ namespace CF7Launcher.Guardian
             get { lock (_stateLock) { return _revealPerformed; } }
         }
 
+        internal StartupBootstrapClose? CommittedStartupClose
+        {
+            get { lock (_stateLock) { return _committedStartupClose; } }
+        }
+
+        internal bool ClosingStartupBootstrap => CommittedStartupClose.HasValue;
+
+        internal StartupBootstrapClose? CaptureReadyFrontdoorClose()
+        {
+            lock (_stateLock) return CaptureReadyFrontdoorCloseLocked();
+        }
+
+        private StartupBootstrapClose? CaptureReadyFrontdoorCloseLocked()
+        {
+            if (_state != State.Ready || _frontdoorMode != "load" || !_revealWaitingScene
+                || _frontdoorEntryDispatched || _revealPerformed || _revealScheduled
+                || _form?.FlashHostPanel.Visible != false || string.IsNullOrEmpty(_pendingSlot)
+                || TrustedRegressionSlots.RequiresRuntimeEntry(_pendingSlot)
+                || _frontdoorPublication is not StartupBootstrapClose publication
+                || publication.AttemptId != _currentAttemptId || !ReferenceEquals(publication.Flash, _currentFlashProcess)
+                || publication.Connection != _frontdoorReadyConnection || !IsFrontdoorLoadConnectionCurrent(publication.Connection)
+                || !_windowManager.TryGetPublishedBootstrapCloseTarget(publication.EmbedTicket, publication.FlashPid, out var target)
+                || target != publication.Target) return null;
+            return publication;
+        }
+
+        internal bool TryResetForReadyFrontdoorClose(StartupBootstrapClose close)
+        {
+            lock (_stateLock)
+            {
+                if (_form?.IsShutdownAdmissionClosed != true || CaptureReadyFrontdoorCloseLocked() != close) return false;
+                Reset(null, "user_close", close);
+                return true;
+            }
+        }
+
         internal AgentRuntimeLaunchSnapshot
             CaptureAgentRuntimeLaunchSnapshot()
         {
@@ -269,7 +312,8 @@ namespace CF7Launcher.Guardian
                 return false;
             lock (_stateLock)
             {
-                return string.Equals(
+                return string.Equals(_currentAttemptId, attemptId, StringComparison.Ordinal)
+                    && string.Equals(
                     _acceptedTitleAttemptId,
                     attemptId,
                     StringComparison.Ordinal);
@@ -530,7 +574,7 @@ namespace CF7Launcher.Guardian
             _router.RegisterAsync("bootstrap_handshake", HandleBootstrapHandshakeAsync);
             _router.RegisterSyncForGeneration("bootstrap_ready", HandleBootstrapReady);
             // Phase 2b-ext: Flash 帧 81 "封面" 发来的 reveal 信号, 清 _revealWaitingFlash
-            _router.RegisterSync("bootstrap_reveal_ready", HandleBootstrapRevealReady);
+            _router.RegisterSyncForGeneration("bootstrap_reveal_ready", HandleBootstrapRevealReady);
             _router.RegisterSync("character_create_response", HandleCharacterCreateResponse);
             _router.RegisterSync("scene_initialization_failed", HandleSceneInitializationFailed);
             LogManager.Log("[LaunchFlow] bootstrap_handshake registered (async)");
@@ -857,9 +901,12 @@ namespace CF7Launcher.Guardian
             CancelCharacterCreateSnapshotTimerLocked();
             CancelFrontdoorSceneWatchdogLocked();
             _frontdoorMode = frontdoorMode;
+            _frontdoorPublication = null;
             _revealWaitingScene = frontdoorMode != null;
             _frontdoorTitleCallId = null;
             _frontdoorEntryDispatched = false;
+            _frontdoorTitleConnection = 0;
+            _frontdoorReadyConnection = 0;
             _lastPlayedPersistedForAttempt = false;
             _characterCreateContext = characterCreateContext;
             _characterCreateSnapshotReceived = false;
@@ -878,9 +925,12 @@ namespace CF7Launcher.Guardian
             CancelCharacterCreateSnapshotTimerLocked();
             CancelFrontdoorSceneWatchdogLocked();
             _frontdoorMode = null;
+            _frontdoorPublication = null;
             _revealWaitingScene = false;
             _frontdoorTitleCallId = null;
             _frontdoorEntryDispatched = false;
+            _frontdoorTitleConnection = 0;
+            _frontdoorReadyConnection = 0;
             _lastPlayedPersistedForAttempt = false;
             _characterCreateContext = null;
             _characterCreateSnapshotReceived = false;
@@ -2249,7 +2299,9 @@ namespace CF7Launcher.Guardian
         ///   4. Idle 态直接入场 → 快路径 flush 立即返回
         /// 避免 "多路径同时 kill Flash / 关 socket / 走完整 teardown" 的重入灾难.
         /// </summary>
-        public void Reset(Action onIdle, string reason)
+        public void Reset(Action onIdle, string reason) => Reset(onIdle, reason, null);
+
+        private void Reset(Action onIdle, string reason, StartupBootstrapClose? startupClose)
         {
             NewSettingsRecoveryRequest();
             LogManager.Log("[LaunchFlow] Reset requested reason=" + (reason ?? "(none)"));
@@ -2313,8 +2365,20 @@ namespace CF7Launcher.Guardian
 
                     // 第一个入场者: 拿 ownership
                     _resetInFlight = true;
-                    SetState(State.Resetting, "");
                     oldProcess = _currentFlashProcess;
+                    // Capture the attached source before Resetting retires its embed ticket.
+                    // The separately attested Ready case has already passed the same persistence fence.
+                    if (startupClose == null && reason == "user_close" && _form?.IsShutdownAdmissionClosed == true
+                        && _state == State.Embedding && !_revealPerformed && !string.IsNullOrEmpty(_currentAttemptId)
+                        && oldProcess != null && _passiveLaunchConnection > 0 && _passiveEmbeddingCancellation != null
+                        && _windowManager.TryGetUnpublishedBootstrapCloseTarget(_passiveEmbeddingCancellation.Token,
+                            (uint)oldProcess.Id, out var target))
+                    {
+                        startupClose = new(_currentAttemptId, oldProcess, (uint)oldProcess.Id, _passiveLaunchConnection,
+                            _passiveEmbeddingCancellation.Token, target, Published: false);
+                    }
+                    if (startupClose.HasValue) _committedStartupClose = startupClose;
+                    SetState(State.Resetting, "");
                     CancelWaitTimerLocked();
                     CancelZombieTimerLocked();
                     CancelPrewarmDeadlineLocked();
@@ -2363,23 +2427,33 @@ namespace CF7Launcher.Guardian
                 bool resetSucceeded = true;
                 try
                 {
-                    if (oldProc != null)
+                    bool closedStartup = false;
+                    if (startupClose is { } closing)
+                    {
+                        string phase = closing.Published ? "unentered" : "unpublished";
+                        LogManager.Log($"[LaunchFlow] closing {phase} bootstrap attempt={closing.AttemptId} generation={closing.Connection}");
+                        closedStartup = _processManager.TryCloseStartupFlash(oldProc, closing.Target, phase);
+                        if (closedStartup)
+                            _socketServer.ForceCloseCurrentClientIfGen(closing.Connection);
+                    }
+                    if (!closedStartup && oldProc != null)
                     {
                         try
                         {
                             if (!oldProc.HasExited)
                             {
-                                _processManager.KillFlash();
+                                _processManager.KillFlash(oldProc);
                                 oldProc.WaitForExit(3000);
                             }
                         }
                         catch { }
                     }
-                    if (needWaitDc)
+                    if (needWaitDc && !closedStartup)
                     {
                         if (!dcGate.Wait(5000))
                         {
-                            _socketServer.ForceCloseCurrentClient();
+                            if (startupClose is { } closingSocket) _socketServer.ForceCloseCurrentClientIfGen(closingSocket.Connection);
+                            else _socketServer.ForceCloseCurrentClient();
                             if (!dcGate.Wait(1000)) resetSucceeded = false;
                         }
                     }
@@ -2479,7 +2553,7 @@ namespace CF7Launcher.Guardian
             // 仅为本次 spawn 留住原本正在操作的启动器。用户切走时不申请前台。
             Action<IntPtr> returnBootstrapInput = _form?.CaptureBootstrapFocusReturn(_windowManager);
             bool ok;
-            try { ok = _processManager.Start(); }
+            try { ok = _processManager.Start(showWithoutActivating: _windowManager?.PassiveInput != null); }
             catch (Exception ex)
             {
                 LogManager.Log("[LaunchFlow] processManager.Start threw: " + ex.Message);
@@ -2582,14 +2656,25 @@ namespace CF7Launcher.Guardian
         /// panel swap requires JS, title, and exact-scene gates to be clear.
         /// 标题 watchdog 与入场 watchdog 分离：草稿编辑期没有场景 deadline；
         /// 只有普通读档命令已派发或建角 durable 后，才开始等待 exact scene。</summary>
-        private void TransitionToReady()
+        private void TransitionToReady(int generation)
         {
             CancelWaitTimerLocked();  // 清 game_ready 超时
+            if (_frontdoorMode == "load")
+            {
+                _frontdoorReadyConnection = generation;
+                if (_acceptedTitleAttemptId == _currentAttemptId && _frontdoorTitleConnection != generation)
+                {
+                    _acceptedTitleAttemptId = null;
+                    _frontdoorTitleConnection = 0;
+                    _revealWaitingFlash = true;
+                }
+            }
             SetState(State.Ready, "");
             if (_revealWaitingFlash)
             {
                 ArmFlashRevealWatchdogLocked(_currentAttemptId);
             }
+            TryDispatchFrontdoorLoadLocked();
             MaybeArmFrontdoorSceneWatchdogLocked();
             TryPerformRevealLocked();
         }
@@ -2856,14 +2941,18 @@ namespace CF7Launcher.Guardian
             string mode;
             lock (_stateLock)
             {
-                if (_state == State.Error
-                    || _state == State.Resetting
+                if (_state != State.Ready
                     || _frontdoorMode == null
                     || !_revealWaitingScene
                     || !string.Equals(
                         _currentAttemptId,
                         observedAttemptId,
                         StringComparison.Ordinal))
+                    return;
+                // Both UiData tees run synchronously inside the socket's connection
+                // transition fence. The generation that got this load owns the scene.
+                if (_frontdoorMode == "load" && (!_frontdoorEntryDispatched
+                    || !IsFrontdoorLoadConnectionCurrent(_frontdoorReadyConnection)))
                     return;
                 if (_frontdoorMode == "create" && !_characterCreateDurable)
                 {
@@ -2893,7 +2982,7 @@ namespace CF7Launcher.Guardian
         /// <summary>Flash 帧 81 bootstrap_reveal_ready task handler. attemptId 校验防 stale attempt 干扰.
         /// Phase 2b-ext: 同时往 bootstrap.html 广播 flash_ready, 让前端给跳过按钮加就绪样式 (脉冲发光 + 改文案),
         /// 用户在视频播放中即可直观看到"Flash 已加载好, 随时可跳进游戏". </summary>
-        private string HandleBootstrapRevealReady(JObject msg)
+        private string HandleBootstrapRevealReady(JObject msg, int generation)
         {
             bool shouldNotifyFrontend = false;
             JObject frontdoorCommand = null;
@@ -2914,6 +3003,14 @@ namespace CF7Launcher.Guardian
                         + _state);
                     return null;
                 }
+                if (_frontdoorMode == "load")
+                {
+                    if (!IsFrontdoorLoadConnectionCurrent(generation)
+                        || (_state == State.Ready ? generation != _frontdoorReadyConnection
+                            : _passiveLaunchConnection != 0 && generation != _passiveLaunchConnection))
+                        return null;
+                    _frontdoorTitleConnection = generation;
+                }
                 // Record the genuine title receipt even if the reveal
                 // watchdog already made the host visible.  The watchdog
                 // never writes this latch.
@@ -2930,33 +3027,28 @@ namespace CF7Launcher.Guardian
                 {
                     LogManager.Log("[LaunchFlow] bootstrap_reveal_ready: title gate already clear");
                 }
-                if (_frontdoorTitleCallId == null
-                    && (_frontdoorMode == "create" || _frontdoorMode == "load"))
+                if (_frontdoorMode == "load")
+                {
+                    TryDispatchFrontdoorLoadLocked();
+                    if (_state == State.Error)
+                        shouldNotifyFrontend = false;
+                }
+                else if (_frontdoorTitleCallId == null && _frontdoorMode == "create")
                 {
                     _frontdoorTitleCallId = Guid.NewGuid().ToString("N");
                     frontdoorCommand = new JObject
                     {
                         ["task"] = "cmd",
-                        ["action"] = _frontdoorMode == "create"
-                            ? "characterCreationSnapshot"
-                            : "frontdoorEnterResolvedSave",
+                        ["action"] = "characterCreationSnapshot",
                         ["v"] = 1,
                         ["callId"] = _frontdoorTitleCallId,
                         ["attemptId"] = attemptId,
                         ["slotKey"] = _pendingSlot
                     };
-                    if (_frontdoorMode == "load")
-                    {
-                        _frontdoorEntryDispatched = true;
-                        MaybeArmFrontdoorSceneWatchdogLocked();
-                    }
-                    else
-                    {
-                        ArmCharacterCreateSnapshotTimerLocked(
-                            attemptId,
-                            _pendingSlot,
-                            _frontdoorTitleCallId);
-                    }
+                    ArmCharacterCreateSnapshotTimerLocked(
+                        attemptId,
+                        _pendingSlot,
+                        _frontdoorTitleCallId);
                 }
                 TryPerformRevealLocked();
             }
@@ -2972,6 +3064,57 @@ namespace CF7Launcher.Guardian
                 catch (Exception ex) { LogManager.Log("[LaunchFlow] flash_ready broadcast error: " + ex.Message); }
             }
             return null;
+        }
+
+        private bool IsFrontdoorLoadConnectionCurrent(int generation)
+        {
+            if (generation == 0)
+                return CharacterCreateAs2PushForTests != null;
+            return _socketServer != null && _socketServer.TryGetReadyGeneration(out int current)
+                && current == generation;
+        }
+
+        private void TryDispatchFrontdoorLoadLocked()
+        {
+            if (_state != State.Ready || _frontdoorMode != "load" || !_revealWaitingScene
+                || _frontdoorEntryDispatched || _revealWaitingFlash
+                || _form?.IsShutdownAdmissionClosed == true
+                || string.IsNullOrEmpty(_pendingSlot) || string.IsNullOrEmpty(_currentAttemptId)
+                || _acceptedTitleAttemptId != _currentAttemptId
+                || _frontdoorTitleConnection != _frontdoorReadyConnection)
+                return;
+
+            int generation = _frontdoorReadyConnection;
+            if (!IsFrontdoorLoadConnectionCurrent(generation))
+            {
+                TransitionToError("frontdoor_entry_connection_changed");
+                return;
+            }
+
+            string callId = Guid.NewGuid().ToString("N");
+            var command = new JObject
+            {
+                ["task"] = "cmd",
+                ["action"] = "frontdoorEnterResolvedSave",
+                ["v"] = 1,
+                ["callId"] = callId,
+                ["attemptId"] = _currentAttemptId,
+                ["slotKey"] = _pendingSlot
+            };
+            Action<JObject> testPush = CharacterCreateAs2PushForTests;
+            if (testPush != null)
+                testPush(command);
+            else if (!_socketServer.TrySendIfGen(command.ToString(Formatting.None) + "\0", generation))
+            {
+                // A failed write has an unknown delivery result. End this attempt once.
+                TransitionToError("frontdoor_entry_send_failed");
+                return;
+            }
+
+            _frontdoorTitleCallId = callId;
+            _frontdoorEntryDispatched = true;
+            LogManager.Log($"event=frontdoor_entry_dispatched attempt={_currentAttemptId} generation={generation}");
+            MaybeArmFrontdoorSceneWatchdogLocked();
         }
 
         private void ArmFlashRevealWatchdogLocked(string attemptIdSnap)
@@ -3112,6 +3255,7 @@ namespace CF7Launcher.Guardian
                     ? _frontdoorEntryDispatched
                     : _frontdoorMode == "create" && _characterCreateDurable;
                 if (_state != State.Ready || !_revealWaitingScene || !entryStarted
+                    || (_frontdoorMode == "load" && !IsFrontdoorLoadConnectionCurrent(_frontdoorReadyConnection))
                     || string.IsNullOrEmpty(_currentAttemptId) || string.IsNullOrEmpty(_pendingSlot)
                     || !string.Equals(_currentAttemptId, message.Value<string>("attemptId"), StringComparison.Ordinal)
                     || !string.Equals(_pendingSlot, message.Value<string>("slotKey"), StringComparison.Ordinal))
@@ -3390,7 +3534,7 @@ namespace CF7Launcher.Guardian
                     _cachedReady[attemptId] = generation;
                     return null;
                 }
-                TransitionToReady();
+                TransitionToReady(generation);
                 return null;
             }
         }
@@ -3444,7 +3588,13 @@ namespace CF7Launcher.Guardian
                         FailEmbedLocked("embed_socket_replaced");
                         return false;
                     }
-                    if (!_windowManager.TryAcceptPassiveBootstrap(ticket, CompleteEmbedLocked))
+                    if (!_windowManager.TryAcceptPassiveBootstrap(ticket, () =>
+                    {
+                        if (_frontdoorMode == "load" && _windowManager.TryGetPublishedBootstrapCloseTarget(ticket,
+                            (uint)flash.Id, out var target))
+                            _frontdoorPublication = new(attempt, flash, (uint)flash.Id, connection, ticket, target, Published: true);
+                        CompleteEmbedLocked();
+                    }))
                     {
                         FailEmbedLocked("embed_publication_invalidated");
                         return false;
@@ -3468,7 +3618,7 @@ namespace CF7Launcher.Guardian
                 return;
             }
             SetState(State.WaitingGameReady, "");
-            if (HasCachedReadyLocked()) TransitionToReady();
+            if (HasCachedReadyLocked()) TransitionToReady(_cachedReady[_currentAttemptId]);
             else ArmWaitTimeoutLocked(WAIT_GAME_READY_MS, "game_ready_timeout");
         }
 
@@ -3541,8 +3691,9 @@ namespace CF7Launcher.Guardian
                     {
                         if (_state != State.WaitingGameReady || _currentAttemptId != attempt
                             || _passiveLaunchConnection != connection || (connection > 0
-                            && (!_socketServer.TryGetReadyGeneration(out int current) || current != connection))) return false;
-                        TransitionToReady();
+                            && (!_socketServer.TryGetReadyGeneration(out int current) || current != connection))
+                            || !HasCachedReadyLocked()) return false;
+                        TransitionToReady(_cachedReady[attempt]);
                         return true;
                     }
                 }

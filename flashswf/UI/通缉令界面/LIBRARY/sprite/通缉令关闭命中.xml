@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/通缉令关闭命中" itemID="6b0ac4ff-00000001">
+  <timeline>
+    <DOMTimeline name="通缉令关闭命中">
+      <layers>
+        <DOMLayer name="命中">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 537" symbolType="graphic" centerPoint3DY="0.05" loop="loop">
+                  <matrix>
+                    <Matrix a="1.19999694824219" d="1.19999694824219" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CCCCCC" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!159 -39[177 27 142 86!142 86[108 145 42 163!42 163[-24 181 -84 147!-84 147[-143 113 -161 47!-161 47[-179 -19 -145 -79!-145 -79[-110 -138 -44 -156!-44 -156[22 -174 81 -140!81 -140[141 -105 159 -39"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

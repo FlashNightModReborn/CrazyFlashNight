@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cwchar>
 #include <initializer_list>
+#include <vector>
 
 // Provided by InputBridge.cpp when compiled with CF7_INPUT_BRIDGE_SELFTEST.
 namespace InputBridgeSelfTest {
@@ -24,10 +25,22 @@ namespace InputBridgeSelfTest {
 namespace {
 InputShared* state=nullptr;
 int focusGains=0, mouseDeliveries=0, nativeLeaves=0, failures=0;
-POINT lastMouseMove{}, lastLeftUp{};
+POINT lastMouseMove{}, lastLeftUp{}, lastWheel{};
 HWND observedChild=nullptr, expectedFocus=nullptr;
 bool focusChangedDuringMouseDelivery=false;
 unsigned seen[WM_MOUSELAST-WM_MOUSEFIRST+1]{};
+struct PointerObservation {
+    UINT message;
+    WPARAM flags;
+    POINT point;
+    UINT sharedHeld,virtualHeld;
+};
+std::vector<PointerObservation> pointerObservations;
+bool observeReleasePosition=false;
+enum class DuringPositionMove { None, Cancel, Stop, Reenter };
+DuringPositionMove duringPositionMove=DuringPositionMove::None;
+void InterleavePositionMove();
+
 LRESULT CALLBACK TargetProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
     if(hwnd==observedChild && message>=WM_MOUSEFIRST && message<=WM_MOUSELAST) {
         ++seen[message-WM_MOUSEFIRST];
@@ -37,6 +50,18 @@ LRESULT CALLBACK TargetProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
     if(message==WM_MOUSELEAVE) nativeLeaves++;
     if(message==WM_MOUSEMOVE) lastMouseMove={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
     if(message==WM_LBUTTONUP) lastLeftUp={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
+    if(message==WM_MOUSEWHEEL) lastWheel={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
+    if(observeReleasePosition && hwnd==observedChild
+        && ((message>=WM_MOUSEFIRST && message<=WM_MOUSELAST) || message==WM_CANCELMODE)) {
+        UINT virtualHeld=0;
+        if(InputBridgeSelfTest::MouseKey(VK_LBUTTON)<0)virtualHeld|=MK_LBUTTON;
+        if(InputBridgeSelfTest::MouseKey(VK_RBUTTON)<0)virtualHeld|=MK_RBUTTON;
+        if(InputBridgeSelfTest::MouseKey(VK_MBUTTON)<0)virtualHeld|=MK_MBUTTON;
+        if(InputBridgeSelfTest::MouseKey(VK_XBUTTON1)<0)virtualHeld|=MK_XBUTTON1;
+        pointerObservations.push_back({message,wp,{static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))},
+            static_cast<UINT>(state->heldButtons),virtualHeld});
+        if(message==WM_MOUSEMOVE && lastMouseMove.y<0)InterleavePositionMove();
+    }
     if(message==WM_MOUSEMOVE || message==WM_LBUTTONDOWN || message==WM_LBUTTONUP
         || message==WM_RBUTTONDOWN || message==WM_RBUTTONUP
         || message==WM_MBUTTONDOWN || message==WM_MBUTTONUP
@@ -60,6 +85,137 @@ LPARAM PacketL(int x,int y,UINT seq) {
         | (static_cast<ULONGLONG>(static_cast<USHORT>(y))<<16)
         | (static_cast<ULONGLONG>(seq)<<32));
 }
+
+void InterleavePositionMove() {
+    const auto action=duringPositionMove;
+    duringPositionMove=DuringPositionMove::None;
+    switch(action) {
+    case DuringPositionMove::Cancel:
+        InterlockedExchange(&state->minEpoch,3);
+        InterlockedExchange(&state->cancelTicket,1);
+        break;
+    case DuringPositionMove::Stop:
+        InterlockedExchange(&state->stop,1);
+        break;
+    case DuringPositionMove::Reenter:
+        InputBridgeSelfTest::Drive(RegisterWindowMessageW(InputMessage),
+            PacketW(WM_MOUSEMOVE-WM_MOUSEFIRST,MK_LBUTTON,2),PacketL(50,48,3));
+        break;
+    case DuringPositionMove::None:
+        break;
+    }
+}
+
+void CheckReleasePosition(HWND target,UINT packet) {
+    observeReleasePosition=true;
+    UINT sequence=0;
+    auto reset=[&]() {
+        *state={};state->session=17;state->passiveMode=InputPassiveDisabled;
+        state->sourceWindow=reinterpret_cast<uint64_t>(target);
+        InputBridgeSelfTest::Install(target,state,packet);
+        sequence=0;
+        duringPositionMove=DuringPositionMove::None;
+        pointerObservations.clear();
+    };
+    auto send=[&](UINT message,UINT flags,int x,int y,UINT extra=0,UINT epoch=2) {
+        state->issuedEpoch=static_cast<LONG>(epoch);
+        InputBridgeSelfTest::Drive(packet,PacketW(message-WM_MOUSEFIRST,flags,epoch)|(extra<<16),
+            PacketL(x,y,++sequence));
+    };
+    auto synced=[&](UINT message,UINT oldHeld,UINT newHeld,UINT modifiers,UINT extra=0) {
+        if(pointerObservations.size()!=2)return false;
+        const auto& move=pointerObservations[0];
+        const auto& release=pointerObservations[1];
+        return move.message==WM_MOUSEMOVE && release.message==message
+            && move.flags==(oldHeld|modifiers) && release.flags==MAKEWPARAM(newHeld|modifiers,extra)
+            && move.point.y<0 && move.point.x==release.point.x && move.point.y==release.point.y
+            && move.sharedHeld==oldHeld && move.virtualHeld==oldHeld
+            && release.sharedHeld==newHeld && release.virtualHeld==newHeld;
+    };
+
+    reset();
+    send(WM_LBUTTONDOWN,MK_LBUTTON,10,10);
+    pointerObservations.clear();
+    send(WM_LBUTTONUP,MK_SHIFT|MK_CONTROL,30,-15);
+    Check(synced(WM_LBUTTONUP,MK_LBUTTON,0,MK_SHIFT|MK_CONTROL)
+        && state->completedSeq==2 && !InputBridgeSelfTest::Gesture(),
+        "changed_release_feeds_one_signed_motion_then_one_original_up");
+    pointerObservations.clear();
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,2),PacketL(30,-15,2));
+    send(WM_LBUTTONUP,0,31,-16);
+    Check(pointerObservations.empty() && state->completedSeq==2,
+        "duplicate_and_unowned_release_cannot_feed_motion");
+
+    reset();
+    send(WM_LBUTTONDOWN,MK_LBUTTON,10,10);
+    pointerObservations.clear();
+    send(WM_LBUTTONUP,0,10,10);
+    Check(pointerObservations.size()==1 && pointerObservations.front().message==WM_LBUTTONUP,
+        "unchanged_down_position_release_needs_no_extra_motion");
+    send(WM_LBUTTONDOWN,MK_LBUTTON,10,10);
+    send(WM_MOUSEMOVE,MK_LBUTTON,30,-15);
+    pointerObservations.clear();
+    send(WM_LBUTTONUP,0,30,-15);
+    Check(pointerObservations.size()==1 && pointerObservations.front().message==WM_LBUTTONUP,
+        "already_forwarded_outside_move_is_not_repeated");
+
+    reset();
+    send(WM_LBUTTONDOWN,MK_LBUTTON,10,10);
+    send(WM_MOUSEWHEEL,MK_LBUTTON,30,-15,120);
+    pointerObservations.clear();
+    send(WM_LBUTTONUP,0,30,-15);
+    Check(synced(WM_LBUTTONUP,MK_LBUTTON,0,0),
+        "wheel_updates_virtual_cursor_but_does_not_feed_release_motion");
+
+    reset();
+    send(WM_RBUTTONDOWN,MK_RBUTTON,10,10);
+    send(WM_XBUTTONDOWN,MK_RBUTTON|MK_XBUTTON1,10,10,XBUTTON1);
+    pointerObservations.clear();
+    send(WM_XBUTTONUP,MK_RBUTTON|MK_CONTROL,30,-15,XBUTTON1);
+    Check(synced(WM_XBUTTONUP,MK_RBUTTON|MK_XBUTTON1,MK_RBUTTON,MK_CONTROL,XBUTTON1)
+        && InputBridgeSelfTest::Gesture(), "terminal_motion_keeps_other_held_button_and_only_up_has_xbutton_id");
+    pointerObservations.clear();
+    send(WM_RBUTTONUP,0,30,-15);
+    Check(pointerObservations.size()==1 && pointerObservations.front().message==WM_RBUTTONUP
+        && !state->heldButtons && !InputBridgeSelfTest::Gesture(), "second_owned_button_releases_once_without_new_motion");
+
+    reset();
+    send(WM_LBUTTONDOWN,MK_LBUTTON,10,10);
+    pointerObservations.clear();
+    duringPositionMove=DuringPositionMove::Cancel;
+    send(WM_LBUTTONUP,0,30,-15);
+    Check(pointerObservations.size()==2 && pointerObservations[0].message==WM_MOUSEMOVE
+        && pointerObservations[1].message==WM_CANCELMODE && state->completedSeq==1
+        && state->cancelledTicket==1 && !state->heldButtons,
+        "cancel_during_position_sync_settles_exact_ticket_without_stale_up");
+    pointerObservations.clear();
+    send(WM_LBUTTONUP,0,31,-16);
+    Check(pointerObservations.empty() && state->completedSeq==1,"cancelled_final_up_cannot_add_motion");
+    send(WM_LBUTTONDOWN,MK_LBUTTON,10,10,0,3);
+    pointerObservations.clear();
+    send(WM_LBUTTONUP,0,30,-15,0,3);
+    Check(synced(WM_LBUTTONUP,MK_LBUTTON,0,0),"fresh_gesture_after_terminal_cancel_has_own_release");
+
+    for(auto action:{DuringPositionMove::Stop,DuringPositionMove::Reenter}) {
+        reset();
+        send(WM_LBUTTONDOWN,MK_LBUTTON,10,10);
+        pointerObservations.clear();
+        duringPositionMove=action;
+        send(WM_LBUTTONUP,0,30,-15);
+        Check(pointerObservations.size()==1 && pointerObservations[0].message==WM_MOUSEMOVE
+            && state->stop==1 && state->completedSeq==1 && state->heldButtons==MK_LBUTTON,
+            action==DuringPositionMove::Stop ? "stop_during_position_sync_cannot_deliver_old_up"
+                : "reentrant_pointer_cannot_overtake_a_partially_dispatched_release");
+        InterlockedExchange(&state->cancelTicket,1);
+        pointerObservations.clear();
+        send(WM_LBUTTONUP,0,30,-15,0,3);
+        Check(pointerObservations.size()==1 && pointerObservations[0].message==WM_CANCELMODE
+            && state->cancelledTicket==1 && !state->heldButtons && state->completedSeq==1,
+            "stopped_release_is_retired_by_owned_cancel_without_up");
+    }
+    observeReleasePosition=false;
+}
+
 // Mirrors the host send contract: the issued epoch is published into the
 // shared page BEFORE the packet is posted, on every send.
 void SendDown(UINT packet,UINT epoch,UINT seq) {
@@ -75,9 +231,119 @@ void SendMove(UINT packet,UINT epoch,UINT seq) {
 void DeliverDown(UINT packet,UINT epoch,UINT seq) {
     InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONDOWN-WM_MOUSEFIRST,MK_LBUTTON,epoch),PacketL(10,10,seq));
 }
+
+bool RunDpiWindow(POINT position, bool mirrored, HINSTANCE module) {
+    const HWND parent=CreateWindowExW(0,L"CF7InputBridgeDpiFixture",L"private DPI owner",WS_POPUP,
+        position.x,position.y,1600,900,nullptr,nullptr,module,nullptr);
+    if(!parent)return false;
+    const auto parentContext=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
+    if(!parentContext){DestroyWindow(parent);return false;}
+    const HWND flash=CreateWindowExW(mirrored ? WS_EX_LAYOUTRTL : 0,L"CF7InputBridgeDpiFixture",L"private DPI source",
+        WS_CHILD|WS_DISABLED,0,0,857,482,parent,nullptr,module,nullptr);
+    if(!flash || GetDpiForWindow(parent)!=120 || GetDpiForWindow(flash)!=96) {
+        if(flash)DestroyWindow(flash);
+        SetThreadDpiAwarenessContext(parentContext);
+        DestroyWindow(parent);
+        return false;
+    }
+    RECT logical{},physical{};
+    const bool hasLogical=GetClientRect(flash,&logical)!=FALSE;
+    const auto unaware=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    const bool hasPhysical=unaware && GetClientRect(flash,&physical);
+    if(unaware)SetThreadDpiAwarenessContext(unaware);
+    const bool exactFixture=hasLogical && hasPhysical && logical.right==857 && logical.bottom==482
+        && physical.right==1071 && physical.bottom==602;
+    if(exactFixture) {
+        InputShared dpiState{};dpiState.passiveMode=InputPassiveDisabled;
+        state=&dpiState;
+        observedChild=flash;
+        expectedFocus=GetFocus();
+        const UINT packet=RegisterWindowMessageW(InputMessage);
+        InputBridgeSelfTest::Install(flash,state,packet);
+        UINT sequence=0;
+        auto send=[&](UINT message,UINT flags,int x,int y,UINT extra=0) {
+            InputBridgeSelfTest::Drive(packet,PacketW(message-WM_MOUSEFIRST,flags,2)|(extra<<16),
+                PacketL(x,y,++sequence));
+        };
+        const auto release=[&](int x,int y) {
+            const auto before=seen[WM_LBUTTONUP-WM_MOUSEFIRST];
+            send(WM_LBUTTONDOWN,MK_LBUTTON,318,100);
+            send(WM_LBUTTONUP,0,x,y);
+            return seen[WM_LBUTTONUP-WM_MOUSEFIRST]==before+1 && !state->heldButtons;
+        };
+        send(WM_MOUSEMOVE,0,318,100);
+        const POINT inner=lastMouseMove;
+        Check(inner.y==80 && (mirrored ? inner.x>=602 && inner.x<=603 : inner.x==254),
+            "dpi_valid_inner_point_uses_native_units");
+        Check(release(318,-15) && lastLeftUp.y==-12 && (mirrored ? lastLeftUp.x>=602 && lastLeftUp.x<=603 : lastLeftUp.x==254),
+            "dpi_outside_top_delivers_one_signed_held_release");
+        Check(release(-15,100) && lastLeftUp.y==80 && (mirrored ? lastLeftUp.x>=logical.right : lastLeftUp.x==-12),
+            "dpi_outside_left_keeps_the_correct_side");
+        Check(release(1071,100) && lastLeftUp.y==80 && (mirrored ? lastLeftUp.x<0 : lastLeftUp.x==logical.right),
+            "dpi_outside_right_boundary_is_not_a_client_hit");
+        Check(release(318,602) && lastLeftUp.y==logical.bottom,"dpi_outside_bottom_boundary_is_not_a_client_hit");
+        Check(release(1099,100) && lastLeftUp.y==80 && (mirrored ? lastLeftUp.x==-23 : lastLeftUp.x==879),
+            "dpi_points_beyond_the_right_edge_use_signed_client_scale");
+        Check(release(318,615) && lastLeftUp.y==492,"dpi_points_beyond_the_bottom_edge_use_signed_client_scale");
+        Check(release(318,-1) && lastLeftUp.y==-1,"dpi_one_pixel_outside_does_not_round_into_client");
+        send(WM_MOUSEMOVE,0,-1,-1);
+        Check(lastMouseMove.x==-1 && lastMouseMove.y==-1,"dpi_unheld_leave_sentinel_is_not_transformed");
+        send(WM_LBUTTONDOWN,MK_LBUTTON,318,100);
+        send(WM_MOUSEMOVE,MK_LBUTTON,-1,-1);
+        Check(lastMouseMove.y==-1 && (mirrored ? lastMouseMove.x>=logical.right : lastMouseMove.x==-1),
+            "dpi_held_motion_at_sentinel_position_is_transformed");
+        send(WM_LBUTTONUP,0,318,-1);
+        const auto wheels=seen[WM_MOUSEWHEEL-WM_MOUSEFIRST];
+        send(WM_MOUSEWHEEL,0,318,100,120);
+        POINT nativeScreen=inner;
+        ClientToScreen(flash,&nativeScreen);
+        Check(seen[WM_MOUSEWHEEL-WM_MOUSEFIRST]==wheels+1 && lastWheel.x==nativeScreen.x && lastWheel.y==nativeScreen.y,
+            "dpi_wheel_still_delivers_native_screen_units");
+        Check(!focusChangedDuringMouseDelivery,"dpi_mouse_packets_never_acquire_focus");
+        SendDown(packet,2,++sequence);
+        const auto releases=seen[WM_LBUTTONUP-WM_MOUSEFIRST];
+        Check(SetWindowPos(flash,nullptr,0,0,0,0,SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE)!=FALSE,"dpi_fixture_remove_client_bounds");
+        send(WM_LBUTTONUP,0,318,-15);
+        Check(seen[WM_LBUTTONUP-WM_MOUSEFIRST]==releases && state->stop==1,"dpi_unknown_mapping_is_not_a_mouse_release");
+        const int beforeCancel=mouseDeliveries;
+        state->cancelTicket=1;
+        send(WM_MOUSEMOVE,0,1,1);
+        Check(state->cancelledTicket==1 && !state->heldButtons && mouseDeliveries==beforeCancel+1,
+            "dpi_unknown_mapping_still_settles_the_real_cancel_ticket");
+        observedChild=nullptr;
+        DestroyWindow(flash);
+        state=nullptr;
+    } else DestroyWindow(flash);
+    SetThreadDpiAwarenessContext(parentContext);
+    DestroyWindow(parent);
+    return exactFixture;
+}
+
+int RunMixedDpiFixture(const wchar_t* mode) {
+    BOOL receivesInput=TRUE;
+    if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_IO,&receivesInput,sizeof(receivesInput),nullptr)
+        || receivesInput) { std::puts("BLOCKED: mixed DPI fixture needs a non-input desktop");return 2; }
+    if(!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
+        || SetThreadDpiHostingBehavior(DPI_HOSTING_BEHAVIOR_MIXED)==DPI_HOSTING_BEHAVIOR_INVALID) return 2;
+    WNDCLASSW wc{};
+    wc.lpfnWndProc=TargetProc;
+    wc.hInstance=GetModuleHandleW(nullptr);
+    wc.lpszClassName=L"CF7InputBridgeDpiFixture";
+    if(!RegisterClassW(&wc))return 2;
+    const bool mirroredNegative=wcscmp(mode,L"rtl-negative")==0;
+    const bool negative=mirroredNegative || wcscmp(mode,L"negative")==0;
+    const bool mirrored=mirroredNegative || wcscmp(mode,L"rtl")==0;
+    if(!negative && !mirrored && wcscmp(mode,L"ltr")!=0)return 2;
+    if(!RunDpiWindow(negative ? POINT{-130,-96} : POINT{160,74},mirrored,wc.hInstance)) {
+        std::puts("BLOCKED: actual 120-to-96 DPI with 1071x602 physical source is required");return 2;
+    }
+    std::printf("MIXED DPI RESULT %s failures=%d\n",failures?"FAIL":"PASS",failures);
+    return failures ? 1 : 0;
+}
 }
 
 int wmain(int argc,wchar_t** argv) {
+    if(argc==3 && wcscmp(argv[1],L"--mixed-dpi")==0)return RunMixedDpiFixture(argv[2]);
     InputTraceShared diagnostic{};
     for(int n=1;n<=static_cast<int>(InputTraceCapacity)+3;n++)
         TraceWrite(&diagnostic,TraceReturn,n,n+10,WM_LBUTTONUP,POINT{n,-n},0,0,nullptr);
@@ -283,6 +549,7 @@ int wmain(int argc,wchar_t** argv) {
             "passive_mode_restored_field_cannot_reopen_sealed_bridge");
     }
 
+    CheckReleasePosition(target,packet);
     *state={};state->passiveMode=InputPassiveDisabled;
     InputBridgeSelfTest::Install(target,state,packet);
     EnableWindow(target,TRUE);

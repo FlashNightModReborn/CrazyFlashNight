@@ -52,7 +52,7 @@ describe("monster panel fit", () => {
   it("只钉观测五项时，四元联立能把档次/成长/血防系数解回标注", () => {
     const result = fitMonsterCoefficients({
       stage: PHYSICS_TEACHER.stage,
-      panel: computeMonsterRow(PHYSICS_TEACHER),
+      panel: computeMonsterRow(PHYSICS_TEACHER, "v1"),
       known: observedOf(PHYSICS_TEACHER),
     });
 
@@ -69,7 +69,7 @@ describe("monster panel fit", () => {
   it("人工钉住档次系数后它退出搜索，只解其余三个自由量", () => {
     const result = fitMonsterCoefficients({
       stage: PHYSICS_TEACHER.stage,
-      panel: computeMonsterRow(PHYSICS_TEACHER),
+      panel: computeMonsterRow(PHYSICS_TEACHER, "v1"),
       known: { ...observedOf(PHYSICS_TEACHER), tierFactor: 9 },
     });
 
@@ -79,7 +79,7 @@ describe("monster panel fit", () => {
   });
 
   it("经验两项不进误差：面板经验改十倍，六个系数与误差值都不动", () => {
-    const panel = computeMonsterRow(PHYSICS_TEACHER);
+    const panel = computeMonsterRow(PHYSICS_TEACHER, "v1");
     const known = observedOf(PHYSICS_TEACHER);
     const baseline = fitMonsterCoefficients({ stage: PHYSICS_TEACHER.stage, panel, known });
     const withExp = fitMonsterCoefficients({
@@ -106,7 +106,7 @@ describe("monster panel fit", () => {
   it("缺观测的攻速/倍率/段数按工作簿默认参与拟合，并记进未定清单让写盘侧跳过", () => {
     const result = fitMonsterCoefficients({
       stage: PHYSICS_TEACHER.stage,
-      panel: computeMonsterRow(PHYSICS_TEACHER),
+      panel: computeMonsterRow(PHYSICS_TEACHER, "v1"),
       known: { speedFactor: PHYSICS_TEACHER.speedFactor, superArmorFactor: PHYSICS_TEACHER.superArmorFactor },
     });
 
@@ -121,7 +121,7 @@ describe("monster panel fit", () => {
     const input: MonsterInput = { ...PHYSICS_TEACHER, highAtkFactor: 5 };
     const result = fitMonsterCoefficients({
       stage: input.stage,
-      panel: computeMonsterRow(input),
+      panel: computeMonsterRow(input, "v1"),
       known: { ...observedOf(input), tierFactor: input.tierFactor },
     });
 
@@ -138,7 +138,7 @@ describe("monster panel fit", () => {
     // 面板按 档次系数 60 正算，旧网格只能在 25 顶格收口；放开后应解回 60 附近并登记越界。
     const aboveTop = fitMonsterCoefficients({
       stage: 15,
-      panel: computeMonsterRow({ ...PHYSICS_TEACHER, stage: 15, tierFactor: 60 }),
+      panel: computeMonsterRow({ ...PHYSICS_TEACHER, stage: 15, tierFactor: 60 }, "v1"),
       known,
     });
     expect(aboveTop.coefficients.tierFactor).toBeGreaterThan(25);
@@ -152,7 +152,7 @@ describe("monster panel fit", () => {
   });
 
   it("面板要的非正数顶给人工判断，档次解在参考区间下沿也只报警不夹紧", () => {
-    const panel = computeMonsterRow(PHYSICS_TEACHER);
+    const panel = computeMonsterRow(PHYSICS_TEACHER, "v1");
     const broken = fitMonsterCoefficients({
       stage: 2,
       panel: { ...panel, atkMin: -6, hpMin: -83 },
@@ -172,7 +172,7 @@ describe("monster panel fit", () => {
   it("除阶段外每个系数都带来源标签，标签只用给定/定义档/面板反推三种", () => {
     const result = fitMonsterCoefficients({
       stage: PHYSICS_TEACHER.stage,
-      panel: computeMonsterRow(PHYSICS_TEACHER),
+      panel: computeMonsterRow(PHYSICS_TEACHER, "v1"),
       known: { ...observedOf(PHYSICS_TEACHER), tierFactor: PHYSICS_TEACHER.tierFactor },
     });
     const expected = [...Object.keys(MONSTER_COEFFICIENT_DEFAULTS), "tierFactor"] as MonsterCoefficientName[];
@@ -208,7 +208,7 @@ describe("workbook rules", () => {
   it("移动速度区间只定取值，面板反推不覆盖定义档", () => {
     const result = fitMonsterCoefficients({
       stage: PHYSICS_TEACHER.stage,
-      panel: computeMonsterRow(PHYSICS_TEACHER),
+      panel: computeMonsterRow(PHYSICS_TEACHER, "v1"),
       known: { ...observedOf({ ...PHYSICS_TEACHER, speedFactor: 1 }) },
       // 观测值 1 已经在盘上，定义档不再插手：钉住的系数优先级高于移动速度。
       moveSpeed: { min: 50, max: 75 },
@@ -221,7 +221,7 @@ describe("workbook rules", () => {
   it("没有标识的速度系数才走移动速度定义档", () => {
     const result = fitMonsterCoefficients({
       stage: PHYSICS_TEACHER.stage,
-      panel: computeMonsterRow(PHYSICS_TEACHER),
+      panel: computeMonsterRow(PHYSICS_TEACHER, "v1"),
       known: { atkSpeedFactor: 5, atkMultiplier: 1.5, segmentFactor: 2.5, superArmorFactor: 4 },
       moveSpeed: { min: 50, max: 75 },
     });
@@ -273,7 +273,7 @@ describe("workbook rules", () => {
   it("面板要得比最低档还弱时，档次跟着下探到 1 以下并报警，不夹回 1", () => {
     const weak = fitMonsterCoefficients({
       stage: 2,
-      panel: computeMonsterRow({ ...PHYSICS_TEACHER, stage: 2, tierFactor: 0.4 }),
+      panel: computeMonsterRow({ ...PHYSICS_TEACHER, stage: 2, tierFactor: 0.4 }, "v1"),
       known: observedOf(PHYSICS_TEACHER),
     });
     expect(weak.coefficients.tierFactor).toBeLessThan(1);

@@ -456,6 +456,51 @@ public sealed class WindowManagerFocusRestoreTests
     });
 
     [Fact]
+    public void PendingBootstrapClosePostsToOnlyTheExactDisabledChildWithoutActivation() => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        using var ticket = new CancellationTokenSource();
+        using var replaced = new CancellationTokenSource();
+        uint pid = (uint)Environment.ProcessId;
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, true, false);
+        fixture.Window.StageBootstrapOfferForTests(fixture.Host, ticket.Token, _ => { });
+
+        Assert.False(fixture.Window.TryGetUnpublishedBootstrapCloseTarget(replaced.Token, pid, out _));
+        Assert.False(fixture.Window.TryGetUnpublishedBootstrapCloseTarget(ticket.Token, pid + 1, out _));
+        Assert.True(fixture.Window.TryGetUnpublishedBootstrapCloseTarget(ticket.Token, pid, out var target));
+        Assert.Equal(fixture.Source.Handle, target.Window);
+        Assert.Equal(fixture.Host.Handle, target.Host);
+        Assert.False(fixture.Window.FlashIsEnabled);
+
+        ticket.Cancel();
+        fixture.Window.CancelPassiveBootstrapPublication(ticket.Token, "test_close");
+        Assert.False(fixture.Window.TryGetUnpublishedBootstrapCloseTarget(ticket.Token, pid, out _));
+        Assert.False(ProcessManager.TryPostUnpublishedBootstrapClose(target, pid + 1));
+        Assert.False(ProcessManager.TryPostUnpublishedBootstrapClose(target with { Host = fixture.Guardian.Handle }, pid));
+        Application.DoEvents();
+        Assert.Equal(0, fixture.Source.CloseMessages);
+
+        Assert.True(ProcessManager.TryPostUnpublishedBootstrapClose(target, pid));
+        Application.DoEvents();
+        Assert.Equal(1, fixture.Source.CloseMessages);
+        Assert.False(fixture.Window.FlashIsEnabled);
+        Assert.Equal(fixture.External, fixture.FocusApi.Foreground);
+        Assert.Empty(fixture.FocusApi.ForegroundWrites);
+    });
+
+    [Fact]
+    public void PublishedBootstrapCannotBeCapturedForUnpublishedClose() => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        using var ticket = new CancellationTokenSource();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, false, false);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add, ticket.Token);
+        Assert.True(Assert.Single(fixture.Results));
+        Assert.False(fixture.Window.TryGetUnpublishedBootstrapCloseTarget(ticket.Token, (uint)Environment.ProcessId, out _));
+        Assert.Equal(0, fixture.Source.CloseMessages);
+    });
+
+    [Fact]
     public void WatchdogDropsTrackingWhenTheWindowStillExistsButTheProcessIsNotBound() => R1UiAdapterTests.Sta(() =>
     {
         using var source = new Panel();
@@ -471,7 +516,7 @@ public sealed class WindowManagerFocusRestoreTests
     {
         public RecreatingForm Guardian { get; } = new();
         public RecreatingPanel Host { get; } = new();
-        public Panel Source { get; } = new();
+        public CloseRecordingPanel Source { get; } = new();
         public IntPtr External { get; } = new(0x9ab);
         public RootFocusApi FocusApi { get; } = new();
         public SessionInputAuthority Authority { get; } = R1UiAdapterTests.StartGameAuthority();
@@ -511,6 +556,21 @@ public sealed class WindowManagerFocusRestoreTests
     private sealed class RecreatingPanel : Panel
     {
         public void RecreateNativeHandle() => RecreateHandle();
+    }
+
+    private sealed class CloseRecordingPanel : Panel
+    {
+        public int CloseMessages { get; private set; }
+
+        protected override void WndProc(ref Message message)
+        {
+            if (message.Msg == 0x0010)
+            {
+                CloseMessages++;
+                return;
+            }
+            base.WndProc(ref message);
+        }
     }
 
     [DllImport("user32.dll", EntryPoint = "GetWindowLongW")]

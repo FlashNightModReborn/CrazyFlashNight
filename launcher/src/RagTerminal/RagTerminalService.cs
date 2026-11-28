@@ -66,6 +66,10 @@ namespace CF7Launcher.RagTerminal
 
         private volatile bool _ready;
         private volatile bool _disposed;
+        private readonly object _lifetimeGate = new object();
+        private bool _closing;
+        private bool _startedEmbedded;
+        private bool _requestedRemoteBind;
 
         private readonly object _bindCacheGate = new object();
         /// <summary>最近收到的存档投影（AS2 rag_bind_refresh / 面板打开）。exe 离线时也保留，
@@ -183,8 +187,7 @@ namespace CF7Launcher.RagTerminal
                 }
                 IsReady = true;
             }
-            JObject response = await PostJsonAsync(
-                "/api/integration/bind", signature).ConfigureAwait(false);
+            JObject response = await PostBindAsync(signature).ConfigureAwait(false);
             if (response == null || response.Value<bool?>("ok") != true)
             {
                 LogManager.Log("[RagTerminal] interject bind failed (ignored) slot=" + slotKey);
@@ -232,7 +235,13 @@ namespace CF7Launcher.RagTerminal
             {
                 // 新进程不继承上一实例的绑定态；插话/面板下一次请求前会补 bind。
                 InvalidateBoundBinding();
-                _processStarter(exePath);
+                lock (_lifetimeGate)
+                {
+                    if (_closing || _disposed)
+                        return RagTerminalPrepareResult.Fail("rag_host_closing", "游戏正在退出。");
+                    _processStarter(exePath);
+                    _startedEmbedded = true;
+                }
                 LogManager.Log("[RagTerminal] started embedded exe=" + exePath);
             }
             catch (Exception ex)
@@ -277,8 +286,7 @@ namespace CF7Launcher.RagTerminal
 
             for (int attempt = 0; attempt < 2; attempt++)
             {
-                JObject response = await PostJsonAsync(
-                    "/api/integration/bind", signature).ConfigureAwait(false);
+                JObject response = await PostBindAsync(signature).ConfigureAwait(false);
                 if (response != null && response.Value<bool?>("ok") == true)
                 {
                     MarkBound(signature);
@@ -386,8 +394,16 @@ namespace CF7Launcher.RagTerminal
                 LogManager.Log("[RagTerminal] unbind best-effort failed (ignored)");
         }
 
-        internal void UnbindInBackground()
+        internal void UnbindInBackground(bool closingUnpublishedBootstrap = false)
         {
+            if (closingUnpublishedBootstrap)
+            {
+                lock (_lifetimeGate)
+                {
+                    _closing = true;
+                    if (!_requestedRemoteBind) return;
+                }
+            }
             System.Threading.ThreadPool.QueueUserWorkItem(delegate
             {
                 try { UnbindAsync().GetAwaiter().GetResult(); }
@@ -440,8 +456,7 @@ namespace CF7Launcher.RagTerminal
                 return;
             }
             string signature = payload.ToString(Formatting.None);
-            JObject response = await PostJsonAsync(
-                "/api/integration/bind", signature).ConfigureAwait(false);
+            JObject response = await PostBindAsync(signature).ConfigureAwait(false);
             if (response == null || response.Value<bool?>("ok") != true)
                 LogManager.Log("[RagTerminal] refresh bind failed (ignored) slot=" + slotKey);
             else
@@ -515,10 +530,17 @@ namespace CF7Launcher.RagTerminal
         /// Host 退出链调用：请求 7077 上的 exe 优雅退出。后端只接受由 --embedded 拉起的
         /// 实例（standalone 回 409），用户手动启动的进程不会被误杀；服务未运行时静默返回。
         /// </summary>
-        internal void ShutdownEmbeddedOnExit()
+        internal void ShutdownEmbeddedOnExit(bool closingUnpublishedBootstrap = false)
         {
-            JObject response = PostJsonAsync("/api/integration/shutdown", "{}",
-                ShutdownRequestTimeoutMs).GetAwaiter().GetResult();
+            bool sendShutdown;
+            lock (_lifetimeGate)
+            {
+                _closing = true;
+                sendShutdown = !closingUnpublishedBootstrap || _startedEmbedded;
+            }
+            JObject response = sendShutdown
+                ? PostJsonAsync("/api/integration/shutdown", "{}", ShutdownRequestTimeoutMs).GetAwaiter().GetResult()
+                : null;
             IsReady = false;
             if (response != null)
                 LogManager.Log("[RagTerminal] shutdown acknowledged status="
@@ -616,6 +638,17 @@ namespace CF7Launcher.RagTerminal
             {
                 LogManager.Log("[RagTerminal] get " + path + " failed: " + ex.Message);
                 return null;
+            }
+        }
+
+        private Task<JObject> PostBindAsync(string json)
+        {
+            lock (_lifetimeGate)
+            {
+                if (_closing || _disposed) return Task.FromResult<JObject>(null);
+                // Retain a possible remote binding even when the reply is lost.
+                _requestedRemoteBind = true;
+                return PostJsonAsync("/api/integration/bind", json);
             }
         }
 

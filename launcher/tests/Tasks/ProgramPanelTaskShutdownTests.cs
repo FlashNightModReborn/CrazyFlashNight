@@ -409,18 +409,18 @@ namespace Launcher.Tests.Tasks
             string guardian =
                 File.ReadAllText(
                     FindGuardianFormSource());
-            Assert.Contains(
-                "EmergencyExitReason.CtrlQ",
-                Slice(
-                    guardian,
-                    "private void SetupHotkeys()",
-                    "private bool IsReadyForHotkey()"));
-            Assert.Contains(
-                "EmergencyExitReason.CtrlQ",
-                Slice(
-                    guardian,
-                    "protected override void WndProc(ref Message m)",
-                    "private void OnSessionSwitch"));
+            string keyboardSetup = Slice(guardian,
+                "private void SetupHotkeys(KeyboardHook keyboard)", "private bool IsReadyForHotkey()");
+            string shortcutAuthority = Slice(keyboardSetup, "_kbHook.BindPassiveInput(_passiveInput,", "_kbHook.RegisterAction(0x46");
+            Assert.Contains("!IsShutdownAdmissionClosed", shortcutAuthority);
+            Assert.Contains("_windowManager?.PassiveShortcutForeground() == true", shortcutAuthority);
+            Assert.Contains("EmergencyExit(EmergencyExitReason.CtrlQ);",
+                Slice(keyboardSetup, "_kbHook.RegisterAction(0x51", "_kbHook.RegisterAction(0x1B"));
+            string windowMessages = Slice(guardian,
+                "protected override void WndProc(ref Message m)", "private void OnSessionSwitch");
+            Assert.DoesNotContain("EmergencyExitReason.CtrlQ", windowMessages);
+            Assert.DoesNotContain("WM_HOTKEY", windowMessages);
+            Assert.DoesNotContain("RegisterHotKey", guardian);
             Assert.Contains(
                 "case Keys.Q:",
                 guardian);

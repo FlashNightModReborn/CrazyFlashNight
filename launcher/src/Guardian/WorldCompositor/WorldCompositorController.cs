@@ -403,6 +403,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
                 return;
             }
+            if (_owner is GuardianForm { CommittedStartupClose: { } startupClose })
+            {
+                LogManager.Log($"event=world_compositor_fault_during_startup_close reason={reason} attempt={startupClose.AttemptId} "
+                    + $"generation={startupClose.Connection} flashPid={startupClose.FlashPid} flash=0x{startupClose.Target.Window:X} {error}");
+                return;
+            }
             if (_faulted) return;
             _faulted=true;
             SetWaitReason(CaptureWaitReason.TerminalFault);

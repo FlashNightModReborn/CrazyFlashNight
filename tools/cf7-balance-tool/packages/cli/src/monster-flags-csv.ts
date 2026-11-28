@@ -176,7 +176,8 @@ function viewOf(row: MonsterFlagRow, config: MonsterCensusConfig): RowView {
   for (const field of config.flagFields) Object.assign(values, { [field]: row.flags[field] });
   for (const [field, value] of Object.entries(toolFlagProposal(row))) Object.assign(values, { [field]: value });
 
-  const computed = computeMonsterRow(toCoefficientInput(values));
+  // 误差列对照的是盘上的旧口径面板，锁定 v1。
+  const computed = computeMonsterRow(toCoefficientInput(values), "v1");
   const residuals: MonsterPanelResidual[] = [];
   for (const field of MONSTER_FIT_PANEL_FIELDS) {
     const observed = row.panel[field];
