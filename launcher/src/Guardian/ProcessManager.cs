@@ -161,8 +161,15 @@ namespace CF7Launcher.Guardian
                 && PostMessageW(target.Window, CloseWindowMessage, IntPtr.Zero, IntPtr.Zero);
         }
 
-        internal bool TryCloseUnpublishedFlash(Process target, WindowManager.UnpublishedBootstrapCloseTarget window)
+#if CF7_TEST_SEAMS
+        internal Func<Process, WindowManager.UnpublishedBootstrapCloseTarget, string, bool> CloseStartupFlashForTests { get; set; }
+#endif
+
+        internal bool TryCloseStartupFlash(Process target, WindowManager.UnpublishedBootstrapCloseTarget window, string phase)
         {
+#if CF7_TEST_SEAMS
+            if (CloseStartupFlashForTests is { } close) return close(target, window, phase);
+#endif
             if (target == null || !ReferenceEquals(target, FlashProcess)) return false;
             try
             {
@@ -175,25 +182,25 @@ namespace CF7Launcher.Guardian
                     // ordinary close message to the captured child without changing focus.
                     posted = TryPostUnpublishedBootstrapClose(window, (uint)target.Id);
                 }
-                LogManager.Log($"[Guardian] unpublished Flash close pid={target.Id} hwnd=0x{window.Window:X} posted={posted}");
+                LogManager.Log($"[Guardian] {phase} Flash close pid={target.Id} hwnd=0x{window.Window:X} posted={posted}");
                 if (!posted) return target.HasExited;
                 if (target.WaitForExit(UnpublishedCloseGraceMs))
                 {
-                    LogManager.Log($"[Guardian] unpublished Flash exited after close message code={target.ExitCode}");
+                    LogManager.Log($"[Guardian] {phase} Flash exited after close message code={target.ExitCode}");
                     return true;
                 }
                 if (target.HasExited) return true;
                 lock (_lock)
                 {
                     if (!ReferenceEquals(target, _flashProcess)) return false;
-                    LogManager.Log($"[Guardian] unpublished Flash close grace elapsed; terminating owned pid={target.Id}");
+                    LogManager.Log($"[Guardian] {phase} Flash close grace elapsed; terminating owned pid={target.Id}");
                     target.Kill();
                 }
                 return target.WaitForExit(UnpublishedExitWaitMs);
             }
             catch (Exception ex)
             {
-                LogManager.Log("[Guardian] unpublished Flash close failed: " + ex.GetType().Name);
+                LogManager.Log($"[Guardian] {phase} Flash close failed: {ex.GetType().Name}");
                 return false;
             }
         }

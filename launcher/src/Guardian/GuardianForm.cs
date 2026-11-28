@@ -1285,8 +1285,11 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal GameLaunchFlow.StartupBootstrapClose? CommittedStartupClose => _launchFlow?.CommittedStartupClose;
+
         private void OnFormClosing(object sender, FormClosingEventArgs e)
         {
+            long receivedQpc = Stopwatch.GetTimestamp();
             string state = "Idle";
             if (_launchFlow != null)
             {
@@ -1295,46 +1298,55 @@ namespace CF7Launcher.Guardian
 
             // 闪退诊断: 把 CloseReason 写进所有分支, 区分 X-按钮 / Alt+F4 / Application.Exit / WM_QUERYENDSESSION / TaskKill
             string closeReason = e.CloseReason.ToString();
+            string timing = " qpc=" + receivedQpc + " qpcHz=" + Stopwatch.Frequency;
 
             if (_closeAlreadyInProgress)
             {
                 LogManager.Log(
                     "[Guardian] OnFormClosing state=" + state
                     + " reason=" + closeReason
-                    + " → close already in progress, suppress");
+                    + " → close already in progress, suppress" + timing);
                 e.Cancel = true;
                 return;
             }
 
-            // Ready / Idle / Error → legacy 硬退出路径
+            GameLaunchFlow.StartupBootstrapClose? readyFrontdoorClose = null;
             if (state == "Ready" || state == "Idle" || state == "Error")
             {
-                LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → DoExit (legacy hard exit)");
                 _closeAlreadyInProgress = true;
-                System.Threading.Interlocked.Exchange(ref _closeTerminated, 1);
-                e.Cancel =
-                    !DoExit();
-                return;
+                if (state == "Ready" && e.CloseReason == CloseReason.UserClosing)
+                    readyFrontdoorClose = _launchFlow?.CaptureReadyFrontdoorClose();
+                if (readyFrontdoorClose == null)
+                {
+                    LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → DoExit (legacy hard exit)" + timing);
+                    System.Threading.Interlocked.Exchange(ref _closeTerminated, 1);
+                    e.Cancel = !DoExit();
+                    return;
+                }
             }
 
             // 启动中/Resetting：cancel + 异步等待 Idle/Error
             // 若已被其他路径（重入）终结，阻止 form 默认关闭即可
             if (System.Threading.Interlocked.CompareExchange(ref _closeTerminated, 0, 0) != 0)
             {
-                LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → already terminating, suppress");
+                LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → already terminating, suppress" + timing);
                 e.Cancel = true;
                 return;
             }
 
             e.Cancel = true;
             _closeAlreadyInProgress = true;
-            LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → async cancel + wait terminal");
+            LogManager.Log("[Guardian] OnFormClosing state=" + state + " reason=" + closeReason + " → async cancel + wait terminal"
+                + (readyFrontdoorClose.HasValue ? " frontdoor=unentered" : "") + timing);
 
             // CharacterBuild admission is Ready-gated, but an external cancel may already have
             // moved a previously Ready session into Resetting. Obtain the same persistence proof
             // before this close path initiates (or joins) Reset; otherwise Reset can kill the only
             // Flash process capable of answering recoverDetach.
-            if (!TryPassShutdownFence())
+            bool persistencePassed = readyFrontdoorClose.HasValue
+                ? TryPassShutdownFence(consumeOnSuccess: false)
+                : TryPassShutdownFence();
+            if (!persistencePassed)
             {
                 _closeAlreadyInProgress = false;
                 LogManager.Log(
@@ -1357,7 +1369,21 @@ namespace CF7Launcher.Guardian
             _closeTimeoutTimer.Start();
 
             // 触发异步 Reset（Phase B Step B3: reason 参数已落地）
-            try { _launchFlow.Reset(null, "user_close"); }
+            try
+            {
+                if (readyFrontdoorClose is { } close)
+                {
+                    if (!_launchFlow.TryResetForReadyFrontdoorClose(close))
+                    {
+                        DisarmCloseWait();
+                        _closeAlreadyInProgress = false;
+                        LogManager.Log("[Guardian] ready frontdoor close binding changed attempt=" + close.AttemptId);
+                        return;
+                    }
+                    OnShutdownFence = null;
+                }
+                else _launchFlow.Reset(null, "user_close");
+            }
             catch (Exception ex)
             {
                 LogManager.Log("[Guardian] Reset during close failed: " + ex.Message);
@@ -1370,6 +1396,21 @@ namespace CF7Launcher.Guardian
             if (System.Threading.Interlocked.CompareExchange(ref _closeTerminated, 1, 0) != 0) return;
             LogManager.Log("[Guardian] close terminator fired reason=" + reason);
 
+            DisarmCloseWait();
+
+            // 在 UI 线程上调 ForceExit
+            if (this.InvokeRequired)
+            {
+                try { this.BeginInvoke(new Action(ForceExit)); } catch { try { ForceExit(); } catch { } }
+            }
+            else
+            {
+                ForceExit();
+            }
+        }
+
+        private void DisarmCloseWait()
+        {
             try
             {
                 if (_closeTimeoutTimer != null)
@@ -1387,15 +1428,6 @@ namespace CF7Launcher.Guardian
                 _closeStateWatcher = null;
             } catch { }
 
-            // 在 UI 线程上调 ForceExit
-            if (this.InvokeRequired)
-            {
-                try { this.BeginInvoke(new Action(ForceExit)); } catch { try { ForceExit(); } catch { } }
-            }
-            else
-            {
-                ForceExit();
-            }
         }
 
         /// <summary>

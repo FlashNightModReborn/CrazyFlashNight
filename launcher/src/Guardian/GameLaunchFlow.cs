@@ -108,11 +108,12 @@ namespace CF7Launcher.Guardian
         private Process _currentFlashProcess;
         private int _passiveLaunchConnection;
         private CancellationTokenSource _passiveEmbeddingCancellation;
-        private bool _closingUnpublishedBootstrap;
+        private StartupBootstrapClose? _frontdoorPublication;
+        private StartupBootstrapClose? _committedStartupClose;
         private int _timerGen;
 
-        private readonly record struct UnpublishedBootstrapClose(string AttemptId, int Connection,
-            WindowManager.UnpublishedBootstrapCloseTarget Target);
+        internal readonly record struct StartupBootstrapClose(string AttemptId, Process Flash, uint FlashPid, int Connection,
+            CancellationToken EmbedTicket, WindowManager.UnpublishedBootstrapCloseTarget Target, bool Published);
 
         // per-attempt ready 缓存（attemptId → arrived？）不变式 #8
         private readonly Dictionary<string, int> _cachedReady = new Dictionary<string, int>();
@@ -255,9 +256,40 @@ namespace CF7Launcher.Guardian
             get { lock (_stateLock) { return _revealPerformed; } }
         }
 
-        internal bool ClosingUnpublishedBootstrap
+        internal StartupBootstrapClose? CommittedStartupClose
         {
-            get { lock (_stateLock) { return _closingUnpublishedBootstrap; } }
+            get { lock (_stateLock) { return _committedStartupClose; } }
+        }
+
+        internal bool ClosingStartupBootstrap => CommittedStartupClose.HasValue;
+
+        internal StartupBootstrapClose? CaptureReadyFrontdoorClose()
+        {
+            lock (_stateLock) return CaptureReadyFrontdoorCloseLocked();
+        }
+
+        private StartupBootstrapClose? CaptureReadyFrontdoorCloseLocked()
+        {
+            if (_state != State.Ready || _frontdoorMode != "load" || !_revealWaitingScene
+                || _frontdoorEntryDispatched || _revealPerformed || _revealScheduled
+                || _form?.FlashHostPanel.Visible != false || string.IsNullOrEmpty(_pendingSlot)
+                || TrustedRegressionSlots.RequiresRuntimeEntry(_pendingSlot)
+                || _frontdoorPublication is not StartupBootstrapClose publication
+                || publication.AttemptId != _currentAttemptId || !ReferenceEquals(publication.Flash, _currentFlashProcess)
+                || publication.Connection != _frontdoorReadyConnection || !IsFrontdoorLoadConnectionCurrent(publication.Connection)
+                || !_windowManager.TryGetPublishedBootstrapCloseTarget(publication.EmbedTicket, publication.FlashPid, out var target)
+                || target != publication.Target) return null;
+            return publication;
+        }
+
+        internal bool TryResetForReadyFrontdoorClose(StartupBootstrapClose close)
+        {
+            lock (_stateLock)
+            {
+                if (_form?.IsShutdownAdmissionClosed != true || CaptureReadyFrontdoorCloseLocked() != close) return false;
+                Reset(null, "user_close", close);
+                return true;
+            }
         }
 
         internal AgentRuntimeLaunchSnapshot
@@ -869,6 +901,7 @@ namespace CF7Launcher.Guardian
             CancelCharacterCreateSnapshotTimerLocked();
             CancelFrontdoorSceneWatchdogLocked();
             _frontdoorMode = frontdoorMode;
+            _frontdoorPublication = null;
             _revealWaitingScene = frontdoorMode != null;
             _frontdoorTitleCallId = null;
             _frontdoorEntryDispatched = false;
@@ -892,6 +925,7 @@ namespace CF7Launcher.Guardian
             CancelCharacterCreateSnapshotTimerLocked();
             CancelFrontdoorSceneWatchdogLocked();
             _frontdoorMode = null;
+            _frontdoorPublication = null;
             _revealWaitingScene = false;
             _frontdoorTitleCallId = null;
             _frontdoorEntryDispatched = false;
@@ -2265,7 +2299,9 @@ namespace CF7Launcher.Guardian
         ///   4. Idle 态直接入场 → 快路径 flush 立即返回
         /// 避免 "多路径同时 kill Flash / 关 socket / 走完整 teardown" 的重入灾难.
         /// </summary>
-        public void Reset(Action onIdle, string reason)
+        public void Reset(Action onIdle, string reason) => Reset(onIdle, reason, null);
+
+        private void Reset(Action onIdle, string reason, StartupBootstrapClose? startupClose)
         {
             NewSettingsRecoveryRequest();
             LogManager.Log("[LaunchFlow] Reset requested reason=" + (reason ?? "(none)"));
@@ -2273,7 +2309,6 @@ namespace CF7Launcher.Guardian
             DismissRevealCurtain();
             List<Action> idleFlushIfAlready = null;
             Process oldProcess = null;
-            UnpublishedBootstrapClose? unpublishedClose = null;
             Action<string> heldCbForReset = null;   // prewarm 拆除时取走的 held callback
             bool enterWorker = false;
             bool restoreFrontdoorBgmWhenIdle = false;
@@ -2331,17 +2366,18 @@ namespace CF7Launcher.Guardian
                     // 第一个入场者: 拿 ownership
                     _resetInFlight = true;
                     oldProcess = _currentFlashProcess;
-                    // Capture the exact unpublished source before Resetting retires its ticket.
-                    // A Ready or revealed session always follows the existing persistence and teardown path.
-                    if (reason == "user_close" && _form?.IsShutdownAdmissionClosed == true
+                    // Capture the attached source before Resetting retires its embed ticket.
+                    // The separately attested Ready case has already passed the same persistence fence.
+                    if (startupClose == null && reason == "user_close" && _form?.IsShutdownAdmissionClosed == true
                         && _state == State.Embedding && !_revealPerformed && !string.IsNullOrEmpty(_currentAttemptId)
                         && oldProcess != null && _passiveLaunchConnection > 0 && _passiveEmbeddingCancellation != null
                         && _windowManager.TryGetUnpublishedBootstrapCloseTarget(_passiveEmbeddingCancellation.Token,
                             (uint)oldProcess.Id, out var target))
                     {
-                        unpublishedClose = new(_currentAttemptId, _passiveLaunchConnection, target);
-                        _closingUnpublishedBootstrap = true;
+                        startupClose = new(_currentAttemptId, oldProcess, (uint)oldProcess.Id, _passiveLaunchConnection,
+                            _passiveEmbeddingCancellation.Token, target, Published: false);
                     }
+                    if (startupClose.HasValue) _committedStartupClose = startupClose;
                     SetState(State.Resetting, "");
                     CancelWaitTimerLocked();
                     CancelZombieTimerLocked();
@@ -2391,15 +2427,16 @@ namespace CF7Launcher.Guardian
                 bool resetSucceeded = true;
                 try
                 {
-                    bool closedUnpublished = false;
-                    if (unpublishedClose is { } pending)
+                    bool closedStartup = false;
+                    if (startupClose is { } closing)
                     {
-                        LogManager.Log($"[LaunchFlow] closing unpublished bootstrap attempt={pending.AttemptId} generation={pending.Connection}");
-                        closedUnpublished = _processManager.TryCloseUnpublishedFlash(oldProc, pending.Target);
-                        if (closedUnpublished)
-                            _socketServer.ForceCloseCurrentClientIfGen(pending.Connection);
+                        string phase = closing.Published ? "unentered" : "unpublished";
+                        LogManager.Log($"[LaunchFlow] closing {phase} bootstrap attempt={closing.AttemptId} generation={closing.Connection}");
+                        closedStartup = _processManager.TryCloseStartupFlash(oldProc, closing.Target, phase);
+                        if (closedStartup)
+                            _socketServer.ForceCloseCurrentClientIfGen(closing.Connection);
                     }
-                    if (!closedUnpublished && oldProc != null)
+                    if (!closedStartup && oldProc != null)
                     {
                         try
                         {
@@ -2411,11 +2448,12 @@ namespace CF7Launcher.Guardian
                         }
                         catch { }
                     }
-                    if (needWaitDc && !closedUnpublished)
+                    if (needWaitDc && !closedStartup)
                     {
                         if (!dcGate.Wait(5000))
                         {
-                            _socketServer.ForceCloseCurrentClient();
+                            if (startupClose is { } closingSocket) _socketServer.ForceCloseCurrentClientIfGen(closingSocket.Connection);
+                            else _socketServer.ForceCloseCurrentClient();
                             if (!dcGate.Wait(1000)) resetSucceeded = false;
                         }
                     }
@@ -3550,7 +3588,13 @@ namespace CF7Launcher.Guardian
                         FailEmbedLocked("embed_socket_replaced");
                         return false;
                     }
-                    if (!_windowManager.TryAcceptPassiveBootstrap(ticket, CompleteEmbedLocked))
+                    if (!_windowManager.TryAcceptPassiveBootstrap(ticket, () =>
+                    {
+                        if (_frontdoorMode == "load" && _windowManager.TryGetPublishedBootstrapCloseTarget(ticket,
+                            (uint)flash.Id, out var target))
+                            _frontdoorPublication = new(attempt, flash, (uint)flash.Id, connection, ticket, target, Published: true);
+                        CompleteEmbedLocked();
+                    }))
                     {
                         FailEmbedLocked("embed_publication_invalidated");
                         return false;

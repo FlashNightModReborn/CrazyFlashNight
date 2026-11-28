@@ -74,11 +74,32 @@ namespace CF7Launcher.Guardian
             lock (_embedClaimLock)
             {
                 PassiveBootstrapPublication pending = _pendingPassiveBootstrap;
-                if (pending == null || !ticket.CanBeCanceled || pending.Cancellation != ticket || pending.Pid != pid
+                if (pending == null)
+                    return TryGetPreparingPassiveRevealCloseTarget(ticket, pid, out target);
+                if (!ticket.CanBeCanceled || pending.Cancellation != ticket || pending.Pid != pid
                     || !IsCurrentBootstrapAttempt(pending) || !IsBootstrapSourceAlive(pending)
                     || !TryReadBootstrapWindows(pending, out PassiveBootstrapWindows windows)
-                    || GetParent(pending.Source) != windows.Host) return false;
+                    || GetParent(pending.Source) != windows.Host || IsWindowEnabled(pending.Source)) return false;
                 target = new(pending.Source, windows.Host);
+                return true;
+            }
+        }
+
+        internal bool TryGetPublishedBootstrapCloseTarget(CancellationToken ticket, uint pid,
+            out UnpublishedBootstrapCloseTarget target)
+        {
+            target = default;
+            lock (_embedClaimLock)
+            {
+                PassiveBootstrapPublication published = _publishedPassiveBootstrap;
+                // Embedding retires its token after Host accepts publication. The original
+                // token still identifies that publication without making it pending again.
+                if (published == null || !ticket.CanBeCanceled || published.Cancellation != ticket || published.Pid != pid
+                    || !HasCurrentBootstrapSource(published) || !IsBootstrapSourceAlive(published)
+                    || published.OfferedWindows is not PassiveBootstrapWindows offered
+                    || !TryReadBootstrapWindows(published, out var windows) || windows != offered
+                    || GetParent(published.Source) != windows.Host || IsWindowEnabled(published.Source)) return false;
+                target = new(published.Source, windows.Host);
                 return true;
             }
         }
@@ -158,11 +179,13 @@ namespace CF7Launcher.Guardian
 
         private bool IsCurrentBootstrapAttempt(PassiveBootstrapPublication pending)
         {
-            return !pending.Cancellation.IsCancellationRequested
-                && pending.Authority != null && ReferenceEquals(PassiveInput, pending.Authority)
-                && pending.Source != IntPtr.Zero && _flashHwnd == pending.Source && _flashProcessId == pending.Pid
-                && EmbedEpoch == pending.Epoch;
+            return !pending.Cancellation.IsCancellationRequested && HasCurrentBootstrapSource(pending);
         }
+
+        private bool HasCurrentBootstrapSource(PassiveBootstrapPublication publication) =>
+            publication.Authority != null && ReferenceEquals(PassiveInput, publication.Authority)
+            && publication.Source != IntPtr.Zero && _flashHwnd == publication.Source && _flashProcessId == publication.Pid
+            && EmbedEpoch == publication.Epoch;
 
         private static bool IsBootstrapSourceAlive(PassiveBootstrapPublication pending) =>
             GetWindowThreadProcessId(pending.Source, out uint sourcePid) != 0 && sourcePid == pending.Pid;

@@ -845,6 +845,7 @@ namespace CF7Launcher.Guardian
             // requires the exact passive source to pass its focus audit.
             IntPtr hwndSnap = hwnd;
             bool fullSnap = needFullEmbed;
+            long uiPostedAt = Stopwatch.GetTimestamp();
             void CompleteOnUi()
             {
                 if (cancellation.IsCancellationRequested) return;
@@ -862,7 +863,10 @@ namespace CF7Launcher.Guardian
                     FireEmbedResult(completed, EmbedResult.Failed);
                     return;
                 }
-                try { DoEmbedOrReveal(hwndSnap, fullSnap || GetParent(hwndSnap) != hostPanel.Handle); }
+                bool full = fullSnap || GetParent(hwndSnap) != hostPanel.Handle;
+                if (passive != null && !full && TryStartPassiveReveal(hwndSnap, sourcePid, queuedEpoch,
+                    hostPanel, root, passive, cancellation, completed, uiPostedAt)) return;
+                try { DoEmbedOrReveal(hwndSnap, full); }
                 catch (Exception ex)
                 {
                     LogManager.Log("[WindowManager] Embed preparation failed: " + ex.Message);
@@ -921,7 +925,11 @@ namespace CF7Launcher.Guardian
             ShowWindow(hwnd, SW_SHOWNOACTIVATE);
             ResizeFlashToPanel();
             ApplyPassiveStyle(hwnd);
+            CompleteEmbedBindings(needFullEmbed);
+        }
 
+        private void CompleteEmbedBindings(bool needFullEmbed)
+        {
             _hostPanel.Resize -= OnHostPanelResize;
             _hostPanel.Resize += OnHostPanelResize;
 
@@ -990,7 +998,7 @@ namespace CF7Launcher.Guardian
 
         public void ResizeFlashToPanel()
         {
-            ResizeFlashToPanelCore();
+            if (!IsPreparingPassiveReveal) ResizeFlashToPanelCore();
         }
 
         private bool ResizeFlashToPanelCore()
@@ -1027,6 +1035,13 @@ namespace CF7Launcher.Guardian
             if (_flashHwnd == IntPtr.Zero) return;
             if (_hostPanel != null)
                 _hostPanel.Resize -= OnHostPanelResize;
+            if (KeepPreparingPassiveRevealUnderHiddenHost(_flashHwnd))
+            {
+                // A previously issued show can still finish while the owned source exits.
+                // Leave it inside the hidden parent and invalidate the arriving completion.
+                SetTrackedFlashWindow(IntPtr.Zero);
+                return;
+            }
             try
             {
                 if (IsWindow(_flashHwnd))
