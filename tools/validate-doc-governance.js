@@ -1087,7 +1087,7 @@ expectExactSet("launcher user prefs registry", prefsDocKeys, prefsSourceKeys);
 
 var cliRows = markdownTableRows(markedBlock("launcher/README.md", "launcher-cli-registry"));
 var cliDocFlags = cliRows.map(function (row) { return row.key.split(/\s+/)[0]; });
-var cliSource = read("launcher/src/Program.cs") + "\n" + read("launcher/src/Audio/AudioQualificationDiagnosticsV1.cs") + "\n" + read("launcher/src/Guardian/HotkeyGuard.cs");
+var cliSource = read("launcher/src/Program.cs") + "\n" + read("launcher/src/Audio/AudioQualificationDiagnosticsV1.cs");
 var cliSourceFlags = [];
 var cliRe = /"(--[a-z0-9][a-z0-9-]*)"/g;
 var cliMatch;

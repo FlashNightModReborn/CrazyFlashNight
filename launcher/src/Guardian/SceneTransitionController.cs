@@ -20,6 +20,8 @@ namespace CF7Launcher.Guardian
         private readonly Func<bool> _admitted;
         private readonly Func<long,bool> _scenePresented;
         private readonly Func<IntPtr,bool> _handoffFocus;
+        private Func<bool> _passiveResumeEligible;
+        internal void ConfigurePassiveResume(Func<bool> eligible) => _passiveResumeEligible=eligible;
         private readonly Action<bool> _holdWorldInput;
         private readonly SceneTransitionPresentationPolicy _presentationPolicy;
         private readonly CompositionHelpSurface _surface;
@@ -108,7 +110,7 @@ namespace CF7Launcher.Guardian
             if(_surface.SettlementInstance==instance) {
                 _surface.TryPostTransitionPanel(close);
                 _surface.ReleaseSettlementBinding();
-                // The original close transaction owns its one focus tail.
+                // The exact close transaction returned the root before retiring this endpoint.
                 HidePresentation(handoff:false);
             }
             _holdWorldInput(_latest!=null && !_revealed);
@@ -389,8 +391,8 @@ namespace CF7Launcher.Guardian
             if(!_presentationPolicy.NonActivating
                 && AllowsFocusHandoff(handoff, _admitted(), _exclusivePresentation() || _bookshelfReturn?.Active == true)) {
                 IntPtr foreground=_surface.CaptureGameForeground();
-                if(foreground!=IntPtr.Zero && !_handoffFocus(foreground))
-                    LogManager.Log("event=scene_transition_handoff_failed id="+_identity);
+                if (foreground != IntPtr.Zero && !_handoffFocus(foreground))
+                    LogManager.Log("event=scene_transition_root_handoff_failed id="+_identity);
             }
             _surface.HideTransition(); _fallback.Hide();
             _holdWorldInput(false);

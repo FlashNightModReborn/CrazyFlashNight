@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using CF7Launcher.Guardian.InputOwnership;
 
 namespace CF7Launcher.Guardian.Hud.Dialogue
 {
@@ -38,7 +40,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal bool Enabled { get; set; }
         /// <summary>IME 是否处于组词态（WM_IME_START/ENDCOMPOSITION 或 ImmGetCompositionString 探针）。</summary>
         internal bool IsComposing { get; set; }
-        /// <summary>输入框是否持有焦点（决定是否放行游戏热键）。</summary>
+        /// <summary>编辑器的本地焦点外观状态。</summary>
         internal bool Focused { get; set; }
 
         internal string Text { get { return _text.ToString(); } }
@@ -47,8 +49,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// <summary>计数文案：当前/上限。</summary>
         internal string CounterText { get { return _text.Length + "/" + MaxInputLength; } }
 
-        /// <summary>聚焦时游戏热键必须放行；未聚焦时恢复既有热键行为。</summary>
+#if CF7_TEST_SEAMS
         internal bool SuppressesGameHotkeys { get { return Focused; } }
+#endif
 
         internal bool CanSend
         {
@@ -120,6 +123,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
     /// </summary>
     public sealed class DialogueInterjectInputOverlay : Form
     {
+        private const string InputEndpoint = "dialogue.interject.input";
+        private const int WM_KILLFOCUS = 0x0008;
         private const int WM_IME_STARTCOMPOSITION = 0x010D;
         private const int WM_IME_COMPOSITION = 0x010F;
         private const int WM_IME_ENDCOMPOSITION = 0x010E;
@@ -136,6 +141,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SetFocus(IntPtr hwnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
@@ -202,7 +210,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Color _fieldBorder = Color.FromArgb(188, 182, 170);
 
         private string _placeholder = "说点什么…";
-        private bool _textInputActive;
+        private ITextInputAuthority _textAuthority;
+        private IUiPointerAuthority _pointerAuthority;
+        private long _inputGeneration;
+        private TextInputLease? _activeLease, _queuedLease;
+        private (PointerGestureTicket Ticket, (string Target, Rectangle Bounds) Hit, Point PressPoint)? _pointer;
         private bool _expanded;
         private bool _startRequired;
         private bool _configRequired;
@@ -210,7 +222,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private bool _actionHover;
         private float _chevronAngle;
         private float _chevronTarget;
-        private DateTime _lastInteractionUtc;
 
         private Rectangle _chevronRect = Rectangle.Empty;
         private Rectangle _actionRect = Rectangle.Empty;
@@ -246,9 +257,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// <summary>终端已启动但模型未配置时点击展开后的“配置”：打开配置小窗。</summary>
         internal event Action ConfigRequested;
 
-        /// <summary>焦点变化（true = 输入持有焦点）。调用方据此同步游戏热键放行。</summary>
-        public event Action<bool> InputFocusChanged;
-
         /// <summary>收起/展开切换后触发：宿主据此重新定位窗口。</summary>
         internal event Action ExpandedChanged;
 
@@ -281,9 +289,23 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _textBox.Visible = false;
             _textBox.TextChanged += OnTextChanged;
             _textBox.KeyDown += OnKeyDown;
-            _textBox.GotFocus += delegate { SetFocused(true); };
+            _textBox.GotFocus += delegate { SetFocused(true); AcquireInputLease(); };
             // 展开态是玩家显式选择的持久状态：点到游戏画面只还焦点，不收面板。
-            _textBox.LostFocus += delegate { SetFocused(false); };
+            _textBox.Leave += delegate { QueueInputLeave(); };
+            _textBox.LostFocus += delegate { QueueInputLeave(); SetFocused(false); };
+            _textBox.HandleCreated += delegate
+            {
+                if (_textBox.IsRecreatingInputHandle() && (_textAuthority != null || _pointerAuthority != null))
+                {
+                    CancelInputPointer("interject_editor_recreated");
+                    StartInputInstance();
+                }
+                AcquireInputLease();
+            };
+            _textBox.HandleDestroyed += delegate
+            {
+                RetireInputEditor("interject_editor_destroyed", requestGame: !_textBox.IsRecreatingInputHandle());
+            };
             _textBox.CompositionStateChanged += OnCompositionStateChanged;
             Controls.Add(_textBox);
 
@@ -297,7 +319,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _placeholderLabel.Cursor = Cursors.IBeam;
             _placeholderLabel.Visible = false;
             _placeholderLabel.Click += delegate { if (_model.Enabled) FocusInput(); };
-            _placeholderLabel.MouseDown += delegate { NoteInteraction(); };
             Controls.Add(_placeholderLabel);
             _placeholderLabel.BringToFront();
 
@@ -314,6 +335,18 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             ApplyLayout();
 
             Enter += delegate { if (_expanded && _model.Enabled) _textBox.Focus(); };
+        }
+
+        internal void BindInputAuthority(ITextInputAuthority textAuthority, IUiPointerAuthority pointerAuthority)
+        {
+            if (IsDisposed || ReferenceEquals(_textAuthority, textAuthority)
+                && ReferenceEquals(_pointerAuthority, pointerAuthority)) return;
+            CancelInputPointer("interject_authority_changed");
+            RetireInputEditor("interject_authority_changed", requestGame: false);
+            _textAuthority = textAuthority;
+            _pointerAuthority = pointerAuthority;
+            if (IsHandleCreated) StartInputInstance();
+            AcquireInputLease();
         }
 
         /// <summary>
@@ -354,31 +387,18 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// 输入焦点在 TextBox 子控件上时前景窗仍是本 Form，故只比 Form 句柄。</summary>
         public bool IsForegroundWindow()
         {
-            IntPtr handle = Handle;   // 强制创建
-            return handle != IntPtr.Zero && GetForegroundWindow() == handle;
+            return IsHandleCreated && GetForegroundWindow() == Handle;
         }
 
-        /// <summary>
-        /// 收起输入浮窗：把焦点还给 owner，并显式清一次文字输入态
-        /// （焦点事件可能因为窗口已隐藏而丢失，不能只依赖 LostFocus）。
-        /// </summary>
+        /// <summary>隐藏输入浮窗并释放该编辑器的租约。</summary>
         public void DismissToOwner()
         {
+            var exit = CaptureInputExit("interject_dismissed", requestGame: true);
             // 只隐藏，不改展开/收起偏好：本组内 $PC 播放或换组结束后再现时沿用玩家上次选择。
             ClearInput();
             SetFocused(false);
             Hide();
-            Form owner = Owner;
-            if (owner != null && !owner.IsDisposed)
-            {
-                try
-                {
-                    if (owner.WindowState == FormWindowState.Minimized)
-                        owner.WindowState = FormWindowState.Normal;
-                    owner.Activate();
-                }
-                catch { }
-            }
+            exit?.Invoke();
         }
 
         /// <summary>从收起箭头展开输入面板（保持文本，就绪时聚焦输入框）。</summary>
@@ -390,18 +410,27 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             ApplyLayout();
             NotifyExpandedChanged();
             if (_model.Enabled)
-                BeginInvoke((Action)FocusInput);
+            {
+                long generation = _inputGeneration;
+                BeginInvoke((Action)(() =>
+                {
+                    if (generation == _inputGeneration && IsForegroundWindow())
+                        FocusInput();
+                }));
+            }
         }
 
-        /// <summary>回到收起箭头。returnFocus=true 时把焦点还给游戏。</summary>
+        /// <summary>回到收起箭头。returnFocus 请求会话权威重新授予游戏键盘输入。</summary>
         internal void Collapse(bool returnFocus)
         {
             if (!_expanded) return;
+            var exit = CaptureInputExit("interject_collapsed", returnFocus);
             _expanded = false;
             _textBox.Visible = false;
+            SetFocused(false);
             AnimateChevron(0f);
             ApplyLayout();
-            if (returnFocus) ReleaseFocusToOwner();
+            exit?.Invoke();
             NotifyExpandedChanged();
         }
 
@@ -423,10 +452,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             catch { }
         }
 
-        /// <summary>本窗当前是否处于"文字输入态"（宿主据此同步 KeyboardHook）。</summary>
+        /// <summary>当前插话编辑器是否持有会话的文字输入租约。</summary>
         public bool IsTextInputActive()
         {
-            return _textInputActive;
+            return _activeLease is { } lease && _textAuthority?.CurrentTextLease == lease;
         }
 
         /// <summary>终端未启动：展开面板里显示“启动”，点击只拉起终端、不发送输入。</summary>
@@ -472,6 +501,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _model.Enabled = value;
             _textBox.ReadOnly = !value;
             _textBox.BackColor = value ? _fieldBack : _fieldDisabledBack;
+            if (!value) ExitInputToGame("interject_disabled");
             UpdatePlaceholder();
             UpdateCursor();
             Invalidate();
@@ -641,18 +671,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _textBox.Focus();
         }
 
-        /// <summary>把焦点还给游戏（收缩/发送后）。</summary>
+        /// <summary>结束本地编辑并释放输入租约。</summary>
         public void ReleaseFocus()
         {
-            SetFocused(false);
-        }
-
-        private void ReleaseFocusToOwner()
-        {
-            SetFocused(false);
-            Form owner = Owner;
-            if (owner == null || owner.IsDisposed) return;
-            try { owner.Activate(); } catch { }
+            ExitInputToGame("interject_release_focus");
         }
 
         /// <summary>日志/验收用：IME 是否组词中。</summary>
@@ -666,15 +688,90 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             if (_model.Focused == focused) return;
             _model.Focused = focused;
-            _textInputActive = focused;
             UpdatePlaceholder();
             Invalidate();   // 焦点环
-            Action<bool> handler = InputFocusChanged;
-            if (handler != null)
+        }
+
+        private void StartInputInstance()
+        {
+            _inputGeneration = _textAuthority?.NextInstanceGeneration(InputEndpoint)
+                ?? checked(_inputGeneration + 1);
+        }
+
+        private void AcquireInputLease()
+        {
+            var authority = _textAuthority;
+            if (authority == null || !_model.Enabled || !_expanded || !Visible || !_textBox.IsHandleCreated
+                || !_textBox.Focused || Owner?.IsHandleCreated != true) return;
+            if (_activeLease is { } active && active.InstanceGeneration == _inputGeneration
+                && _queuedLease != active && authority.CurrentTextLease == active)
+                return;
+            if (_inputGeneration == 0) StartInputInstance();
+            var observation = new TextFocusObservation(authority.CurrentSessionId, Owner.Handle, _textBox.Handle,
+                TextInputClaim.NextFocusSerial(), LocalFocusConfirmed: true,
+                ImeComposing: _textBox.Composing || ProbeComposition(_textBox.Handle));
+            if (authority.AcquireText(InputEndpoint, _inputGeneration, observation) is { } lease)
+                _activeLease = lease;
+        }
+
+        private Action CaptureInputExit(string reason, bool requestGame, Keys trigger = Keys.None,
+            bool waitForFocusLoss = false)
+        {
+            if (_textAuthority is not { } authority || _activeLease is not { } captured) return null;
+            if (waitForFocusLoss)
             {
-                try { handler(focused); }
-                catch { }
+                if (_queuedLease == captured) return null;
+                _queuedLease = captured;
             }
+            else _activeLease = null;
+
+            var observed = new TextExitObservation(authority.CurrentSessionId, TextInputClaim.NextFocusSerial(),
+                reason, EditorFocusCleared: true, TriggerVk: (int)trigger);
+            return () =>
+            {
+                if (ReferenceEquals(_textAuthority, authority))
+                {
+                    if (_queuedLease == captured) _queuedLease = null;
+                    if (_activeLease == captured)
+                    {
+                        if (_textBox.Focused) return;
+                        _activeLease = null;
+                    }
+                }
+                var receipt = authority.ReleaseText(captured, observed);
+                if (!requestGame || receipt.Status != TextExitStatus.Released) return;
+                if (ActiveForm is DialogueInterjectConfigWindow config
+                    && config.DeferGameKeyboardFromEditor(authority, receipt)) return;
+                authority.RequestGameKeyboard(receipt);
+            };
+        }
+
+        private void QueueInputLeave()
+        {
+            var exit = CaptureInputExit("interject_focus_lost", requestGame: true, waitForFocusLoss: true);
+            if (exit == null) return;
+            try { BeginInvoke(exit); }
+            catch (InvalidOperationException) { exit(); }
+        }
+
+        private void ExitInputToGame(string reason, Keys trigger = Keys.None)
+        {
+            var captured = _activeLease;
+            var exit = CaptureInputExit(reason, requestGame: true, trigger: trigger);
+            if (ActiveControl == _textBox) ActiveControl = null;
+            if (_textBox.Focused) SetFocus(IntPtr.Zero);
+            if (_textBox.Focused)
+            {
+                _activeLease ??= captured;
+                return;
+            }
+            SetFocused(false);
+            exit?.Invoke();
+        }
+
+        private void RetireInputEditor(string reason, bool requestGame)
+        {
+            CaptureInputExit(reason, requestGame)?.Invoke();
         }
 
         private void OnCompositionStateChanged(bool composing)
@@ -711,10 +808,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     {
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                        ReleaseFocusToOwner();
+                        ExitInputToGame("interject_escape", Keys.Escape);
                     }
                     return;
                 }
+                if (composing) return;
                 DialogueInterjectKeyResult result = _model.HandleKey(true, false);
                 if (result != DialogueInterjectKeyResult.None)
                 {
@@ -723,7 +821,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 }
                 if (result == DialogueInterjectKeyResult.Send)
                 {
-                    SendCurrentText();
+                    SendCurrentText(Keys.Enter);
                 }
             }
         }
@@ -769,9 +867,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             catch { }
         }
 
-        private void SendCurrentText()
+        private void SendCurrentText(Keys trigger = Keys.None)
         {
             string text = _model.Text;
+            ExitInputToGame("interject_submit", trigger);
             ClearInput();
             // 发送不改变展开偏好：本轮等待期间由状态机隐藏，回来后仍按玩家上次选择展开。
             Action<string> handler = SendRequested;
@@ -1186,9 +1285,75 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            NoteInteraction();
             if (e.Button != MouseButtons.Left) return;
-            HandleClick(e.Location);
+            if (_pointerAuthority == null)
+            {
+                HandleClick(e.Location);
+                return;
+            }
+            CancelInputPointer("interject_new_down");
+            var hit = InputClickTarget(e.Location);
+            if (hit.Target == null || _inputGeneration <= 0 || !_pointerAuthority.TryBeginPointer(
+                InputEndpoint, _inputGeneration, 1, PointToScreen(e.Location), hit.Target, out var ticket)) return;
+            _pointer = (ticket, hit, e.Location);
+            Capture = true;
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            if (e.Button != MouseButtons.Left || _pointer is not { } pending) return;
+            var authority = _pointerAuthority;
+            _pointer = null;
+            Capture = false;
+            if (InputClickTarget(e.Location) != pending.Hit
+                || pending.Ticket.InstanceGeneration != _inputGeneration
+                || !authority.ValidatePointerCommit(pending.Ticket, pending.Hit.Target))
+            {
+                authority.CancelPointer(pending.Ticket, "interject_invalid_up");
+                return;
+            }
+            bool committed = false;
+            try
+            {
+                HandleClick(e.Location);
+                committed = true;
+            }
+            finally { authority.EndPointer(pending.Ticket, committed); }
+        }
+
+        private (string Target, Rectangle Bounds) InputClickTarget(Point point)
+        {
+            if (!Visible || !ClientRectangle.Contains(point)) return default;
+            if (!_expanded) return CanToggle ? (InputEndpoint + ".toggle", ClientRectangle) : default;
+            if (_settingsRect.Contains(point)) return (InputEndpoint + ".config", _settingsRect);
+            if (_chevronRect.Contains(point)) return (InputEndpoint + ".toggle", _chevronRect);
+            if (ShowChoices && _acceptRect.Contains(point))
+                return AcceptEnabled ? (InputEndpoint + ".accept", _acceptRect) : default;
+            if (ShowChoices && _rejectRect.Contains(point)) return (InputEndpoint + ".reject", _rejectRect);
+            if (_actionRect.Contains(point) && ActionEnabled)
+                return (InputEndpoint + (_startRequired ? ".start" : _configRequired ? ".config_button" : ".submit"), _actionRect);
+            return _model.Enabled ? (InputEndpoint + ".editor", _fieldRect) : default;
+        }
+
+        private void CancelMovedInputTarget()
+        {
+            if (_pointer is { } pending && InputClickTarget(pending.PressPoint) != pending.Hit)
+                CancelInputPointer("interject_layout_changed");
+        }
+
+        private void CancelInputPointer(string reason)
+        {
+            if (_pointer is not { } pending) return;
+            _pointer = null;
+            _pointerAuthority.CancelPointer(pending.Ticket, reason);
+            if (IsHandleCreated) Capture = false;
+        }
+
+        protected override void OnMouseCaptureChanged(EventArgs e)
+        {
+            base.OnMouseCaptureChanged(e);
+            if (!Capture) CancelInputPointer("interject_capture_lost");
         }
 
         /// <summary>鼠标左键落点裁决（拆出来供单测直接调用）。</summary>
@@ -1231,6 +1396,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (_pointer is { } pending && InputClickTarget(e.Location) != pending.Hit)
+                CancelInputPointer("interject_drag_out");
             bool chevronHover = _chevronRect.Contains(e.Location);
             bool actionHover = _expanded && _actionRect.Contains(e.Location) && ActionEnabled;
             bool acceptHover = _expanded && ShowChoices && AcceptEnabled
@@ -1255,6 +1422,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            CancelInputPointer("interject_drag_out");
             if (_chevronHover || _actionHover || _acceptHover || _rejectHover || _settingsHover)
             {
                 _chevronHover = false;
@@ -1280,30 +1448,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 Marshal.StructureToPtr(info, m.LParam, false);
                 return;
             }
-            // WM_MOUSEACTIVATE 早于 owner 失活：提前记下交互，HUD 白名单才不会在点击瞬间隐藏对话。
-            if (m.Msg == 0x0021) NoteInteraction();
             base.WndProc(ref m);
         }
 
-        protected override void OnActivated(EventArgs e)
-        {
-            NoteInteraction();
-            base.OnActivated(e);
-        }
-
-        private void NoteInteraction()
-        {
-            _lastInteractionUtc = DateTime.UtcNow;
-        }
-
-        /// <summary>HUD 失活白名单判据：输入窗是本会话前台，或刚刚发生过点击/激活
-        /// （失活事件可能先于前台切换到达，用 1.5 秒窗口覆盖这个时序）。</summary>
-        internal bool ShouldKeepHudPresented()
-        {
-            if (!Visible) return false;
-            if (IsForegroundWindow()) return true;
-            return (DateTime.UtcNow - _lastInteractionUtc).TotalMilliseconds < 1500;
-        }
+        /// <summary>插话窗持有前台期间保留本会话 HUD。</summary>
+        internal bool ShouldKeepHudPresented() => Visible && IsForegroundWindow();
 
         /// <summary>Show() 不抢前台：收起按钮出现不该把焦点从游戏里抠走，点击后才激活。</summary>
         protected override bool ShowWithoutActivation
@@ -1321,18 +1470,45 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             }
         }
 
-        protected override void OnVisibleChanged(EventArgs e)
+        protected override void OnDeactivate(EventArgs e)
         {
-            base.OnVisibleChanged(e);
-            // 被直接 Hide（不经 DismissToOwner）时也要退出文字输入态，否则热键会一直放行。
-            // 展开/收起是玩家持久选择，隐藏不改变它。
-            if (!Visible) SetFocused(false);
+            QueueInputLeave();
+            CancelInputPointer("interject_deactivated");
+            base.OnDeactivate(e);
+        }
+
+        protected override void SetVisibleCore(bool value)
+        {
+            Action exit = null;
+            if (!value)
+            {
+                exit = CaptureInputExit("interject_hidden", requestGame: true);
+                CancelInputPointer("interject_hidden");
+            }
+            else if (!Visible && IsHandleCreated && (_textAuthority != null || _pointerAuthority != null))
+                StartInputInstance();
+            base.SetVisibleCore(value);
+            if (!value && _textBox != null) SetFocused(false);
+            exit?.Invoke();
         }
 
         protected override void OnResize(EventArgs e)
         {
+            CancelInputPointer("interject_resized");
             base.OnResize(e);
             ApplyLayout();
+        }
+
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            CancelInputPointer("interject_moved");
+            base.OnLocationChanged(e);
+        }
+
+        protected override void OnDpiChanged(DpiChangedEventArgs e)
+        {
+            CancelInputPointer("interject_dpi_changed");
+            base.OnDpiChanged(e);
         }
 
         private int HeaderHeight { get { return Math.Max(26, (int)Math.Round(30 * _uiScale)); } }
@@ -1374,6 +1550,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _rejectRect = Rectangle.Empty;
                 _settingsRect = Rectangle.Empty;
                 _settingsHover = false;
+                CancelMovedInputTarget();
                 BackColor = _headerBack;
                 if (_placeholderLabel != null) _placeholderLabel.Visible = false;
                 ApplyWindowRegion();
@@ -1451,6 +1628,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int counterY = footerTop + Math.Max(0, (footerH - counterH) / 2);
             int counterW = Math.Max(46, (int)Math.Round(56 * ui));
             _counterRect = new Rectangle(pad, counterY, counterW, counterH);
+            CancelMovedInputTarget();
 
             UpdatePlaceholder();
             ApplyWindowRegion();
@@ -1484,8 +1662,18 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         protected override void OnHandleCreated(EventArgs e)
         {
+            if (_textAuthority != null || _pointerAuthority != null) StartInputInstance();
             base.OnHandleCreated(e);
             ApplyTextBoxMargins();
+            AcquireInputLease();
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            CancelInputPointer("interject_handle_destroyed");
+            RetireInputEditor("interject_handle_destroyed", requestGame: !RecreatingHandle);
+            _inputGeneration = 0;
+            base.OnHandleDestroyed(e);
         }
 
         private void EnsureFonts(float ui)
@@ -1510,6 +1698,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             if (disposing)
             {
+                CancelInputPointer("interject_disposed");
+                RetireInputEditor("interject_disposed", requestGame: true);
                 _chevronTimer.Stop();
                 _chevronTimer.Dispose();
                 _toolTip.Dispose();
@@ -1530,7 +1720,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             internal event Action<bool> CompositionStateChanged;
 
             private bool _composing;
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
             internal bool Composing { get { return _composing; } }
+            internal bool IsRecreatingInputHandle() => RecreatingHandle;
 
             private void SetComposing(bool value)
             {
@@ -1547,7 +1739,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             protected override void WndProc(ref Message m)
             {
                 if (m.Msg == WM_IME_STARTCOMPOSITION) SetComposing(true);
-                else if (m.Msg == WM_IME_ENDCOMPOSITION) SetComposing(false);
+                else if (m.Msg == WM_IME_ENDCOMPOSITION || m.Msg == WM_KILLFOCUS) SetComposing(false);
                 else if (m.Msg == WM_IME_COMPOSITION) SetComposing(ProbeComposition(Handle));
                 else if (m.Msg == WM_MOUSEWHEEL && Multiline && !WordWrap)
                 {

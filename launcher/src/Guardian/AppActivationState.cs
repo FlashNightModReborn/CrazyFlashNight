@@ -3,29 +3,14 @@ using System;
 namespace CF7Launcher.Guardian
 {
     /// <summary>
-    /// 应用激活状态的权威源——取代散落在 KeyboardHook / PerfDecisionEngine 里的
-    /// GetForegroundWindow() 现场轮询。
-    ///
-    /// 设计（Win32 game-loop 标准范式）：
-    ///   • 激活：来自 WM_ACTIVATEAPP。它是【进程级】信号——同进程窗口之间切换不触发，
-    ///     正好回答"用户当前在不在用我这个 app"。比轮询 GetForegroundWindow() 可靠：
-    ///     后者只反映窗口级焦点，且与瞬态窗口存在竞态。
-    ///   • 最小化：来自 WM_SIZE / SIZE_MINIMIZED。
-    ///
-    /// 去抖动机：后台程序（QQ / Telegram 等的消息通知）会瞬间抢走系统前台再归还，
-    /// 产生 WM_ACTIVATEAPP(false) → (true) 抖动。失活【不立即生效】，留一个
-    /// DEACTIVATE_DEBOUNCE_MS 宽限窗；窗内重新激活则视作从未失活。
-    ///
-    /// 线程模型：GuardianForm 的 UI 线程写（WndProc），KeyboardHook 钩子线程与
-    /// FrameTask 线程读。所有字段 volatile + 单调 TickCount 运算，无锁。
+    /// 从 WM_ACTIVATEAPP / WM_SIZE 采样呈现与性能决策所需的进程激活和最小化状态。
+    /// UI 线程写入，呈现和帧处理线程读取。短暂失活期间沿用当前性能策略。
     /// </summary>
     public sealed class AppActivationState
     {
         /// <summary>
         /// WM_ACTIVATEAPP(false) 之后，仍视作激活的宽限窗口（毫秒）。
-        /// 取值权衡：通知程序"抢焦再归还"通常仅几十毫秒，200ms 足以桥接；同时这也是
-        /// 非严格热键泄漏到他程序、以及 PerfDecisionEngine 延迟停决策的最坏窗口，故不宜过宽。
-        /// 破坏性键（Ctrl+Q）已走 KeyboardHook 的 strict 路径，完全不吃此宽限。
+        /// 给呈现策略保留短暂通知窗口抢占前台时的稳定期。
         /// </summary>
         private const int DEACTIVATE_DEBOUNCE_MS = 200;
 

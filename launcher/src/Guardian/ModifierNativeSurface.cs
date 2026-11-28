@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -9,8 +10,11 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CF7Launcher.Tasks;
+using CF7Launcher.Diagnostic;
+using CF7Launcher.Guardian.Hud.Dialogue;
 using CF7Launcher.Guardian.Hud.Loot;
 using CF7Launcher.Guardian.Hud.Tooltip;
+using CF7Launcher.Guardian.InputOwnership;
 using Newtonsoft.Json.Linq;
 using SkiaSharp;
 
@@ -59,7 +63,32 @@ namespace CF7Launcher.Guardian
         private static extern bool ReleaseCapture();
 
         [DllImport("user32.dll")]
+        private static extern IntPtr SetFocus(IntPtr hwnd);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetFocus();
+
+        [DllImport("user32.dll")]
+        private static extern bool ClientToScreen(IntPtr hwnd, ref POINT point);
+
+        [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct InputMessageSource
+        {
+            public uint DeviceType;
+            public uint OriginId;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool GetCurrentInputMessageSource(out InputMessageSource source);
+
+        [DllImport("user32.dll")]
+        private static extern int GetMessageTime();
+
+        [DllImport("user32.dll")]
+        private static extern bool InSendMessage();
 
         private readonly string _webRoot;
         private readonly ModifierTask _task;
@@ -82,6 +111,7 @@ namespace CF7Launcher.Guardian
         private readonly ModifierTextBox _unitLevel;
         private readonly ModifierTextBox _unitCount;
         private readonly ModifierTextBox _unitPageInput;
+        private readonly ModifierTextBox[] _editors;
         private readonly Timer _armTimer;
         private readonly Timer _animationTimer;
         private readonly SoundPlayer _tabSound;
@@ -131,22 +161,23 @@ namespace CF7Launcher.Guardian
         private bool _itemLoading;
         private bool _unitLoading;
         private bool _closeRaised;
+        private int? _userCloseGeneration;
         private DateTime _armedUntil;
         private Point _tooltipPoint;
         private Point _pressPoint;
         private bool _trackingLeave;
-        private bool _textInputActive;
-
-        private readonly Action<Func<bool>> _restoreGameKeyboard;
-        internal event Action<bool> TextInputFocusChanged;
+        private ITextInputAuthority _textAuthority;
+        private IUiPointerAuthority _pointerAuthority;
+        private PointerGestureTicket? _pointerTicket;
+        private string _pointerTarget;
+        private TextExitReceipt? _editorExitReceipt;
 
         internal ModifierNativeSurface(Form owner, string webRoot, string profileRoot, ModifierTask task,
-            string dollPortraitsDir = null, Action<Func<bool>> restoreGameKeyboard = null)
+            string dollPortraitsDir = null)
             : base(owner, owner, ModifierNativeLayout.Width, ModifierNativeLayout.Height)
         {
             _webRoot = webRoot ?? throw new ArgumentNullException(nameof(webRoot));
             _task = task ?? throw new ArgumentNullException(nameof(task));
-            _restoreGameKeyboard = restoreGameKeyboard;
             _art = new ModifierArtCatalog(webRoot);
             _iconCatalog = new LootIconCatalog(Path.Combine(webRoot, "icons"),
                 Path.Combine(webRoot, "assets", "enemy-portraits"),
@@ -194,7 +225,7 @@ namespace CF7Launcher.Guardian
             }
             catch { _tabSound = null; }
 
-            _itemQuery = CreateInput(false);
+            _itemQuery = CreateInput("modifier.edit.itemQuery", false);
             _itemQuery.MaxLength = 64;
             _itemQuery.HintText = SearchPlaceholder;
             _itemQuery.HorizontalMargin = 4;
@@ -204,64 +235,99 @@ namespace CF7Launcher.Guardian
                 if (Active && _activeTab == "items" && IsHandleCreated) Invalidate();
             };
             _itemQuery.KeyDown += OnItemQueryKeyDown;
-            _itemQuantity = CreateInput(true);
+            _itemQuantity = CreateInput("modifier.edit.itemQuantity", true);
             _itemQuantity.MaxLength = 9;
             _itemQuantity.Text = "1";
-            _itemPageInput = CreateInput(true);
+            _itemPageInput = CreateInput("modifier.edit.itemPageInput", true);
             _itemPageInput.MaxLength = 4;
             _itemPageInput.Text = "1";
             _itemPageInput.KeyDown += OnItemPageKeyDown;
             _itemPageInput.Leave += OnPageInputLeave;
             ConfigurePageInput(_itemPageInput);
-            _taskId = CreateInput(true);
+            _taskId = CreateInput("modifier.edit.taskId", true);
             _taskId.MaxLength = 3;
             _taskId.Text = "1";
-            _unitLevel = CreateInput(true);
+            _unitLevel = CreateInput("modifier.edit.unitLevel", true);
             _unitLevel.MaxLength = 4;
             _unitLevel.Text = "1";
-            _unitCount = CreateInput(true);
+            _unitCount = CreateInput("modifier.edit.unitCount", true);
             _unitCount.MaxLength = 3;
             _unitCount.Text = "1";
-            _unitPageInput = CreateInput(true);
+            _unitPageInput = CreateInput("modifier.edit.unitPageInput", true);
             _unitPageInput.MaxLength = 4;
             _unitPageInput.Text = "1";
             _unitPageInput.KeyDown += OnUnitPageKeyDown;
             _unitPageInput.Leave += OnPageInputLeave;
             ConfigurePageInput(_unitPageInput);
             _inputOverlay = new ModifierInputOverlay(this);
-            _inputOverlay.Controls.Add(_itemQuery);
-            _inputOverlay.Controls.Add(_itemQuantity);
-            _inputOverlay.Controls.Add(_itemPageInput);
-            _inputOverlay.Controls.Add(_taskId);
-            _inputOverlay.Controls.Add(_unitLevel);
-            _inputOverlay.Controls.Add(_unitCount);
-            _inputOverlay.Controls.Add(_unitPageInput);
-            TextBox[] inputs = { _itemQuery, _itemQuantity, _itemPageInput, _taskId,
+            _editors = new[] { _itemQuery, _itemQuantity, _itemPageInput, _taskId,
                 _unitLevel, _unitCount, _unitPageInput };
-            foreach (TextBox input in inputs)
+            foreach (ModifierTextBox input in _editors)
             {
-                input.GotFocus += OnTextInputFocusChanged;
-                input.Leave += OnTextInputFocusChanged;
+                _inputOverlay.Controls.Add(input);
+                input.GotFocus += OnEditorGotFocus;
+                input.Leave += (_, _) => QueueManagedTextExit(input);
+                input.LostFocus += (_, _) => QueueManagedTextExit(input);
+                input.HandleCreated += (_, _) => StartEditorInstance(input);
+                input.HandleDestroyed += (_, _) => RetireEditorInput(input, "modifier_handle_destroyed");
+                input.KeyDown += OnEditorKeyDown;
+                input.PreviewKeyDown += (_, e) =>
+                {
+                    if (e.KeyCode == Keys.Tab && input.IsImeComposing)
+                        e.IsInputKey = true;
+                };
             }
+            _inputOverlay.Deactivate += (_, _) =>
+            {
+                foreach (var input in _editors) QueueManagedTextExit(input);
+            };
             Application.AddMessageFilter(this);
             Visible = false;
         }
 
         internal event Action CloseRequested;
 
-        internal bool Ready { get { return _prepared && !_disposed; } }
-        internal bool Active { get { return _active && Ready; } }
-        internal int SessionGeneration { get { return _sessionGeneration; } }
-        internal string PanelName { get { return "modifier"; } }
-        internal bool CanRestoreGameFocus
+        internal void BindInputAuthority(ITextInputAuthority textAuthority, IUiPointerAuthority pointerAuthority)
         {
-            get
+            if (_disposed) return;
+            if (!ReferenceEquals(_pointerAuthority, pointerAuthority))
             {
-                if (_disposed || _owner.IsDisposed || !_owner.Visible) return false;
-                IntPtr foreground = GetForegroundWindow();
-                return OwnsFocus(foreground);
+                CancelManagedPointer("modifier_authority_changed");
+                _pointerAuthority = pointerAuthority;
+            }
+            if (!ReferenceEquals(_textAuthority, textAuthority))
+            {
+                RetireTextInputs("modifier_authority_changed");
+                _textAuthority = textAuthority;
+                _editorExitReceipt = null;
+                if (Active) StartEditorInstances();
             }
         }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal bool Ready { get { return _prepared && !_disposed; } }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal bool Active { get { return _active && Ready; } }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal int SessionGeneration { get { return _sessionGeneration; } }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal string PanelName { get { return "modifier"; } }
+
+        internal bool HasSessionForeground() => !_disposed && !_owner.IsDisposed && _owner.Visible
+            && _owner.WindowState != FormWindowState.Minimized
+            && (OwnsFocus(GetForegroundWindow()) || (_textAuthority != null && OwnsFocus(GetFocus())));
+
+        internal bool ShouldKeepHudPresented(IntPtr deactivatingTo)
+            => OwnsCurrentPanelForeground(deactivatingTo != IntPtr.Zero ? deactivatingTo : GetForegroundWindow());
+
+        internal bool OwnsCurrentPanelForeground(IntPtr foreground)
+        {
+            if (!Active || !Visible || !IsHandleCreated || foreground == IntPtr.Zero) return false;
+            return foreground == Handle || (_inputOverlay.Visible && _inputOverlay.IsHandleCreated
+                && foreground == _inputOverlay.Handle);
+        }
+
+        internal bool IsUserCloseRequested(int generation) => _userCloseGeneration == generation;
 
         protected override bool IsClickThrough { get { return false; } }
         protected override bool ShowWithoutActivation { get { return true; } }
@@ -275,13 +341,19 @@ namespace CF7Launcher.Guardian
             return root == Handle || root == _inputOverlay.Handle || root == _owner.Handle;
         }
 
-        protected override bool ShouldKeepPresentedOnOwnerDeactivate
-        {
-            get { return OwnsFocus(GetForegroundWindow()); }
-        }
+        protected override bool ShouldKeepPresentedOnOwnerDeactivate => HasSessionForeground();
 
         protected override void OnOwnerBecameHidden()
         {
+            CancelManagedPointer("modifier_owner_hidden");
+            if (_textAuthority != null)
+            {
+                foreach (var input in _editors)
+                {
+                    QueueManagedTextExit(input);
+                    input.InputInstanceGeneration = 0;
+                }
+            }
             _inputOverlay.Sync(false, Bounds);
         }
 
@@ -303,12 +375,15 @@ namespace CF7Launcher.Guardian
         internal bool ResumePanel(Rectangle rect)
         {
             if (_disposed) return false;
+            CancelManagedPointer("modifier_panel_resumed");
+            _editorExitReceipt = null;
             _sessionGeneration++;
             Owner = _owner;
             Bounds = rect;
             _active = true;
             _prepared = true;
             _closeRaised = false;
+            StartEditorInstances();
             UpdateInputLayout();
             if (!Visible) Show();
             ShowOverlay();
@@ -322,6 +397,7 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             _active = false;
+            CancelManagedPointer("modifier_suspended");
             _pressedAction = null;
             _hoverAction = 0;
             _hoverItem = -1;
@@ -331,15 +407,18 @@ namespace CF7Launcher.Guardian
             _tooltip.Reset();
             _tooltipItem = null;
             _armedAction = null;
-            if (_textInputActive)
-            {
-                _textInputActive = false;
-                TextInputFocusChanged?.Invoke(false);
-            }
             Capture = false;
             ClearCalls();
             _inputOverlay.Sync(false, Bounds);
+            RetireTextInputs("modifier_suspended");
             DismissOverlay();
+            if (FocusTrace.Enabled)
+                FocusTrace.Record("modifier.suspend", new
+                {
+                    token = _token, instance = _instance, generation = _sessionGeneration,
+                    active = Active, visible = Visible, capture = Capture,
+                    inputVisible = _inputOverlay.Visible
+                });
         }
 
         internal bool CommitGeometry(Rectangle rect, int generation)
@@ -410,6 +489,7 @@ namespace CF7Launcher.Guardian
         internal void ClearGeometry(string reason)
         {
             if (_disposed) return;
+            CancelManagedPointer(reason);
             _pressedAction = null;
             _hoverAction = 0;
             Invalidate();
@@ -427,6 +507,9 @@ namespace CF7Launcher.Guardian
 
         private void OpenSession(string instance, string token)
         {
+            CancelManagedPointer("modifier_panel_replaced");
+            if (!string.IsNullOrEmpty(_instance) && !string.Equals(_instance, instance, StringComparison.Ordinal))
+                RetireTextInputs("modifier_panel_replaced");
             _instance = instance;
             _token = token;
             _sessionGeneration++;
@@ -469,8 +552,16 @@ namespace CF7Launcher.Guardian
             _armedAction = null;
             ClearCalls();
             UpdateInputVisibility();
+            StartEditorInstances();
             UpdateInputLayout();
             Invalidate();
+            if (FocusTrace.Enabled)
+                FocusTrace.Record("modifier.open", new
+                {
+                    token, instance, generation = _sessionGeneration, bounds = Bounds, dpi = DeviceDpi,
+                    surface = FocusWindowSnapshot.Describe(IsHandleCreated ? Handle : IntPtr.Zero),
+                    input = FocusWindowSnapshot.Describe(_inputOverlay.IsHandleCreated ? _inputOverlay.Handle : IntPtr.Zero)
+                });
             LoadSnapshot(true);
         }
 
@@ -567,6 +658,7 @@ namespace CF7Launcher.Guardian
             _itemTotal = (int)Math.Max(0, Math.Min(1000000, Long(response["total"])));
             _revision = Math.Max(_revision, Math.Max(0, Long(response["revision"])));
             _selectedItem = -1;
+            CancelChangedPointerTarget();
             _hoverItem = -1;
             _tooltip.Reset();
             _tooltipItem = null;
@@ -626,6 +718,7 @@ namespace CF7Launcher.Guardian
             _unitTotal = (int)Math.Max(0, Math.Min(1000000, Long(response["total"])));
             _revision = Math.Max(_revision, Math.Max(0, Long(response["revision"])));
             _selectedUnit = -1;
+            CancelChangedPointerTarget();
             SyncPageInputs();
             if (_statusTone == "pending") SetStatus("兵种目录已更新。", "ok");
             Invalidate();
@@ -774,6 +867,7 @@ namespace CF7Launcher.Guardian
             _itemPage = 1;
             _items = null;
             _selectedItem = -1;
+            CancelChangedPointerTarget();
             LoadItems();
         }
 
@@ -787,6 +881,7 @@ namespace CF7Launcher.Guardian
             _itemPage = next;
             _items = null;
             _selectedItem = -1;
+            CancelChangedPointerTarget();
             LoadItems();
         }
 
@@ -798,6 +893,7 @@ namespace CF7Launcher.Guardian
             _itemPage = page;
             _items = null;
             _selectedItem = -1;
+            CancelChangedPointerTarget();
             _hoverItem = -1;
             _tooltip.Reset();
             _tooltipItem = null;
@@ -814,6 +910,7 @@ namespace CF7Launcher.Guardian
             _unitPage = next;
             _units = null;
             _selectedUnit = -1;
+            CancelChangedPointerTarget();
             LoadUnits();
         }
 
@@ -825,6 +922,7 @@ namespace CF7Launcher.Guardian
             _unitPage = page;
             _units = null;
             _selectedUnit = -1;
+            CancelChangedPointerTarget();
             _hoverUnit = -1;
             LoadUnits();
         }
@@ -832,7 +930,14 @@ namespace CF7Launcher.Guardian
         private void SetTab(string tab)
         {
             if (string.IsNullOrEmpty(tab) || string.Equals(tab, _activeTab, StringComparison.Ordinal)) return;
+            CancelManagedPointer("modifier_tab_changed");
+            string previous = _activeTab;
             _activeTab = tab;
+            if (FocusTrace.Enabled)
+                FocusTrace.Record("modifier.page", new
+                {
+                    token = _token, instance = _instance, generation = _sessionGeneration, previous, tab
+                });
             _hoverItem = -1;
             _hoverUnit = -1;
             _hoverAction = 0;
@@ -1024,25 +1129,37 @@ namespace CF7Launcher.Guardian
             lock (_callGate) _calls.Clear();
         }
 
-        private void RequestClose()
+        private void RequestClose(bool userInitiated = false)
         {
             if (_disposed || _closeRaised) return;
             _closeRaised = true;
+            int generation = _sessionGeneration;
+            _userCloseGeneration = userInitiated ? generation : null;
             Action handler = CloseRequested;
+            if (FocusTrace.Enabled)
+                FocusTrace.Record("modifier.close_requested", new
+                {
+                    token = _token, instance = _instance, generation, userInitiated,
+                    registeredHandler = handler != null
+                });
             try { handler?.Invoke(); }
             catch (Exception error) { LogManager.Log("[ModifierNative] close failed: " + error.GetType().Name); }
+            finally
+            {
+                if (_userCloseGeneration == generation) _userCloseGeneration = null;
+            }
         }
 
         private void OnItemQueryKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter) return;
+            if (e.KeyCode != Keys.Enter || (_textAuthority != null && _itemQuery.IsImeComposing)) return;
             e.SuppressKeyPress = true;
             SearchItems();
         }
 
         private void OnItemPageKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter) return;
+            if (e.KeyCode != Keys.Enter || (_textAuthority != null && _itemPageInput.IsImeComposing)) return;
             e.SuppressKeyPress = true;
             int page;
             if (!int.TryParse((_itemPageInput.Text ?? "").Trim(), out page)) { SyncPageInputs(); return; }
@@ -1051,7 +1168,7 @@ namespace CF7Launcher.Guardian
 
         private void OnUnitPageKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter) return;
+            if (e.KeyCode != Keys.Enter || (_textAuthority != null && _unitPageInput.IsImeComposing)) return;
             e.SuppressKeyPress = true;
             int page;
             if (!int.TryParse((_unitPageInput.Text ?? "").Trim(), out page)) { SyncPageInputs(); return; }
@@ -1071,9 +1188,9 @@ namespace CF7Launcher.Guardian
                 _unitPageInput.Text = _unitPage.ToString();
         }
 
-        private ModifierTextBox CreateInput(bool numeric)
+        private ModifierTextBox CreateInput(string endpointId, bool numeric)
         {
-            var input = new ModifierTextBox
+            var input = new ModifierTextBox(endpointId)
             {
                 BorderStyle = BorderStyle.None,
                 BackColor = Color.Black,
@@ -1860,7 +1977,7 @@ namespace CF7Launcher.Guardian
             if (action.StartsWith("unit:", StringComparison.Ordinal)) { int index; if (int.TryParse(action.Substring(5), out index)) SelectUnit(index); return; }
             switch (action)
             {
-                case "close": RequestClose(); break;
+                case "close": RequestClose(userInitiated: true); break;
                 case "reconcile": QueryUnresolved(); break;
                 case "money": IssueWrite("grantMoney", null, false); break;
                 case "kcoin": IssueWrite("grantKCoin", null, false); break;
@@ -2041,50 +2158,214 @@ namespace CF7Launcher.Guardian
             QueueTooltipPointer();
         }
 
-        private bool HasTextInputFocus()
+        private void StartEditorInstances()
         {
-            return _itemQuery.Focused || _itemQuantity.Focused || _itemPageInput.Focused
-                || _taskId.Focused || _unitLevel.Focused || _unitCount.Focused || _unitPageInput.Focused;
+            if (_textAuthority == null) return;
+            foreach (var input in _editors) StartEditorInstance(input);
         }
 
-        private void SyncTextInputFocus()
+        private void StartEditorInstance(ModifierTextBox input)
         {
-            bool active = HasTextInputFocus();
-            if (active == _textInputActive) return;
-            _textInputActive = active;
-            TextInputFocusChanged?.Invoke(active);
+            if (_textAuthority == null || !Active || !input.IsHandleCreated || input.InputInstanceGeneration != 0)
+                return;
+            input.InputInstanceGeneration = _textAuthority.NextInstanceGeneration(input.InputEndpointId);
+            if (input.Focused) AcquireManagedText(input);
         }
 
-        private void OnTextInputFocusChanged(object sender, EventArgs e)
+        private void OnEditorGotFocus(object sender, EventArgs e)
         {
-            if (_disposed) return;
-            try { BeginInvoke(new Action(SyncTextInputFocus)); } catch { }
+            if (_textAuthority == null) return;
+            var input = (ModifierTextBox)sender;
+            if (input.RecreatingHandle && input.InputInstanceGeneration == 0) return;
+            if (input.InputInstanceGeneration == 0) StartEditorInstance(input);
+            else AcquireManagedText(input);
+        }
+
+        private void AcquireManagedText(ModifierTextBox input)
+        {
+            var authority = _textAuthority;
+            if (authority == null || !Active || !input.IsHandleCreated || !input.Focused || !_owner.IsHandleCreated) return;
+            if (input.TextFocus != null
+                && !ReferenceEquals(input.QueuedTextExit, input.TextFocus)
+                && ReferenceEquals(input.TextFocus.Authority, authority)
+                && input.TextFocus.SessionId == authority.CurrentSessionId
+                && input.TextFocus.Lease.InstanceGeneration == input.InputInstanceGeneration
+                && authority.CurrentTextLease == input.TextFocus.Lease)
+                return;
+            string session = authority.CurrentSessionId;
+            var observed = new TextFocusObservation(session, _owner.Handle, input.Handle,
+                TextInputClaim.NextFocusSerial(), LocalFocusConfirmed: true, ImeComposing: input.IsImeComposing);
+            if (authority.AcquireText(input.InputEndpointId, input.InputInstanceGeneration, observed) is { } lease)
+            {
+                _editorExitReceipt = null;
+                input.TextFocus = new TextInputClaim(authority, session, lease);
+                input.RememberDraft();
+            }
+        }
+
+        private void QueueManagedTextExit(ModifierTextBox input)
+        {
+            if (input.RecreatingHandle)
+            {
+                RetireEditorInput(input, "modifier_handle_recreating");
+                return;
+            }
+            var captured = input.TextFocus;
+            if (captured == null || ReferenceEquals(input.QueuedTextExit, captured)) return;
+            input.QueuedTextExit = captured;
+            var observed = new TextExitObservation(captured.SessionId, TextInputClaim.NextFocusSerial(),
+                "modifier_focus_lost", EditorFocusCleared: true);
+            void Release()
+            {
+                if (ReferenceEquals(input.QueuedTextExit, captured)) input.QueuedTextExit = null;
+                if (ReferenceEquals(input.TextFocus, captured))
+                {
+                    // WinForms Leave can run before the HWND has actually lost focus.
+                    if (input.Focused) return;
+                    input.TextFocus = null;
+                    if (input == _itemPageInput || input == _unitPageInput) SyncPageInputs();
+                }
+                // A synchronous HWND transfer normally acquires during GotFocus.
+                // If Leave was nested in that transfer, qualify the new editor first.
+                if (_textAuthority != null && FocusedEditor() is { } next) AcquireManagedText(next);
+                if (ReleaseEditorClaim(captured, observed) && Active) RequestGameKeyboardForEditorExit();
+            }
+            try { BeginInvoke((Action)Release); }
+            catch (InvalidOperationException) { Release(); }
+        }
+
+        private void RetireTextInputs(string reason)
+        {
+            if (_textAuthority == null) return;
+            foreach (var input in _editors) RetireEditorInput(input, reason);
+        }
+
+        private void RetireEditorInput(ModifierTextBox input, string reason)
+        {
+            input.InputInstanceGeneration = 0;
+            var captured = input.TextFocus;
+            input.TextFocus = null;
+            if (captured == null) return;
+            var observed = new TextExitObservation(captured.SessionId, TextInputClaim.NextFocusSerial(),
+                reason, EditorFocusCleared: true);
+            ReleaseEditorClaim(captured, observed);
+        }
+
+        private ModifierTextBox FocusedEditor() => Array.Find(_editors, input => input.Focused);
+
+        private bool ReleaseEditorClaim(TextInputClaim captured, in TextExitObservation observed)
+        {
+            var receipt = captured.Authority.ReleaseText(captured.Lease, observed);
+            if (receipt.Status != TextExitStatus.Released || !ReferenceEquals(captured.Authority, _textAuthority))
+                return false;
+            _editorExitReceipt = receipt;
+            return true;
+        }
+
+        private void RequestGameKeyboardForEditorExit()
+        {
+            var pending = _editorExitReceipt;
+            _editorExitReceipt = null;
+            if (_textAuthority is not { } authority || pending is not { } exact) return;
+            if (Form.ActiveForm is DialogueInterjectConfigWindow config
+                && config.DeferGameKeyboardFromEditor(authority, exact)) return;
+            authority.RequestGameKeyboard(exact);
+        }
+
+        private void ExitManagedText(ModifierTextBox input, string reason, Keys trigger = Keys.None,
+            bool cancelDraft = false)
+        {
+            var captured = input.TextFocus;
+            input.TextFocus = null;
+            if (_inputOverlay.ActiveControl == input) _inputOverlay.ActiveControl = null;
+            if (input.Focused)
+            {
+                // Clear only this thread's editor focus. Passive Flash gets its keys
+                // through the authority, so there is no HWND handoff on this path.
+                SetFocus(IntPtr.Zero);
+                if (input.Focused)
+                {
+                    input.TextFocus ??= captured;
+                    return;
+                }
+            }
+            if (cancelDraft) input.CancelDraft();
+            if (input == _itemPageInput || input == _unitPageInput) SyncPageInputs();
+            if (captured != null)
+            {
+                var observed = new TextExitObservation(captured.SessionId, TextInputClaim.NextFocusSerial(),
+                    reason, EditorFocusCleared: true, TriggerVk: (int)trigger);
+                ReleaseEditorClaim(captured, observed);
+            }
+            RequestGameKeyboardForEditorExit();
+        }
+
+        private void OnEditorKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode is not (Keys.Escape or Keys.Enter)) return;
+            var input = (ModifierTextBox)sender;
+            if (input.IsImeComposing) return;
+            e.SuppressKeyPress = true;
+            if (e.KeyCode == Keys.Escape) ExitManagedText(input, "modifier_escape", Keys.Escape, cancelDraft: true);
+            else input.RememberDraft();
+        }
+
+        private bool CycleEditor(ModifierTextBox current, bool forward)
+        {
+            if (current.IsImeComposing) return false;
+            int index = Array.IndexOf(_editors, current);
+            int direction = forward ? 1 : _editors.Length - 1;
+            for (int step = 1; step < _editors.Length; step++)
+            {
+                var next = _editors[(index + step * direction) % _editors.Length];
+                if (next.Visible && next.CanFocus && next.Focus()) break;
+            }
+            // Even a tab with only one field keeps its keyboard on the editor.
+            return true;
         }
 
         private void ReleaseTextInputFocus()
         {
-            if (!_textInputActive && !HasTextInputFocus()) return;
-            int generation = _sessionGeneration;
-            ReturnGameKeyboard(() => Active && generation == _sessionGeneration);
+            var input = FocusedEditor();
+            if (input == null && _textAuthority?.CurrentTextLease is { } lease)
+                input = Array.Find(_editors, editor => editor.TextFocus?.Lease == lease);
+            input ??= _inputOverlay.ActiveControl as ModifierTextBox;
+            if (input != null) ExitManagedText(input, "modifier_non_editor_click");
+            else RequestGameKeyboardForEditorExit();
         }
 
-        internal void ReturnGameKeyboard(Func<bool> current)
+        internal void CompleteCloseInput(int generation, bool requestGameKeyboard)
         {
-            bool available() => !_disposed && !_owner.IsDisposed && _owner.Visible
-                && _owner.WindowState != FormWindowState.Minimized && current();
-            if (!available() || !OwnsFocus(GetForegroundWindow())) return;
-            if (GetForegroundWindow() != _owner.Handle) _owner.Activate();
-            SyncTextInputFocus();
-            bool eligible() => available() && GetForegroundWindow() == _owner.Handle && !HasTextInputFocus();
-            if (eligible()) _restoreGameKeyboard?.Invoke(eligible);
+            if (_disposed || Active || generation != _sessionGeneration) return;
+            if (requestGameKeyboard) RequestGameKeyboardForEditorExit();
+            else _editorExitReceipt = null;
         }
 
         public bool PreFilterMessage(ref Message message)
         {
             if (_disposed || !Active) return false;
+            if (message.Msg == 0x0100
+                && Control.FromHandle(message.HWnd) is ModifierTextBox editor && editor.Focused
+                && editor.FindForm() == _inputOverlay)
+            {
+                var key = (Keys)(int)message.WParam.ToInt64();
+                if (key == Keys.Tab && (ModifierKeys & (Keys.Control | Keys.Alt)) == Keys.None)
+                    return CycleEditor(editor, (ModifierKeys & Keys.Shift) == Keys.None);
+                if (key == Keys.Escape && !editor.IsImeComposing)
+                {
+                    ExitManagedText(editor, "modifier_escape", Keys.Escape, cancelDraft: true);
+                    return true;
+                }
+            }
+
             bool move = message.Msg == 0x0200;
             bool down = message.Msg == 0x0201;
+            if (_pointerAuthority != null && message.Msg == 0x020A)
+                return FilterManagedExternalWheel(message);
             if (!move && !down && message.Msg != 0x0202) return false;
+            if (!move && (_pointerAuthority != null || _textAuthority != null))
+                return FilterManagedExternalClick(message, down);
+
             // Native edit fields (including their clickable borders) own their own clicks.
             if (down && Control.FromHandle(message.HWnd)?.FindForm() == _inputOverlay) return false;
             Point client;
@@ -2119,12 +2400,75 @@ namespace CF7Launcher.Guardian
             return false;
         }
 
+        private bool FilterManagedExternalClick(Message message, bool down)
+        {
+            if (!_shown || !_ownerVisible || message.HWnd == Handle || !_owner.IsHandleCreated
+                || IsEditorReceiver(message.HWnd)
+                || !WindowManager.IsSessionOwnedSource(message.HWnd, _owner.Handle))
+                return false;
+
+            long packed = message.LParam.ToInt64();
+            var point = new POINT { x = (short)(packed & 0xFFFF), y = (short)((packed >> 16) & 0xFFFF) };
+            if (!ClientToScreen(message.HWnd, ref point)) return false;
+            Point client = PointToClient(new Point(point.x, point.y));
+            if (!ClientRectangle.Contains(client)) return false;
+
+            // Consume both edges of a Modifier click that reached an underlying owned HWND.
+            using var trace = FocusTrace.Enabled
+                ? FocusTrace.UseGesture(TracePointerMessage(message, client, "owned_filter")) : null;
+            var args = new MouseEventArgs(MouseButtons.Left, 1, client.X, client.Y, 0);
+            if (down)
+            {
+                if (IsTitleDragPoint(client))
+                {
+                    StartTitleDrag(client);
+                    return true;
+                }
+                OnMouseDown(args);
+            }
+            else OnMouseUp(args);
+            return true;
+        }
+
+        private bool IsEditorReceiver(IntPtr receiver)
+            => _inputOverlay.IsHandleCreated
+                && (receiver == _inputOverlay.Handle || GetAncestor(receiver, 2 /* GA_ROOT */) == _inputOverlay.Handle);
+
+        private bool FilterManagedExternalWheel(Message message)
+        {
+            if (!_shown || !_ownerVisible || message.HWnd == Handle || !_owner.IsHandleCreated
+                || IsEditorReceiver(message.HWnd)
+                || !WindowManager.IsSessionOwnedSource(message.HWnd, _owner.Handle)) return false;
+            long packed = message.LParam.ToInt64(); // Wheel coordinates are already in screen space.
+            var screen = new Point((short)(packed & 0xFFFF), (short)((packed >> 16) & 0xFFFF));
+            Point client = PointToClient(screen);
+            if (!ClientRectangle.Contains(client)) return false;
+            foreach (var input in _editors)
+            {
+                if (input.Visible && _inputOverlay.TryGetInputFrame(input, out var frame) && frame.Contains(client))
+                    return false;
+            }
+            var args = new MouseEventArgs(MouseButtons.None, 0, client.X, client.Y,
+                (short)((message.WParam.ToInt64() >> 16) & 0xFFFF));
+            OnMouseWheel(args);
+            return true;
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
             if (!Active) return;
             Point logical = ModifierNativeLayout.ToLogical(e.Location, ClientSize);
             string hit = HitAction(logical);
+            if (_pointerTicket is { } ticket)
+            {
+                if (!ClientRectangle.Contains(e.Location) || hit != _pressedAction)
+                    CancelManagedPointer("modifier_drag_out");
+                else if (PointerTarget(hit) != _pointerTarget)
+                    CancelManagedPointer("modifier_target_changed");
+                else if (!_pointerAuthority.ValidatePointerCommit(ticket, _pointerTarget))
+                    CancelManagedPointer("modifier_pointer_boundary");
+            }
             int action = hit == null ? 0 : ActionId(hit);
             bool changed = action != _hoverAction;
             _hoverAction = action;
@@ -2146,6 +2490,7 @@ namespace CF7Launcher.Guardian
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            CancelManagedPointer("modifier_drag_out");
             if (_trackingLeave) return;
             _trackingLeave = true;
             _hoverAction = 0;
@@ -2160,28 +2505,96 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == 0x0201 && Active)
+            if (Active && (m.Msg is 0x0201 or 0x0202 or 0x0203))
             {
                 long packed = m.LParam.ToInt64();
-                int x = (short)(packed & 0xFFFF);
-                int y = (short)((packed >> 16) & 0xFFFF);
-                int dragLeft = (int)(ClientSize.Width * (169.0 / ModifierNativeLayout.Width));
-                int dragRight = (int)(ClientSize.Width * (610.0 / ModifierNativeLayout.Width));
-                int dragHeight = (int)(ClientSize.Height * (40.0 / ModifierNativeLayout.Height));
-                if (x >= dragLeft && x < dragRight && y >= 0 && y < dragHeight)
+                var point = new Point((short)(packed & 0xFFFF), (short)((packed >> 16) & 0xFFFF));
+                using var trace = FocusTrace.Enabled
+                    ? FocusTrace.UseGesture(TracePointerMessage(m, point, "wndproc")) : null;
+                if (m.Msg == 0x0201 && IsTitleDragPoint(point))
                 {
-                    ReleaseCapture();
-                    SendMessage(Handle, 0x00A1, new IntPtr(2), IntPtr.Zero);
+                    StartTitleDrag(point);
                     return;
                 }
+                base.WndProc(ref m);
+                return;
             }
             base.WndProc(ref m);
+        }
+
+        private string TracePointerMessage(Message message, Point client, string source)
+        {
+            try
+            {
+                Point screen = PointToScreen(client);
+                bool sourceKnown = GetCurrentInputMessageSource(out var inputSource);
+                bool queued = sourceKnown && inputSource.DeviceType != 0 && !InSendMessage();
+                uint messageTime = unchecked((uint)GetMessageTime());
+                var correlation = queued
+                    ? FocusTrace.CorrelateNativeMouse(screen, message.Msg, messageTime, true)
+                    : FocusTrace.PeekNativeMouseCorrelation(screen, message.Msg);
+                FocusTrace.Record("modifier.press", new
+                {
+                    source, message = message.Msg, mouseId = correlation.MouseId, correlation,
+                    messageTime, queued, sourceKnown, inputSource.DeviceType, inputSource.OriginId,
+                    instance = _instance, token = _token, generation = _sessionGeneration,
+                    receiver = message.HWnd.ToInt64(), root = GetAncestor(message.HWnd, 2).ToInt64(),
+                    surface = IsHandleCreated ? Handle.ToInt64() : 0, screen, client,
+                    target = PointerTarget(HitAction(ModifierNativeLayout.ToLogical(client, ClientSize))),
+                    bounds = Bounds, dpi = DeviceDpi, capture = Capture,
+                    receiverWindow = FocusWindowSnapshot.Describe(message.HWnd),
+                    windows = FocusWindowSnapshot.At(screen, message.HWnd)
+                }, correlation.MouseId);
+                return correlation.MouseId;
+            }
+            catch { return null; }
+        }
+
+        private void TracePointer(string name, string target, PointerGestureTicket? ticket, string reason = null,
+            bool? accepted = null, int button = 1)
+        {
+            if (!FocusTrace.Enabled) return;
+            object admission = _pointerAuthority is SessionInputAuthority authority
+                && (accepted == false || reason is "modifier_commit_rejected" or "modifier_pointer_boundary")
+                ? authority.DescribePointerAdmission("modifier.surface", _sessionGeneration, button) : null;
+            FocusTrace.Record(name, new
+            {
+                target, ticket, reason, accepted, button, admission, capture = Capture,
+                instance = _instance, token = _token, generation = _sessionGeneration,
+                pointerEpoch = _pointerAuthority?.CurrentPointerEpoch,
+                worldGeometry = _pointerAuthority?.CurrentGeometryVersion, bounds = Bounds, dpi = DeviceDpi
+            });
+        }
+
+        private bool IsTitleDragPoint(Point client)
+        {
+            int dragLeft = (int)(ClientSize.Width * (169.0 / ModifierNativeLayout.Width));
+            int dragRight = (int)(ClientSize.Width * (610.0 / ModifierNativeLayout.Width));
+            int dragHeight = (int)(ClientSize.Height * (40.0 / ModifierNativeLayout.Height));
+            return client.X >= dragLeft && client.X < dragRight && client.Y >= 0 && client.Y < dragHeight;
+        }
+
+        private void StartTitleDrag(Point point)
+        {
+            CancelManagedPointer("modifier_title_drag");
+            void MoveWindow()
+            {
+                ReleaseTextInputFocus();
+                ReleaseCapture();
+                SendMessage(Handle, 0x00A1, new IntPtr(2), IntPtr.Zero);
+            }
+            RunSurfaceGesture("modifier.surface.drag", point, 1, MoveWindow);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             if (!Active || e.Button != MouseButtons.Left) return;
+            if (_pointerAuthority != null)
+            {
+                BeginManagedPointer(e.Location);
+                return;
+            }
             ReleaseTextInputFocus();
             Point logical = ModifierNativeLayout.ToLogical(e.Location, ClientSize);
             _pressedAction = HitAction(logical);
@@ -2197,6 +2610,11 @@ namespace CF7Launcher.Guardian
         {
             base.OnMouseUp(e);
             if (!Active || e.Button != MouseButtons.Left) return;
+            if (_pointerAuthority != null)
+            {
+                CommitManagedPointer(e.Location);
+                return;
+            }
             string action = _pressedAction;
             _pressedAction = null;
             Capture = false;
@@ -2206,10 +2624,121 @@ namespace CF7Launcher.Guardian
             ExecuteAction(action);
         }
 
+        private void BeginManagedPointer(Point client)
+        {
+            CancelManagedPointer("modifier_new_down");
+            if (!Active || !ClientRectangle.Contains(client)) return;
+            ReleaseTextInputFocus();
+            string action = HitAction(ModifierNativeLayout.ToLogical(client, ClientSize));
+            string target = PointerTarget(action);
+            if (!_pointerAuthority.TryBeginPointer("modifier.surface", _sessionGeneration,
+                1, PointToScreen(client), target, out var ticket))
+            {
+                TracePointer("modifier.begin", target, null, "authority_rejected", accepted: false);
+                if (Capture) Capture = false;
+                return;
+            }
+            _pointerTicket = ticket;
+            _pointerTarget = target;
+            _pressedAction = action;
+            _pressPoint = client;
+            Capture = true;
+            TracePointer("modifier.begin", target, ticket, accepted: true);
+            Invalidate();
+        }
+
+        private void CommitManagedPointer(Point client)
+        {
+            var authority = _pointerAuthority;
+            var pending = _pointerTicket;
+            string action = _pressedAction;
+            string target = _pointerTarget;
+            _pointerTicket = null;
+            _pointerTarget = null;
+            _pressedAction = null;
+            Capture = false;
+            if (pending is not { } ticket)
+            {
+                TracePointer("modifier.cancel", null, null, "modifier_unmatched_up");
+                return;
+            }
+
+            bool inside = ClientRectangle.Contains(client);
+            string hit = inside ? HitAction(ModifierNativeLayout.ToLogical(client, ClientSize)) : null;
+            string rejection = null;
+            if (!inside || hit != action) rejection = "modifier_invalid_up_target";
+            else if (PointerTarget(hit) != target) rejection = "modifier_target_changed";
+            else if (!authority.ValidatePointerCommit(ticket, target)) rejection = "modifier_commit_rejected";
+            if (rejection != null)
+            {
+                authority.CancelPointer(ticket, rejection);
+                TracePointer("modifier.cancel", target, ticket, rejection);
+                Invalidate();
+                return;
+            }
+            bool committed = false;
+            TracePointer("modifier.commit", target, ticket, accepted: true);
+            try
+            {
+                if (action != null) ExecuteAction(action);
+                committed = true;
+            }
+            finally { authority.EndPointer(ticket, committed); }
+        }
+
+        private string PointerTarget(string action)
+        {
+            if (action == null) return "modifier.surface";
+            string target = "modifier.button." + action;
+            if (action.StartsWith("item:", StringComparison.Ordinal) && int.TryParse(action.AsSpan(5), out int itemIndex))
+                return target + ".name:" + ItemNameAt(itemIndex);
+            if (action.StartsWith("unit:", StringComparison.Ordinal) && int.TryParse(action.AsSpan(5), out int unitIndex))
+                return target + "." + (UnitIdAt(unitIndex)?.ToString() ?? "empty");
+            if (action == "item_produce") return target + ".name:" + ItemNameAt(_selectedItem);
+            if (action is "unit_spawn" or "unit_merc") return target + "." + (UnitIdAt(_selectedUnit)?.ToString() ?? "empty");
+            return target;
+        }
+
+        private string ItemNameAt(int index)
+            => _items != null && (uint)index < (uint)_items.Count ? _items[index].Name : null;
+
+        private long? UnitIdAt(int index)
+            => _units != null && (uint)index < (uint)_units.Count ? _units[index].Id : null;
+
+        private void CancelChangedPointerTarget()
+        {
+            if (_pointerTicket.HasValue && PointerTarget(_pressedAction) != _pointerTarget)
+                CancelManagedPointer("modifier_target_changed");
+        }
+
+        private void CancelManagedPointer(string reason)
+        {
+            if (_pointerTicket is not { } ticket) return;
+            string target = _pointerTarget;
+            _pointerTicket = null;
+            _pointerTarget = null;
+            _pressedAction = null;
+            _pointerAuthority.CancelPointer(ticket, reason);
+            if (IsHandleCreated && Capture) Capture = false;
+            TracePointer("modifier.cancel", target, ticket, reason);
+            Invalidate();
+        }
+
+        protected override void OnMouseCaptureChanged(EventArgs e)
+        {
+            base.OnMouseCaptureChanged(e);
+            if (_pointerTicket.HasValue && !Capture) CancelManagedPointer("modifier_capture_lost");
+        }
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (!Active) return;
+            if (!Active || e.Delta == 0) return;
+            RunSurfaceGesture("modifier.surface.wheel", e.Location, 0, () => ScrollSurface(e));
+        }
+
+        private void ScrollSurface(MouseEventArgs e)
+        {
             Point screen = IsHandleCreated ? PointToScreen(e.Location) : e.Location;
             if (_tooltip.Visible && _tooltip.TryScrollAt(screen, e.Delta)) return;
             if (_hoverAction != 0) return;
@@ -2217,18 +2746,59 @@ namespace CF7Launcher.Guardian
             else if (_activeTab == "units") ChangeUnitPage(e.Delta > 0 ? -1 : 1, false, false);
         }
 
+        private void RunSurfaceGesture(string target, Point client, int button, Action run)
+        {
+            var authority = _pointerAuthority;
+            if (authority == null)
+            {
+                run();
+                return;
+            }
+            if (!authority.TryBeginPointer("modifier.surface", _sessionGeneration, button,
+                PointToScreen(client), target, out var ticket))
+            {
+                TracePointer("modifier.begin", target, null, "authority_rejected", accepted: false, button: button);
+                return;
+            }
+            TracePointer("modifier.begin", target, ticket, accepted: true, button: button);
+            if (!authority.ValidatePointerCommit(ticket, target))
+            {
+                authority.CancelPointer(ticket, "modifier_invalid_surface_gesture");
+                TracePointer("modifier.cancel", target, ticket, "modifier_invalid_surface_gesture", button: button);
+                return;
+            }
+            bool committed = false;
+            TracePointer("modifier.commit", target, ticket, accepted: true, button: button);
+            try
+            {
+                run();
+                committed = true;
+            }
+            finally { authority.EndPointer(ticket, committed); }
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Escape)
             {
+                if (_textAuthority != null && FocusedEditor() is { } input)
+                {
+                    if (!input.IsImeComposing)
+                    {
+                        e.SuppressKeyPress = true;
+                        ExitManagedText(input, "modifier_escape", Keys.Escape, cancelDraft: true);
+                    }
+                    return;
+                }
                 e.SuppressKeyPress = true;
-                RequestClose();
+                RequestClose(userInitiated: true);
             }
         }
 
         protected override void OnResize(EventArgs e)
         {
+            CancelManagedPointer("modifier_resized");
             base.OnResize(e);
             UpdateInputLayout();
             Invalidate();
@@ -2236,9 +2806,22 @@ namespace CF7Launcher.Guardian
 
         protected override void OnDpiChanged(DpiChangedEventArgs e)
         {
+            CancelManagedPointer("modifier_dpi_changed");
             base.OnDpiChanged(e);
             UpdateInputLayout();
             Invalidate();
+        }
+
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            CancelManagedPointer("modifier_moved");
+            base.OnLocationChanged(e);
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            CancelManagedPointer("modifier_handle_destroyed");
+            base.OnHandleDestroyed(e);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -2246,7 +2829,7 @@ namespace CF7Launcher.Guardian
             if (!_disposed && e.CloseReason == CloseReason.UserClosing)
             {
                 e.Cancel = true;
-                RequestClose();
+                RequestClose(userInitiated: true);
                 return;
             }
             base.OnFormClosing(e);
@@ -2256,8 +2839,8 @@ namespace CF7Launcher.Guardian
         {
             if (disposing)
             {
-                if (_textInputActive) TextInputFocusChanged?.Invoke(false);
-                _textInputActive = false;
+                CancelManagedPointer("modifier_disposed");
+                RetireTextInputs("modifier_disposed");
                 _disposed = true;
                 Application.RemoveMessageFilter(this);
                 _inputOverlay?.Dispose();

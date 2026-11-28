@@ -133,13 +133,16 @@ namespace CF7Launcher.Tests.Guardian {
   });
   [Fact] public void CapturedOldTimerCannotDeliverOrClearNewClose()=>Sta(()=>{
    using var owner=new Form();using var s=new CompositionHelpSurface(owner,"owned","owned",CompositionPanelProfile.Intelligence);
-   Set(s,"_ready",true);Set(s,"_active",true);Set(s,"_panelInstance","A");IntPtr own=s.Handle;
+   var delivered=new System.Collections.Generic.List<string>();
+   s.HostCloseRequested+=ctx=>delivered.Add(ctx.Endpoint.Instance);
+   Set(s,"_ready",true);Set(s,"_active",true);IntPtr _=s.Handle;
+   Call(s,"BindEndpointSession","A");
    Call(s,"RequestClose","esc",null);
-   var oldTick=(EventHandler)s.GetType().GetField("_pendingCloseTick",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(s);
-   Call(s,"BindEndpointSession","B");Set(s,"_closePending",false);Call(s,"RequestClose","esc",null);
+   Call(s,"BindEndpointSession","B");Call(s,"RequestClose","esc",null);
    var current=s.GetType().GetField("_pendingHostClose",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(s);
-   oldTick(null,EventArgs.Empty);
-   Assert.Same(current,s.GetType().GetField("_pendingHostClose",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(s));
+   Assert.NotNull(current);
+   Application.DoEvents();
+   Assert.Equal(new[]{"B"},delivered);
   });
   [Fact] public void LegalRetirementTailDoesNotRequireOldSurfaceActive()=>Sta(()=>{
    using var owner=new Form();using var s=new CompositionHelpSurface(owner,"owned","owned");Set(s,"_ready",true);Set(s,"_active",true);IntPtr h=owner.Handle;s.ForegroundReaderForRecheck=()=>h;

@@ -1,0 +1,1036 @@
+{
+  "schema": "cf7-input-authority-criteria.v1",
+  "originalInputs": [
+    {
+      "name": "G-分级验收与退役证明.md",
+      "sha256": "7227959bcf829a5ad297175be5698768f950d3061abca628a2c8356a22507eb2"
+    },
+    {
+      "name": "B-强制退休台账.json",
+      "sha256": "53b6257329c5207e560e86806279136fe1cd004c370ca0fcc60908dd9458a1af"
+    }
+  ],
+  "gates": [
+    {
+      "id": "G01",
+      "criterion": "校验附件及实际工作树；完整 SHA、manifest 和远端差分分别留档，不把“输入链零差异记录”外推为全部 SWF 字节码等价。",
+      "levels": [
+        "T0"
+      ]
+    },
+    {
+      "id": "G02",
+      "criterion": "重扫 Form、focus/Hook、Key/XFL；注释、声明、fixture、unused、生产入边分列；29 类不冒充运行 HWND，98 条未附源不冒充已审。",
+      "levels": [
+        "T0"
+      ]
+    },
+    {
+      "id": "G03",
+      "criterion": "943 条 flashswf 路径加根主 SWF、三 asLoader 产物；先识别 magic，再追 RSL/动态加载与 267 XFL；导出失败保留缺口，按正式装载闭包确定分母。",
+      "levels": [
+        "T0",
+        "T2",
+        "T3"
+      ]
+    },
+    {
+      "id": "G04",
+      "criterion": "对同一基线/候选采原始焦点、物理输入、AS2帧、F/V8/K、动作/呈现；source-ahead 和实际 runtime 分开，刺激类型显式记录。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G05",
+      "criterion": "Host focused runner 与 native selftest；过滤后测试数非零，版本/ABI 不匹配拒绝；保留旧 raw 焦点基线，候选另证零 F focus。",
+      "levels": [
+        "T1"
+      ]
+    },
+    {
+      "id": "G06",
+      "criterion": "CS6 串行 publish：fresh Compiler 0/0、真实目标 SWF、类归属/继承门和 source descriptor 均成立；marker、缓存产物不算新编译。",
+      "levels": [
+        "T2"
+      ]
+    },
+    {
+      "id": "G07",
+      "criterion": "同场景持方向/Shift 做 DRS 升降；仅合格 RenderRefresh 保留当前有效 P 与键盘，旧坐标指针可取消；不调用 capture 剥焦或全键中立轮询。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G08",
+      "criterion": "同尺寸 quality 重应用及连续 schedule 重入；AS2电平连续、无额外键盘取消，保持 first-wait deadline，不因重入无限延期。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G09",
+      "criterion": "刷新中混入首次呈现、scene切换、根视口/DPI变更、source incarnation重建或 native fault；立即退出豁免，保留 fresh-frame/几何/业务屏障，不露 F。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G10",
+      "criterion": "挂起fresh-frame刷新超实测界限或真实失流/错误几何；关闭准入并给有界终态，不能10秒盲打；普通fresh尚待不立即剥焦，无pending的静止/暂停不误判。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G11",
+      "criterion": "首次 Suspend=false，随后面板退出且 wait 尚在；分别记录 requested/attempt/success/actual focus，pointerBlocked 不冒充键盘已隔离，必要安全保护仍有效。",
+      "levels": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G12",
+      "criterion": "Resume 覆盖 Focused/Deferred/Revoked/Failed：root成功inner失败不报成功；临时gate保留 exact责任，成功才消费；外部激活/旧target撤销，不能全局重试抢焦。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G13",
+      "criterion": "过场先完/捕获先完、close tail迟到、fresh frame未到；各自责任结算后再 reveal，不能以一次handoff失败仍强行裸露输入；关闭后无需点画面补救。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G14",
+      "criterion": "正常 asLoader 完整游戏启动；早期 shim 在消费者/缓存函数之前安装，重复初始化幂等、shell卸载后仍活；不启冷隔离capability、不重建 `_root`。",
+      "levels": [
+        "T2",
+        "T3"
+      ]
+    },
+    {
+      "id": "G15",
+      "criterion": "帧中到包、早晚timeline、KeyManager及主干 A/B 同读；收包只写 pending，单帧 committedFrameId一致；暂停仍处理系统取消，无第二 Host玩法时钟。",
+      "levels": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G16",
+      "criterion": "对实际需要的 Key API、listener回调中增删、重复注册、getCode上下文、缓存/动态SWF及native key handler逐类验证；未知长尾不得默认兼容。",
+      "levels": [
+        "T0",
+        "T3"
+      ]
+    },
+    {
+      "id": "G17",
+      "criterion": "Disabled F：真实NPC/门/Button/roll/wheel/拖拽、原过程消息与动画；F持续出内容且整个F子树不持键盘焦点，鼠标交付不用 Host/native SetFocus。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G18",
+      "criterion": "Enabled+subclass备选：mouseactivate、Tab、程序SetFocus、野生键消息；用 GetGUIThreadInfo证F子树无焦点，不能以吞WM_SETFOCUS或MA_NOACTIVATE代证。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G19",
+      "criterion": "分别记录 F内容标记、S捕获、P呈现；冻结F进程/停止专用源探针作为负控（不是正常PauseManager游戏暂停），S/P计数继续增长仍判源失活；不以B1“禁用后有帧”代签真实游戏。",
+      "levels": [
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G20",
+      "criterion": "C0品红P标记与误捕P负控；正常S源ROI不含P/Native/Web视觉；父子与Owner分辨，改变拓扑后重测，隐藏/离屏S无资格不能成为前提。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G21",
+      "criterion": "方向冲突、Shift、双击与搓招边界帧对照；按现役10/12/8等配置窗口、事件顺序和同帧末命中规则验，不改成毫秒；既有重复双击样本不暗改。",
+      "levels": [
+        "T0",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G22",
+      "criterion": "两帧之间短Down→Up、同帧多边沿；有序保留且mask/edge不双发，DFA每逻辑帧只走一次timer；新增可见脉冲的语义差异明列。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G23",
+      "criterion": "真实 F→ClearScript V8→K 链注入迟到/重复/同连接跨epoch/actor/config旧结果；exact身份先拒绝，同commandSeq只导入一次，同拍多K有界排队，零/hints不覆盖命令；不加宽tolerance遮延迟。",
+      "levels": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G24",
+      "criterion": "在持键、DFA前缀、已缓存K时Cancel；Host准入、AS2帧/K缓冲、KeyManager瞬态、actor意图和V8 sampler/DFA一起结算，不发普通KeyUp、不清物理账。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G25",
+      "criterion": "SheriffShieldRush蓄力时开面板/切窗/断连；Cancel不进入released/beginRush；真实Release正控仍冲刺，已合法开始的动作不被伪造回滚。",
+      "levels": [
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G26",
+      "criterion": "战技held等冷却首次就绪、药剂/快捷技consumed latch；取消后仍持键不重新尝试或扣资源，真Up后新Down正常；不统一改Press-only。",
+      "levels": [
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G27",
+      "criterion": "射击/换弹、long/repeat、地图门与XFL释放敏感叶子；取消清各自未提交义务，无release/Click/双击误动作，既有业务提交不重放。",
+      "levels": [
+        "T2",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G28",
+      "criterion": "改键、两设备同键、设备拔除、观测Unknown、持键返回；按物理聚合/suppression重准入，未知关门，真Up只解除旧抑制，不给新owner补Release。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G29",
+      "criterion": "迟到旧epoch、已issued未见包、direct-send和retired会话；在任何SetFocus/capture/原过程/业务副作用前拒绝；保留现役floor、PM_REMOVE及tombstone保障。",
+      "levels": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G30",
+      "criterion": "会话epoch临界上限、重绑及旧包到新会话；不回绕、不以未经证明半范围比较；quiesce/retire完成后才重建，signed位图/整数范围一致。",
+      "levels": [
+        "T0",
+        "T1"
+      ]
+    },
+    {
+      "id": "G31",
+      "criterion": "重复Down、无主Up、Cancel后尾Up、capture丢失；错误事件真正拒绝，不只是计数后转发；新手势必须由新Down开始。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G32",
+      "criterion": "R6负控：press→cancel→外部release→返回首击A/B/空白；旧pressId/deferredCommit绝不完成，新首击有完整press/release；raw失败保留，native ACK不冒充AS2语义ACK。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G33",
+      "criterion": "Down后geometry/布局/源实例变化；锁定的目标/实例不能重新命中新位置，取消旧手势；hover可重算，键盘epoch不受无关坐标变更影响。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G34",
+      "criterion": "队满、双向断连/重连、VM卡住与暂停：队满不堵控制Cancel，断连各端lease/watchdog自撤销；系统帧仍处理取消，挂起VM不伪ACK，不假设共享socket独立可靠。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G35",
+      "criterion": "迟到旧Cancel、重复Cancel在新grant后抵达；先查完整身份再碰gate/快照，重复最多重发原回执，不能撤销更晚合法资格。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G36",
+      "criterion": "错session/channel/epoch/ticket/endpoint/incarnation的Cancelled；延后任务提交前复核身份；各端串行域独立结算，AS2 ACK不代全局；固定参与集合不能靠后来增删凑齐，只有确定销毁证明可替代，全结算才转授冲突域。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G37",
+      "criterion": "未知版本/能力、非法字段数、NaN/越界、超边沿、缺seq、NUL分帧破坏；绑定和解析失败关闭、不静默原生Key回退、不无限重放；一会话只有一份物理事实/裁决。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G38",
+      "criterion": "持WASD/Shift点药剂/技能/Native HUD、拖修改器非文本区及悬停Tooltip；Game已持grant时键盘不断，指针只交唯一目标；无无依据焦点/keyboard epoch切换，合法Text退出另计。",
+      "levels": [
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G39",
+      "criterion": "PlayerInfo分块/NativeHud/HitNumber共享呈现与fallback切换；同一输入/视觉只一个后端，保留缓存/脏块，移动走变换，无Native UI转Web。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G40",
+      "criterion": "修改器七类字段逐个跑Tab/Enter/Esc/失活/草稿：itemQuery、数量/页码、taskId、单位等级/数量/页码；真实原生输入控件，退出尾键不进游戏。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G41",
+      "criterion": "修改器→插话→插话配置快速切换，插入旧Leave/Deactivate/Closed/BeginInvoke false；仅exact `(endpoint,incarnation,leaseId)`可释放自身，旧false不能清新租约。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G42",
+      "criterion": "中文IME选词、组合取消/提交、候选窗、切布局/死键、Web文本Tab；文字只进当前端点，getAscii不伪VK，Enter/Esc/Space不透成游戏动作。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G43",
+      "criterion": "真实Alt+Tab/任务栏/QQ/最小化，持键切出后外部松开再返回；立即撤销gameplay，无200ms grace泄漏/NULL前台授权/任意同PID放行，不抢外部焦点。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G44",
+      "criterion": "Ctrl系统组合、Esc/对白、WebView2自有线程文本、外部应用快捷键；先迁KeyboardHook/HotkeyGuard职责再删，无双派发或吞外部键；Agent安全Hook独立核对。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G45",
+      "criterion": "地图点击、NPC/门换场及同目标重准备；已接受OpenIntent只兑现一次；几何变化不丢已受理请求，也不重放原点击或使用旧scene readiness。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G46",
+      "criterion": "帮助/情报/背包/商店返回栈、Esc/背景关闭、旧实例close迟到；exact关闭不伤新实例；DeliveryUnknown保留operationId/对账锁，不因恢复回放或解锁。",
+      "levels": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G47",
+      "criterion": "按下途中关面板、拖出窗口松开、滚轮与外点关闭；旧capture/Up不生成Click或穿透世界，新首击正常；InputShield/CDP与新路由不双消费。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G48",
+      "criterion": "漫画/结算/撤退/死亡复活、前门/设置/错误/文件对话框、Agent同意与human-preempt；业务/模态/暂停事实各自成立，无自主回焦或绕过会话权威。",
+      "levels": [
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G49",
+      "criterion": "最大化/还原/拖缩、多屏DPI、crop/clientOffset/相机震屏；坐标只转换一次，native收F客户区像素、显式AS2收stage；键盘不随指针geometry失效。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G50",
+      "criterion": "Tooltip滚轮、桌面光标、IME候选窗和外部窗口边界；无重复cursor/TOPMOST残留，旧鼠标Hook卸载后仍覆盖外部释放，系统对话框不被吞。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G51",
+      "criterion": "配对重放普通/脉冲/高输入密度轨迹；量AS2采样/解析、分配、IPC/edge队列及动作延迟p50/p95/p99/缺样；先对齐时钟，不用平均FPS掩尾延迟。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G52",
+      "criterion": "同场景同尺寸画质测GPU合成/脏块/光栅上传字节与输入并发；无每帧全屏CPU重绘，无双后端上传；异常回退须有具体差分与已认可预算。",
+      "levels": [
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "G53",
+      "criterion": "实际枚举顶层/child/Owner、激活/任务栏/AltTab及最小化联动；玩家可见独立可激活游戏主根=1，S被动且P不进S捕获子树；IME/OS对话框另列。",
+      "levels": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G54",
+      "criterion": "B每个生产消费者核入口、adapter、旧入口去向和真实装载；一手势只一个业务消费者；无源码/动态资产具名阻断，不留“其他默认兼容”。",
+      "levels": [
+        "T0",
+        "T2",
+        "T3"
+      ]
+    },
+    {
+      "id": "G55",
+      "criterion": "RET-01～09清退后，静态入边与运行计数同时证明业务Flash回焦/剥焦/跨进程Attach/DRS键盘中断为0；包装进新类或fallback不算删除。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G56",
+      "criterion": "RET-10～14、22：取消义务已接管才删计时轮询/bool/旧owner协调器；无全键等待、迟到false或生产冷装配，保留必要业务事实。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "G57",
+      "criterion": "RET-15～21逐个核生产构造/进程/Hook卸载与替代覆盖；残留须具名窄职责、条件和退出判据，不以“保留备用”永久双轨或虚报L6。",
+      "levels": [
+        "T0",
+        "T1",
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "G58",
+      "criterion": "按#362现场刺激做基线/候选配对：真实换场后连续render重应用并持键；登记实际runtime、focus、AS2帧和动作。只报本候选覆盖，原现场无对应trace仍未闭合。",
+      "levels": [
+        "T3",
+        "T4",
+        "T5"
+      ]
+    },
+    {
+      "id": "G59",
+      "criterion": "同源Host/Bridge/Broker候选及实际Flash Player、根主/三asLoader/代表资源SWF、JS/Web配对；严格区分compiled→candidate_built→candidate_executed→e2e_verified→promoted→standard_entry_verified；仅有授权才正式晋升。",
+      "levels": [
+        "T0",
+        "T1",
+        "T2",
+        "T3"
+      ]
+    },
+    {
+      "id": "G60",
+      "criterion": "完成下述三条集中旅程；入口与候选由Carbon准备，维护者只给体验结论。未测/失败机器门仍阻断，最终记录不靠手抄hash或人为“通过令牌”。",
+      "levels": [
+        "T3",
+        "T4",
+        "T5",
+        "T6"
+      ]
+    }
+  ],
+  "retirements": [
+    {
+      "id": "RET-01",
+      "mechanism": "SuspendFlashKeyboardForCapture / ResumeFlashKeyboard / _keyboardFocusHeld",
+      "replacement": "分离 KeyboardAdmission/PointerAdmission；正常 render reapply 无 keyboard 撤销",
+      "criterion": "正常 DRS/画质与持键行为不中断；真故障无盲攻击；SetFocus(F)=0",
+      "gates": [
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G34",
+        "G43",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-02",
+      "mechanism": "RestoreFlashInnerFocusOnce / HandoffFlashFocusOnce",
+      "replacement": "exact session endpoint lease 释放与通道重准入",
+      "criterion": "无内焦点恢复结果即不消费成功 permit；切流后无 F focus restore 调用",
+      "gates": [
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G34",
+        "G43",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-03",
+      "mechanism": "HandoffFlashFocusBeforePanelHide / RestoreFlashInputFocus / AttachThreadInput",
+      "replacement": "保留合法主 P 激活，删除 Flash 专属焦点执行器",
+      "criterion": "生产 API callsite zero；切窗/面板后真实键盘可用；外部程序不被抢焦",
+      "gates": [
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G34",
+        "G43",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-04",
+      "mechanism": "world_pointer 委托和原生 Deliver SetFocus(hwnd)",
+      "replacement": "固定 pointer target + epoch/cancelTicket + NativePointerBridge",
+      "criterion": "pointer Down 到达且不取 F 焦点；旧 gesture 不进原过程/不触发业务",
+      "gates": [
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G34",
+        "G43",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-05",
+      "mechanism": "ForegroundVacuumWatchdog 自主 Restore 分支",
+      "replacement": "只保留观察/诊断；由真实返回/激活事件重准入",
+      "criterion": "NULL 本身不创造输入权限；无 foreground 抢夺；返回后正常",
+      "gates": [
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G34",
+        "G43",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-06",
+      "mechanism": "ModifierNativeSurface.ReturnGameKeyboard",
+      "replacement": "exact TextLease.End；由主权威决定 keyboard channel admission",
+      "criterion": "旧 false 不清新 owner；文本退出不触发 W/Enter/攻击；持键移动+非文本操作连续",
+      "gates": [
+        "G38",
+        "G40",
+        "G41",
+        "G42",
+        "G43",
+        "G46",
+        "G47",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-07",
+      "mechanism": "WebPanel before-hide / settled / idle 重复 focus callbacks",
+      "replacement": "单一 endpoint close 事务只释放自己的 input lease",
+      "criterion": "一个关闭只释放一次；迟到回调不关闭新实例；Unknown 不解锁",
+      "gates": [
+        "G38",
+        "G40",
+        "G41",
+        "G42",
+        "G43",
+        "G46",
+        "G47",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-08",
+      "mechanism": "PanelFocusRestoreGate 的主动焦点恢复用途",
+      "replacement": "exact endpoint generation 仍保留在统一 lease；无需焦点重试",
+      "criterion": "无重复 FocusRestore 回调；旧 generation 拒绝；同业务开关正常",
+      "gates": [
+        "G38",
+        "G40",
+        "G41",
+        "G42",
+        "G43",
+        "G46",
+        "G47",
+        "G55"
+      ]
+    },
+    {
+      "id": "RET-09",
+      "mechanism": "GetAsyncKeyState 全键释放轮询",
+      "replacement": "物理 ledger + 通道内 SuppressedUntilUp",
+      "criterion": "正常渲染不等全键；模态结束按住旧键不生新 Press；后台释放可对账",
+      "gates": [
+        "G22",
+        "G28",
+        "G31",
+        "G32",
+        "G47",
+        "G56"
+      ]
+    },
+    {
+      "id": "RET-10",
+      "mechanism": "PanelHost CloseInputRelease 25ms timer",
+      "replacement": "同一 exact close + 被取消 gesture 不触发 Up/Click；按键抑制到真 Up",
+      "criterion": "Down 中 close 无穿透；旧事件拒绝；没有30s新锁死",
+      "gates": [
+        "G22",
+        "G28",
+        "G31",
+        "G32",
+        "G47",
+        "G56"
+      ]
+    },
+    {
+      "id": "RET-11",
+      "mechanism": "全局 TextInputActive bool + 三路无身份写者",
+      "replacement": "exact endpointId + instanceGeneration 的 TextLease；compare-release",
+      "criterion": "旧 Leave/Close/Dispose 回调不能清新 lease；IME 正常；无双输入",
+      "gates": [
+        "G24",
+        "G35",
+        "G36",
+        "G37",
+        "G38",
+        "G39",
+        "G40",
+        "G41",
+        "G42",
+        "G43",
+        "G56"
+      ]
+    },
+    {
+      "id": "RET-12",
+      "mechanism": "生产全局单一 EffectiveInputOwnerSnapshot",
+      "replacement": "保留业务事实，输出按通道能力到会话唯一权威",
+      "criterion": "Keyboard=Game/Pointer=Modifier 可表达；文本/模态阻断精确；没有双权威",
+      "gates": [
+        "G24",
+        "G35",
+        "G36",
+        "G37",
+        "G38",
+        "G39",
+        "G40",
+        "G41",
+        "G42",
+        "G43",
+        "G56"
+      ]
+    },
+    {
+      "id": "RET-13",
+      "mechanism": "InputHandoffCoordinator / ContinuousInputPolicy 旧实验路径",
+      "replacement": "提炼 cancel/ledger/序列校验；正式权威通道正交",
+      "criterion": "生产无 coordinator 构造；独立反例夹具可运行",
+      "gates": [
+        "G14",
+        "G15",
+        "G16",
+        "G37",
+        "G54",
+        "G56"
+      ]
+    },
+    {
+      "id": "RET-14",
+      "mechanism": "UnifiedInputHost 诊断壳及冷装配链",
+      "replacement": "真实游戏候选开关/诊断适配器",
+      "criterion": "Program 标准入口不走候选壳；不重写 _root runtime",
+      "gates": [
+        "G14",
+        "G15",
+        "G16",
+        "G37",
+        "G54",
+        "G56"
+      ]
+    },
+    {
+      "id": "RET-15",
+      "mechanism": "InputShieldForm + CDP 输入旧后端",
+      "replacement": "P 统一 pointer router + Composition 输入 adapter",
+      "criterion": "一次物理手势唯一消费；旧后端未收到事件；业务结果恰好一次",
+      "gates": [
+        "G20",
+        "G39",
+        "G45",
+        "G46",
+        "G47",
+        "G48",
+        "G49",
+        "G53",
+        "G57"
+      ]
+    },
+    {
+      "id": "RET-16",
+      "mechanism": "NativePanelBackdrop / SceneTransitionBackingForm 独立遮罩窗",
+      "replacement": "P visual/mask + 精确 hit region；scene barrier 保留",
+      "criterion": "无露帧/盲操作；不把 backdrop 当纯显示误删",
+      "gates": [
+        "G20",
+        "G39",
+        "G45",
+        "G46",
+        "G47",
+        "G48",
+        "G49",
+        "G53",
+        "G57"
+      ]
+    },
+    {
+      "id": "RET-17",
+      "mechanism": "独立 HotkeyGuard 进程",
+      "replacement": "P 单一快捷键/输入仲裁",
+      "criterion": "guard 进程数=0；Ctrl+W/R/P/O/F/Q 正确；文本热键不吞",
+      "gates": [
+        "G41",
+        "G42",
+        "G43",
+        "G44",
+        "G47",
+        "G50",
+        "G53",
+        "G57"
+      ]
+    },
+    {
+      "id": "RET-18",
+      "mechanism": "KeyboardHook 业务派发与宽前台资格",
+      "replacement": "会话权威/精确 endpoint accelerator；物理源可独立保留",
+      "criterion": "无重复 Down/Up；外部前台零游戏派发；NULL 不授权",
+      "gates": [
+        "G41",
+        "G42",
+        "G43",
+        "G44",
+        "G47",
+        "G50",
+        "G53",
+        "G57"
+      ]
+    },
+    {
+      "id": "RET-19",
+      "mechanism": "WebOverlay WH_MOUSE_LL fanout",
+      "replacement": "P pointer router/capture，必要外部释放观测唯一源",
+      "criterion": "旧 Hook 卸载后命中不丢、无双消费；外部窗口不受干扰",
+      "gates": [
+        "G41",
+        "G42",
+        "G43",
+        "G44",
+        "G47",
+        "G50",
+        "G53",
+        "G57"
+      ]
+    },
+    {
+      "id": "RET-20",
+      "mechanism": "DesktopCursorOverlay 与重复光标后端",
+      "replacement": "P visual 或系统 cursor",
+      "criterion": "多DPI/候选窗/系统对话框指针正确，无TOPMOST残留",
+      "gates": [
+        "G41",
+        "G42",
+        "G43",
+        "G44",
+        "G47",
+        "G50",
+        "G53",
+        "G57"
+      ]
+    },
+    {
+      "id": "RET-21",
+      "mechanism": "多 Overlay Owner 失活例外与层序修复",
+      "replacement": "P 会话显隐，少量纯被动 source 例外",
+      "criterion": "文本输入不隐藏 HUD；外部切出不悬浮；共享切换无双后端",
+      "gates": [
+        "G20",
+        "G39",
+        "G45",
+        "G46",
+        "G47",
+        "G48",
+        "G49",
+        "G53",
+        "G57"
+      ]
+    },
+    {
+      "id": "RET-22",
+      "mechanism": "AppActivationState 去抖作为输入资格",
+      "replacement": "原始会话活跃即时撤销；去抖只服务呈现/性能",
+      "criterion": "AltTab 即时取消；200ms 窗内外部程序按键无游戏动作",
+      "gates": [
+        "G24",
+        "G35",
+        "G36",
+        "G37",
+        "G38",
+        "G39",
+        "G40",
+        "G41",
+        "G42",
+        "G43",
+        "G56"
+      ]
+    },
+    {
+      "id": "RET-23",
+      "mechanism": "AS2→V8→K无输入身份与最后值反复读取",
+      "replacement": "ComboFrame/Result带session、keyboardEpoch、frameSeq、module/actor incarnation、commandSeq；K一次性导入；Cancel清AS2/V8瞬态",
+      "criterion": "旧命令不重武装、不跨actor/模组；当前合法命令一次消费",
+      "gates": [
+        "G21",
+        "G22",
+        "G23",
+        "G24",
+        "G25",
+        "G26",
+        "G27",
+        "G34",
+        "G35",
+        "G36"
+      ]
+    },
+    {
+      "id": "RET-24",
+      "mechanism": "Key电平false隐式承担释放/重武装",
+      "replacement": "显式Cancel并保留suppressedUntilUp；普通真Release不改业务含义",
+      "criterion": "Cancel零释放攻击；战技仍可持键等冷却首次就绪",
+      "gates": [
+        "G21",
+        "G22",
+        "G23",
+        "G24",
+        "G25",
+        "G26",
+        "G27",
+        "G34",
+        "G35",
+        "G36"
+      ]
+    },
+    {
+      "id": "RET-25",
+      "mechanism": "指针Cancel清物理账/旧geometry重投/重复Down与无主Up仅计数",
+      "replacement": "物理账与逻辑手势分离；固定target+geometry+incarnation；Original前校验",
+      "criterion": "旧手势不产生新Click；新Down恰好一次，hover允许重新映射",
+      "gates": [
+        "G14",
+        "G15",
+        "G16",
+        "G28",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G37",
+        "G54"
+      ]
+    },
+    {
+      "id": "RET-26",
+      "mechanism": "Key兼容层无限扩张或形成第二物理真源",
+      "replacement": "B仅无状态同帧视图，A为权威；有副作用监听/隐式输入显式适配",
+      "criterion": "A/B同帧同版本；未登记native路径不偷偷工作",
+      "gates": [
+        "G14",
+        "G15",
+        "G16",
+        "G28",
+        "G29",
+        "G30",
+        "G31",
+        "G32",
+        "G33",
+        "G37",
+        "G54"
+      ]
+    }
+  ]
+}

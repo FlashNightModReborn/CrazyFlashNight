@@ -4,10 +4,18 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
+using CF7Launcher.Guardian.InputOwnership;
 
 namespace CF7Launcher.Guardian
 {
+    internal sealed record TextInputClaim(ITextInputAuthority Authority, string SessionId, TextInputLease Lease)
+    {
+        private static long _focusSerial;
+        internal static long NextFocusSerial() => Interlocked.Increment(ref _focusSerial);
+    }
+
     /// <summary>
     /// 带有占位提示与 IME 组合输入感知的原生修改器文本框；不修改 Text 属性本身。
     /// </summary>
@@ -20,6 +28,7 @@ namespace CF7Launcher.Guardian
         private const int WM_KILLFOCUS = 0x0008;
         private const int WM_IME_STARTCOMPOSITION = 0x010D;
         private const int WM_IME_ENDCOMPOSITION = 0x010E;
+        private const int GCS_COMPSTR = 0x0008;
 
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
@@ -30,10 +39,56 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern bool ShowCaret(IntPtr hWnd);
 
+        [DllImport("imm32.dll")]
+        private static extern IntPtr ImmGetContext(IntPtr hwnd);
+
+        [DllImport("imm32.dll")]
+        private static extern bool ImmReleaseContext(IntPtr hwnd, IntPtr context);
+
+        [DllImport("imm32.dll", ExactSpelling = true)]
+        private static extern int ImmGetCompositionStringW(IntPtr context, int index, IntPtr buffer, int length);
+
         private string _hintText = "";
         private Color _hintColor = Color.FromArgb(156, 156, 156);
         private int _horizontalMargin;
         private bool _imeComposing;
+        private string _draftAtFocus;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal string InputEndpointId { get; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal long InputInstanceGeneration { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal TextInputClaim TextFocus { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal TextInputClaim QueuedTextExit { get; set; }
+
+        internal ModifierTextBox(string endpointId)
+        {
+            InputEndpointId = endpointId;
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        internal bool IsImeComposing
+        {
+            get
+            {
+                if (_imeComposing) return true;
+                if (!IsHandleCreated || !Focused) return false;
+                IntPtr hwnd = Handle;
+                IntPtr context = ImmGetContext(hwnd);
+                if (context == IntPtr.Zero) return false;
+                try { return ImmGetCompositionStringW(context, GCS_COMPSTR, IntPtr.Zero, 0) > 0; }
+                finally { ImmReleaseContext(hwnd, context); }
+            }
+        }
+
+        internal void RememberDraft() => _draftAtFocus = Text;
+
+        internal void CancelDraft()
+        {
+            if (_draftAtFocus != null) Text = _draftAtFocus;
+        }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         internal string HintText

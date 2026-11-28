@@ -145,11 +145,17 @@ _root.创建可雇用敌人实体对象 = function(佣兵数据, X, Y)
 		this.removeMovieClip();
 	}
 
+	佣兵对象.area.__cf7HireWorld =
+		org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
 	佣兵对象.area.onRelease = function(){
+		var npc:MovieClip = this._parent;
+		if (_root.GameInput.passiveActive === true && (_root.暂停 || this.__cf7HireWorld == null
+				|| this.__cf7HireWorld !== _root.gameworld.__stageReturnWorldIdentity
+				|| npc._parent !== _root.gameworld || npc.area !== this)) return;
 		_root.NPC功能菜单._visible = true;
 		_root.NPC功能菜单._x = _root._xmouse;
 		_root.NPC功能菜单._y = _root._ymouse;
-		_root.NPC功能菜单.当前NPC = _parent._name;
+		_root.NPC功能菜单.当前NPC = npc._name;
 		_root.NPC功能菜单.刷新显示();
 	}
 

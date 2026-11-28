@@ -21,25 +21,51 @@ class org.flashNight.arki.unit.Action.Input.EnemyActionInputService {
         if (!runtime || !runtime.enabled) return false;
         lastUnit = unit;
         lastIdentity = runtime.identity;
-        var mask:Number = (Key.isDown(_root.左键) ? 1 : 0)
-            | (Key.isDown(_root.右键) ? 2 : 0)
-            | (Key.isDown(_root.上键) ? 4 : 0)
-            | (Key.isDown(_root.下键) ? 8 : 0)
-            | (Key.isDown(_root.A键) ? 16 : 0)
-            | (Key.isDown(_root.B键) ? 32 : 0)
-            | (Key.isDown(_root.C键) ? 64 : 0)
-            | (Key.isDown(_root.奔跑键) ? 128 : 0);
+        var input:Object = _root.GameInput;
+        var passive:Boolean = input.passiveActive === true;
+        var mask:Number = (isHeld(unit, _root.左键, passive) ? 1 : 0)
+            | (isHeld(unit, _root.右键, passive) ? 2 : 0)
+            | (isHeld(unit, _root.上键, passive) ? 4 : 0)
+            | (isHeld(unit, _root.下键, passive) ? 8 : 0)
+            | (isHeld(unit, _root.A键, passive) ? 16 : 0)
+            | (isHeld(unit, _root.B键, passive) ? 32 : 0)
+            | (isHeld(unit, _root.C键, passive) ? 64 : 0)
+            | (isHeld(unit, _root.奔跑键, passive) ? 128 : 0);
         for (var slot:Number = 1; slot <= 12; slot++) {
-            if (Key.isDown(_root["快捷技能栏键" + slot])) mask |= 1 << (7 + slot);
+            if (isHeld(unit, _root["快捷技能栏键" + slot], passive)) mask |= 1 << (7 + slot);
         }
         var enabled:Boolean = !_root.暂停 && _root.控制目标全自动 !== true
-            && unit.hp > 0 && unit._warlordActionAiHeld !== true;
-        updateSample(unit, mask, enabled);
+            && unit.hp > 0 && unit._warlordActionAiHeld !== true
+            && (!passive || (input.isInputAdmitted() && input.isCurrentActor(unit)));
+        var pressed:Number = -1;
+        if (passive && enabled) {
+            pressed = (input.hasKeyDownEdge(_root.A键) ? 16 : 0)
+                | (input.hasKeyDownEdge(_root.B键) ? 32 : 0) | (input.hasKeyDownEdge(_root.C键) ? 64 : 0);
+            for (slot = 1; slot <= 12; ++slot) {
+                if ((mask & (1 << (7 + slot))) && input.hasKeyDownEdge(_root["快捷技能栏键" + slot]))
+                    pressed |= 1 << (7 + slot);
+            }
+            // Host suppresses inherited holds until Up; the first admitted new Down is eligible.
+            runtime.inputBlocked = false;
+        }
+        applySample(unit, mask, enabled, pressed);
         org.flashNight.arki.scene.StageRunSession.observeInputState(unit, enabled ? mask : 0);
         return true;
     }
 
+    private static function isHeld(unit:Object, vk:Number, passive:Boolean):Boolean {
+        return passive ? _root.GameInput.getActorPress(unit, vk) > 0 : Key.isDown(vk);
+    }
+
+    public static function cancelPassiveInput(unit:Object):Void {
+        if (unit.__enemyActionRuntime.enabled === true) EnemyActionRuntime.clearInput(unit);
+    }
+
     public static function updateSample(unit:Object, mask:Number, enabled:Boolean):Void {
+        applySample(unit, mask, enabled, -1);
+    }
+
+    private static function applySample(unit:Object, mask:Number, enabled:Boolean, pressed:Number):Void {
         var runtime:Object = unit.__enemyActionRuntime;
         if (!runtime || !runtime.enabled) return;
         if (!enabled) {
@@ -89,7 +115,7 @@ class org.flashNight.arki.unit.Action.Input.EnemyActionInputService {
         for (var i:Number = inputs.length - 1; i >= 0; i--) {
             var mapping:Object = inputs[i];
             // 按住 J 只在空闲时续打；主动再按一次才可取消，防止连打抢掉新技能。
-            var rising:Boolean = (previous & mapping.bit) == 0;
+            var rising:Boolean = (pressed >= 0) ? (pressed & mapping.bit) != 0 : (previous & mapping.bit) == 0;
             if ((actionMask & mapping.bit) != 0
                 && (rising || (mapping.held && runtime.active == null))) {
                 var actionId:String = mapping.runningActionId != undefined && EnemyActionRuntime.isRunning(unit)

@@ -106,6 +106,7 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
         var ctx:Object = {
             unit:u, item:u.长枪, world:_root.gameworld, phase:"open", age:0,
             charge:0, released:false, cleaned:false, lastFrame:-1,
+            inputCancelSerial:_root.GameInput.cancelSerial,
             direction:u.方向, tune:p, mp:mp, paid:false, hits:0, blocked:0, distance:0,
             emittedTick:-1, tickId:0, pending:false,
             speed:runSpeed+p.speedBonus,
@@ -151,11 +152,27 @@ class org.flashNight.arki.unit.Action.Skill.SheriffShieldRush {
         };
     }
 
+    public static function cancelPassiveInput(u:MovieClip):Void {
+        var ctx:Object = u.__sheriffShieldRush;
+        if (ctx == null || ctx.npc != null || (ctx.phase != "open" && ctx.phase != "hold")) return;
+        var man:MovieClip = ctx.man;
+        var current:Boolean = u.man === man && u.状态 == "战技" && man.__sheriffRushToken === ctx;
+        cleanup(ctx);
+        if (current) _root.战技路由.动画完毕(man, u);
+    }
+
     /** keyDown is the configured weapon-skill key, not the active-skill slot. */
     public static function tick(man:MovieClip, keyDown:Boolean):Void {
         var ctx:Object = man.__sheriffRushToken;
-        if (!ctx || ctx.cleaned || !ctx.paid || _root.暂停) return;
+        if (!ctx || ctx.cleaned || !ctx.paid) return;
         var u:MovieClip = ctx.unit;
+        var input:Object = _root.GameInput;
+        if (ctx.npc == null && input.passiveActive === true && (ctx.phase == "open" || ctx.phase == "hold")
+                && (input.gateOpen !== true || ctx.inputCancelSerial !== input.cancelSerial || u._name != _root.控制目标)) {
+            cancelPassiveInput(u);
+            return;
+        }
+        if (_root.暂停) return;
         if (u.__sheriffShieldRush !== ctx || _root.gameworld !== ctx.world ||
                 u.man !== man || !(u.hp > 0) || u.攻击模式 != "长枪" ||
                 u.长枪 !== ctx.item || u.长枪数据.name != "特勤霰弹枪" ||

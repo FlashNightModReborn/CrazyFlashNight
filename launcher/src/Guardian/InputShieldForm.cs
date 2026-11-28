@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -9,19 +10,9 @@ using Microsoft.Web.WebView2.Core;
 namespace CF7Launcher.Guardian
 {
     /// <summary>
-    /// 幽灵输入层：不可见的 GDI+ Layered Window，负责拦截 Web UI 交互区域的鼠标事件。
-    ///
-    /// 架构（Z-order 从上到下）：
-    ///   InputShieldForm   ← 本类：α=1 命中区拦截鼠标 → CDP 注入 WebView2
-    ///   WebOverlayForm    ← WS_EX_TRANSPARENT 纯视觉层，WebView2 渲染
-    ///   Flash HWND        ← 正常接收所有穿透的点击
-    ///   GuardianForm
-    ///
-    /// 边界问题处理：
-    /// - TrackMouseEvent + WM_MOUSELEAVE：鼠标离开 α=1 区域时向 WebView2 发送 mouseMoved(-1,-1)
-    ///   触发 CSS :hover 移除和 JS mouseleave，使 notch 自动收起
-    /// - hitRect 变更时检查鼠标是否仍在区域内，若不在则发送 mouseReleased 清理按压状态
-    ///   防止展开/收起导致的 Chromium 拖拽幻影
+    /// Legacy WebOverlay hit regions and full-screen panel telemetry.
+    /// With session pointer authority bound, the shield is transparent to hit testing
+    /// and only observes panel telemetry shared by WebOverlay's mouse hook.
     /// </summary>
     public class InputShieldForm : OverlayBase
     {
@@ -29,12 +20,6 @@ namespace CF7Launcher.Guardian
 
         [DllImport("user32.dll")]
         private static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetCapture(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern bool ReleaseCapture();
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
@@ -63,6 +48,7 @@ namespace CF7Launcher.Guardian
         private const int WM_RBUTTONUP = 0x0205;
         private const int WM_MOUSELEAVE = 0x02A3;
         private const int WM_MOUSEWHEEL = 0x020A;
+        private const int WM_CAPTURECHANGED = 0x0215;
 
         private const int WM_MOUSEACTIVATE = 0x0021;
         private const int MA_NOACTIVATE = 3;
@@ -92,8 +78,9 @@ namespace CF7Launcher.Guardian
         private bool _mouseTracking;
         private bool _mouseInside;
 
-        /// <summary>鼠标按钮按下期间是否持有 capture。</summary>
-        private bool _captured;
+        private int _pressedButtons;
+        private bool _pointerAuthorityBound;
+        private bool LegacyHitRegionsEnabled => !_pointerAuthorityBound && ShouldApplyInteractiveRects(_telemetryActive);
 
         /// <summary>Overlay/WebView2 坐标上下文；缺失 Web metrics 时使用 fallback zoom。</summary>
         private OverlayCoordinateContext _coordinateContext;
@@ -114,7 +101,17 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void SetTargetWebView(CoreWebView2 webView)
         {
+            if (ReferenceEquals(_targetWebView, webView)) return;
+            CancelActivePointerGesture();
             _targetWebView = webView;
+        }
+
+        internal void SetPointerAuthorityBound(bool bound)
+        {
+            if (_pointerAuthorityBound == bound || IsDisposed || Disposing) return;
+            _pointerAuthorityBound = bound;
+            CancelActivePointerGesture();
+            ClearInteractiveRects();
         }
 
         /// <summary>更新缩放比。WebOverlayForm 在 SyncPosition 时调用。</summary>
@@ -144,6 +141,7 @@ namespace CF7Launcher.Guardian
         // 用途：Phase 6 Soak 期收集"clicks_outside_panel 是否有异常聚集"作为 InputShield 删除前的安全证据。
 
         private bool _telemetryActive;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool TelemetryActive { get { return _telemetryActive; } }
 
         private Rectangle _telemetryPanelRect;
@@ -181,7 +179,7 @@ namespace CF7Launcher.Guardian
 
             // Telemetry 只观测，不参与 panel 输入。先释放旧 capture，再把 mask 归零；
             // 后续 Web 上报的 panel interactiveRect 也必须在 UpdateHitRects 中被忽略。
-            ResetInputState();
+            CancelActivePointerGesture();
             ClearInteractiveRects();
 
             LogManager.Log("[InputShield] EnterTelemetryMode source=shared_cursor_hook panel=" + panelRect.Width + "x" + panelRect.Height
@@ -195,7 +193,7 @@ namespace CF7Launcher.Guardian
 
             // Close 的输入不变量必须幂等：即便调用时 telemetry 已结束，也不能让最后一次
             // full-panel interactiveRect 或未配对 capture 留在常驻透明 shield 上吞掉 Flash 点击。
-            ResetInputState();
+            CancelActivePointerGesture();
             ClearInteractiveRects();
 
             if (!wasActive) return;
@@ -251,12 +249,9 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void UpdateHitRects(List<Rectangle> rects)
         {
-            if (!ShouldApplyInteractiveRects(_telemetryActive))
+            if (!LegacyHitRegionsEnabled)
             {
-                // Panel 模式由 WebOverlay 直接收输入；telemetry shield 必须保持全透明。
-                // Panels.getHitRects 会把全屏 panel 上报到这里，若写入 mask，关闭后便可能
-                // 留下一张不可见的全屏鼠标拦截层。
-                ClearInteractiveRects();
+                // The mode switch already cleared the mask, including any deferred hit regions.
                 return;
             }
 
@@ -286,10 +281,7 @@ namespace CF7Launcher.Guardian
 
             RebuildMask();
 
-            // hitRect 变更后，鼠标可能落在新 rect 之外（如 notch 收起）
-            // 此时必须清理 CDP 状态，否则 Chromium 认为按钮仍被按住
-            // 但 capture 期间不做 cleanup——down/up 配对由 SetCapture 保证
-            if (_mouseInside && !_captured)
+            if (_mouseInside && _pressedButtons == 0)
                 CleanupIfMouseOutside();
         }
 
@@ -308,7 +300,7 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 检查鼠标是否仍在命中区域内。若不在，发送 CDP mouseReleased + mouseMoved 清理状态。
+        /// 检查鼠标是否仍在命中区域内。移出区域时清理 hover。
         /// </summary>
         private void CleanupIfMouseOutside()
         {
@@ -325,8 +317,6 @@ namespace CF7Launcher.Guardian
             if (!still)
             {
                 _mouseInside = false;
-                // 清理可能残留的按压状态
-                DispatchCdpMouseAt("mouseReleased", lx, ly, "left");
                 // 发送到视口外触发 CSS mouseleave
                 DispatchCdpMouseAt("mouseMoved", -1, -1, "none");
             }
@@ -410,6 +400,13 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
+            if (!LegacyHitRegionsEnabled && m.Msg is (WM_NCHITTEST or WM_MOUSEMOVE or WM_MOUSELEAVE
+                or WM_LBUTTONDOWN or WM_LBUTTONUP or WM_RBUTTONDOWN or WM_RBUTTONUP or WM_MOUSEWHEEL))
+            {
+                m.Result = m.Msg == WM_NCHITTEST ? (IntPtr)HTTRANSPARENT : IntPtr.Zero;
+                return;
+            }
+
             switch (m.Msg)
             {
                 case WM_NCHITTEST:
@@ -462,50 +459,29 @@ namespace CF7Launcher.Guardian
                 {
                     _mouseTracking = false;
                     _mouseInside = false;
-
-                    if (_captured)
-                    {
-                        _captured = false;
-                        ReleaseCapture();
-                    }
-
-                    // 清理可能残留的按压状态
-                    DispatchCdpMouseAt("mouseReleased", -1, -1, "left");
-                    // 发送到视口外触发 CSS :hover 移除和 notch 自动收起
-                    DispatchCdpMouseAt("mouseMoved", -1, -1, "none");
+                    if (_pressedButtons == 0) DispatchCdpMouseAt("mouseMoved", -1, -1, "none");
                     return;
                 }
 
+                case WM_CAPTURECHANGED:
+                    if (_pressedButtons != 0 && !Capture) CancelActivePointerGesture();
+                    break;
+
                 case WM_LBUTTONDOWN:
-                    // SetCapture 确保 WM_LBUTTONUP 一定回到本窗口
-                    // 防止 hitRect 缩小后 mouseUp 漏给 Flash 导致状态污染
-                    SetCapture(this.Handle);
-                    _captured = true;
-                    DispatchCdpMouse("mousePressed", m.LParam, "left");
+                case WM_RBUTTONDOWN:
+                    bool left = m.Msg == WM_LBUTTONDOWN;
+                    _pressedButtons |= left ? 1 : 2;
+                    Capture = true;
+                    DispatchCdpMouse("mousePressed", m.LParam, left ? "left" : "right");
                     return;
 
                 case WM_LBUTTONUP:
-                    if (_captured)
-                    {
-                        _captured = false;
-                        ReleaseCapture();
-                    }
-                    DispatchCdpMouse("mouseReleased", m.LParam, "left");
-                    return;
-
-                case WM_RBUTTONDOWN:
-                    SetCapture(this.Handle);
-                    _captured = true;
-                    DispatchCdpMouse("mousePressed", m.LParam, "right");
-                    return;
-
                 case WM_RBUTTONUP:
-                    if (_captured)
-                    {
-                        _captured = false;
-                        ReleaseCapture();
-                    }
-                    DispatchCdpMouse("mouseReleased", m.LParam, "right");
+                    int released = m.Msg == WM_LBUTTONUP ? 1 : 2;
+                    if ((_pressedButtons & released) == 0) return;
+                    _pressedButtons &= ~released;
+                    if (_pressedButtons == 0 && Capture) Capture = false;
+                    DispatchCdpMouse("mouseReleased", m.LParam, released == 1 ? "left" : "right");
                     return;
 
                 case WM_MOUSEWHEEL:
@@ -519,7 +495,7 @@ namespace CF7Launcher.Guardian
         /// <summary>滚轮事件注入 CDP。WM_MOUSEWHEEL 的 lParam 是屏幕坐标。</summary>
         private void DispatchCdpMouseWheel(IntPtr wParam, IntPtr lParam)
         {
-            if (_targetWebView == null) return;
+            if (!LegacyHitRegionsEnabled || _targetWebView == null) return;
 
             // 64 位安全：用 ToInt64 避免 OverflowException
             long wp = wParam.ToInt64();
@@ -554,7 +530,7 @@ namespace CF7Launcher.Guardian
         /// <summary>从 WM_xxx 的 lParam 提取客户区坐标并注入 CDP。</summary>
         private void DispatchCdpMouse(string type, IntPtr lParam, string button)
         {
-            if (_targetWebView == null) return;
+            if (!LegacyHitRegionsEnabled || _targetWebView == null) return;
 
             long lp = lParam.ToInt64();
             int x = (short)(lp & 0xFFFF);
@@ -566,7 +542,7 @@ namespace CF7Launcher.Guardian
         /// <summary>向 WebView2 注入 CDP 鼠标事件。坐标为物理像素，内部转为 CSS 像素。</summary>
         private void DispatchCdpMouseAt(string type, int physX, int physY, string button)
         {
-            if (_targetWebView == null) return;
+            if (!LegacyHitRegionsEnabled || _targetWebView == null) return;
 
             // 物理像素 → CSS 像素（CDP 坐标空间）
             Point css = PhysicalPointToCss(physX, physY);
@@ -592,12 +568,12 @@ namespace CF7Launcher.Guardian
 
         private async void DrainQueue()
         {
-            if (_cdpBusy || _targetWebView == null) return;
+            if (_cdpBusy || !LegacyHitRegionsEnabled || _targetWebView == null) return;
             _cdpBusy = true;
 
             try
             {
-                while (_cdpQueue.Count > 0)
+                while (LegacyHitRegionsEnabled && _targetWebView != null && _cdpQueue.Count > 0)
                 {
                     string json = _cdpQueue.Dequeue();
 
@@ -657,27 +633,20 @@ namespace CF7Launcher.Guardian
         /// </summary>
         protected override void OnOwnerBecameHidden()
         {
-            ResetInputState();
+            CancelActivePointerGesture();
         }
 
-        /// <summary>强制重置所有鼠标/CDP 状态，防止残留幻影。</summary>
-        private void ResetInputState()
+        /// <summary>Cancel the shield's capture and queued CDP events. Only a real up can be dispatched.</summary>
+        internal void CancelActivePointerGesture()
         {
-            if (_captured)
-            {
-                _captured = false;
-                try { ReleaseCapture(); } catch { }
-            }
+            bool clearHover = _mouseInside || _pressedButtons != 0;
+            _pressedButtons = 0;
             _mouseTracking = false;
             _mouseInside = false;
             _cdpQueue.Clear();
-
-            // 向 WebView2 发送最终清理事件
-            if (_targetWebView != null)
-            {
-                DispatchCdpMouseAt("mouseReleased", -1, -1, "left");
+            if (IsHandleCreated && Capture) Capture = false;
+            if (clearHover && !IsDisposed && !Disposing)
                 DispatchCdpMouseAt("mouseMoved", -1, -1, "none");
-            }
         }
 
         protected override void Dispose(bool disposing)
@@ -685,6 +654,8 @@ namespace CF7Launcher.Guardian
             if (disposing)
             {
                 _telemetryActive = false;
+                _targetWebView = null;
+                CancelActivePointerGesture();
                 if (_maskBitmap != null)
                 {
                     _maskBitmap.Dispose();

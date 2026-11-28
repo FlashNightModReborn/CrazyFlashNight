@@ -23,7 +23,25 @@
  */
 class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.KeyEdgeTrigger {
 
+    public static function getEquipmentPress(ref:Object, unit:MovieClip, keyConst:Number):Number {
+        var input:Object = _root.GameInput;
+        if (_root.暂停 || ref.自机 !== unit || ref.版本号 !== unit.version
+                || ref.inputItem !== unit[ref.装备类型]) return 0;
+        var press:Number = input.getActorPress(unit, keyConst);
+        return press > ref.inputPressFloor ? press : 0;
+    }
+
     public static function onRise(ref:Object, unit:MovieClip, keyConst:Number, slotKey:String):Boolean {
+        var input:Object = _root.GameInput;
+        if (input.passiveActive === true) {
+            var press:Number = getEquipmentPress(ref, unit, keyConst);
+            ref[slotKey] = press > 0;
+            if (press == 0 || !input.hasKeyDownEdge(keyConst)) return false;
+            var receiptKey:String = slotKey + "Press";
+            if (ref[receiptKey] === press) return false;
+            ref[receiptKey] = press;
+            return true;
+        }
         var pressed:Boolean = _root.按键输入检测(unit, keyConst) ? true : false;
         var rise:Boolean = pressed && !ref[slotKey];
         ref[slotKey] = pressed;

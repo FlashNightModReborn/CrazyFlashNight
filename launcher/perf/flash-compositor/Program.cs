@@ -19,6 +19,18 @@ internal static class Program
         if (reportIndex >= 0 && reportIndex+1 < args.Length) report = Path.GetFullPath(args[reportIndex+1]);
         try
         {
+            if (args is ["--check-native-abi"])
+            {
+                uint version = Native.VerifyAbi();
+                Console.WriteLine(JsonSerializer.Serialize(new
+                {
+                    expected = Native.RequiredAbiVersion,
+                    actual = version,
+                    statsSize = Marshal.SizeOf<Native.Stats>(),
+                    contentStatsSize = Marshal.SizeOf<Native.ContentStats>()
+                }));
+                return 0;
+            }
             var options = Options.Parse(args);
             report = options.Report;
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
@@ -30,6 +42,7 @@ internal static class Program
         }
         catch (Exception error)
         {
+            if (args is ["--check-native-abi"]) Console.Error.WriteLine(error.Message);
             Directory.CreateDirectory(Path.GetDirectoryName(report)!);
             File.WriteAllText(report, JsonSerializer.Serialize(new { success = false, error = error.ToString() }, JsonOptions));
             return 1;
@@ -204,6 +217,7 @@ internal sealed class ProbeForm : Form
 
     private async Task StartProbe()
     {
+        Native.VerifyAbi();
         Process? fProcess;
         bool embeddedF = options.Topology == "embeddedF";
         if (options.FlashExe != null)
@@ -295,7 +309,6 @@ internal sealed class ProbeForm : Form
         outputHwnd = player != null ? player.OutputSurface.Handle : surface.Handle;
         native = Native.ProbeStart(source, actualPid, outputHwnd, vendor);
         if (native == 0) throw new InvalidOperationException("Native capture initialization failed");
-        if (Native.ProbeGetAbiVersion()!=9) throw new InvalidOperationException("Native visual catalog ABI mismatch");
         if (options.LutSet!=null)
         {
             var lut=WorldLutSet.Load(options.LutSet);
@@ -931,6 +944,16 @@ internal sealed class PresentationForm : Form
 
 internal static class Native
 {
+    internal const uint RequiredAbiVersion = 12;
+
+    internal static uint VerifyAbi()
+    {
+        uint version = ProbeGetAbiVersion();
+        if (version != RequiredAbiVersion)
+            throw new InvalidOperationException($"Native compositor ABI mismatch: expected {RequiredAbiVersion}, found {version}.");
+        return version;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct ContentStats
     {
@@ -968,7 +991,7 @@ internal static class Native
         return stats;
     }
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern nint ProbeStart(nint source, uint sourcePid, nint output, uint vendor);
-    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern uint ProbeGetAbiVersion();
+    [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] private static extern uint ProbeGetAbiVersion();
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern void ProbeSetMode(nint handle, int mode);
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetLut(nint handle,[In] byte[] rgba);
     [DllImport("FlashCompositorNative", CallingConvention = CallingConvention.Cdecl)] internal static extern int ProbeSetWeather(nint handle,int type,float intensity,int quality,uint seed);

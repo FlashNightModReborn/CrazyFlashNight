@@ -211,14 +211,29 @@ _root.技能函数._手枪后键有效 = function(自机:MovieClip):Boolean {
  *   · 松开全部水平键 → 复位键码，允许再次按同一键重新判定
  * 这样「先点←、再按→+Shift+B」按新沿清空，不会误吃后跳。
  */
+_root.技能函数._取消手枪后键输入 = function(自机:MovieClip):Void {
+    delete 自机.__手枪方向键码;
+    delete 自机.__手枪方向按下序;
+    delete 自机.__手枪后键帧;
+    delete 自机.__手枪后键方向;
+    delete 自机.__手枪后键移动沿;
+};
+
 _root.技能函数._手枪后键采样 = function(自机:MovieClip):Void {
 	var 键码:String = 自机.左行 ? "左" : (自机.右行 ? "右" : null);
 	if (键码 == null) {
 		自机.__手枪方向键码 = null;
 		return;
 	}
-	if (键码 != 自机.__手枪方向键码) {
+	var input:Object = _root.GameInput;
+	var press:Number = 0;
+	if (input.passiveActive === true) {
+		press = input.getActorPress(自机, 键码 == "左" ? 自机.左键 : 自机.右键);
+		if (press == 0) return;
+	}
+	if (键码 != 自机.__手枪方向键码 || press !== 自机.__手枪方向按下序) {
 		自机.__手枪方向键码 = 键码;
+		自机.__手枪方向按下序 = press;
 		var 是后键:Boolean = _root.技能函数._手枪按后(自机);
 		自机.__手枪后键帧 = 是后键 ? _root.帧计时器.当前帧数 : undefined;
 		// 后键按下这一帧 方向 还没被 行走 翻转，把此时的朝向存下来：
@@ -329,6 +344,15 @@ _root.技能函数.手枪搓招已学习 = function(自机:MovieClip, 技能名:
  * 变体名经 unit.__手枪搓招容器名 传递（create 后写入，execute 后由 StateTransition 清回调）。
  */
 _root.技能函数.__job_挂载手枪搓招容器 = function(u:MovieClip):Void {
+	var scope:Object = u.__手枪搓招输入;
+	delete u.__手枪搓招输入;
+	var input:Object = _root.GameInput;
+	if (input.passiveActive === true && (scope == null || !input.isCurrentActor(u)
+			|| scope.actor !== u.__cf7InputIdentity || !input.isInputCurrent(scope.epoch, scope.cancelSerial, scope.configInc)
+			|| scope.gun1 !== u.手枪 || scope.gun2 !== u.手枪2)) {
+		org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle.recoverMissingSkillContainer(u);
+		return;
+	}
 	var 容器名:String = u.__手枪搓招容器名;
 	var initObj:Object = org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle.buildPublicContainerInit(u.container);
 	var attachResult:Object = org.flashNight.arki.unit.UnitComponent.Routing.ContainerAttachAction.attach(
@@ -425,6 +449,11 @@ _root.技能函数.手枪搓招标签跳转 = function(自机:MovieClip, 技能�
 	// 对齐 技能路由.技能标签跳转_旧：先归一 temp_y，保证 handleFloat 的浮空判定拿到数字
 	org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle.ensureTempY(自机);
 
+	var input:Object = _root.GameInput;
+	if (input.passiveActive === true) {
+		自机.__手枪搓招输入 = {actor:自机.__cf7InputIdentity, epoch:input.getKeyboardEpoch(),
+			cancelSerial:input.cancelSerial, configInc:input.configInc, gun1:自机.手枪, gun2:自机.手枪2};
+	}
 	// 与空手路由同构：job 里带 forceGotoLabel="容器"，回调在 gotoAndStop 后执行
 	org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntent.triggerStateTransitionJob(
 		自机,
@@ -449,10 +478,11 @@ _root.技能函数.手枪搓招检查 = function(自机:MovieClip):Number {
 	// 只对控制目标生效（AI 没有输入序列）
 	if (自机._name != _root.控制目标) return 0;
 
-	// B 松开即复位锁存：一次按下只出一招，按住不放不连发
-	if (!自机.动作B) {
-		delete 自机.__手枪搓招B已消费;
-	}
+	var input:Object = _root.GameInput;
+	var passive:Boolean = input.passiveActive === true;
+	var press:Number = passive ? input.getActorPress(自机, 自机.B键) : 0;
+	if (passive && (!input.isInputAdmitted() || !input.isCurrentActor(自机))) return 0;
+	if (!passive && !自机.动作B) delete 自机.__手枪搓招B已消费;
 
 	// 后键意图采样（必须每帧跑，且在 行走() 翻转朝向前记录）
 	_root.技能函数._手枪后键采样(自机);
@@ -462,7 +492,7 @@ _root.技能函数.手枪搓招检查 = function(自机:MovieClip):Number {
 	// 必须按着 B
 	if (!自机.动作B) return 0;
 	// 同一次按下只尝试一次
-	if (自机.__手枪搓招B已消费) return 0;
+	if (passive ? (press == 0 || press <= 自机.__comboBPressConsumed) : 自机.__手枪搓招B已消费) return 0;
 
 	var 表:Array = _root.技能函数.手枪搓招表;
 	for (var i:Number = 0; i < 表.length; i++) {
@@ -471,7 +501,8 @@ _root.技能函数.手枪搓招检查 = function(自机:MovieClip):Number {
 		if (!_root.技能函数._手枪方向命中(自机, 表[i].键)) continue;
 
 		// 命中：锁存本次按下，清掉旧 DFA 预输入与后键意图（避免同一次输入连出两招）
-		自机.__手枪搓招B已消费 = true;
+		if (passive) 自机.__comboBPressConsumed = press;
+		else 自机.__手枪搓招B已消费 = true;
 		自机.__手枪后键帧 = undefined;
 		自机.__手枪后键移动沿 = undefined;
 		// 后向招式（后跳射击/后射）：先转回按下后键前的朝向，再释放
@@ -485,9 +516,11 @@ _root.技能函数.手枪搓招检查 = function(自机:MovieClip):Number {
 		}
 
 		var 挂载成功:Boolean = _root.技能函数.手枪搓招标签跳转(自机, 表[i].技能);
+		delete 自机.__手枪搓招输入;
 		if (!挂载成功) {
 			// 容器缺失等异常：不吞键，让原状态机逻辑继续跑
-			delete 自机.__手枪搓招B已消费;
+			if (passive && 自机.__comboBPressConsumed === press) delete 自机.__comboBPressConsumed;
+			else if (!passive) delete 自机.__手枪搓招B已消费;
 			return 0;
 		}
 

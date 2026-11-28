@@ -170,6 +170,18 @@ namespace Launcher.Tests.Tasks
             Assert.Null(ModifierTask.BuildOpenData("nativehud_modifier", "garbage"));
         }
 
+        [Fact]
+        public void PanelClosedFrameRequiresTheAs2SessionToken()
+        {
+            Assert.Null(ModifierTask.BuildPanelClosedFrame(null));
+            Assert.Null(ModifierTask.BuildPanelClosedFrame("wrong.1"));
+            JObject close = Read(ModifierTask.BuildPanelClosedFrame("modifier.test.1"));
+            Assert.Equal("cmd", close.Value<string>("task"));
+            Assert.Equal("modifierPanelClosed", close.Value<string>("action"));
+            Assert.Equal("modifier.test.1", close.Value<string>("token"));
+            Assert.Null(close["focusTraceSession"]);
+        }
+
         [Theory]
         [InlineData("domain")]
         [InlineData("panel")]

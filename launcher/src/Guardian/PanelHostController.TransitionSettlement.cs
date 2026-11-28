@@ -66,7 +66,7 @@ namespace CF7Launcher.Guardian
                     && _additionalFocusGate() && !NativeInputBlocksGame()
                     && (EffectiveInputOwner.Kind==EffectiveInputOwnerKind.Game
                         || EffectiveInputOwner.Kind==EffectiveInputOwnerKind.Transition && Volatile.Read(ref _transitionInputHeld)!=0);
-            },() => _closeFocusManager?.IsCurrentFlashInputFocused()==true);
+            });
             controller.SettlementRequest+=p=>_web.HandleTransitionSettlementMessage(p);
             controller.SettlementTransportFailed+=()=>_web.HandleTransitionSettlementFailure();
             controller.SceneCompleted+=()=> {

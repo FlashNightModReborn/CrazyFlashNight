@@ -100,6 +100,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // --------------------------
     this.eventBus.subscribe("frameUpdate", function(frameToken:Number):Void {
         org.flashNight.neur.Server.Issue205SourceProbe.mark(0);
+        if (_root.GameInput != null && _root.GameInput.passiveActive === true) this.projectPassiveControl();
         _root.帧计时器.taskManager.updateFrame(frameToken);
         if (_root.server.gameFrameAdvanced) {
             _root.帧计时器.unitUpdateWheel.tick();
@@ -372,17 +373,348 @@ _root.帧计时器.定期更新天气 = function()
 
 
 
+_root.帧计时器.readControlMask = function(unit:Object):Number {
+    return (Key.isDown(unit.左键) ? 1 : 0) |
+        (Key.isDown(unit.右键) ? 2 : 0) |
+        (Key.isDown(unit.上键) ? 4 : 0) |
+        (Key.isDown(unit.下键) ? 8 : 0) |
+        (Key.isDown(unit.A键) ? 16 : 0) |
+        (Key.isDown(unit.B键) ? 32 : 0) |
+        (Key.isDown(unit.C键) ? 64 : 0) |
+        (Key.isDown(_root.奔跑键) ? 128 : 0);
+};
+
+_root.帧计时器.projectControlMask = function(unit:Object, mask:Number):Void {
+    // 解码位掩码更新控制对象状态
+    unit.左行 = (mask & 1) != 0;
+    unit.右行 = (mask & 2) != 0;
+    unit.上行 = (mask & 4) != 0;
+    unit.下行 = (mask & 8) != 0;
+    unit.动作A = (mask & 16) != 0;
+    unit.动作B = (mask & 32) != 0;
+    unit.动作C = (mask & 64) != 0;
+    // 奔跑键（默认 Shift）的原始电平。与 mask 的 128 位同源，
+    // 但 强制奔跑 会被「按了 A/B/C」压掉，不能拿它当修饰键判定。
+    unit.按住奔跑键 = (mask & 128) != 0;
+    // Shift 奔跑 与 双击方向奔跑 合并判定
+    // - actionsPressed：按下任一 A/B/C 则不允许进入奔跑
+    // - shiftRun：按住“奔跑键”（默认 Shift）时触发
+    // - doubleRun：UI 层通过 KeyManager 订阅双击左右键后设置的方向意图
+    //              ctrl.doubleTapRunDirection = -1（左）/ 1（右），松开方向键自动清零
+    var actionsPressed:Boolean = (mask & (16 | 32 | 64)) != 0;
+    var shiftRun:Boolean = !actionsPressed && ((mask & 128) != 0);
+
+    var doubleRun:Boolean = false;
+    var dir:Number = unit.doubleTapRunDirection;
+    if (dir) {  // dir 为 null/undefined/0 时都为 false
+        var leftPressed:Boolean = (mask & 1) != 0;
+        var rightPressed:Boolean = (mask & 2) != 0;
+        doubleRun = !actionsPressed && ((dir < 0 && leftPressed) || (dir > 0 && rightPressed));
+        // 若水平方向均未按下，则清除双击奔跑方向
+        if (!leftPressed && !rightPressed) {
+            unit.doubleTapRunDirection = 0;
+        }
+    }
+
+    unit.强制奔跑 = shiftRun || doubleRun;
+};
+
+// Passive projection precedes the existing task/actor subscribers. Both readers
+// use the system snapshot; side-effecting skill and potion updates stay below.
+_root.帧计时器.projectPassiveControl = function():Void {
+    var cell:Object = _root.GameInput;
+    cell.recordPhase("actor", this.server.currentFrame);
+    this.ensureR1GatePointerFixture();
+    var unit:Object = TargetCacheManager.findHero();
+    this.trackPassiveActor(unit);
+    if (unit == null || unit.__enemyActionRuntime.enabled === true) return;
+    var mask:Number = (!_root.暂停 && cell.isInputAdmitted()) ? this.readControlMask(unit) : 0;
+    this.projectControlMask(unit, mask);
+};
+
+_root.帧计时器.ensureR1GatePointerFixture = function():Void {
+    var cell:Object = _root.GameInput;
+    if (cell == null || cell.passiveActive !== true) return;
+    var saveSlot:String = String(_root.savePath || "");
+    if (saveSlot.indexOf("cf7_agent_r1_gate_") !== 0) return;
+    if (cell.r1PointerCounts == undefined) {
+        cell.r1PointerCounts = {button:0, mc:0, npc:0, door:0, wheel:0};
+    }
+    if (cell.r1UiWrapped !== true && typeof _root.加载外部UI == "function") {
+        var origLoadUi:Function = _root.加载外部UI;
+        cell.r1OrigLoadUi = origLoadUi;
+        _root.加载外部UI = function(url:String) {
+            if (String(_root.savePath || "").indexOf("cf7_agent_r1_gate_") === 0 && _root.GameInput.passiveActive === true) {
+                var targetUrl:String = String(url || "");
+                if (targetUrl.indexOf("睡觉界面.swf") >= 0) {
+                    if (!_root.暂停 && _root.GameInput.gateOpen === true) ++_root.GameInput.r1PointerCounts.button;
+                    return;
+                }
+                if (targetUrl.indexOf("书架界面.swf") >= 0) {
+                    if (!_root.暂停 && _root.GameInput.gateOpen === true) ++_root.GameInput.r1PointerCounts.mc;
+                    return;
+                }
+            }
+            return origLoadUi.apply(this, arguments);
+        };
+        cell.r1UiWrapped = true;
+    }
+    if (cell.r1MouseListener == undefined) {
+        var listener:Object = {};
+        listener.onMouseWheel = function(delta:Number):Void {
+            if (delta != 0 && !_root.暂停 && _root.GameInput.gateOpen === true) {
+                ++_root.GameInput.r1PointerCounts.wheel;
+            }
+        };
+        listener.onMouseDown = function():Void {
+            var c:Object = _root.GameInput;
+            c.r1DoorArmed = (!_root.暂停 && c.gateOpen === true && c.r1DoorClip != null
+                && _root.鼠标代理 != undefined && _root.鼠标代理.命中目标(c.r1DoorClip, false) === true);
+        };
+        listener.onMouseUp = function():Void {
+            var c:Object = _root.GameInput;
+            if (c.r1DoorArmed === true && !_root.暂停 && c.gateOpen === true && c.r1DoorClip != null
+                    && _root.鼠标代理 != undefined && _root.鼠标代理.命中目标(c.r1DoorClip, false) === true) {
+                ++c.r1PointerCounts.door;
+            }
+            c.r1DoorArmed = false;
+        };
+        Mouse.addListener(listener);
+        cell.r1MouseListener = listener;
+    }
+    if (_root.gameworld != undefined && (cell.r1StageTargets == null || cell.r1StageTargets._parent !== _root)) {
+        var holder:MovieClip = _root.createEmptyMovieClip("__r1PointerTargets", 65528);
+        var npc:MovieClip = holder.createEmptyMovieClip("npc", 1);
+        npc._x = 460;
+        npc._y = 500;
+        var npcArea:MovieClip = npc.createEmptyMovieClip("area", 1);
+        npcArea.beginFill(0x000000, 0);
+        npcArea.moveTo(0, 0);
+        npcArea.lineTo(48, 0);
+        npcArea.lineTo(48, 48);
+        npcArea.lineTo(0, 48);
+        npcArea.endFill();
+        npcArea.useHandCursor = false;
+        npcArea.onRelease = function():Void {
+            if (!_root.暂停 && _root.GameInput.gateOpen === true) ++_root.GameInput.r1PointerCounts.npc;
+        };
+        var door:MovieClip = holder.createEmptyMovieClip("door", 2);
+        door._x = 540;
+        door._y = 500;
+        door.beginFill(0x000000, 0);
+        door.moveTo(0, 0);
+        door.lineTo(48, 0);
+        door.lineTo(48, 48);
+        door.lineTo(0, 48);
+        door.endFill();
+        cell.r1StageTargets = holder;
+        cell.r1NpcClip = npc;
+        cell.r1DoorClip = door;
+    }
+};
+
+_root.帧计时器.clearPassiveComboBuffer = function(unit:Object):Void {
+    if (unit == null) return;
+    unit.commandId = 0;
+    unit.当前搓招ID = 0;
+    unit.当前搓招名 = "";
+    unit.搓招缓冲ID = 0;
+    unit.搓招缓冲名 = "";
+    unit.搓招缓冲已消费 = true;
+    unit.搓招缓冲修饰键 = false;
+    unit.__comboBufferBPress = 0;
+};
+
+_root.帧计时器.cancelPassiveActor = function(unit:MovieClip):Void {
+    if (unit == null) return;
+    this.projectControlMask(unit, 0);
+    unit.doubleTapRunDirection = 0;
+    this.clearPassiveComboBuffer(unit);
+    var man:Object = unit.man;
+    if (man != null) {
+        if (typeof man.cancelPassiveManualShot == "function") man.cancelPassiveManualShot();
+        man.不按攻击 = false;
+        man.已松开攻击键 = false;
+        man.已再按攻击键 = false;
+    }
+    org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService.cancelPassiveInput(unit);
+    org.flashNight.arki.unit.Action.Skill.DrugInputService.cancelPassiveInput(unit);
+    org.flashNight.arki.unit.Action.Skill.QuickSkillInputService.cancelPassiveInput(unit);
+    if (typeof _root.主角函数.取消键3输入 == "function") _root.主角函数.取消键3输入.call(unit);
+    org.flashNight.arki.unit.Action.Skill.SheriffShieldRush.cancelPassiveInput(unit);
+    org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.cancelPassiveRocketCharge(unit);
+    org.flashNight.arki.unit.Action.Input.EnemyActionInputService.cancelPassiveInput(unit);
+    org.flashNight.arki.unit.Action.Input.UnitActionIntentService.cancelKind(unit,
+        org.flashNight.arki.unit.Action.Input.UnitActionIntentService.CHANNEL_COMBAT,
+        org.flashNight.arki.unit.Action.Input.UnitActionIntentService.KIND_PRIMARY_RELOAD);
+    if (unit.长枪副武器状态.pendingFire != null)
+        org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.cancelPendingFire(unit);
+    if (typeof _root.技能函数._取消手枪后键输入 == "function") _root.技能函数._取消手枪后键输入(unit);
+};
+
+_root.帧计时器.cancelPassiveInput = function():Void {
+    org.flashNight.arki.scene.CutsceneService.cancelPassiveInput();
+    var interaction:Object = org.flashNight.arki.scene.SceneInteractionManager.instance;
+    if (interaction != null) interaction.cancelPassiveInput();
+    var unit:MovieClip = TargetCacheManager.findHero();
+    var previous:MovieClip = this.passiveActor;
+    if (previous != null && previous !== unit && previous.__cf7InputIdentity === this.passiveActorIdentity)
+        this.cancelPassiveActor(previous);
+    this.cancelPassiveActor(unit);
+    this.suspendPassiveCombo(unit);
+};
+
+_root.帧计时器.suspendPassiveCombo = function(unit:Object):Void {
+    if (this.passiveComboSuspended === true) return;
+    this.passiveComboSuspended = true;
+    FrameBroadcaster.clearVersionedScope();
+    this.clearPassiveComboBuffer(unit);
+};
+
+_root.帧计时器.onPassiveKeySettingsChanged = function():Void {
+    var interaction:Object = org.flashNight.arki.scene.SceneInteractionManager.instance;
+    if (_root.GameInput.passiveActive === true && interaction != null) interaction.cancelPassiveInput();
+    var unit:MovieClip = TargetCacheManager.findHero();
+    if (unit == null) return;
+    if (typeof unit.获取键值 == "function") unit.获取键值();
+    if (_root.GameInput.passiveActive === true) this.cancelPassiveActor(unit);
+    unit.doubleTapRunDirection = 0;
+    this.clearPassiveComboBuffer(unit);
+};
+
+_root.帧计时器.preparePassiveActor = function():Void {
+    this.trackPassiveActor(TargetCacheManager.findHero());
+};
+
+_root.帧计时器.trackPassiveActor = function(unit:Object):Void {
+    // An AVM1 reference can retarget when a MovieClip path is reused.
+    if (unit != null && unit.__cf7InputIdentity == undefined) unit.__cf7InputIdentity = {};
+    var identity:Object = unit.__cf7InputIdentity;
+    var controlName:String = _root.控制目标;
+    var worldIdentity:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+    if (identity === this.passiveActorIdentity && controlName === this.passiveControlName
+            && worldIdentity === this.passiveWorldIdentity) return;
+    var previous:MovieClip = this.passiveActor;
+    if (previous != null && previous.__cf7InputIdentity === this.passiveActorIdentity)
+        this.cancelPassiveActor(previous);
+    this.passiveActor = unit;
+    this.passiveActorIdentity = identity;
+    this.passiveControlName = controlName;
+    this.passiveWorldIdentity = worldIdentity;
+    var cell:Object = _root.GameInput;
+    cell.actorIdentity = identity;
+    cell.actorPressFloor = cell.pressSerial;
+    ++cell.actorInc;
+    this.passiveConfig = null;
+    this.suspendPassiveCombo(unit);
+    this.clearPassiveComboBuffer(unit);
+};
+
+_root.帧计时器.sampleVersionedCombo = function(unit:Object, mask:Number, facingBit:Number,
+                                               moduleId:Number, dtDir:Number):Object {
+    var cell:Object = _root.GameInput;
+    if (cell.configExhausted === true) {
+        this.server.faultPassiveCombo("input_config_exhausted");
+        return null;
+    }
+    var input:Object = cell.snapshot;
+    var bindings:Array = [unit.A键, unit.B键, unit.C键, unit.上键,
+        unit.下键, unit.左键, unit.右键, _root.奔跑键];
+    var skillRevision:Number = org.flashNight.arki.skill.SkillLoadoutService.getHudDescriptors().revision;
+    var weaponSkills:Object = unit.主动战技;
+    var config:Array = [
+        org.flashNight.arki.key.KeyManager.getKeySettingsRevision(), skillRevision,
+        unit.刀, unit.手部装备, unit.兵器数据, unit.兵器动作类型, unit.手枪, unit.手枪2, unit.长枪,
+        weaponSkills.空手, weaponSkills.兵器, weaponSkills.手枪, weaponSkills.手枪2, weaponSkills.双枪, weaponSkills.长枪,
+        _root.武器技能键, InputCommandRuntimeConfigLoader.bufferTolerance
+    ];
+    for (var i:Number = 0; i < 8; ++i) config.push(bindings[i]);
+    var previous:Array = this.passiveConfig;
+    var configChanged:Boolean = previous == null;
+    if (!configChanged) {
+        for (i = 0; i < config.length; ++i) {
+            if (config[i] !== previous[i]) {
+                configChanged = true;
+                break;
+            }
+        }
+    }
+    var moduleChanged:Boolean = this.passiveComboSuspended === true || this.passiveModuleId !== moduleId
+        || this.passiveModules !== this.commandModules;
+    if (configChanged || moduleChanged) {
+        if (configChanged && (cell.configInc == 0 || cell.configInc === this.passiveConfigInc)) {
+            if (!FrameBroadcaster.advanceVersionedConfig()) return null;
+        } else {
+            FrameBroadcaster.clearVersionedScope();
+        }
+        this.clearPassiveComboBuffer(unit);
+    }
+    if (configChanged) {
+        this.passiveConfig = config;
+        this.passiveConfigInc = cell.configInc;
+    }
+    if (moduleChanged) {
+        this.passiveModuleId = moduleId;
+        this.passiveModules = this.commandModules;
+        ++cell.moduleInc;
+    }
+    this.passiveComboSuspended = false;
+
+    // A refresh during this system frame cannot reinterpret its already-latched edges.
+    var edges:Array = cell.reboundSystemFrame === input.systemFrame ? cell.noEdges : input.edges;
+    var atomCount:Number = 0;
+    var downBits:Number = 0;
+    var pulse:Boolean = false;
+    var atoms:String = "";
+    var serial:Number = cell.atomSeq;
+    for (i = 0; i < edges.length; ++i) {
+        var edge:Object = edges[i];
+        for (var action:Number = 0; action < 8; ++action) {
+            if (bindings[action] != edge.vk) continue;
+            if (atomCount == 64 || serial == 2147483647) {
+                this.suspendPassiveCombo(unit);
+                this.server.faultPassiveCombo("combo_atoms_overflow");
+                return null;
+            }
+            if (atomCount != 0) atoms += ";";
+            // Fan-out retains raw VK order and has one sequence per semantic atom.
+            var actionBit:Number = 1 << action;
+            if (edge.down) downBits |= actionBit;
+            else if (downBits & actionBit) pulse = true;
+            atoms += ++serial + "," + actionBit + "," + (edge.down ? "D" : "U");
+            ++atomCount;
+        }
+    }
+    cell.atomSeq = serial;
+    var sample:Object = {systemFrame:input.systemFrame, inputFrameSeq:input.inputFrameSeq, epoch:input.keyboardEpoch,
+        actorInc:cell.actorInc, moduleId:moduleId, moduleInc:cell.moduleInc, configInc:cell.configInc,
+        mask:mask, facingBit:facingBit, doubleTapDir:dtDir, atomCount:atomCount, pulse:pulse,
+        bPress:cell.getRecentActorPress(unit, unit.B键), atoms:atomCount == 0 ? "-" : atoms};
+    FrameBroadcaster.setVersionedInput(sample);
+    return sample;
+};
+
 _root.帧计时器.键盘输入控制目标 = function()
 {
     var 控制对象 = TargetCacheManager.findHero()
+    var cell:Object = _root.GameInput;
+    var passive:Boolean = cell.passiveActive === true;
+    if (passive) {
+        cell.recordPhase("actorGameplay", this.server.currentFrame);
+        this.trackPassiveActor(控制对象);
+    }
     // 原生怪物能力输入独占此单位，避免主角技能、战技和药剂链误用全局存档。
-    if (_root.敌人动作.updateInput(控制对象) === true) return;
+    if (_root.敌人动作.updateInput(控制对象) === true) {
+        if (passive) this.suspendPassiveCombo(控制对象);
+        return;
+    }
     if(!控制对象) {
         org.flashNight.arki.scene.StageRunSession.observeInputState(null, -1);
         return;
     }
 
     if(_root.暂停){
+        if (passive) this.suspendPassiveCombo(控制对象);
         // 清空所有状态
         控制对象.左行 = false;
         控制对象.右行 = false;
@@ -398,64 +730,17 @@ _root.帧计时器.键盘输入控制目标 = function()
         控制对象.当前搓招ID = 0;
         控制对象.当前搓招名 = "";
     }else{
-        // 使用位掩码存储按键状态
-        var mask:Number =
-            (Key.isDown(控制对象.左键) ? 1 : 0) |
-            (Key.isDown(控制对象.右键) ? 2 : 0) |
-            (Key.isDown(控制对象.上键) ? 4 : 0) |
-            (Key.isDown(控制对象.下键) ? 8 : 0) |
-            (Key.isDown(控制对象.A键) ? 16 : 0) |
-            (Key.isDown(控制对象.B键) ? 32 : 0) |
-            (Key.isDown(控制对象.C键) ? 64 : 0) |
-            (Key.isDown(_root.奔跑键) ? 128 : 0);
-        if (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined) {
+        var mask:Number = this.readControlMask(控制对象);
+        if (!passive && _root._agentHarnessActive === true && _root._agentHarnessBridge != undefined) {
             mask = mask | _root._agentHarnessBridge.sampleMask(控制对象, this.当前帧数);
         }
 
-        // 解码位掩码更新控制对象状态
-        控制对象.左行 = (mask & 1) != 0;
-        控制对象.右行 = (mask & 2) != 0;
-        控制对象.上行 = (mask & 4) != 0;
-        控制对象.下行 = (mask & 8) != 0;
-        控制对象.动作A = (mask & 16) != 0;
-        控制对象.动作B = (mask & 32) != 0;
-        控制对象.动作C = (mask & 64) != 0;
-        // 奔跑键（默认 Shift）的原始电平。与 mask 的 128 位同源，
-        // 但 强制奔跑 会被「按了 A/B/C」压掉，不能拿它当修饰键判定。
-        控制对象.按住奔跑键 = (mask & 128) != 0;
-        // Shift 奔跑 与 双击方向奔跑 合并判定
-        // - actionsPressed：按下任一 A/B/C 则不允许进入奔跑
-        // - shiftRun：按住“奔跑键”（默认 Shift）时触发
-        // - doubleRun：UI 层通过 KeyManager 订阅双击左右键后设置的方向意图
-        //              ctrl.doubleTapRunDirection = -1（左）/ 1（右），松开方向键自动清零
-        var actionsPressed:Boolean = (mask & (16 | 32 | 64)) != 0;
-        var shiftRun:Boolean = !actionsPressed && ((mask & 128) != 0);
+        this.projectControlMask(控制对象, mask);
 
-        var doubleRun:Boolean = false;
-        var dir:Number = 控制对象.doubleTapRunDirection;
-        if (dir) {  // dir 为 null/undefined/0 时都为 false
-            var leftPressed:Boolean = (mask & 1) != 0;
-            var rightPressed:Boolean = (mask & 2) != 0;
-            doubleRun = !actionsPressed && ((dir < 0 && leftPressed) || (dir > 0 && rightPressed));
-            // 若水平方向均未按下，则清除双击奔跑方向
-            if (!leftPressed && !rightPressed) {
-                控制对象.doubleTapRunDirection = 0;
-            }
-        }
-
-        控制对象.强制奔跑 = shiftRun || doubleRun;
-
-        // === \x04 数据发送：mask + 朝向 + 模组 + 双击方向 → Launcher V8 ===
+        // 搓招模组按当前武器姿态选择。
         var 模组名:String = this.推断动作模组(控制对象);
-        var facingBit:Number = (控制对象.方向 == "右") ? 1 : 0;
-        var moduleId:Number = (模组名 == "barehand") ? 0 : ((模组名 == "heavyWeapon") ? 2 : 1);
-        var dtDir:Number = 控制对象.doubleTapRunDirection;
-        if (dtDir == undefined) dtDir = 0;
-        FrameBroadcaster.setInputPayload(mask + "|" + facingBit + "|" + moduleId + "|" + dtDir);
-
-        // === 搓招缓冲（输入源：Launcher K 前缀 cmdId，替代本地 DFA）===
         var frame:Number = this.当前帧数;
-        var launcherCmdId:Number = FrameBroadcaster.getCmdId();
+        var tolerance:Number = InputCommandRuntimeConfigLoader.bufferTolerance + 1;
 
         // 非搓招模式（手枪 / 手枪2 / 双枪 / 长枪 / 手雷）不武装 DFA 缓冲。
         //   推断动作模组 对这些模式返回 undefined → moduleId 落到 1（lightWeapon），
@@ -474,23 +759,41 @@ _root.帧计时器.键盘输入控制目标 = function()
             控制对象.搓招缓冲名 = "";
             控制对象.搓招缓冲已消费 = true;
             控制对象.搓招缓冲修饰键 = false;
+            控制对象.__comboBufferBPress = 0;
         }
         控制对象.当前搓招模组 = 模组名;
 
-        // Launcher DFA 命中时写入缓冲（同时缓存名字，因为下一帧 K 会清空 _cmdName）
-        // 非搓招模式除外：那条名字只会是 lightWeapon 模块的冷兵器命令（见上）。
-        if (launcherCmdId != 0 && !非搓招模式) {
-            控制对象.搓招缓冲ID = launcherCmdId;
-            控制对象.搓招缓冲名 = FrameBroadcaster.getCmdName();
+        var result:Object = null;
+        if (passive) {
+            if (cell.gateOpen === true && !非搓招模式 && this.dfaSentToLauncher) {
+                var facingBit:Number = (控制对象.方向 == "右") ? 1 : 0;
+                var moduleId:Number = (模组名 == "barehand") ? 0 : ((模组名 == "heavyWeapon") ? 2 : 1);
+                var dtDir:Number = 控制对象.doubleTapRunDirection;
+                if (dtDir == undefined) dtDir = 0;
+                var scope:Object = this.sampleVersionedCombo(控制对象, mask, facingBit, moduleId, dtDir);
+                if (scope != null) {
+                    var bufferReady:Boolean = 控制对象.搓招缓冲已消费 === true || !控制对象.搓招缓冲ID
+                        || frame - 控制对象.搓招缓冲帧 > tolerance;
+                    result = FrameBroadcaster.takeVersionedCommand(scope, bufferReady);
+                }
+            } else {
+                this.suspendPassiveCombo(控制对象);
+            }
+        }
+
+        // 按命中帧的身份一次导入，保留该帧的按下序和修饰键。
+        if (result != null) {
+            控制对象.搓招缓冲ID = result.cmdId;
+            控制对象.搓招缓冲名 = result.cmdName;
+            控制对象.__comboBufferBPress = result.origin.bPress;
             控制对象.搓招缓冲帧 = frame;
             控制对象.搓招缓冲已消费 = false;
             // 命中当帧是否按着奔跑键（默认 Shift）。DFA 的事件顺序会让
             // Shift+→+B 命中成「瞬步斩」，这里把修饰位一起存下来给消费方纠正。
-            控制对象.搓招缓冲修饰键 = (mask & 128) != 0;
+            控制对象.搓招缓冲修饰键 = (result.origin.mask & 128) != 0;
         }
 
         // 根据宽容帧数决定当前帧是否有有效搓招（tolerance +1 补偿通信延迟）
-        var tolerance:Number = InputCommandRuntimeConfigLoader.bufferTolerance + 1;
         var active:Boolean = false;
 
         if (控制对象.搓招缓冲ID != 0 &&
@@ -523,9 +826,10 @@ _root.帧计时器.键盘输入控制目标 = function()
     // 即使暂停也必须采样松键，让已消费的本次按住能够重新武装；是否允许触发由服务内部判定。
     var 武器技能输入控制器:Object = _root.武器技能输入控制器;
     if (武器技能输入控制器 && 武器技能输入控制器.update) {
-        武器技能输入控制器.update(控制对象, Key.isDown(_root.武器技能键)
-            || (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined
+        var weaponSkillDown:Boolean = passive ? cell.getActorPress(控制对象, _root.武器技能键) > 0
+            : (Key.isDown(_root.武器技能键) || (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined
                 && _root._agentHarnessBridge.isKeyDown(_root.武器技能键) === true));
+        武器技能输入控制器.update(控制对象, weaponSkillDown);
     }
 
     // 12 槽快捷技能由 AS2 输入服务统一采样与编排。暂停期间仍逐帧更新，确保松键能重新武装。
@@ -649,6 +953,10 @@ _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     // 清空打击数字批处理队列，避免跨场景残留
     HitNumberBatchProcessor.clear();
     // 重置 FrameBroadcaster 数据槽，防止跨场景残留的 hn 数据被发送
+    if (_root.GameInput.passiveActive === true) {
+        var timer:Object = _root.帧计时器;
+        timer.suspendPassiveCombo(TargetCacheManager.findHero());
+    }
     FrameBroadcaster.reset();
     // 通知 C# 清除活跃伤害数字动画（S2 修复：场景切换时同步 reset）
     // 快车道前缀 "R" 绕过 MessageRouter JSON 路由，直达 FrameTask.HandleReset()

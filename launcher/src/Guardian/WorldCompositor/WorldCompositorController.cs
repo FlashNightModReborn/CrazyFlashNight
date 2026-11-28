@@ -4,12 +4,15 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using CF7Launcher.Guardian.InputOwnership;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian.WorldCompositor
 {
+    internal enum CaptureWaitReason { None, Initial, RenderRefresh, GeometryInvalid, SourceRebuilt, TerminalFault }
+
     internal sealed partial class WorldCompositorController : IDisposable
     {
         private readonly Form _owner;
@@ -19,7 +22,6 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Func<bool> _shouldPrepare;
         private readonly Action<string> _notify;
         private readonly Action<int> _setRenderHeight;
-        private readonly Action _focusFlash;
         private readonly WorldLightingPreset _preset;
         private readonly Dictionary<string,NightVisionProfile> _nightVisionProfiles;
         private NightVisionProfile _appliedNightVision;
@@ -92,20 +94,71 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private ulong _pendingGeneration,_pendingExtent;
         private double _unknownSince;
         private System.Threading.CancellationTokenSource _captureRepaint;
-        private volatile bool _captureInputBlocked;
-        private volatile bool _keyboardFocusHeld;
-        internal bool CaptureInputBlocked => _captureInputBlocked || _keyboardFocusHeld;
-        internal Func<bool> SuspendFlashKeyboard,OwnsRecoveryFocus;
-        private void ResumeFlashKeyboard()
+        private volatile CaptureWaitReason _waitReason;
+        private WindowManager _sourceWindows;
+        private Func<bool> _gameBusinessAdmitted;
+        private bool _budgetPresentationPending;
+        internal const double RefreshEscalationMs=700;
+        internal readonly record struct CaptureView(long Scene, IntPtr Source, long Embed, ulong Generation,
+            ulong Extent, Size CaptureSize, Size RootClient, Rectangle Output, int Dpi);
+        private CaptureView? _presentedView;
+        // The native geometry fixture also consumes this pointer-mapping predicate.
+        internal bool CaptureInputBlocked => _waitReason!=CaptureWaitReason.None;
+        internal bool KeyboardBlockRequested => _waitReason is not (CaptureWaitReason.None or CaptureWaitReason.RenderRefresh);
+        private SessionInputAuthority _r1;
+        private long _passiveSourceRevision;
+        internal bool ProbeWithoutWgc {get; private set;}
+        internal Action PassiveAdmissionChanged;
+        internal void ConfigurePassiveInput(SessionInputAuthority input, WindowManager sourceWindows = null,
+            Func<bool> gameBusinessAdmitted = null)
         {
-            if(!_keyboardFocusHeld)return;
-            if(OwnsRecoveryFocus?.Invoke()!=true) { _keyboardFocusHeld=false; return; }
-            // A key held across the transition must be released before the projector regains focus.
-            for(int key=8;key<255;key++)if((GetAsyncKeyState(key)&0x8000)!=0)return;
-            _keyboardFocusHeld=false;
-            _focusFlash?.Invoke();
+            ArgumentNullException.ThrowIfNull(input);
+            _r1=input;
+            _sourceWindows=sourceWindows;
+            _gameBusinessAdmitted=gameBusinessAdmitted;
+            ProbeWithoutWgc=Environment.GetEnvironmentVariable("CF7_R1_PASSIVE_PROBE_NO_WGC")=="1";
+            if(ProbeWithoutWgc)LogManager.Log("event=r1_capture stimulus=r1_agent_probe wgcPresented=false reason=non_input_desktop_probe");
         }
-        [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int vk);
+        internal bool PassiveKeyboardReady => !_disposed && !_faulted && !_inputClosed && !_transitionInputHeld &&
+            _pointerBridge?.IsAlive==true && _surface!=null && (ProbeWithoutWgc || !KeyboardBlockRequested);
+        internal bool ProbePointerClick(Point point,int button) =>
+            PassiveKeyboardReady && (_surface?.PostProbeClick(point,button)??false);
+        internal bool ProbePointerDown(Point point,int button) =>
+            PassiveKeyboardReady && (_surface?.PostProbeDown(point,button)??false);
+        internal bool ProbePointerUp(Point point,int button) =>
+            PassiveKeyboardReady && (_surface?.PostProbeUp(point,button)??false);
+        internal bool ProbePointerWheel(Point point,int delta) =>
+            PassiveKeyboardReady && (_surface?.PostProbeWheel(point,delta)??false);
+        internal (bool SameSourceRefresh,bool KeyboardUnchanged,bool OldPointerRejected,bool FreshPointerCommitted) ProbeGeometryChallenge()
+        {
+            if(!PassiveKeyboardReady || _r1?.IsGameKeyboardAdmitted!=true || _surface==null || _pointerBridge==null)
+                return default;
+            long kbBefore=_r1.CurrentKeyboardEpoch, geoBefore=_r1.CurrentGeometryVersion;
+            long seqBefore=_pointerBridge.EndpointConsumedSeq;
+            if(!_surface.TryBeginProbeWorldClaim(new Point(64,64),1,out var oldTicket,out string target))
+                return default;
+            BeginCaptureWait(CaptureWaitReason.RenderRefresh,false);
+            bool refreshKeptKeyboard=!KeyboardBlockRequested && _r1.IsGameKeyboardAdmitted && _r1.CurrentKeyboardEpoch==kbBefore;
+            _surface.CancelWorldPointer("geometry_changed");
+            EndCaptureWait();
+            bool sameRefresh=refreshKeptKeyboard && _r1.CurrentGeometryVersion>geoBefore;
+            bool oldRejected=!_r1.ValidatePointerCommit(oldTicket,target);
+            bool freshPosted=ProbePointerClick(new Point(64,64),1);
+            for(int i=0;freshPosted && i<40 && _pointerBridge.EndpointConsumedSeq<=seqBefore;i++)
+                System.Threading.Thread.Sleep(5);
+            bool freshCommitted=freshPosted && _pointerBridge.EndpointConsumedSeq>seqBefore;
+            bool kbUnchanged=_r1.IsGameKeyboardAdmitted && _r1.CurrentKeyboardEpoch==kbBefore;
+            return (sameRefresh,kbUnchanged,oldRejected,freshCommitted);
+        }
+        internal void SynchronizeInputAdmission()
+        {
+            if (_waitReason == CaptureWaitReason.RenderRefresh && _gameBusinessAdmitted?.Invoke() == false) {
+                ProtectPendingRefresh();
+                return;
+            }
+            _surface?.SynchronizePassiveGrant();
+            PassiveAdmissionChanged?.Invoke();
+        }
         private WorldLightingFrame _frame;
         private WorldLightingTransition _lighting = new WorldLightingTransition();
         private long _reportedPendingScene;
@@ -135,6 +188,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void RequireFreshTransitionFrame(long scene) {
             if(_disposed || scene<=0) return;
+            InvalidatePresentedView();
             _requiredFrameMs=Math.Max(_requiredFrameMs,NowMs());
             _transitionRequestedScene=scene;
             _transitionGradeScene=0; _transitionPresentedScene=0;
@@ -157,12 +211,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_transitionInputHeld==held) return;
             _transitionInputHeld=held;
             lock (_weatherCameraLock) _worldShake.SetModalBlocked(held || _shakePanelBlocked);
-            if(held) _surface?.CancelPointer("scene_transition");
+            if(held) {
+                ProtectPendingRefresh();
+                _surface?.CancelPointer("scene_transition");
+            }
+            SynchronizeInputAdmission();
         }
         private Task<bool> _retiringInput;
         internal NativePointerBridge InputBridgeForDiagnostics => _pointerBridge;
         internal int InputRenewals { get; private set; }
-        private readonly uint _inputEpochLimit;
+        private readonly int _inputEpochLimit;
         private bool _permissionChecked, _borderless;
         private double _waitingStateMs;
         private const double CaptureRecoveryTimeoutMs=10000;
@@ -238,7 +296,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // prove the target scene, without changing quality/viewport behind its report.
         internal bool SchedulingAllowed => _schedulingAllowed && !_transitionInputHeld;
         internal bool RouteCapturedPointer(int x,int y,int message,uint mouseData) =>
-            !_disposed && !_transitionInputHeld && _active && _surface!=null && _surface.RouteCapturedPointer(x,y,message,mouseData);
+            _r1!=null && !_disposed && !_transitionInputHeld && _active && _surface!=null && _surface.RouteCapturedPointer(x,y,message,mouseData);
         internal void ApplyRenderSelection(RenderSelection selection,float sharpness,Action<Size> completed=null)
         {
             if (_disposed) return;
@@ -347,6 +405,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             if (_faulted) return;
             _faulted=true;
+            SetWaitReason(CaptureWaitReason.TerminalFault);
             PerformanceUnavailable?.Invoke();
             // The failure dialog runs a nested UI loop. Keep only bounded
             // ownership-revoke retries alive while it awaits closure.
@@ -451,23 +510,25 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal static bool NightLutChanged(double[] matrix,double shadowLift,double[] previousMatrix,double previousLift)
             => !double.IsFinite(previousLift) || Math.Abs(shadowLift-previousLift)>1e-6 || !SameMatrix(matrix,previousMatrix);
 
-        internal WorldCompositorController(Form owner, Control anchor, Func<IntPtr> getFlash,
-            Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
-            Action<int> setRenderHeight,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
-            BulletVisualCatalog bulletCatalog=null,CombatFxCatalog combatFxCatalog=null,
-            IEnumerable<OverlayBase> overlays=null,bool opaqueHudEnabled=false, WorldLightSettings lightSettings=null,
-            Func<bool> isAppActive=null, WorldShakeCatalog shakeCatalog=null)
+        internal WorldCompositorController(
+            Form owner, Control anchor, Func<IntPtr> getFlash, Func<bool> active,
+            Action<string> toast, string projectRoot, Func<bool> lifecycleAllowed,
+            Action<int> setFlashRenderHeight,
+            BulletVisualCatalog bulletCatalog = null, CombatFxCatalog combatFxCatalog = null,
+            WorldLightSettings lightSettings = null, IEnumerable<OverlayBase> overlays = null,
+            bool opaqueHudEnabled = false, Func<bool> isAppActive = null,
+            WorldShakeCatalog shakeCatalog = null)
         {
             string tempRoot=Path.GetFullPath(Path.Combine(projectRoot,"tmp"))+Path.DirectorySeparatorChar;
             string testCap=Environment.GetEnvironmentVariable("CF7_INPUT_SESSION_TEST_CAP");
-            if(inputEpochLimit==WorldPointerMapper.EpochLimit && AppContext.BaseDirectory.StartsWith(tempRoot,StringComparison.OrdinalIgnoreCase)
-                && !string.IsNullOrWhiteSpace(testCap)) {
-                if(!uint.TryParse(testCap,out inputEpochLimit) || inputEpochLimit<8 || inputEpochLimit>WorldPointerMapper.EpochLimit)
+            int inputEpochLimit = (int)WorldPointerMapper.EpochLimit;
+            if (AppContext.BaseDirectory.StartsWith(tempRoot,StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(testCap)) {
+                if(!int.TryParse(testCap,out inputEpochLimit) || inputEpochLimit<8 || inputEpochLimit>WorldPointerMapper.EpochLimit)
                     throw new ArgumentOutOfRangeException("CF7_INPUT_SESSION_TEST_CAP");
                 LogManager.Log("event=world_pointer_test_cap value="+inputEpochLimit+" NOT_DEPLOYED=true");
             }
             _inputEpochLimit=inputEpochLimit;
-            _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
+            _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=active; _notify=toast; _shouldPrepare=lifecycleAllowed;
             _isAppActive=isAppActive;
             Rectangle CurrentOutputBounds() => _anchor.RectangleToScreen(_anchor.ClientRectangle);
             ResourcePresentation = new WorldRasterPresentation(CurrentOutputBounds);
@@ -489,7 +550,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             BuffPresentation.Faulted += error => RejectPlayerHud("buff_raster", error);
             MainHudPresentation.Faulted += error => RejectPlayerHud("main_hud_raster", error);
             _opaqueHudEnabled=opaqueHudEnabled;
-            _setRenderHeight=setRenderHeight; _focusFlash=focusFlash;
+            _setRenderHeight=setFlashRenderHeight;
             _bulletCatalog=bulletCatalog;
             _combatFxCatalog=combatFxCatalog;
             _shakeCatalog=shakeCatalog ?? WorldShakeCatalog.Load(projectRoot, LogManager.Log);
@@ -526,6 +587,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 ClearWorldShake();
                 _surface?.CancelPointer();
             }
+            if(!frame.Ready || frame.Scene!=previousScene) InvalidatePresentedView();
             if(frame.Scene!=previousScene)_native?.ResetFeedback();
             _frame=frame;
             QueueSceneLights(frame);
@@ -539,6 +601,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void ResetSource()
         {
+            SetWaitReason(CaptureWaitReason.SourceRebuilt);
             ResetSceneLights();
             _lighting=new WorldLightingTransition(); _reportedPendingScene=0; _frame=null; _schedulingAllowed=false; StopCapture();
             _appliedHeight=-1; _renderCompletion=null;
@@ -554,9 +617,32 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _timer.Stop();
                 return;
             }
-            if (_starting) return;
+            // A cross-process repaint can await for the entire recovery budget. The
+            // existing UI tick still observes its short keyboard deadline during that await.
+            if (_starting) {
+                try {
+                    if(_waitReason==CaptureWaitReason.RenderRefresh && _native!=null)
+                        ObservePendingRefresh(_native.ReadCaptureStatus());
+                    SynchronizeInputAdmission();
+                } catch(Exception error) { EnterRenderFault("pending_capture",error); }
+                return;
+            }
             try {
+                SynchronizeInputAdmission();
                 if(_inputRenewRequested && !_inputClosed) {await RenewInputAsync();if(_disposed)return;}
+                if(_r1!=null) {
+                    // Install the disabled-window pointer bridge as soon as the projector is
+                    // embedded, including before the first presentable frame.
+                    _starting=true;
+                    await EnsurePassiveBridge();
+                    _starting=false;
+                    if(_disposed || _pointerBridge==null)return;
+                }
+                if(ProbeWithoutWgc) {
+                    // No permission request, capture target, render tick or presentation
+                    // receipt on the non-input desktop. Keep the real HWND/broker lifetime.
+                    return;
+                }
                 string module=Path.Combine(AppContext.BaseDirectory,NativeCompositorSession.ModuleName);
                 if (!_permissionChecked) {
                     if (!_shouldPrepare()) return;
@@ -583,9 +669,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     }
                     _waitingStateMs=0; _starting=true;
                     if (_disposed || !_canPresent()) return;
-                    _flash=_getFlash(); _pointerBridge=await NativePointerBridge.Start(_flash,_owner.Handle);
+                    if(_r1==null){_flash=_getFlash();_pointerBridge=await NativePointerBridge.Start(_flash,_owner.Handle);}
                     if(_disposed || _flash!=_getFlash()) { _pointerBridge.Dispose(); return; }
-                    _surface=new WorldCompositionSurface(_getFlash,_focusFlash,_pointerBridge,_inputEpochLimit) { Owner=_owner };
+                    _surface=new WorldCompositionSurface(_getFlash,_pointerBridge,_inputEpochLimit,(int)WorldPointerMapper.SequenceLimit) { Owner=_owner };
                     _surface.SetHudInput(_combinedHudInput);
                     _overlayOrder=new WorldOverlayOrder(_owner,_surface,_overlays,CanShow);
                     BindInput(_pointerBridge,_surface);
@@ -595,7 +681,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     IntPtr worldVisual=_compositionScene.AcquireVisual(0);
                     try { _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless,worldVisual); _appliedImageOptions=null;ApplyImageOptions(); }
                     finally { Marshal.Release(worldVisual); }
-                    BeginCaptureWait(true);
+                    BeginCaptureWait(_waitReason==CaptureWaitReason.SourceRebuilt
+                        ? CaptureWaitReason.SourceRebuilt : CaptureWaitReason.Initial,true);
                     StartHudCostProfile();
                     _damageRasterScene=_opaqueHudEnabled ? new OpaqueHudRasterScene(_native,0) : _compositionScene;
                     _resourceRasterScene=_opaqueHudEnabled && !_playerHudFaulted ? new OpaqueHudRasterScene(_native,1) : null;
@@ -658,7 +745,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (show!=_active) {
                     if (!show) lock (_weatherCameraLock) _worldShake.ResetCapture();
                     _active=show; _native.Active(show); _requiredFrameMs=NowMs();
-                    if (show) BeginCaptureWait(true);
+                    InvalidatePresentedView();
+                    if (show) BeginCaptureWait(CaptureWaitReason.Initial,true);
                     else { _pendingGeneration=0; _freshItemRequested=false; _surface.Hide(); }
                 }
                 if (!_active) {
@@ -672,7 +760,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _starting=true; _schedulingAllowed=false;
                     lock (_weatherCameraLock) _worldShake.SetNativeReady(false);
                     double resizeStarted=NowMs();
-                    BeginCaptureWait(true);
+                    BeginBudgetWait();
                     double heldAt=NowMs();
                     _setRenderHeight(_targetHeight); _appliedHeight=_targetHeight;
                     var resizeRequest=_renderCompletion;
@@ -684,6 +772,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         ApplyWeatherCamera(true); ApplyWeather(true);
                     }
                     double resizedAt=NowMs();
+                    if(_waitReason==CaptureWaitReason.RenderRefresh) ObservePendingRefresh(_native.ReadCaptureStatus());
                     if(await PaintCurrentCapture(heldAt) is not double painted) return;
                     _paintFenceMs=painted;
                     _requiredFrameMs=Math.Max(_requiredFrameMs,painted);
@@ -694,7 +783,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         +" resizeMs="+(resizedAt-heldAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" repaintMs="+(NowMs()-resizedAt).ToString("F1",CultureInfo.InvariantCulture)
                         +" handoffMs="+(NowMs()-resizeStarted).ToString("F1",CultureInfo.InvariantCulture));
-                    if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); RefreshHudPresentations(); return; }
+                    if (!CanShow()) { InvalidatePresentedView(); _native.Active(false); _active=false; _surface.Hide(); RefreshHudPresentations(); return; }
                 }
                 // A covered empty scene can be completely static. Request one real Flash
                 // paint for each freshness fence instead of waiting for unrelated animation.
@@ -714,8 +803,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_read")) stats=_native.Read();
                 if (stats.State==2 || stats.State==3) throw new InvalidOperationException(stats.Message+" HRESULT=0x"+stats.Error.ToString("X8"));
                 var capture=_native.ReadCaptureStatus();
+                ObservePendingRefresh(capture);
                 if (!Synchronize(capture)) {
-                    BeginCaptureWait(true);
+                    BeginCaptureWait(PendingPresentationReason(),true);
                     lock (_weatherCameraLock) _worldShake.SetNativeReady(false);
                     NoteBulletCaptureNotReady("geometry_unknown");
                     CheckGeometryRecoveryTimeout(NowMs());
@@ -723,18 +813,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 } // native errors are still checked before geometry admission
                 bool ready=capture.HasPresentation(_mappedGeneration,_mappedExtent,_mappingRevision,_requiredFrameMs,_surface.ClientSize);
                 if(ready) {
-                    if(_captureInputBlocked) {
-                        LogManager.Log("event=world_compositor_geometry_recovered generation="+capture.Generation
-                            +" extentRevision="+capture.ExtentRevision+" mapping="+_mappingRevision+" present="+capture.PresentSerial
-                            +" frameQpcMs="+capture.PresentedFrameQpcMs+" output="+_surface.ClientSize
-                            +" waitMs="+(NowMs()-_geometryWaitStartedMs).ToString("F1",CultureInfo.InvariantCulture));
-                        SetCaptureInputBlocked(false);
-                    }
-                    _geometryWaitStartedMs=double.NaN; _freshItemRequested=false; _wakeCommittedSource=false;
-                    ResumeFlashKeyboard();
-                    _surface.FlushMove();
+                    _freshItemRequested=false; _wakeCommittedSource=false;
                 } else {
-                    BeginCaptureWait(false);
+                    BeginCaptureWait(PendingPresentationReason(),false);
                     CheckGeometryRecoveryTimeout(NowMs());
                     if(_wakeCommittedSource && capture.AcceptedMapping==_mappingRevision) {
                         // The held worker may have released the only static repaint. Wake once;
@@ -771,6 +852,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 // timestamp freshness fence, not proof of the pixels' semantic scene identity.
                 if (ready && _lighting.ConfirmCapturedFrame(capture.PresentedFrameQpcMs,NowMs()))
                     LogManager.Log("event=world_lighting_frame_handoff scene="+_lighting.ReadyScene+" captureQpcMs="+capture.PresentedFrameQpcMs.ToString("F1",CultureInfo.InvariantCulture));
+                if(ready) {
+                    if(CaptureInputBlocked && BudgetFenceSatisfied(capture)) {
+                        if(!double.IsNaN(_geometryWaitStartedMs)) {
+                            LogManager.Log("event=world_compositor_geometry_recovered generation="+capture.Generation
+                                +" extentRevision="+capture.ExtentRevision+" mapping="+_mappingRevision+" present="+capture.PresentSerial
+                                +" frameQpcMs="+capture.PresentedFrameQpcMs+" output="+_surface.ClientSize
+                                +" waitMs="+(NowMs()-_geometryWaitStartedMs).ToString("F1",CultureInfo.InvariantCulture));
+                        }
+                        // A proven native receipt ends its deadline. An intentionally loading
+                        // scene can still withhold input without ageing into a geometry fault.
+                        _geometryWaitStartedMs=double.NaN;
+                        if(_frame?.Ready==true && !_lighting.Pending && !_lighting.WaitingForCapture && _lighting.ReadyScene==_frame.Scene)
+                            EndCaptureWait();
+                    }
+                    _surface.FlushMove();
+                }
                 lock(_weatherCameraLock) {
                     if(ApplySceneLightsLocked() && _native!=null)
                         _worldLightSubmissions.Submit(_worldLights.Compose(_weatherCameraX,_weatherCameraY,_weatherCameraScale),_weatherCameraX,_weatherCameraY,_weatherCameraScale,false);
@@ -821,7 +918,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         // native-only Present can reuse the old Flash texture, so
                         // every complete target needs its own post-setter repaint.
                         _starting=true;
-                        BeginCaptureWait(true);
+                        BeginBudgetWait();
                         if(await PaintCurrentCapture(NowMs()) is not double painted) return;
                         _paintFenceMs=painted;
                         _requiredFrameMs=Math.Max(_requiredFrameMs,painted);
@@ -856,8 +953,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _surface.Show();
                     PlaceBelowHud();
                     PresentationShown?.Invoke();
-                    _surface.RefreshPointer();
+                    if (_r1 != null) _surface.RefreshPointer();
                 }
+                if(ready && _surface.Visible && _frame?.Ready==true && _transitionPresentedScene==_frame.Scene
+                    && IsTransitionScenePresented(_frame.Scene))
+                    _presentedView=CurrentView(capture);
                 RefreshHudPresentations();
                 if (ready && !_weatherCapabilityAdvertised && NowMs()-_lastWeatherCapAttemptMs>=500) {
                     _lastWeatherCapAttemptMs=NowMs();
@@ -967,9 +1067,36 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 LogManager.Log("[WorldHudCost] sampling stopped: "+error.Message);
             }
         }
+        [DllImport("user32.dll")] private static extern IntPtr GetAncestor(IntPtr hwnd,uint flags);
+        private async Task EnsurePassiveBridge()
+        {
+            IntPtr source=_getFlash();
+            if(_flash!=IntPtr.Zero && _flash!=source)StopCapture();
+            if(_retiringInput!=null) {
+                bool retired=await _retiringInput;_retiringInput=null;
+                if(!retired)_inputClosed=true;
+            }
+            if(_disposed || _inputClosed || _pointerBridge!=null || _sourceWindows==null || source==IntPtr.Zero ||
+                GetAncestor(source,2)!=_owner.Handle)return;
+            long revision=_passiveSourceRevision,embed=_sourceWindows.EmbedEpoch;
+            var bridge=await NativePointerBridge.Start(source,_owner.Handle,_r1.Mode);
+            if(_disposed || revision!=_passiveSourceRevision || embed!=_sourceWindows.EmbedEpoch || source!=_getFlash()){_retiringInput=bridge.CloseAsync();return;}
+            _flash=source;_pointerBridge=bridge;
+            if(ProbeWithoutWgc) {
+                _waitReason=CaptureWaitReason.None;
+                var surface=new WorldCompositionSurface(_getFlash,bridge,_inputEpochLimit,(int)WorldPointerMapper.SequenceLimit);
+                BindInput(bridge,surface);
+                LogManager.Log("event=r1_probe_bridge_ready stimulus=r1_agent_probe wgcPresented=false reason=non_input_desktop_probe");
+            }
+        }
         internal void BindInput(NativePointerBridge bridge,WorldCompositionSurface surface)
         {
             _pointerBridge=bridge;_surface=surface;_flash=_getFlash();
+            if(_r1!=null) {
+                _surface.BindPassiveInput(_r1,_sourceWindows.PassiveSessionForeground);
+                _r1.AttachNative(bridge.BeginSemanticCancel);
+            }
+            _surface.SetCaptureInputBlocked(CaptureInputBlocked);
             _surface.RenewalRequested+=()=>_inputRenewRequested=true;
         }
         private async Task RenewInputAsync()
@@ -983,9 +1110,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         _inputClosed=true;_notify?.Invoke("输入恢复尚未确认，请保留日志后重新启动游戏");
                     } else {
                         try {
-                            var next=await NativePointerBridge.Start(source,_owner.Handle);
+                            var next=await NativePointerBridge.Start(source,_owner.Handle,PassiveFlashInputMode.Disabled);
                             if(_disposed || surface!=_surface || source!=_getFlash()) {next.Dispose();return;}
-                            _pointerBridge=next;surface.Rebind(next);InputRenewals++;
+                            _pointerBridge=next;surface.Rebind(next);if(_r1!=null)_r1.AttachNative(next.BeginSemanticCancel);InputRenewals++;
                             LogManager.Log("event=world_pointer_renewed session="+next.SessionIdentity+" count="+InputRenewals);
                         } catch(Exception error) {
                             _inputClosed=true;LogManager.Log("event=world_pointer_closed_unconfirmed bind="+error.Message);
@@ -1000,14 +1127,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
             using var latency = CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_geometry");
             Rectangle screen=_anchor.RectangleToScreen(_anchor.ClientRectangle);
             if (DwmGetWindowAttribute(_owner.Handle,9,out Rect frame,Marshal.SizeOf<Rect>())!=0) throw new InvalidOperationException("Cannot resolve capture bounds");
-            if(!GetWindowRect(_owner.Handle,out Rect window))return false;
+            if(!GetWindowRect(_owner.Handle,out Rect window))return UnknownWindowGeometry();
             if(_lastCaptureGeneration!=status.Generation) {
                 _lastCaptureGeneration=status.Generation;
                 LogManager.Log("event=world_compositor_capture_generation value="+_lastCaptureGeneration+" WGC="+new Size(status.Width,status.Height)+" window="+window.Rectangle);
             }
-            if (!GetClientRect(_flash,out Rect client)) return false;
+            if (!GetClientRect(_flash,out Rect client)) return UnknownWindowGeometry();
             var sourceOrigin=new Point(0,0);
-            if (!ClientToScreen(_flash,ref sourceOrigin)) return false;
+            if (!ClientToScreen(_flash,ref sourceOrigin)) return UnknownWindowGeometry();
             var source=new Rectangle(sourceOrigin,new Size(client.Right,client.Bottom));
             return SynchronizeGeometry(status,screen,source,frame.Rectangle,window.Rectangle);
         }
@@ -1023,7 +1150,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // apart after a window move. Capture only the measured intersection;
             // keep rejecting larger misses instead of inventing an origin.
             if (!TryResolveGeometrySnapshot(screen,source,extendedFrame,windowFrame,content,out WorldGeometrySnapshot geometry,out string rejectionReason)) {
-                BeginCaptureWait(true);
+                BeginCaptureWait(CaptureWaitReason.GeometryInvalid,true);
                 if(status.Width>0 && rejectionReason.StartsWith("capture_bounds_pending",StringComparison.Ordinal)) {
                     double now=NowMs();
                     if(_pendingGeneration!=status.Generation || _pendingExtent!=status.ExtentRevision) {
@@ -1045,7 +1172,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _lastGeometryRejection=null;
             if (committed || boundsChanged) {
                 if (boundsChanged) _surface.Bounds=screen;
-                _surface.RefreshPointer();
+                if (_r1 != null) _surface.RefreshPointer();
                 LogManager.Log("event=world_compositor_geometry FClient="+source+" captureFrame="+geometry.CaptureFrame+" dwmFrame="+extendedFrame+" windowFrame="+windowFrame+" WGC="+content+" crop="+geometry.Crop+" clientOffset="+geometry.ClientOffset+" generation="+status.Generation+" extentRevision="+status.ExtentRevision+" mapping="+_mappingRevision+" P="+_surface.Bounds+" frameFenceMs="+_requiredFrameMs.ToString("F1",CultureInfo.InvariantCulture));
             }
             return true;
@@ -1153,22 +1280,88 @@ namespace CF7Launcher.Guardian.WorldCompositor
             finally { if (ReferenceEquals(_captureRepaint,target)) _captureRepaint=null; }
         }
         private double CaptureDeadline() => (double.IsNaN(_geometryWaitStartedMs) ? NowMs() : _geometryWaitStartedMs)+CaptureRecoveryTimeoutMs;
-        private void SetCaptureInputBlocked(bool blocked)
+        private CaptureView CurrentView(NativeCompositorSession.CaptureStatus status) =>
+            new(_frame?.Scene ?? 0,_getFlash(),_sourceWindows?.EmbedEpoch ?? 0,status.Generation,status.ExtentRevision,
+                new Size(status.Width,status.Height),_owner.ClientSize,_anchor.RectangleToScreen(_anchor.ClientRectangle),_owner.DeviceDpi);
+        private bool LayoutMatches(CaptureView view) => view.RootClient==_owner.ClientSize && view.Dpi==_owner.DeviceDpi
+            && view.Output==_anchor.RectangleToScreen(_anchor.ClientRectangle);
+        private bool RefreshAdmitted => _renderCompletion!=null && _frame?.Ready==true && !_lighting.Pending
+            && !_lighting.WaitingForCapture && _lighting.ReadyScene==_frame.Scene && _active && _surface?.Visible==true
+            && !_transitionInputHeld && !_shakePanelBlocked && !_inputClosed && _flash==_getFlash()
+            && (_gameBusinessAdmitted?.Invoke() ?? false);
+
+        internal static CaptureWaitReason ClassifyRefresh(CaptureView? last, CaptureView current, bool admitted)
         {
-            if(_captureInputBlocked==blocked)return;
-            _captureInputBlocked=blocked;
-            _surface?.SetCaptureInputBlocked(blocked);
-            if(blocked && !_keyboardFocusHeld)_keyboardFocusHeld=SuspendFlashKeyboard?.Invoke()==true;
+            if(last is not {} previous || previous.Scene!=current.Scene || current.Scene<=0) return CaptureWaitReason.Initial;
+            if(current.Source==IntPtr.Zero || previous.Source!=current.Source || previous.Embed!=current.Embed
+                || current.Generation==0 || previous.Generation!=current.Generation) return CaptureWaitReason.SourceRebuilt;
+            return admitted && previous==current && current.Extent!=0 ? CaptureWaitReason.RenderRefresh : CaptureWaitReason.GeometryInvalid;
         }
-        private void BeginCaptureWait(bool hold)
+        private void BeginBudgetWait() => BeginBudgetWait(CurrentView(_native.ReadCaptureStatus()),RefreshAdmitted);
+        internal void BeginBudgetWait(CaptureView view,bool admitted)
         {
-            if(double.IsNaN(_geometryWaitStartedMs))_geometryWaitStartedMs=NowMs();
+            _budgetPresentationPending=_renderCompletion!=null;
+            var reason=ClassifyRefresh(_presentedView,view,admitted && _budgetPresentationPending);
+            BeginCaptureWait(reason,true);
+        }
+        private bool BudgetFenceSatisfied(NativeCompositorSession.CaptureStatus status) =>
+            !_budgetPresentationPending || _renderCompletion==null || (_renderCompletion.Selection.Height==_appliedHeight
+            && double.IsFinite(_renderCompletion.CaptureAfter) && status.PresentedFrameQpcMs>=_renderCompletion.CaptureAfter);
+        private CaptureWaitReason PendingPresentationReason() =>
+            _waitReason==CaptureWaitReason.None ? CaptureWaitReason.GeometryInvalid : _waitReason;
+        private void ObservePendingRefresh(NativeCompositorSession.CaptureStatus status)
+        {
+            if(_waitReason!=CaptureWaitReason.RenderRefresh) return;
+            var identity=ClassifyRefresh(_presentedView,CurrentView(status),RefreshAdmitted);
+            bool owesFrame=_viewportHeld || !BudgetFenceSatisfied(status)
+                || !status.HasPresentation(_mappedGeneration,_mappedExtent,_mappingRevision,_requiredFrameMs,_surface.ClientSize);
+            ObserveRefreshDeadline(identity,owesFrame,NowMs());
+        }
+        internal void ObserveRefreshDeadline(CaptureWaitReason identity,bool owesFrame,double now)
+        {
+            if(_waitReason!=CaptureWaitReason.RenderRefresh) return;
+            if(identity!=CaptureWaitReason.RenderRefresh) SetWaitReason(identity);
+            else if(owesFrame && now-_geometryWaitStartedMs>=RefreshEscalationMs) ProtectPendingRefresh();
+        }
+        private void InvalidatePresentedView()
+        {
+            _presentedView=null;
+            ProtectPendingRefresh();
+        }
+        private void ProtectPendingRefresh()
+        {
+            if(_waitReason==CaptureWaitReason.RenderRefresh) SetWaitReason(CaptureWaitReason.GeometryInvalid);
+        }
+        private bool UnknownWindowGeometry()
+        {
+            BeginCaptureWait(CaptureWaitReason.GeometryInvalid,true);
+            return false;
+        }
+        private void SetWaitReason(CaptureWaitReason reason)
+        {
+            bool pointerWasBlocked=CaptureInputBlocked;
+            _waitReason=reason;
+            if(pointerWasBlocked!=CaptureInputBlocked) _surface?.SetCaptureInputBlocked(CaptureInputBlocked);
+            SynchronizeInputAdmission();
+        }
+        internal void BeginCaptureWait(CaptureWaitReason reason,bool hold)
+        {
+            if(double.IsNaN(_geometryWaitStartedMs)) _geometryWaitStartedMs=NowMs();
             _schedulingAllowed=false;
-            SetCaptureInputBlocked(true);
-            if(hold && !_viewportHeld) {
+            // An ordinary budget request cannot downgrade an outstanding strict wait.
+            if(_waitReason==CaptureWaitReason.None || _waitReason==CaptureWaitReason.RenderRefresh ||
+                reason is CaptureWaitReason.SourceRebuilt or CaptureWaitReason.TerminalFault)
+                SetWaitReason(reason);
+            if(hold && !_viewportHeld && _native!=null) {
                 _native.HoldViewport();
                 _viewportHeld=true;
             }
+        }
+        internal void EndCaptureWait()
+        {
+            _geometryWaitStartedMs=double.NaN;
+            _budgetPresentationPending=false;
+            SetWaitReason(CaptureWaitReason.None);
         }
         private void CheckGeometryRecoveryTimeout(double now)
         {
@@ -1185,7 +1378,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     +" observed="+s.ObservedFrames+" accepted="+s.AcceptedMapping+" presented="+s.PresentedGeneration+"/"+s.PresentedExtentRevision+"/"+s.PresentedMapping
                     +" serial="+s.PresentSerial+" fenceMs="+_requiredFrameMs+" sourceMs="+s.PresentedFrameQpcMs+" output="+s.OutputWidth+"x"+s.OutputHeight : "";
                 LogManager.Log("event=world_compositor_geometry_pending waitMs="
-                    +waited.ToString("F1",CultureInfo.InvariantCulture)+" held="+_viewportHeld
+                    +waited.ToString("F1",CultureInfo.InvariantCulture)+" viewportHeld="+_viewportHeld
+                    +" waitReason="+_waitReason+" pointerBlocked="+CaptureInputBlocked+" keyboardBlockRequested="+KeyboardBlockRequested
                     +" "+(_lastGeometryRejection??"reason=presentation_pending")+receipt);
             }
             if (waited>CaptureRecoveryTimeoutMs)
@@ -1234,6 +1428,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 || observation.Value.ExtentRevision!=_mappedExtent || observation.Value.AcceptedMapping!=_mappingRevision
                 || geometry.OutputScreen.Size!=_mappedOutput);
             if (!cropChanged && !clientGeometryChanged && !captureChanged && !_viewportHeld) return false;
+            if(_r1!=null && !CaptureInputBlocked && (cropChanged || clientGeometryChanged || captureChanged))
+                _surface?.CancelWorldPointer("capture_mapping_changed");
             // Keep the previous composed image over the reduced-resolution F.
             // A geometry transition must not expose F while awaiting a fresh frame.
             // Initial crop admission or a pure window move (same source size) retains
@@ -1242,7 +1438,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if(observation is {} status) {
                 ulong nextMapping=checked(_mappingRevision+1);
                 if(!_native.TryCommitCapture(geometry,status,nextMapping,fence)) {
-                    BeginCaptureWait(true);
+                    if(_waitReason==CaptureWaitReason.RenderRefresh) ObservePendingRefresh(_native.ReadCaptureStatus());
+                    BeginCaptureWait(PendingPresentationReason(),true);
                     return false;
                 }
                 _mappingRevision=nextMapping; _mappedGeneration=status.Generation; _mappedExtent=status.ExtentRevision;
@@ -1321,11 +1518,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _geometryChangedAtMs=NowMs();
                 if (_native!=null && _active && !_crop.IsEmpty) {
                     _paintFenceMs=_geometryChangedAtMs;
-                    BeginCaptureWait(true);
+                    BeginCaptureWait(CaptureWaitReason.GeometryInvalid,true);
                 }
             }
+            if(_presentedView is {} presented && !LayoutMatches(presented)) InvalidateLayoutProof();
             if (_surface==null || _surface.IsDisposed) return;
-            if (!CanShow()) { _captureRepaint?.Cancel(); _surface.Hide(); RefreshHudPresentations(); return; }
+            if (!CanShow()) { InvalidatePresentedView(); _captureRepaint?.Cancel(); _surface.Hide(); RefreshHudPresentations(); return; }
             Rectangle screen=_anchor.RectangleToScreen(_anchor.ClientRectangle);
             if (screen.Width<1 || screen.Height<1 || _surface.Bounds==screen) return;
             // Windows' modal move loop can delay the render timer. Move P in the
@@ -1347,7 +1545,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if(content==window.Size){frame=window;return true;}
             return false; // transition/unknown geometry: do not invent an origin
         }
-        private void OnDpiChanged(object sender,DpiChangedEventArgs e) => OnGeometryChanged(sender,e);
+        private void InvalidateLayoutProof()
+        {
+            ++_layoutRevision;
+            _captureRepaint?.Cancel();
+            InvalidatePresentedView();
+        }
+        private void OnDpiChanged(object sender,DpiChangedEventArgs e)
+        {
+            InvalidateLayoutProof();
+            OnGeometryChanged(sender,e);
+        }
         private void OnClosed(object sender,FormClosedEventArgs e) => Dispose();
         // 宿主失活同样撤销在途指针输入：Host 抬共享代次下界，是投影端 WM_KILLFOCUS
         // 本地下界之外的第二道保险。
@@ -1400,6 +1608,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _shakePanelBlocked = blocked;
                 _worldShake.SetModalBlocked(blocked || _transitionInputHeld);
             }
+            if(blocked) ProtectPendingRefresh();
         }
 
         internal void SetDamageLegacyFallback(bool fallback)
@@ -1566,6 +1775,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private void StopCapture()
         {
+            if(_r1!=null) {
+                ++_passiveSourceRevision;
+                _r1.SetBusinessEligible(false,"source_retired");
+                _r1.AttachNative(null);
+            }
             _captureRepaint?.Cancel();
             lock (_weatherCameraLock) _worldShake.ResetCapture();
             _sentSceneLightVersion=-1;
@@ -1607,8 +1821,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             _inputRenewRequested=false;_inputClosed=false;
             _mappedGeneration=_mappedExtent=_mappingRevision=_pendingGeneration=_pendingExtent=0;
-            _mappedOutput=Size.Empty; _wakeCommittedSource=_freshItemRequested=_keyboardFocusHeld=false;
-            SetCaptureInputBlocked(false);
+            _mappedOutput=Size.Empty; _wakeCommittedSource=_freshItemRequested=false;
+            _presentedView=null; _budgetPresentationPending=false;
+            _waitReason=_faulted ? CaptureWaitReason.TerminalFault : _disposed ? CaptureWaitReason.None : CaptureWaitReason.SourceRebuilt;
             _viewportHeld=false; _paintFenceMs=0; _lastClientOffset=Point.Empty; _lastFullClientSize=Size.Empty; _lastCaptureSize=Size.Empty; _geometryChangedAtMs=double.NaN;
             _everReady=false; _frameAdvancing=false; _progressKnown=false;
             _transitionGradeScene=0; _transitionPresentedScene=0; _transitionGradeSubmittedAt=0;

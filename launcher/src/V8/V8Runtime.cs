@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using CF7Launcher.Guardian.InputOwnership;
 using Microsoft.ClearScript.V8;
 
 namespace CF7Launcher.V8
@@ -32,6 +33,34 @@ namespace CF7Launcher.V8
             _engine.Execute(code);
             _loaded = true;
             Guardian.LogManager.Log("[V8Runtime] Loaded: " + bundlePath);
+        }
+
+        private bool _exportsChecked, _versioned, _cancel, _reset;
+        private void InspectInputExports()
+        {
+            if(_exportsChecked || !_loaded)return;
+            bool has(string name)=>(bool)_engine.Evaluate("typeof GameInput !== 'undefined' && typeof GameInput."+name+" === 'function'");
+            _versioned=has("processVersionedFrame"); _cancel=has("cancelInput"); _reset=has("resetState");
+            _exportsChecked=true;
+        }
+        internal string ProcessVersionedFrame(in VersionedComboFrame frame)
+        {
+            lock(_lock) {
+                InspectInputExports();
+                if(!_versioned)return null;
+                return _engine.Script.GameInput.processVersionedFrame(frame.Mask,frame.Facing,frame.Module,frame.Direction,
+                    frame.Atoms,frame.Session,frame.Connection,frame.Epoch,frame.Frame,frame.Actor,frame.ModuleInc,frame.Config) as string;
+            }
+        }
+        internal bool CancelInput(string reason)
+        {
+            lock(_lock) {
+                InspectInputExports();
+                if(_cancel)_engine.Script.GameInput.cancelInput(reason);
+                else if(_reset)_engine.Script.GameInput.resetState();
+                else return false;
+                return true;
+            }
         }
 
         public bool IsLoaded { get { return _loaded; } }

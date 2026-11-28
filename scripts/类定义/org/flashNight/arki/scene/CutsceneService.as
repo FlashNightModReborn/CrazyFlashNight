@@ -85,7 +85,7 @@ class org.flashNight.arki.scene.CutsceneService {
             name: clipName, holder: holder, holderName: holder._name, layerDepth: holder.getDepth(),
             target: null, path: path, preparing: true, bookChapter: bookChapter,
             tailFrame: bookChapter ? 1 : _skipTails[name], skipAllowed: false, skipRequested: false,
-            skipKey: NaN, skipWasDown: true,
+            skipKey: NaN, skipWasDown: true, spaceSkips: name.indexOf("movie_avp_") == 0,
             sceneId: NativeInteractionContext.getSceneId(), terminal: false,
             initialized: false, leaseId: PauseManager.leaseLegacyAnimation("animation"),
             loader: new MovieClipLoader(), cleanupPhase: 0
@@ -149,7 +149,13 @@ class org.flashNight.arki.scene.CutsceneService {
         return _active != null || (_retired != null && _retired.length > 0) || !isNaN(_consumedSkipKey);
     }
 
+    public static function cancelPassiveInput():Void {
+        _consumedSkipKey = NaN;
+        if (_active != null) _active.skipWasDown = false;
+    }
+
     private static function onSceneTeardown():Void {
+        if (_root.GameInput.passiveActive === true) cancelPassiveInput();
         cancelActive();
     }
 
@@ -328,10 +334,30 @@ class org.flashNight.arki.scene.CutsceneService {
             session.skipWasDown = true;
         }
         showSkipHint(session, code);
+        var input:Object = _root.GameInput;
+        var passive:Boolean = input.passiveActive === true;
+        if (passive) {
+            if (!input.isInputCurrent(session.skipEpoch, session.skipCancelSerial, session.skipConfigInc)) {
+                session.skipWasDown = false;
+                session.skipEpoch = input.getKeyboardEpoch();
+                session.skipCancelSerial = input.cancelSerial;
+                session.skipConfigInc = input.configInc;
+            }
+            if (!input.isInputAdmitted() || session.skipInputFrame === input.snapshot.systemFrame) return;
+            // AVP's authored Button binds Space to the same stop/unload as its Click.
+            if (session.spaceSkips && input.hasKeyDownEdge(32)) {
+                session.skipInputFrame = input.snapshot.systemFrame;
+                _consumedSkipKey = 32;
+                session.endReason = "space_skip";
+                finish(session);
+                return;
+            }
+        }
         var down:Boolean = _readKey(code);
         var wasDown:Boolean = session.skipWasDown;
         session.skipWasDown = down;
-        if (down && !wasDown) {
+        if (down && (passive ? input.hasKeyDownEdge(code) : !wasDown)) {
+            if (passive) session.skipInputFrame = input.snapshot.systemFrame;
             if (session.bookChapter && typeof target.advanceChapter == "function") {
                 _consumedSkipKey = code;
                 target.advanceChapter();

@@ -221,21 +221,19 @@ internal sealed class Probe : Form
             int successfulReportHandoffs=0;
             var handoffs=new List<(bool Covered,bool OwnedForeground,bool InputHeld)>();
             var focusManager=new WindowManager();
-            typeof(WindowManager).GetField("_flashHwnd",BindingFlags.Instance|BindingFlags.NonPublic)
-                .SetValue(focusManager,inputTarget.Handle);
+            const BindingFlags sessionMethods = BindingFlags.Instance | BindingFlags.NonPublic;
+            var configureSessionRoot = typeof(WindowManager).GetMethod("ConfigureSessionRoot", sessionMethods)
+                .CreateDelegate<Action<Form>>(focusManager);
+            var activateSessionRoot = typeof(WindowManager).GetMethod("ActivateSessionRootBeforeHide", sessionMethods)
+                .CreateDelegate<Func<IntPtr,bool>>(focusManager);
+            configureSessionRoot(this);
             Func<IntPtr,bool> handoff=expected=> {
                 var current=(Form)controllerType.GetField("_surface",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
                 var fallback=(Form)controllerType.GetField("_fallback",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
                 GetWindowThreadProcessId(GetForegroundWindow(),out uint foregroundPid);
                 handoffs.Add((current.Visible||fallback.Visible,foregroundPid==Environment.ProcessId,inputHeld));
-                return (bool)typeof(WindowManager).GetMethod("HandoffFlashFocusBeforePanelHide",BindingFlags.Instance|BindingFlags.NonPublic)
-                    .Invoke(focusManager,new object[]{"scene_transition_probe:before_hide",expected});
+                return activateSessionRoot(expected);
             };
-            // Bind the candidate's exact focus callback contract.
-            object focusCallback=controllerType.GetConstructors(BindingFlags.Instance|BindingFlags.NonPublic)[0]
-                .GetParameters()[7].ParameterType==typeof(Action)
-                ?(object)(Action)(()=>{handoff(GetForegroundWindow());focusManager.RestoreFlashInputFocus("scene_transition_probe:after_hide");})
-                :handoff;
             controller=Activator.CreateInstance(controllerType,BindingFlags.Instance|BindingFlags.NonPublic,null,
                 new object[]{this,this,root,(Action<Action>)(a=>a()),
                     (Func<string,bool>)(s=>{
@@ -244,7 +242,7 @@ internal sealed class Probe : Form
                         if(delivered && p.Value<string>("kind")=="handoff" && p.Value<string>("requestId")=="tr:4") successfulReportHandoffs++;
                         return delivered;
                     }),
-                    (Func<bool>)(()=>true),(Func<long,bool>)(_=>sceneReady && !resumeFrameHeld),focusCallback,
+                    (Func<bool>)(()=>true),(Func<long,bool>)(_=>sceneReady && !resumeFrameHeld),handoff,
                     Array.CreateInstance(assembly.GetType("CF7Launcher.Guardian.OverlayBase",true),0),
                     (Action<bool>)(held=>inputHeld=held),Path.Combine(output,"controller-profile"),null},null);
             var task=(SceneTransitionTask)controllerType.GetField("Task",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
@@ -275,9 +273,9 @@ internal sealed class Probe : Form
                 throw new Exception("reveal handoff occurred after curtain hiding or foreground loss: "+JsonConvert.SerializeObject(handoffs));
             checks.Add(new{label="reveal hands foreground to owner while curtain still exists and input remains held",passed=true});
             await Task.Delay(100);
-            if(GetForegroundWindow()!=Handle||!inputTarget.Focused||PeerActivations()!=peerActivations)
-                throw new Exception("reveal activated the background process or lost exact input focus");
-            checks.Add(new{label="background process receives no activation during reveal; owner and input focus remain current",passed=true});
+            if(GetForegroundWindow()!=Handle||PeerActivations()!=peerActivations)
+                throw new Exception("reveal lost the Guardian root foreground or activated the background process");
+            checks.Add(new{label="Guardian root owns foreground after reveal and the background process receives no activation",passed=true});
             var next=Snapshot("cover",1);next["requestId"]="tr:2";project(next);
             if(!backing.Visible) {
                 var active=controllerType.GetField("_surface",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);

@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CF7Launcher.Diagnostic;
+using CF7Launcher.Guardian.InputOwnership;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -17,7 +19,8 @@ namespace CF7Launcher.Guardian
         private readonly Form _owner;
         private readonly ModifierNativeSurface _surface;
         private readonly ModifierTask _task;
-        private readonly Action _sendClosed;
+        private readonly Func<string, bool> _sendClosed;
+        private readonly WindowManager _closeFocusManager;
         private readonly object _gate = new object();
         private int _sequence;
         private string _instance = "";
@@ -26,17 +29,20 @@ namespace CF7Launcher.Guardian
         private Point _ownerLocation;
         private JObject _pendingOpen;
         private bool _preparing, _disposed;
-
-        internal event Action<bool> TextInputFocusChanged;
+        internal void BindInputAuthority(ITextInputAuthority textAuthority, IUiPointerAuthority pointerAuthority)
+        {
+            _surface.BindInputAuthority(textAuthority, pointerAuthority);
+        }
 
         internal ModifierOverlay(Form owner, string webRoot, string profileRoot,
-            ModifierTask task, Action sendClosed, string dollPortraitsDir, Action<Func<bool>> restoreGameKeyboard = null)
+            ModifierTask task, Func<string, bool> sendClosed, string dollPortraitsDir,
+            WindowManager closeFocusManager = null)
         {
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _sendClosed = sendClosed;
-            _surface = new ModifierNativeSurface(owner, webRoot, profileRoot, task, dollPortraitsDir, restoreGameKeyboard);
-            _surface.TextInputFocusChanged += active => TextInputFocusChanged?.Invoke(active);
+            _closeFocusManager = closeFocusManager;
+            _surface = new ModifierNativeSurface(owner, webRoot, profileRoot, task, dollPortraitsDir);
             _surface.CloseRequested += OnNativeCloseRequested;
             _surface.Move += OnSurfaceMoved;
             _ownerLocation = _owner.Location;
@@ -79,31 +85,40 @@ namespace CF7Launcher.Guardian
             catch (Exception error)
             {
                 LogManager.Log("[ModifierSurface] prewarm failed: " + error.GetType().Name);
-                if (_pendingOpen != null)
-                {
-                    _pendingOpen = null;
-                    if (_sendClosed != null) { try { _sendClosed(); } catch { } }
-                }
+                JObject rejected = _pendingOpen;
+                _pendingOpen = null;
+                if (rejected != null) NotifyClosed(rejected.Value<string>("token"), "prewarm_failed");
             }
             finally { _preparing = false; }
-            if (pending != null && !_disposed) Open(pending);
+            if (pending != null && !_disposed && !Open(pending))
+                NotifyClosed(pending.Value<string>("token"), "deferred_open_rejected");
         }
 
         internal bool Open(JObject data)
         {
             if (_disposed) return false;
+            string token = data?.Value<string>("token");
+            if (string.IsNullOrEmpty(token)) return false;
             if (_owner.InvokeRequired)
             {
-                try { _owner.BeginInvoke(new Action(delegate { Open(data); })); } catch { }
-                return true;
+                try
+                {
+                    _owner.BeginInvoke(new Action(() =>
+                    {
+                        if (!Open(data)) NotifyClosed(token, "deferred_open_rejected");
+                    }));
+                    return true;
+                }
+                catch (InvalidOperationException) { return false; }
             }
-            string token = data == null ? null : data.Value<string>("token");
-            if (string.IsNullOrEmpty(token)) return false;
             lock (_gate)
             {
                 if (_surface.Active)
                 {
+                    if (string.Equals(_token, token, StringComparison.Ordinal)) return true;
                     CloseCore();
+                    // The HUD toggle supplied a new AS2 token without opening another window.
+                    NotifyClosed(token, "toggle_request");
                     return true;
                 }
             }
@@ -155,7 +170,8 @@ namespace CF7Launcher.Guardian
             if (_disposed) return;
             if (_owner.InvokeRequired)
             {
-                try { _owner.BeginInvoke(new Action(OnCompetingPanelOpened)); } catch { }
+                int generation = _surface.SessionGeneration;
+                try { _owner.BeginInvoke(new Action(() => CloseCore(false, generation))); } catch { }
                 return;
             }
             if (_surface.Active) CloseCore(false);
@@ -186,38 +202,86 @@ namespace CF7Launcher.Guardian
         }
 
         internal bool IsOpen => !_disposed && _surface != null && _surface.Active;
+        internal bool ShouldKeepHudPresented(IntPtr deactivatingTo) => !_disposed && _surface.ShouldKeepHudPresented(deactivatingTo);
 
         internal void CloseFromHost()
         {
             if (_disposed) return;
-            if (_owner.InvokeRequired) _owner.BeginInvoke(new Action(() => CloseCore(false)));
+            if (_owner.InvokeRequired)
+            {
+                int generation = _surface.SessionGeneration;
+                _owner.BeginInvoke(new Action(() => CloseCore(false, generation)));
+            }
             else CloseCore(false);
         }
 
         private void OnNativeCloseRequested()
         {
             if (_disposed) return;
-            CloseCore();
+            int generation = _surface.SessionGeneration;
+            CloseCore(expectedGeneration: generation, returnOwner: _surface.IsUserCloseRequested(generation));
         }
 
-        private void CloseCore(bool restoreFocusAllowed = true)
+        private void CloseCore(bool requestGameKeyboard = true, int? expectedGeneration = null,
+            bool returnOwner = false)
         {
+            if (_disposed || (expectedGeneration.HasValue && expectedGeneration != _surface.SessionGeneration)) return;
             if (!_surface.Active)
             {
                 _instance = "";
                 _token = "";
                 return;
             }
-            bool restoreFocus = _surface.CanRestoreGameFocus && restoreFocusAllowed;
+            bool requestKeyboard = requestGameKeyboard && _surface.HasSessionForeground();
             int generation = _surface.SessionGeneration;
+            string token = _token;
+            if (FocusTrace.Enabled)
+                FocusTrace.Record("modifier.close_core", new { token, instance = _instance, generation, requestKeyboard });
+            if (returnOwner && _closeFocusManager != null)
+            {
+                ReturnOwnerBeforeHide(generation, token, _instance);
+                if (_disposed || !_surface.Active || generation != _surface.SessionGeneration) return;
+            }
             _pendingOpen = null;
             _instance = "";
             _token = "";
             _task.ClearPending();
             _surface.SuspendPanel();
-            if (_sendClosed != null) { try { _sendClosed(); } catch { } }
-            if (restoreFocus)
-                _surface.ReturnGameKeyboard(() => !_disposed && !_surface.Active && generation == _surface.SessionGeneration);
+            NotifyClosed(token, "surface_closed");
+            if (!_disposed) _surface.CompleteCloseInput(generation, requestKeyboard);
+        }
+
+        private void ReturnOwnerBeforeHide(int generation, string token, string instance)
+        {
+            IntPtr before = IntPtr.Zero, after = IntPtr.Zero;
+            bool attempted = false, succeeded = false;
+            string error = null;
+            try
+            {
+                before = _closeFocusManager.ReadCloseForeground();
+                attempted = _surface.OwnsCurrentPanelForeground(before);
+                if (attempted) succeeded = _closeFocusManager.ActivateSessionRootBeforeHide(before);
+                after = _closeFocusManager.ReadCloseForeground();
+            }
+            catch (Exception failure)
+            {
+                error = failure.GetType().Name;
+                LogManager.Log("[Modifier] root handoff failed: " + error);
+            }
+            if (FocusTrace.Enabled)
+                FocusTrace.Record("modifier.close_focus", new
+                {
+                    token, instance, generation, before = before.ToInt64(), after = after.ToInt64(), attempted, succeeded, error
+                });
+        }
+
+        private void NotifyClosed(string token, string reason)
+        {
+            bool sent = false;
+            try { sent = !string.IsNullOrEmpty(token) && _sendClosed?.Invoke(token) == true; }
+            catch (Exception error) { LogManager.Log("[Modifier] close notice failed: " + error.GetType().Name); }
+            if (FocusTrace.Enabled)
+                FocusTrace.Record("modifier.close_sent", new { token, reason, sent });
         }
 
         private void OnSurfaceMoved(object sender, EventArgs e)

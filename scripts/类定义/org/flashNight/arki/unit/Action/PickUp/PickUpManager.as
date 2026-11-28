@@ -6,6 +6,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.gesh.depth.DepthManager;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.arki.item.*;
+import org.flashNight.arki.scene.CutsceneService;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ProgressValidator;
 import org.flashNight.arki.unit.Action.PickUp.PickupEffectService;
@@ -506,9 +507,21 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             mc._visible = false;
         };
         
-        this.dispatcher.subscribeGlobal("interactionKeyDown", pickUpFunc, pickupItem);
-        this.dispatcher.subscribeGlobal("interactionKeyUp", resetFunc, pickupItem);
-        this.dispatcher.subscribeGlobal("interactionMouseDown", mousePickUpFunc, pickupItem);
+        if (_root.GameInput.passiveActive === true) {
+            var worldIdentity:Object = world.__stageReturnWorldIdentity;
+            pickupItem.hitArea = pickupItem.area;
+            pickupItem.useHandCursor = false;
+            pickupItem.onPress = function():Void {
+                if (_root.暂停 || CutsceneService.blocksWorldInteraction()
+                        || _root.gameworld.__stageReturnWorldIdentity !== worldIdentity
+                        || this._parent !== _root.gameworld) return;
+                mousePickUpFunc.call(this);
+            };
+        } else {
+            this.dispatcher.subscribeGlobal("interactionKeyDown", pickUpFunc, pickupItem);
+            this.dispatcher.subscribeGlobal("interactionKeyUp", resetFunc, pickupItem);
+            this.dispatcher.subscribeGlobal("interactionMouseDown", mousePickUpFunc, pickupItem);
+        }
 
         // 可拾取物内部函数
         pickupItem.itemData = _root.getItemData(物品名 === "金钱" ? "金币" : 物品名);
@@ -518,6 +531,37 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
     /**
      * 获取当前拾取物数量
      */
+    public function setKeyboardHighlight(world:MovieClip, enabled:Boolean):Void {
+        if (this.pickupItemDict == null) return;
+        for (var key:String in this.pickupItemDict) {
+            var target:MovieClip = this.pickupItemDict[key];
+            if (target._parent !== world || target.__pickupClaimed === true) continue;
+            var highlight:MovieClip = target.焦点高亮框;
+            if (enabled) highlight.play();
+            else highlight.stop();
+            highlight._visible = enabled;
+        }
+    }
+
+    public function pickUpKeyboard(world:MovieClip, actor:MovieClip):Boolean {
+        if (this.pickupItemDict == null || actor.area == null) return false;
+        var best:Number = Number.POSITIVE_INFINITY;
+        var winner:MovieClip = null;
+        for (var key:String in this.pickupItemDict) {
+            var target:MovieClip = this.pickupItemDict[key];
+            if (target._parent !== world || target.__pickupClaimed === true || target.area == null
+                    || !(Math.abs(target.Z轴坐标 - actor.Z轴坐标) < 50) || !actor.area.hitTest(target.area)) continue;
+            var distance:Number = Math.abs(target._x - actor._x) + Math.abs(target.Z轴坐标 - actor.Z轴坐标);
+            if (distance < best || (distance === best && target.index < winner.index)) {
+                winner = target;
+                best = distance;
+            }
+        }
+        if (winner == null) return false;
+        this.pickup(winner, null, true);
+        return true;
+    }
+
     public function getCount():Number {
         return this.count;
     }

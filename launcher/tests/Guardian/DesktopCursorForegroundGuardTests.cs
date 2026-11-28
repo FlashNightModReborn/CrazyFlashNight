@@ -79,28 +79,6 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(external.IsSessionOwned);
         }
 
-        [Fact]
-        public void PanelCloseHandoffClassifier_DistinguishesSessionTransferExternalAndNull()
-        {
-            WebOverlayForm.SessionForegroundSnapshot overlay = Classify(
-                new IntPtr(0x20), 100, false, false, true, false);
-            WebOverlayForm.SessionForegroundSnapshot flash = Classify(
-                new IntPtr(0x21), 200, false, true, false, false);
-            WebOverlayForm.SessionForegroundSnapshot external = Classify(
-                new IntPtr(0x22), 300, false, false, false, false);
-            WebOverlayForm.SessionForegroundSnapshot missing = Classify(
-                IntPtr.Zero, 0, false, false, false, false);
-
-            Assert.Equal("self_hide_session_transfer_candidate",
-                WebOverlayForm.ClassifyPanelCloseHandoffTransition(overlay, flash));
-            Assert.Equal("external",
-                WebOverlayForm.ClassifyPanelCloseHandoffTransition(overlay, external));
-            Assert.Equal("null",
-                WebOverlayForm.ClassifyPanelCloseHandoffTransition(overlay, missing));
-            Assert.Equal("session_stable",
-                WebOverlayForm.ClassifyPanelCloseHandoffTransition(overlay, overlay));
-        }
-
         private static WebOverlayForm.SessionForegroundSnapshot Classify(
             IntPtr hwnd,
             uint pid,

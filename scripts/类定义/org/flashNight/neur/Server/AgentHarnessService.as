@@ -64,14 +64,14 @@ class org.flashNight.neur.Server.AgentHarnessService {
         syncRootFlag();
     }
 
-    private static function isAllowedHarnessSlot(slot:String):Boolean {
+    private static function isBoundHarnessSlot(slot:String):Boolean {
         if (slot == undefined || slot == null) return false;
         var s:String = String(slot);
-        if (s.length > 10 && s.indexOf("cf7_agent_") == 0) return true;
+        if (s === _boundSlot) return true;
         if (s.indexOf("bookrun_") == 0
                 && _root._saveExt != undefined && _root._saveExt.bookRun != undefined) {
             var origin:String = String(_root._saveExt.bookRun.originSlot || "");
-            if (origin.length > 10 && origin.indexOf("cf7_agent_") == 0) return true;
+            return origin === _boundSlot;
         }
         return false;
     }
@@ -79,7 +79,7 @@ class org.flashNight.neur.Server.AgentHarnessService {
     public static function isActive():Boolean {
         if (!_bound) return false;
         var slot:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
-        if (!isAllowedHarnessSlot(slot)) {
+        if (!isBoundHarnessSlot(slot)) {
             // 非隔离测试槽位禁止保留虚拟输入/线束状态
             resetVirtualInput();
             if (slot != "") {
@@ -113,7 +113,7 @@ class org.flashNight.neur.Server.AgentHarnessService {
     }
 
     public static function isVirtualKeyDown(keycode:Number):Boolean {
-        if (!_bound) return false;
+        if (!_bound || _root.GameInput.passiveActive === true) return false;
         if (keycode == undefined || isNaN(keycode)) return false;
         if (!isActive()) return false;
         var exp = _virtualKeys[String(keycode)];
@@ -127,7 +127,7 @@ class org.flashNight.neur.Server.AgentHarnessService {
     }
 
     public static function sampleMask(hero:MovieClip, frameNo:Number):Number {
-        if (!isActive()) return 0;
+        if (_root.GameInput.passiveActive === true || !isActive()) return 0;
         var now:Number = (frameNo == undefined || isNaN(frameNo)) ? currentFrame() : frameNo;
         if (_heldMask != 0 && _heldMaskUntilFrame > 0 && now > _heldMaskUntilFrame) {
             _heldMask = 0;
@@ -199,7 +199,7 @@ class org.flashNight.neur.Server.AgentHarnessService {
             return;
         }
         var slot:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
-        if (!_bound || !isAllowedHarnessSlot(slot)) {
+        if (!_bound || !isBoundHarnessSlot(slot)) {
             sendResponse(reqId, sub, false, "harness_not_bound_or_unsafe_slot", { slot: slot, bound: _bound });
             return;
         }
@@ -231,12 +231,12 @@ class org.flashNight.neur.Server.AgentHarnessService {
         var reqSlot:String = (params.slot != undefined) ? String(params.slot) : "";
         var epoch:String = (params.sessionEpoch != undefined) ? String(params.sessionEpoch) : "";
         var currentSlot:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
-        if (reqSlot.indexOf("cf7_agent_") != 0 || epoch == "") {
+        if (reqSlot.length <= 10 || reqSlot.indexOf("cf7_agent_") != 0 || epoch == "") {
             sendResponse(reqId, "bind", false, "invalid_harness_slot_or_epoch", null);
             return;
         }
-        if (currentSlot != "" && currentSlot.indexOf("cf7_agent_") != 0) {
-            sendResponse(reqId, "bind", false, "active_slot_is_not_agent_slot", { savePath: currentSlot });
+        if (currentSlot != "" && currentSlot !== reqSlot) {
+            sendResponse(reqId, "bind", false, "active_slot_does_not_match_bind", { savePath: currentSlot });
             return;
         }
         install();

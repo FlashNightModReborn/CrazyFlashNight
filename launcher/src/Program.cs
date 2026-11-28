@@ -21,6 +21,7 @@ using CF7Launcher.ArenaWorker;
 using CF7Launcher.Config;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian;
+using CF7Launcher.Guardian.InputOwnership;
 using CF7Launcher.Data;
 using CF7Launcher.RagTerminal;
 using CF7Launcher.Tasks;
@@ -529,9 +530,6 @@ class Program
             return TrustedUnattendedRunner.Run(args);
         }
 
-        // 独立输入进程复用同一不可变 Core，先验证父进程路径和模块身份，不触达存档/游戏启动。
-        if (HotkeyGuard.IsInvocation(args)) return HotkeyGuard.Run(args[1..]);
-
         // ExitGuard 覆盖测试探针（phase1 矩阵最后一行）：仅 CF7_EXITGUARD_PROBE=<毫秒>
         // 显式门控时激活，早于 diagnostics/启动组件，不触达存档/游戏启动。
         // 真实 GuardianForm + ForceExit 走完整 DoExit；OnShutdownEarly 注入
@@ -546,7 +544,8 @@ class Program
 
         // candidate runtime-only 是显式的人类验收能力，不能让目录 walk-up 隐式触发。
         string explicitProjectRoot = TryGetProjectRootFromArgs(args);
-        if (Array.IndexOf(args, "--arena-worker") >= 0 || Array.IndexOf(args, "--agent-harness") >= 0)
+        bool arenaWorker = Array.IndexOf(args, "--arena-worker") >= 0 || Array.IndexOf(args, "--agent-harness") >= 0;
+        if (arenaWorker)
             StartupFailureReporter.SuppressInteractiveDialogs = true;
         string earlyProjectRoot = explicitProjectRoot
                                   ?? TryWalkUpForProjectRoot(Environment.ProcessPath)
@@ -559,6 +558,26 @@ class Program
             StartupDiagnostics.Exit("runtime_bundle_self_check_failed");
             return 2;
         }
+        try
+        {
+            SessionInputAuthority.ValidateArgs(ref args,
+                Environment.GetEnvironmentVariable("CF7_R1_PASSIVE_INPUT"),
+                Environment.GetEnvironmentVariable("CF7_LEGACY_ACTIVE_FLASH_INPUT"));
+            foreach (string arg in args)
+            {
+                if (arg.StartsWith("--", StringComparison.Ordinal)
+                    && !arg.Equals("--project-root", StringComparison.OrdinalIgnoreCase)
+                    && !arg.Equals("--unattended-bootstrap-request", StringComparison.OrdinalIgnoreCase)
+                    && arg is not ("--arena-worker" or "--agent-harness" or "--bus-only" or "--force-webview-fail"
+                        or "--legacy-http-automation" or CF7Launcher.Audio.AudioQualificationInvocationV1.Flag))
+                    throw new ArgumentException("Unknown Core launch option.");
+            }
+        }
+        catch(ArgumentException e)
+        {
+            StartupDiagnostics.Exception("r1_passive_mode_rejected",e);
+            return 2;
+        }
         ArenaWorkerPolicy workerPolicy;
         try
         {
@@ -568,22 +587,6 @@ class Program
         {
             StartupDiagnostics.Exception("arena_worker_invocation_rejected", ex);
             return 2;
-        }
-        // Explicit, exclusive candidate path. Runtime verification above is
-        // retained; no production Guardian/overlay/legacy input graph is made.
-        if (CF7Launcher.Guardian.UnifiedHost.UnifiedCandidateInvocation.IsRequested(args))
-        {
-            try
-            {
-                var options = CF7Launcher.Guardian.UnifiedHost.UnifiedCandidateInvocation.Parse(args, isolatedRuntimeCandidate);
-                return CF7Launcher.Guardian.UnifiedHost.UnifiedInputHost.RunCandidate(options);
-            }
-            catch (Exception ex)
-            {
-                StartupDiagnostics.Exception("unified_input_candidate_rejected", ex);
-                StartupDiagnostics.Exit("unified_input_candidate_rejected");
-                return 2;
-            }
         }
         string audioQualificationRunId;
         try
@@ -1072,6 +1075,10 @@ class Program
         args = StripProjectRootArgs(args);
 
         bool busOnly = Array.IndexOf(args, "--bus-only") >= 0;
+        bool arenaWorker = workerPolicy != null || harnessPolicy != null;
+        SessionInputAuthority r1 = null;
+        if (!busOnly && !arenaWorker)
+            r1 = new SessionInputAuthority(PassiveFlashInputMode.Disabled);
         bool legacyHttpAutomation =
             IsLegacyHttpAutomationMode(args);
         if (unattendedBootstrapRequest != null
@@ -1168,8 +1175,10 @@ class Program
             config.WebView2DeveloperMode,
             isolatedRuntimeCandidate,
             arenaWorkerMode: workerPolicy != null || harnessPolicy != null,
-            arenaWorkerMinimalRendering: workerPolicy?.Performance.MaxRenderHeight == 180);
+            arenaWorkerMinimalRendering: workerPolicy?.Performance.MaxRenderHeight == 180,
+            passiveInput: r1);
         _guardianForm = form;
+        if (r1 != null) form.BootstrapPanel?.BindInputAuthority(r1, r1);
         var tooltipCatalog = new TooltipCatalogSource(projectRoot, LogManager.Log);
         if (form.BootstrapPanel != null && tooltipCatalog.IsCheckout)
             form.BootstrapPanel.CheckoutEquipmentReference = () => tooltipCatalog.Snapshot.Archive;
@@ -1701,6 +1710,7 @@ class Program
 
         // 搓招输入处理：注入 socket 引用用于 K 前缀推送，初始化 V8 GameInput
         frameTask.SetSocket(socketServer);
+        if(r1!=null){frameTask.BindInputAuthority(r1);socketServer.BindInputAuthority(r1);}
         frameTask.ConfigureHitNumbers(
             userPrefs.HitNumberMode,
             userPrefs.HitNumberWorldRowLimit);
@@ -1731,26 +1741,17 @@ class Program
                 return new CF7Launcher.Data.MapRuntimeContent(projectRoot,
                     msg => LogManager.Log("[MapRuntimeContent] WARN: " + msg), mapDefinitionBytes);
         });
-        // Flash hwnd 动态查询（SA 进程重启后 hwnd 变）。提前到 WebOverlay 构造前，
-        // 因为后续 PanelHostController 也复用同一份。WebOverlay 自身的焦点回推走 flashFocusRestorer。
+        // 面板几何按当前的 Flash 窗口查询，以支持进程重启。
         Func<IntPtr> flashHwndProvider = delegate { return form.GetFlashHwnd(); };
-        // WindowManager 早声明：WebOverlay 构造时需要它的 RestoreFlashInputFocus primitive；
-        // 实际 form.BindWindowManager / perfEngine.SetActivationState / OnKillFlash 还在后面统一装配。
-        WindowManager windowManager = new WindowManager(allowForeground: workerPolicy == null && harnessPolicy == null);
-        Func<bool> compositionHelpOwnsInput = () => false;
-        Func<bool> captureBlocksInput = () => false;
-        Func<bool> gameOwnsInput = () => !captureBlocksInput();
+        WindowManager windowManager = new WindowManager(allowForeground: !busOnly && !arenaWorker);
+        if (r1 != null) windowManager.ConfigurePassiveInput(r1, form);
+        Func<bool> captureKeyboardReady = () => true;
+        Func<bool> gameBusinessAdmitted = () => true;
         SettingsTask settingsInputAuthority = null;
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
         {
             StartupDiagnostics.Mark("web_overlay.construct_start");
-            // Flash 焦点恢复 primitive：所有 panel close / navigate 路径都走 WindowManager.RestoreFlashInputFocus，
-            // 带 AttachThreadInput 兜底 + 前后 fg/pid 日志 + 校验，统一替代散落的裸 SetForegroundWindow。
-            Func<string, bool> flashFocusRestorer = delegate(string reason)
-            {
-                return gameOwnsInput() && windowManager.RestoreFlashInputFocus(reason, () => gameOwnsInput());
-            };
             webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir, projectRoot,
                 workerPolicy != null || config.WebOverlayLowEffects,
                 workerPolicy != null || config.WebOverlayDisableCssAnimations,
@@ -1761,12 +1762,10 @@ class Program
                 config.WebView2DeveloperMode,
                 workerPolicy == null && harnessPolicy == null && config.WebOverlayPanelTakeForeground,
                 workerPolicy == null && config.WebOverlayHotReload,
-                flashFocusRestorer, overlayMapDefinition,
-                windowManager.HandoffFlashFocusBeforePanelHide);
+                overlayMapDefinition);
         }
         StartupDiagnostics.Mark("web_overlay.construct_ok");
-        webOverlay.IdleFlashFocusRestorer = eligible => windowManager.RestoreFlashInputFocus(
-            "app_reactivated_idle", () => gameOwnsInput() && eligible());
+        if (r1 != null) webOverlay.BindInputAuthority(r1, r1, enableUniversalTextFocus: true);
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (workerPolicy == null && harnessPolicy == null && config.NativeCursorOverlayEnabled)
         {
@@ -1793,6 +1792,8 @@ class Program
         // second raw payload split.
         AgentControlTask agentControlTask = null;
         CF7Launcher.Guardian.GameLaunchFlow launchFlow = null;
+        bool gameplayViewRevealed() => launchFlow?.RevealPerformed == true && form.FlashHostPanel.Visible
+            && form.BootstrapPanel?.Visible != true;
         CF7Launcher.Audio.FrontdoorBgmLease frontdoorBgmLease = null;
         CF7Launcher.Guardian.Hud.SafeExitPanelWidget safeExitPanel = null;
         {
@@ -1996,13 +1997,13 @@ class Program
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
                 panelHudCompanion);
-            compositionHelpOwnsInput = () => panelHost.CompositionHelpOwnsInput;
-            gameOwnsInput = () => !captureBlocksInput() && !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready" && panelHost.GameOwnsInput
+            gameBusinessAdmitted = () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready"
+                && (r1 == null || gameplayViewRevealed()) && panelHost.GameOwnsInput
                 && !(settingsInputAuthority?.HasUnresolvedAuthority ?? false);
-            panelHost.NativeInputOwnerPresent=form.HasNativeEditFocus;
-            panelHost.ConfigureCloseFocus(windowManager,()=>!captureBlocksInput() && !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready"
-                && !(settingsInputAuthority?.HasUnresolvedAuthority ?? false));
-            form.GameInputOwnerEligible = () => gameOwnsInput();
+            panelHost.NativeInputOwnerPresent = () => form.NativeInteractionActive;
+            panelHost.ConfigureCloseFocus(windowManager,()=>captureKeyboardReady() && launchFlow?.CurrentState=="Ready"
+                && (r1 == null || gameplayViewRevealed())
+                && !(settingsInputAuthority?.HasUnresolvedAuthority ?? false),()=>!form.IsShutdownAdmissionClosed);
             form.BindPanelEscapeCapture(panelHost.CaptureNativeEscapeAction);
             // Accepted help endpoint is now the normal path in both formal and dev runtimes.
             SceneTransitionPresentationPolicy harnessCompositionPolicy = harnessPolicy != null
@@ -2011,7 +2012,6 @@ class Program
             panelHost.ConfigureCompositionHelp(webDir,
                 Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile"),
                 form.HandlePanelStateChanged,
-                reason => gameOwnsInput() && windowManager.RestoreFlashInputFocus(reason, () => gameOwnsInput()),
                 deferPrewarm: form.BootstrapPanel != null,
                 presentationPolicy: harnessCompositionPolicy);
             if (form.BootstrapPanel != null)
@@ -2037,6 +2037,12 @@ class Program
                     if (!form.IsDisposed)
                         form.BeginInvoke(new Action(panelHost.PrewarmCompositionIntelligence));
                 };
+            if (r1 != null)
+            {
+                nativeHud?.BindPointerAuthority(r1);
+                playerHudRuntime?.BindPointerAuthority(r1);
+                panelHost.BindPassiveInput(r1);
+            }
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
@@ -2207,14 +2213,71 @@ class Program
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
-            windowManager.SetFlashRenderHeight, () => { if(gameOwnsInput())windowManager.RestoreFlashInputFocus("world_pointer", () => gameOwnsInput()); },
+            windowManager.SetFlashRenderHeight,
             bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,lightSettings:worldLightSettings,overlays:worldOverlays,
             opaqueHudEnabled:workerPolicy==null && playerInfoFixtureCase==null,
             isAppActive:() => form.ActivationState.IsAppActive && !form.ActivationState.IsMinimized,
             shakeCatalog:worldShakeCatalog);
-        captureBlocksInput = () => worldCompositor.CaptureInputBlocked;
-        worldCompositor.SuspendFlashKeyboard = () => windowManager.SuspendFlashKeyboardForCapture(form.Handle);
-        worldCompositor.OwnsRecoveryFocus = () => windowManager.HasCaptureKeyboardFocus(form.Handle);
+        captureKeyboardReady = () => !worldCompositor.KeyboardBlockRequested;
+        var physicalHook=form.GetPanelEscapeSource() as KeyboardHook;
+        void refreshPassiveAdmission()
+        {
+            if (form.IsDisposed || form.Disposing || !form.IsHandleCreated) return;
+            if (form.InvokeRequired)
+            {
+                try { form.BeginInvoke(new Action(refreshPassiveAdmission)); } catch (InvalidOperationException) { }
+                return;
+            }
+            var installedHook=form.GetPanelEscapeSource() as KeyboardHook;
+            if(!ReferenceEquals(physicalHook,installedHook)) {
+                if(physicalHook!=null)r1.ObserveSourceLost("keyboard_hook_lost");
+                physicalHook=installedHook;
+            }
+            bool frontDoor = form.BootstrapPanel?.Visible == true;
+            bool audited = (frontDoor && windowManager.FlashHwnd == IntPtr.Zero) || windowManager.RefreshPassiveFocusAdmission();
+            bool sessionAvailable = !form.IsShutdownAdmissionClosed && !form.IsSessionLocked
+                && !form.ActivationState.IsMinimized && !form.NativeInteractionActive;
+            bool ownedForeground = sessionAvailable && windowManager.PassiveSessionForeground();
+            bool live=!worldCompositor.ProbeWithoutWgc && ownedForeground && physicalHook!=null;
+            bool probe=isolatedRuntimeCandidate && sessionAvailable && agentControlTask?.HasPassiveProbeGrant()==true && (ownedForeground ||
+                (worldCompositor.ProbeWithoutWgc && windowManager.IsForegroundVacuum()));
+            bool eligible=audited && (live || probe);
+            if(!eligible)r1.SetForeground(false);
+            bool revealed = gameplayViewRevealed();
+            bool business = eligible && revealed && (windowManager.PassiveShortcutForeground() || (probe && !ownedForeground))
+                && worldCompositor.PassiveKeyboardReady && gameBusinessAdmitted() && agentControlTask?.PassiveProbeHeld != true;
+            r1.SetBusinessEligible(business, "business_blocked");
+            if (revealed) r1.RequestGameAfterBootstrapReveal();
+            if(eligible) {
+                if(live)r1.SetForeground(true,WindowManager.PassiveKeyHeld,windowManager.PassiveSessionForeground);
+                else r1.SetForeground(true, static _ => false, () => windowManager.PassiveSessionForeground()
+                    || (worldCompositor.ProbeWithoutWgc && windowManager.IsForegroundVacuum()));
+            }
+        }
+        if(r1!=null) {
+            worldCompositor.ConfigurePassiveInput(r1,windowManager,gameBusinessAdmitted);
+            worldCompositor.PassiveAdmissionChanged=refreshPassiveAdmission;
+            windowManager.PassiveForegroundChanged += refreshPassiveAdmission;
+            form.FlashHostPanel.VisibleChanged += (_, _) => refreshPassiveAdmission();
+            if (form.BootstrapPanel != null) form.BootstrapPanel.VisibleChanged += (_, _) => refreshPassiveAdmission();
+            var heartbeat=new System.Windows.Forms.Timer{Interval=33};
+            heartbeat.Tick+=delegate {refreshPassiveAdmission();r1.Heartbeat();};
+            heartbeat.Start();
+            form.FormClosed+=delegate {heartbeat.Stop();heartbeat.Dispose();windowManager.PassiveForegroundChanged-=refreshPassiveAdmission;r1.ObserveSourceLost("session_closed");windowManager.StopPassiveFocusAudit();};
+            if (panelHost != null) panelHost.FocusAdmissionChanged = worldCompositor.SynchronizeInputAdmission;
+            void observeActivation(bool active)
+            {
+                if (!active)
+                {
+                    r1.SetForeground(false);
+                    r1.SetBusinessEligible(false, "deactivated");
+                    return;
+                }
+                worldCompositor.SynchronizeInputAdmission();
+            }
+            form.AppActivationChanged += observeActivation;
+            form.FormClosed += delegate { form.AppActivationChanged -= observeActivation; };
+        }
         form.AppActivationChanged += worldCompositor.SetWorldShakeAppActive;
         form.FormClosed += delegate { form.AppActivationChanged -= worldCompositor.SetWorldShakeAppActive; };
         hnOverlay.DamageLegacyFallbackChanged = worldCompositor.SetDamageLegacyFallback;
@@ -2261,27 +2324,41 @@ class Program
             worldCompositor.Adopt, worldCompositor.ResetSource);
         var inputLatency = CF7Launcher.Diagnostic.InputLatencyProbe.StartConfigured(form,
             !config.NativeCursorOverlayEnabled ? "system" : config.UseDesktopCursorOverlay ? "desktop" : "legacy");
+        Action<bool> passiveTransitionModal=null;
         var sceneTransition = new CF7Launcher.Guardian.SceneTransitionController(
             form, form.FlashHostPanel, projectRoot, dispatchToUi,
             wire => socketServer.IsClientReady && socketServer.TrySend(wire),
-            () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState == "Ready",
+            () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState == "Ready" && (r1 == null || gameplayViewRevealed()),
             scene => worldCompositor.IsTransitionScenePresented(scene)
+                || (worldCompositor.ProbeWithoutWgc && worldCompositor.IsCurrentTransitionScene(scene))
                 || (harnessController != null && harnessController.ShouldSatisfySceneFenceHeadless((int)scene)),
-            foreground => panelHost!=null && panelHost.HandoffTransitionToGame(windowManager,foreground),
-            worldOverlays, held => { panelHost?.SetTransitionInputHeld(held); worldCompositor.HoldTransitionInput(held); },
+            foreground => panelHost?.HandoffTransitionToGame(windowManager,foreground) == true,
+            worldOverlays, held => {
+                panelHost?.SetTransitionInputHeld(held); worldCompositor.HoldTransitionInput(held);
+                passiveTransitionModal?.Invoke(held);
+            },
             presentationPolicy:workerPolicy!=null
                 ? SceneTransitionPresentationPolicy.ArenaWorker
-                : (harnessPolicy!=null ? SceneTransitionPresentationPolicy.AgentHarness : SceneTransitionPresentationPolicy.Interactive));
+                : ((harnessPolicy!=null || worldCompositor.ProbeWithoutWgc)
+                    ? SceneTransitionPresentationPolicy.AgentHarness
+                    : SceneTransitionPresentationPolicy.Interactive));
+        if(r1!=null && sceneTransition.SettlementSurface is {} transitionSurface) {
+            transitionSurface.BindInputAuthority(r1, r1, enableUniversalTextFocus: true);
+            sceneTransition.ConfigurePassiveResume(() => r1.ForegroundEligible && !r1.CurrentTextLease.HasValue
+                && windowManager.PassiveShortcutForeground());
+            passiveTransitionModal = held => transitionSurface.NotifySurfaceModalState(held || transitionSurface.SettlementInstance.Length != 0);
+        }
         // The returned character may render below the still-visible bookshelf.
         sceneTransition.ConfigurePresentationFence(scene =>
         {
             worldCompositor.RequireFreshTransitionFrame(scene);
             harnessController?.NotifyTransitionFrameRequired((int)scene);
         });
-        if (harnessPolicy != null)
+        if (harnessPolicy != null || worldCompositor.ProbeWithoutWgc)
         {
             sceneTransition.ConfigureHeadlessTransitionFallback(scene =>
-                harnessController != null && harnessController.ShouldSatisfySceneFenceHeadless((int)scene));
+                (worldCompositor.ProbeWithoutWgc && worldCompositor.IsCurrentTransitionScene(scene))
+                || (harnessController != null && harnessController.ShouldSatisfySceneFenceHeadless((int)scene)));
         }
         // Repair its order in the same UI callback that shows the world HWND.
         worldCompositor.PresentationShown += sceneTransition.RestoreRetainedBookshelfOrder;
@@ -2501,14 +2578,8 @@ class Program
         ModifierTask modifierTask = new ModifierTask(socketServer);
         ModifierOverlay modifierOverlay = new ModifierOverlay(form, webDir,
             Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile-modifier"),
-            modifierTask, () => webOverlay.SendModifierPanelClosed(), dollPortraitsDir, current =>
-            {
-                bool eligible() => current() && gameOwnsInput();
-                if (eligible())
-                    windowManager.RestoreFlashInnerFocusOnce("modifier:keyboard_return",
-                        windowManager.CaptureFlashFocusTarget(), eligible);
-            });
-        modifierOverlay.TextInputFocusChanged += form.SetTextInputActive;
+            modifierTask, webOverlay.SendModifierPanelClosed, dollPortraitsDir, windowManager);
+        if (r1 != null) modifierOverlay.BindInputAuthority(r1, r1);
         commandRouter.SetModifierOverlay(modifierOverlay);
         webOverlay.SetModifierOverlay(modifierOverlay);
         if (form.BootstrapPanel != null)
@@ -2806,6 +2877,7 @@ class Program
                     userPrefs.Save();
                 }
             });
+        if(r1!=null)agentControlTask.BindPassiveProbe(r1,windowManager,worldCompositor,form,refreshPassiveAdmission,socketServer,nativeHud);
         agentControlTask.SetEquipmentTuningOpenAction(delegate
         {
             const string payload = "{\"task\":\"cmd\",\"action\":\"openInventoryWorkbench\","
@@ -3057,21 +3129,22 @@ class Program
         socketServer.OnClientDisconnected += nativeDialogueTask.HandleTransportDisconnected;
         // wire v2 能力握手：每代客户端 ready 时经代际绑定发送下发一次 dialogue_caps。
         socketServer.OnClientReadyForGeneration += nativeDialogueTask.PushCapsForGeneration;
-        form.SetDialogueKeyboardSurface(key => captureBlocksInput() ? null : nativeDialogueTask.CaptureKeyboardAction(key));
+        form.SetDialogueKeyboardSurface(key => worldCompositor.KeyboardBlockRequested ? null : nativeDialogueTask.CaptureKeyboardAction(key));
 
         // === AI 对话内嵌插话（exe 存在即启用）===
         // 没有独立特性开关：只要 ragTerminalService 可用就构建输入浮窗、挂会话钩子与焦点门；
         // 未发现 exe 时自然不构建，对话按键/点击/推进保持原样。
+        Func<bool> dialogueInputForeground = null;
         CF7Launcher.Tasks.NativeDialogueInterjectController dialogueInterject = null;
         CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputBinder dialogueInterjectInput = null;
         if (ragTerminalService != null)
         {
             CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectConfigWindow interjectConfigWindow = null;
             var interjectOverlay = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputOverlay();
+            if (r1 != null) interjectOverlay.BindInputAuthority(r1, r1);
             interjectOverlay.AttachOwner(form);
             dialogueInterjectInput = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputBinder(
                 form, dialogueWidget, interjectOverlay);
-            interjectOverlay.InputFocusChanged += focused => form.SetTextInputActive(focused);
             // 输入框持焦点时键盘推进键让位给 TextBox；面板展开但没聚焦时照常推进。
             nativeDialogueTask.InterjectInputFocused = () => interjectOverlay.IsTextInputActive();
             dialogueInterject = new CF7Launcher.Tasks.NativeDialogueInterjectController(
@@ -3134,7 +3207,7 @@ class Program
                     webOverlay == null ? null : webOverlay.CreateSharedWebView2EnvironmentOptions());
                 interjectConfigWindow = window;
                 window.Saved += () => interjectController.NotifyLlmConfigSaved();
-                window.TextInputActiveChanged += active => form.SetTextInputActive(active);
+                if (r1 != null) window.BindInputAuthority(r1, r1);
                 window.AutoStartChanged += delegate(bool enabled)
                 {
                     userPrefs.RagTerminalAutoStart = enabled;
@@ -3197,17 +3270,10 @@ class Program
                 if (interjectOverlay.IsExpanded) interjectController.RefreshTerminalState();
             };
             dialogueInterject.Attach();
-            Func<bool> interjectForegroundProbe = () =>
+            dialogueInputForeground = () =>
                 interjectOverlay.ShouldKeepHudPresented()
                 || (interjectConfigWindow != null && !interjectConfigWindow.IsDisposed
                     && interjectConfigWindow.ShouldKeepHudPresented());
-            if (nativeHud != null)
-                nativeHud.InterjectInputForegroundProbe = interjectForegroundProbe;
-            // 血条/技能/buff 是另外三个 overlay，白名单要同源，否则点输入框时整块底部 UI 消失。
-            if (playerHudRuntime != null)
-                playerHudRuntime.SetInterjectInputForegroundProbe(interjectForegroundProbe);
-            else if (playerInfoSurface != null)
-                playerInfoSurface.InterjectInputForegroundProbe = interjectForegroundProbe;
             form.FormClosed += delegate
             {
                 dialogueInterject.Dispose();
@@ -3221,6 +3287,27 @@ class Program
                 catch { }
             };
         }
+
+        bool KeepHudForNonModalInput() => modifierOverlay.ShouldKeepHudPresented(form.DeactivatingToWindow) || dialogueInputForeground?.Invoke() == true;
+        if (nativeHud != null) nativeHud.NonModalInputForegroundProbe = KeepHudForNonModalInput;
+        if (playerHudRuntime != null) playerHudRuntime.SetNonModalInputForegroundProbe(KeepHudForNonModalInput);
+        else if (playerInfoSurface != null) playerInfoSurface.NonModalInputForegroundProbe = KeepHudForNonModalInput;
+
+        // Returning directly from another application to an owned editor does not
+        // raise Guardian.Activated. Reconcile after this OS foreground transition.
+        void RestoreHudForInputWindow()
+        {
+            if (form.IsDisposed || form.Disposing || !form.IsHandleCreated) return;
+            form.BeginInvoke(new Action(() =>
+            {
+                if (form.IsDisposed || form.WindowState == FormWindowState.Minimized || !KeepHudForNonModalInput()) return;
+                nativeHud?.RestoreForNonModalForeground();
+                if (playerHudRuntime != null) playerHudRuntime.RestoreForNonModalForeground();
+                else playerInfoSurface?.RestoreForNonModalForeground();
+            }));
+        }
+        windowManager.PassiveForegroundChanged += RestoreHudForInputWindow;
+        form.FormClosed += delegate { windowManager.PassiveForegroundChanged -= RestoreHudForInputWindow; };
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
@@ -3250,6 +3337,15 @@ class Program
         webOverlay.SetBookshelfTask(bookshelfTask);
         webOverlay.SetGymTrainingTask(gymTrainingTask);
         webOverlay.SetSettingsTask(settingsTask);
+        // Run after the existing settings UI completion releases (or retains) its gate.
+        // Keep the same asynchronous WebOverlay dispatch and endpoint-bound response.
+        settingsTask.SetInvoker(action => {
+            try {
+                webOverlay.BeginInvoke(new Action(()=> {
+                    try { action(); } finally { worldCompositor.SynchronizeInputAdmission(); }
+                }));
+            } catch(InvalidOperationException) { /* WebOverlay handle retired */ }
+        });
         webOverlay.SetEquipmentTuningTask(equipmentTuningTask);
         characterBuildTask.SetPersistedExit(
             form.TryExitAfterCharacterSave,
@@ -3538,56 +3634,14 @@ class Program
 
         // === 正常模式：启动 Flash Player 并嵌入 ===
 
-        // 快捷键拦截（独立进程）
-        string guardExe = Environment.ProcessPath;
-        Process guardProc = null;
-        if (workerPolicy == null && harnessPolicy == null && File.Exists(guardExe))
-        {
-            try
-            {
-                ProcessStartInfo gsi = new ProcessStartInfo();
-                gsi.FileName = guardExe;
-                gsi.Arguments = "--hotkey-guard " + Process.GetCurrentProcess().Id.ToString()
-                    + " " + typeof(HotkeyGuard).Assembly.ManifestModule.ModuleVersionId.ToString("D")
-                    + (FocusTrace.Enabled ? " --diag-input" : "");
-                gsi.UseShellExecute = false;
-                gsi.CreateNoWindow = true;
-                gsi.RedirectStandardOutput = FocusTrace.Enabled;
-                guardProc = new Process { StartInfo = gsi };
-                if (gsi.RedirectStandardOutput)
-                    guardProc.OutputDataReceived += (_, line) => {
-                        if (line.Data != null && line.Data.Length <= 1024
-                            && line.Data.StartsWith("[HotkeyGuardInput] ", StringComparison.Ordinal))
-                            FocusTrace.Record("keyboard.guard_decision", new { raw = line.Data });
-                    };
-                guardProc.Start();
-                if (gsi.RedirectStandardOutput) guardProc.BeginOutputReadLine();
-                LogManager.Log("[Guardian] HotkeyGuard started, PID=" + guardProc.Id);
-                if (FocusTrace.Enabled) FocusTrace.Record("keyboard.guard_started", new {
-                    pid = guardProc.Id, path = guardExe,
-                    sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(guardExe))),
-                    observation = "same_core_mvid", moduleVersionId = typeof(HotkeyGuard).Assembly.ManifestModule.ModuleVersionId.ToString("D")
-                });
-                StartupDiagnostics.Mark("hotkey_guard.started", "pid=" + guardProc.Id);
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[Guardian] HotkeyGuard failed: " + ex.Message);
-                StartupDiagnostics.Warn("hotkey_guard.failed", ex.Message);
-            }
-        }
-        else
-        {
-            LogManager.Log("[Guardian] Core apphost not found; independent shortcut guard unavailable");
-            StartupDiagnostics.Warn("hotkey_guard.missing", guardExe);
-        }
-
         if (FocusTrace.Enabled)
             FocusWindowSnapshot.FlashWindow = () => windowManager.FlashHwnd;
 
-        // 守护进程核心（windowManager 已在 WebOverlay 构造前 early-declared，flashFocusRestorer 依赖它）
+        // Pass the FlashVar only to the projector. Storage and save resolution use the original SWF path.
+        string flashLaunchTarget = r1 == null ? config.SwfPath
+            : new UriBuilder(new Uri(config.SwfPath)) { Query = "cf7R1PassiveInput=1" }.Uri.AbsoluteUri;
         ProcessManager processManager = new ProcessManager(
-            config.FlashPlayerPath, config.SwfPath,
+            config.FlashPlayerPath, flashLaunchTarget,
             workerPolicy == null ? null : workerPolicy.ConfigureFlashStart);
         if (workerPolicy != null)
             arenaCalibrationTask.TransportPoisoned += _ => ThreadPool.QueueUserWorkItem(__ => processManager.KillFlash());
@@ -3714,7 +3768,7 @@ class Program
                 DiagnosticsBootstrap.ReadySnapshot();
                 LogManager.Log("[RevealProbe] readyWiring.total " + ((System.Diagnostics.Stopwatch.GetTimestamp() - tOverall) * 1000.0 / System.Diagnostics.Stopwatch.Frequency).ToString("0.0") + "ms");
             },
-            /* hotkeyGuardSpawn */ null,
+            null,
             saveCtx,
             CF7Launcher.Guardian.GameLaunchFlow
                 .FLASH_REVEAL_WATCHDOG_DEFAULT_MS,

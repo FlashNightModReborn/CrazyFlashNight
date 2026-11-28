@@ -46,20 +46,22 @@ class org.flashNight.arki.render.FrameBroadcaster {
     public static function setPlayerHudCapture(callback:Function):Void { _playerHudCapture = callback; }
 
 
-    /** 输入数据槽（由 键盘输入控制目标 写入，send() 消费后清空）*/
-    private static var _inputPayload:String = null;
     /** 首批普通/枪式联弹影子视觉快照；仅在配套 Host 明确协商后填充。 */
     private static var _bulletVisualPayload:String = null;
     public static function setBulletVisualPayload(value:String):Void { _bulletVisualPayload = value; }
     private static var _combatFxPayload:String = null;
     public static function setCombatFxPayload(value:String):Void { _combatFxPayload = value; }
 
-    // ========== K 前缀接收侧（Launcher -> Flash）==========
+    // Frame origins and K queues use the versioned input frame identity.
+    private static var _versionedInput:Object;
+    private static var _versionedOrigins:Array = [];
+    private static var _versionedCommands:Array = [];
+    private static var _versionedHead:Number = 0;
+    private static var _versionedCount:Number = 0;
+    private static var _versionedSeq:Number = 0;
+    private static var _versionedCommandFrame:Number = 0;
+    private static var _versionedHints:Object;
 
-    /** Launcher 返回的搓招 commandId（0=无搓招）*/
-    private static var _cmdId:Number = 0;
-    /** Launcher 返回的搓招命令名（cmdId=0 时为空）*/
-    private static var _cmdName:String = "";
     /** Launcher 返回的搓招可视化提示 */
     private static var _comboHints:String = "";
 
@@ -82,13 +84,117 @@ class org.flashNight.arki.render.FrameBroadcaster {
         org.flashNight.neur.Server.Issue205SourceProbe.mark(8);
     }
 
-    /**
-     * 写入输入数据槽。
-     * 由 键盘输入控制目标() 在 bitmask 算完后调用。
-     * @param payload 格式 "mask|facingBit|moduleId|doubleTapDir"
-     */
-    public static function setInputPayload(payload:String):Void {
-        _inputPayload = payload;
+    public static function setVersionedInput(sample:Object):Void {
+        _versionedInput = sample;
+    }
+
+    public static function clearVersionedScope():Void {
+        _versionedInput = null;
+        // Keep bounded provenance for already-sent results: Host commandSeq
+        // still advances in this epoch, but an old scope can no longer import.
+        for (var i:Number = 0; i < _versionedOrigins.length; ++i) {
+            var origin:Object = _versionedOrigins[i];
+            if (origin != null) origin.retired = true;
+        }
+        _versionedCommands.length = 0;
+        _versionedHead = 0;
+        _versionedCount = 0;
+        _versionedHints = null;
+        _comboHints = "";
+    }
+
+    public static function advanceVersionedConfig():Boolean {
+        clearVersionedScope();
+        var cell:Object = _root.GameInput;
+        if (cell.configInc == 2147483647) {
+            cell.configExhausted = true;
+            _root.server.faultPassiveCombo("input_config_exhausted");
+            return false;
+        }
+        ++cell.configInc;
+        return true;
+    }
+
+    public static function cancelVersionedInput():Void {
+        clearVersionedScope();
+    }
+
+    public static function beginVersionedInputEpoch():Void {
+        cancelVersionedInput();
+        _versionedOrigins.length = 0;
+        _versionedSeq = 0;
+        _versionedCommandFrame = 0;
+        var cell:Object = _root.GameInput;
+        cell.lastCommandSeq = 0;
+        cell.lastImportedCommandSeq = 0;
+    }
+
+    private static function sameVersionedOrigin(a:Object, b:Object):Boolean {
+        return a != null && b != null && a.epoch === b.epoch
+            && a.actorInc === b.actorInc && a.moduleId === b.moduleId
+            && a.moduleInc === b.moduleInc && a.configInc === b.configInc;
+    }
+
+    public static function stageVersionedResult(result:Object):String {
+        var cell:Object = _root.GameInput;
+        var origin:Object = _versionedOrigins[result.inputFrameSeq & 63];
+        if (origin == null || origin.inputFrameSeq !== result.inputFrameSeq || !sameVersionedOrigin(origin, result)) {
+            cell.lastRejectedComboSeq = result.commandSeq;
+            return null;
+        }
+        if (result.cmdId > 0) {
+            if (result.commandSeq <= _versionedSeq) return null;
+            if (result.commandSeq !== _versionedSeq + 1) return origin.retired === true ? null : "combo_sequence";
+            // Host sequences commands across config/module switches within the same epoch.
+            // Account for an in-order stale result without admitting it to the gameplay queue.
+            _versionedSeq = result.commandSeq;
+            cell.lastCommandSeq = _versionedSeq;
+        }
+
+        if (origin.retired === true) {
+            cell.lastRejectedComboSeq = result.commandSeq;
+            return null;
+        }
+        if (origin.pulse) {
+            cell.lastPulseFrame = origin.wire;
+            cell.lastPulseResult = result.wire;
+        }
+        delete result.wire;
+        if (result.cmdId == 0) {
+            if (_versionedHints == null || result.inputFrameSeq >= _versionedHints.inputFrameSeq)
+                _versionedHints = result;
+            return null;
+        }
+        if (result.inputFrameSeq < _versionedCommandFrame) return "combo_frame_order";
+        if (_versionedCount == 32) return "combo_queue_overflow";
+        _versionedCommandFrame = result.inputFrameSeq;
+        result.origin = origin;
+        _versionedCommands[(_versionedHead + _versionedCount) & 31] = result;
+        ++_versionedCount;
+        return null;
+    }
+
+    public static function takeVersionedCommand(scope:Object, bufferReady:Boolean):Object {
+        if (_versionedHints != null) {
+            if (sameVersionedOrigin(_versionedHints, scope)) _comboHints = _versionedHints.hintsJson;
+            _versionedHints = null;
+        }
+        if (!bufferReady) return null;
+        var cell:Object = _root.GameInput;
+        while (_versionedCount > 0) {
+            var result:Object = _versionedCommands[_versionedHead];
+            _versionedCommands[_versionedHead] = null;
+            _versionedHead = (_versionedHead + 1) & 31;
+            --_versionedCount;
+            if (sameVersionedOrigin(result, scope)
+                    && _versionedOrigins[result.inputFrameSeq & 63] === result.origin) {
+                cell.lastImportedCommandSeq = result.commandSeq;
+                cell.comboImportCount = (cell.comboImportCount | 0) + 1;
+                return result;
+            }
+            cell.lastRejectedComboSeq = result.commandSeq;
+        }
+        return null;
     }
 
     /**
@@ -113,6 +219,8 @@ class org.flashNight.arki.render.FrameBroadcaster {
         org.flashNight.neur.Server.Issue205SourceProbe.mark(4);
         org.flashNight.arki.weather.NightVisionUnitTint.tick();
         var sm:Object = _root.server;
+        var cell:Object = _root.GameInput;
+        if (cell.passiveActive === true) cell.recordPhase("frameEnd", sm.currentFrame);
         if (!sm.isSocketConnected) {
             org.flashNight.neur.Server.Issue205SourceProbe.mark(9);
             _hnPayload = null;
@@ -158,9 +266,23 @@ class org.flashNight.arki.render.FrameBroadcaster {
             _uiPayload = null;
             _playerHudPayload = null;
         }
-        if (_inputPayload != null) {
-            msg += "\x04" + _inputPayload;
-            _inputPayload = null;
+        var inputOrigin:Object = null;
+        var sample:Object = _versionedInput;
+        _versionedInput = null;
+        if (cell.passiveActive === true && cell.bound === true && cell.gateOpen === true && sample != null) {
+            var snapshot:Object = cell.snapshot;
+            if (sample.systemFrame === sm.currentFrame && sample.systemFrame === snapshot.systemFrame
+                    && sample.actorInc === cell.actorInc && sample.moduleInc === cell.moduleInc
+                    && sample.configInc === cell.configInc && sample.inputFrameSeq === snapshot.inputFrameSeq
+                    && sample.epoch === snapshot.keyboardEpoch) {
+                var inputWire:String = "I1|" + cell.sessionId + "|" + cell.connectionIncarnation + "|" + sample.epoch
+                    + "|" + sample.inputFrameSeq + "|" + sample.actorInc + "|" + sample.moduleId
+                    + "|" + sample.moduleInc + "|" + sample.configInc + "|" + sample.mask + "|" + sample.facingBit
+                    + "|" + sample.doubleTapDir + "|" + sample.atomCount + "|" + sample.atoms;
+                msg += "\x04" + inputWire;
+                if (sample.pulse) sample.wire = inputWire;
+                inputOrigin = sample;
+            }
         }
         if (_bulletVisualPayload != null) {
             msg += "\x05" + _bulletVisualPayload;
@@ -184,78 +306,19 @@ class org.flashNight.arki.render.FrameBroadcaster {
             Number(_root.帧计时器.当前帧数));
 
         org.flashNight.neur.Server.Issue205SourceProbe.mark(6);
-        sm.sendSocketMessage(msg);
+        if (sm.sendSocketMessage(msg) && inputOrigin != null) {
+            _versionedOrigins[inputOrigin.inputFrameSeq & 63] = inputOrigin;
+            cell.recordPhase("comboSent", sm.currentFrame);
+        }
         org.flashNight.neur.Server.Issue205SourceProbe.mark(7);
 
         // 消费后清空所有数据槽
         _hnPayload = null;
     }
 
-    // ========== K 前缀接收方法 ==========
-
-    /**
-     * 接收 Launcher 推送的 K 前缀消息（由 ServerManager.onSocketData 调用）。
-     *
-     * K payload v2 格式:
-     *   chr(cmdId+0x20) \x01 {typed} \x02 {hints}
-     *   cmdId=0: chr(0x20) \x01 {typed} \x02 {hints}
-     *   cmdId>0: chr(cmdId+0x20) {cmdName} \x01 {typed} \x02 {hints}
-     *
-     * AS2 侧只消费 _cmdId 和 _cmdName（缓冲逻辑用）。
-     * _comboHints 保留正确语义供未来 AS2 侧 UI 使用。
-     *
-     * @param payload K 前缀之后的内容（不含 'K' 字符本身）
-     */
+    // Hooked by protocol_latency_cycle.ps1 in its standalone benchmark VM.
+    // The default callback carries no command or hint state.
     public static function receiveK(payload:String):Void {
-        if (payload == null || payload.length == 0) {
-            _cmdId = 0;
-            _cmdName = "";
-            _comboHints = "";
-            return;
-        }
-
-        var rawId:Number = payload.charCodeAt(0) - 0x20;
-        var sep1:Number = payload.indexOf("\x01");
-        var sep2:Number = payload.indexOf("\x02");
-
-        if (rawId <= 0 || isNaN(rawId)) {
-            // cmdId=0: 无搓招，显式清空
-            _cmdId = 0;
-            _cmdName = "";
-            // 解析 hints（\x02 之后）供可视化
-            if (sep2 >= 0 && sep2 < payload.length - 1) {
-                _comboHints = payload.substring(sep2 + 1);
-            } else {
-                _comboHints = "";
-            }
-            return;
-        }
-
-        _cmdId = rawId;
-
-        // cmdName: chr(cmdId) 到 \x01 之间
-        if (sep1 > 1) {
-            _cmdName = payload.substring(1, sep1);
-        } else {
-            _cmdName = "";
-        }
-
-        // hints: \x02 之后
-        if (sep2 >= 0 && sep2 < payload.length - 1) {
-            _comboHints = payload.substring(sep2 + 1);
-        } else {
-            _comboHints = "";
-        }
-    }
-
-    /** 获取 Launcher 返回的搓招 commandId（0=无搓招）*/
-    public static function getCmdId():Number {
-        return _cmdId;
-    }
-
-    /** 获取 Launcher 返回的搓招命令名 */
-    public static function getCmdName():String {
-        return _cmdName;
     }
 
     /** 获取 Launcher 返回的搓招可视化提示 */
@@ -269,19 +332,16 @@ class org.flashNight.arki.render.FrameBroadcaster {
      */
     public static function reset():Void {
         org.flashNight.arki.render.CombatFxBridge.resetScene();
+        if (_root.GameInput.passiveActive === true) clearVersionedScope();
         _hnPayload = null;
         _playerHudPayload = null;
         _fpsPayload = null;
-        _inputPayload = null;
         _bulletVisualPayload = null;
         _combatFxPayload = null;
         org.flashNight.arki.render.BulletVisualProbe.resetScene();
         org.flashNight.arki.render.RayVisualBridge.resetScene();
         org.flashNight.arki.render.ChainVisualBridge.resetScene();
         // 注意：不清空 _uiPayload，场景切换时 UI 快照需要保留到下一帧 send()
-        // 清空 K 前缀接收状态
-        _cmdId = 0;
-        _cmdName = "";
         _comboHints = "";
         org.flashNight.arki.audio.AudioBridge.reset();
         org.flashNight.arki.render.NativeFrameTag.reset();

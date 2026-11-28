@@ -1,4 +1,5 @@
 using System;
+using CF7Launcher.Guardian.InputOwnership;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -8,8 +9,7 @@ namespace CF7Launcher.Guardian
     /// <summary>
     /// 低级键盘钩子——运行在专用线程上，永不超时。
     /// 拦截 Ctrl+W/R/P/O（Flash SA 原生快捷键）和 Ctrl+F/Q（Guardian 动作键）。
-    /// 仅当本应用处于激活态（或焦点真空）时拦截，不影响其他应用程序——
-    /// 判定见 ShouldInterceptForOurApp。
+    /// 按会话的实时前台和当前文本租约决定是否派发快捷键。
     /// </summary>
     public class KeyboardHook : IDisposable, IPanelEscapeSource
     {
@@ -84,12 +84,7 @@ namespace CF7Launcher.Guardian
         private readonly HashSet<uint> _blockedVks;
         // 拦截后需要触发动作的键 → action 回调
         private readonly Dictionary<uint, Action> _actionVks;
-        // 严格判定的键——跳过去抖宽限，要求实时前台归属本应用。
-        // 破坏性 / 不可逆动作（Ctrl+Q ForceExit）放这里：去抖宽限内无法区分
-        // "toast 瞬时抢焦"与"用户真的切走了"，对杀进程级动作必须用实时前台判定。
-        private readonly HashSet<uint> _strictVks;
         private readonly uint _myPid;
-        private volatile uint _flashPid; // Flash 进程 PID（嵌入前前台是 Flash 而非 Guardian）
         private bool _leftCtrlHeld, _rightCtrlHeld;
         private bool _ctrlHeld { get { return _leftCtrlHeld || _rightCtrlHeld; } }
         [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int vk);
@@ -100,6 +95,20 @@ namespace CF7Launcher.Guardian
             return vk == side ? down : asyncHeld;
         }
 
+        private volatile SessionInputAuthority _r1;
+        private Func<bool> _r1Foreground;
+        private Func<bool> _shortcutForeground;
+        private Action<Action> _postShortcut;
+        private long _lastObservationGeneration;
+        private (long Generation, ulong Lease, int GameEpoch)? _leftCtrlStamp, _rightCtrlStamp;
+        internal void BindPassiveInput(SessionInputAuthority authority, Func<bool> exactForeground,
+            Action<Action> postShortcut = null, Func<bool> shortcutForeground = null)
+        {
+            _r1Foreground = exactForeground;
+            _shortcutForeground = shortcutForeground ?? exactForeground;
+            _postShortcut = postShortcut;
+            _r1 = authority;
+        }
         internal Func<int, short> ReadAsyncKeyState = GetAsyncKeyState;
         internal Func<bool> LiveForegroundProbeForTests;
 
@@ -109,17 +118,13 @@ namespace CF7Launcher.Guardian
             _rightCtrlHeld = ControlSideAfterEvent(VK_RCONTROL, vk, down, (ReadAsyncKeyState((int)VK_RCONTROL) & 0x8000) != 0);
             // 被本 hook 消费的 down 可能未更新 OS 异步键态，不能用 false 清其长按锁存。
             // 外部前台的事件不被我们消费，此时可清理外部释放遗留的锁存。
-            bool external = !IsLiveApplicationForeground() && GetForegroundWindow() != IntPtr.Zero;
+            bool external = _r1 == null && !IsLiveApplicationForeground();
             _physicalKeysDown.RemoveWhere(key => (key != vk || down)
                 && (external || (!_dialogueConsumedKeys.Contains(key) && !_shortcutConsumedKeys.Contains(key)))
                 && (ReadAsyncKeyState((int)key) & 0x8000) == 0);
             _dialogueConsumedKeys.RemoveWhere(key => (key != vk || down) && !_physicalKeysDown.Contains(key));
             _shortcutConsumedKeys.RemoveWhere(key => (key != vk || down) && !_physicalKeysDown.Contains(key));
         }
-        // 去抖后的进程级激活状态探针（GuardianForm 注入 AppActivationState.IsAppActive）。
-        // 可空：未注入时退化为纯前台窗口判定。
-        private volatile Func<bool> _isAppActive;
-
         // Escape 拦截（全屏时动态启用）
         private volatile bool _escEnabled;
         // 面板 ESC 拦截（与 _escEnabled 独立）
@@ -139,12 +144,7 @@ namespace CF7Launcher.Guardian
         public void SetDialogueKeyProbe(Func<uint, Action> probe) { _dialogueKeyProbe = probe; }
         public void SetInteractionEscapeProbe(Func<bool> probe) { _interactionEscProbe = probe; }
 
-        // 文字输入态（插话输入框持有焦点）：全局放行所有按键——既不吃游戏热键
-        // (W/R/P/O/F/Q/Ctrl+*)，也不吃对话推进键与 Esc；IME 才能正常收字。
-        // 默认 false，输入框获得焦点时才置 true。
-        private volatile bool _textInputActive;
-        public bool TextInputActive { get { return _textInputActive; } }
-        public void SetTextInputActive(bool active) { _textInputActive = active; }
+        public bool TextInputActive => _r1?.CurrentTextLease.HasValue == true;
         public bool InteractionEscActive
         {
             get
@@ -170,9 +170,6 @@ namespace CF7Launcher.Guardian
             // 0x47 (G) 由 GuardianForm 按 config.devGpuProbeHotkey 动态启用，玩家版不注入
 
             _actionVks = new Dictionary<uint, Action>();
-
-            _strictVks = new HashSet<uint>();
-            _strictVks.Add(0x51); // Q — ForceExit 杀进程，严格判定，不吃去抖宽限
         }
 
         /// <summary>
@@ -191,17 +188,6 @@ namespace CF7Launcher.Guardian
         {
             _blockedVks.Add(vk);
         }
-
-        /// <summary>
-        /// 设置 Flash 进程 PID（嵌入前前台窗口是 Flash PID，嵌入后是 Guardian PID）
-        /// </summary>
-        public void SetFlashPid(uint pid) { _flashPid = pid; }
-
-        /// <summary>
-        /// 注入进程级激活状态探针。钩子回调用它判定按键是否归本应用拦截，
-        /// 取代在回调里裸轮询 GetForegroundWindow()。详见 ShouldInterceptForOurApp。
-        /// </summary>
-        public void SetActivationProbe(Func<bool> isAppActive) { _isAppActive = isAppActive; }
 
         /// <summary>
         /// 动态启用/禁用 Escape 键拦截（全屏时启用）
@@ -271,13 +257,34 @@ namespace CF7Launcher.Guardian
                 if (vk == VK_CONTROL) vk = (Marshal.ReadInt32(lParam, 8) & 1) != 0 ? VK_RCONTROL : VK_LCONTROL;
                 bool down = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
                 bool up = msg == WM_KEYUP || msg == WM_SYSKEYUP;
+                if(_r1 is { } input && !CanObserveForeground(input)) {
+                    if(up) {
+                        _physicalKeysDown.Remove(vk);_dialogueConsumedKeys.Remove(vk);_shortcutConsumedKeys.Remove(vk);
+                        input.ObserveSuppressedRelease((int)vk,(Marshal.ReadInt32(lParam,8)&0x10)!=0 ?
+                            InputObservationSource.Injected : InputObservationSource.Unmarked);
+                    }
+                    return IntPtr.Zero;
+                }
+                if (_r1 is { } session && _lastObservationGeneration != session.ObservationGeneration) {
+                    _physicalKeysDown.Clear();
+                    _shortcutConsumedKeys.Clear();
+                    _dialogueConsumedKeys.Clear();
+                    _lastObservationGeneration = session.ObservationGeneration;
+                }
                 ReconcileKeyState(vk, down);
                 bool repeated = down && !_physicalKeysDown.Add(vk);
                 if (up) _physicalKeysDown.Remove(vk);
+                if (_r1 != null && (vk is VK_LCONTROL or VK_RCONTROL) && !repeated)
+                {
+                    // Control may be held from outside the window or from an editor.
+                    // Only a fresh local Down in this same focus interval starts a chord.
+                    var stamp = down && _shortcutForeground() && !_r1.IsSuppressed((int)vk) ? _r1.ShortcutStamp : null;
+                    if (vk == VK_LCONTROL) _leftCtrlStamp = stamp; else _rightCtrlStamp = stamp;
+                }
 
                 // 文字输入期间全部放行：清掉本键的历史消费标记，保证退出输入后
                 // 第一次真实按键不会被"已消费"状态误吞。
-                if (_textInputActive)
+                if (TextInputActive || (_r1 != null && !_shortcutForeground()))
                 {
                     _shortcutConsumedKeys.Remove(vk);
                     _dialogueConsumedKeys.Remove(vk);
@@ -297,20 +304,23 @@ namespace CF7Launcher.Guardian
                     if (up) _dialogueConsumedKeys.Remove(vk);
                     if ((down || up) && IsLiveApplicationForeground()) return TraceDecision(vk, msg, lParam, true);
                 }
+                // A held key on return from a text field, modal or another app
+                // cannot start a shortcut on repeat. Its actual Up clears suppression.
+                if (down && _r1 != null && (repeated || _r1.IsSuppressed((int)vk)))
+                    return TraceDecision(vk, msg, lParam, false);
                 if (down && !repeated && msg == WM_KEYDOWN && !_ctrlHeld
                     && !_physicalKeysDown.Contains(0x10) && !_physicalKeysDown.Contains(0xA0)
                     && !_physicalKeysDown.Contains(0xA1) && !_physicalKeysDown.Contains(0x12)
                     && !_physicalKeysDown.Contains(0xA4) && !_physicalKeysDown.Contains(0xA5)
                     && !_panelEscEnabled && !(vk == VK_ESCAPE && InteractionEscActive)
-                    && IsLiveApplicationForeground())
+                    && (_r1 == null || _r1.IsGameKeyboardAdmitted) && IsLiveApplicationForeground())
                 {
                     Action dialogueAction = null;
                     try { dialogueAction = _dialogueKeyProbe?.Invoke(vk); } catch { }
                     if (dialogueAction != null)
                     {
                         _dialogueConsumedKeys.Add(vk);
-                        ThreadPool.QueueUserWorkItem(_ => dialogueAction());
-                        return TraceDecision(vk, msg, lParam, true);
+                        return TraceDecision(vk, msg, lParam, true, dialogueAction);
                     }
                 }
 
@@ -320,39 +330,65 @@ namespace CF7Launcher.Guardian
 
                     // Ctrl + 被保护键
                     if (_ctrlHeld && _blockedVks.Contains(vk))
-                        shouldBlock = true;
+                    {
+                        var stamp = _r1?.ShortcutStamp;
+                        shouldBlock = _r1 == null || stamp.HasValue &&
+                            ((_leftCtrlHeld && _leftCtrlStamp == stamp) || (_rightCtrlHeld && _rightCtrlStamp == stamp));
+                    }
 
                     // Escape（全屏时 / 面板打开时 / native_interaction 交互会话存活时）
                     if (vk == VK_ESCAPE && (_escEnabled || _panelEscEnabled || InteractionEscActive))
                         shouldBlock = true;
 
-                    if (shouldBlock && ShouldInterceptForOurApp(_strictVks.Contains(vk)))
+                    if (shouldBlock && ShouldInterceptForOurApp())
                     {
                         // Capture a panel owner now, before the queued worker/UI callbacks.
                         Action capturedEscape=vk==VK_ESCAPE ? CapturePanelEscapeAction?.Invoke() : null;
                         if(vk==VK_ESCAPE && _panelEscEnabled && capturedEscape==null)return TraceDecision(vk,msg,lParam,false);
                         _shortcutConsumedKeys.Add(vk);
                         // 触发动作回调（异步，不阻塞钩子线程）
-                        Action action;
                         bool panelEscAtCapture=_panelEscEnabled;
-                        if(capturedEscape!=null)ThreadPool.QueueUserWorkItem(delegate { capturedEscape(); });
-                        else if (_actionVks.TryGetValue(vk, out action) && action != null)
+                        Action shortcut = capturedEscape;
+                        if (shortcut == null && _actionVks.TryGetValue(vk, out var action) && action != null)
                         {
-                            ThreadPool.QueueUserWorkItem(delegate {
-                                if(vk==VK_ESCAPE && panelEscAtCapture!=_panelEscEnabled)return;
-                                action();
-                            });
+                            shortcut = () => { if (vk != VK_ESCAPE || panelEscAtCapture == _panelEscEnabled) action(); };
                         }
-                        return TraceDecision(vk, msg, lParam, true); // 拦截
+                        return TraceDecision(vk, msg, lParam, true, shortcut);
                     }
                 }
+                return TraceDecision(vk, msg, lParam, false);
             }
-
-            return TraceDecision((uint)Marshal.ReadInt32(lParam), msg, lParam, false);
         }
 
-        private IntPtr TraceDecision(uint vk, int message, IntPtr data, bool blocked)
+        private IntPtr TraceDecision(uint vk, int message, IntPtr data, bool blocked, Action action = null)
         {
+            if(_r1 is {} input && (message is WM_KEYDOWN or WM_SYSKEYDOWN or WM_KEYUP or WM_SYSKEYUP)) {
+                var source = (Marshal.ReadInt32(data,8)&0x10)!=0 ? InputObservationSource.Injected : InputObservationSource.Unmarked;
+                bool down = message is WM_KEYDOWN or WM_SYSKEYDOWN;
+                if (!CanObserveForeground(input)) {
+                    _shortcutConsumedKeys.Remove(vk);
+                    _dialogueConsumedKeys.Remove(vk);
+                    if (!down) input.ObserveSuppressedRelease((int)vk,source);
+                    return IntPtr.Zero;
+                }
+                var stamp = input.ShortcutStamp;
+                bool hostKeyboard = _shortcutForeground();
+                if (!hostKeyboard) input.SetBusinessEligible(false, "local_window");
+                if (blocked && (!hostKeyboard || !stamp.HasValue)) {
+                    _shortcutConsumedKeys.Remove(vk);
+                    _dialogueConsumedKeys.Remove(vk);
+                    blocked = false;
+                }
+                input.ObserveKey((int)vk,down,!blocked && hostKeyboard && stamp.HasValue,source:source);
+                if (blocked && action != null) {
+                    void Deliver() {
+                        if (_r1Foreground() && _shortcutForeground() && input.ShortcutStamp == stamp) action();
+                    }
+                    if (_postShortcut == null) ThreadPool.QueueUserWorkItem(_ => Deliver());
+                    else try { _postShortcut(Deliver); } catch (InvalidOperationException) { }
+                }
+            }
+            else if (blocked && action != null) ThreadPool.QueueUserWorkItem(_ => action());
             if (CF7Launcher.Diagnostic.FocusTrace.Enabled &&
                 (vk == 0x57 || vk == 0x41 || vk == 0x53 || vk == 0x44 || vk == 0x52
                     || vk == VK_LCONTROL || vk == VK_RCONTROL))
@@ -367,52 +403,24 @@ namespace CF7Launcher.Guardian
             return blocked ? new IntPtr(1) : IntPtr.Zero;
         }
 
-        /// <summary>
-        /// 判断这次按键是否应被本应用拦截。
-        ///
-        /// 低级键盘钩子是【全局】的——能看到系统里所有按键，因此必须把"用户正在用别的
-        /// 程序"时的按键放行，否则会吞掉其它应用的 Ctrl+F 等。
-        ///
-        /// 判据（按可靠性排序）：
-        ///   1. 去抖后的进程级激活状态（WM_ACTIVATEAPP 驱动）——首要依据，能容忍后台
-        ///      程序瞬时抢焦造成的抖动。
-        ///   2. 焦点真空（GetForegroundWindow()==NULL）：没有任何窗口持有系统前台。后台
-        ///      程序抢焦后未归还会留下此态；此时满屏游戏仍可见、用户实际在玩游戏，且
-        ///      真空下按键不会落到任何别的程序。旧实现 `if (fg != Zero)` 把这种情况整段
-        ///      跳过，正是玩家反馈"触发不了 UI"的成因。
-        ///   3. 前台窗口归属本进程或 Flash 进程。
-        ///
-        /// strict=true（破坏性键，如 Ctrl+Q）：跳过判据 1 的去抖宽限，只认判据 2/3 的
-        /// 实时前台。去抖宽限内无法区分 toast 瞬时抢焦与用户真实切走，对杀进程级动作
-        /// 宁可漏触发（用户再按一次）也不能误触发（在别的程序里把启动器干掉）。
-        /// </summary>
-        private bool ShouldInterceptForOurApp(bool strict)
+        private bool CanObserveForeground(SessionInputAuthority input)
         {
-            // 非严格键：去抖后的进程级激活态优先——能容忍后台程序瞬时抢焦造成的抖动。
-            // 严格键跳过此探针：宽限窗内 probe 仍返回 true，会让破坏性动作在用户已切到
-            // 别的程序后仍被本应用拦截执行，必须落到判据 2/3 的实时前台判定。
-            if (!strict)
-            {
-                Func<bool> probe = _isAppActive;
-                if (probe != null && probe()) return true;
-            }
-
-            IntPtr fg = GetForegroundWindow();
-            if (fg == IntPtr.Zero) return true; // 焦点真空 → 视作我方（真空下按键不会落到别的程序）
-
-            uint pid;
-            GetWindowThreadProcessId(fg, out pid);
-            return pid == _myPid || (_flashPid != 0 && pid == _flashPid);
+            if (_r1Foreground()) return input.ForegroundEligible;
+            input.SetForeground(false);
+            return false;
         }
+
+        private bool ShouldInterceptForOurApp() => IsLiveApplicationForeground() && !TextInputActive;
 
         private bool IsLiveApplicationForeground()
         {
+            if (_r1 != null) return _r1.ForegroundEligible && _r1Foreground();
             if (LiveForegroundProbeForTests != null) return LiveForegroundProbeForTests();
             IntPtr foreground = GetForegroundWindow();
             if (foreground == IntPtr.Zero) return false;
             uint pid;
             GetWindowThreadProcessId(foreground, out pid);
-            return pid == _myPid || (_flashPid != 0 && pid == _flashPid);
+            return pid == _myPid;
         }
 
         public void Dispose()

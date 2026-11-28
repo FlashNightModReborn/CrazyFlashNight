@@ -29,7 +29,6 @@ namespace CF7Launcher.Guardian
         internal readonly JObject Envelope;
         internal readonly IntPtr SourceForeground;
         internal readonly CloseSourceWindowIdentity SourceIdentity;
-        internal WindowManager.FlashFocusTarget FocusTarget;
         internal readonly DateTime CreatedUtc = DateTime.UtcNow;
         internal long AdmissionStamp;
         internal ClosePlanKind Plan;
@@ -40,8 +39,12 @@ namespace CF7Launcher.Guardian
         internal string Outcome;
         private int _executed;
         private int _admitted;
-        internal bool TryAdmit(long stamp,WindowManager.FlashFocusTarget target)
-        { if(Interlocked.CompareExchange(ref _admitted,1,0)!=0)return false; AdmissionStamp=stamp; FocusTarget=target; return true; }
+        internal bool TryAdmit(long stamp)
+        {
+            if (Interlocked.CompareExchange(ref _admitted, 1, 0) != 0) return false;
+            AdmissionStamp = stamp;
+            return true;
+        }
         internal HostCloseContext(EndpointLease endpoint, NativeCloseCause cause, JObject envelope, IntPtr foreground)
         { Endpoint=endpoint; Cause=cause; Envelope=(JObject)envelope.DeepClone(); SourceForeground=foreground;
           SourceIdentity=CloseSourceWindowIdentity.Capture(foreground);
@@ -82,24 +85,5 @@ namespace CF7Launcher.Guardian
                     && CurrentHostBirth==HostBirth;
             } catch { return false; }
         }
-    }
-    internal sealed class FocusPermit
-    {
-        private int _state, _tail;
-        internal readonly HostCloseContext Close;
-        internal readonly Func<bool> Guard;
-        internal readonly WindowManager.FlashFocusTarget Target;
-        internal bool RootVerified;
-        internal FocusPermit(HostCloseContext close, Func<bool> guard, WindowManager.FlashFocusTarget target)
-        { Close=close; Guard=guard; Target=target; }
-        internal bool EnterLive() => Interlocked.CompareExchange(ref _state,1,0)==0 && Eligible();
-        internal bool Eligible() {
-            if (Volatile.Read(ref _state)!=1) return false;
-            try { if(Guard())return true; } catch { }
-            Revoke(); return false;
-        }
-        internal bool EnterTail() => RootVerified && Interlocked.CompareExchange(ref _tail,1,0)==0 && Eligible();
-        internal void Revoke() => Interlocked.Exchange(ref _state,2);
-        internal void Complete() => Interlocked.Exchange(ref _state,3);
     }
 }

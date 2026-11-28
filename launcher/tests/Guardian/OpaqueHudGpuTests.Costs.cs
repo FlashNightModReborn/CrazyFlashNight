@@ -173,7 +173,7 @@ public sealed partial class OpaqueHudGpuTests
             notch.ForceGameReadyForTest(true);notch.BeginExpandForTest();notch.Tick(2000);
             combo.OnNotchNotice("combo","DFA 连击",Color.Orange);combo.Tick(100);
             loot.AddEvent("material","测试物资",2,"hud-cost","",direction:"gain");
-            using var coordinator=new WorldCompositorController(output,output,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+            using var coordinator=new WorldCompositorController(output,output,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{});
             using var runtime=new PlayerHudRuntime(output,output,resources,commands,Path.Combine(root,"launcher","web","icons"),main,shareMainHud:true);
             Rectangle bounds=output.RectangleToScreen(output.ClientRectangle);
             coordinator.BottomPresentation.Adopt(new OpaqueHudRasterScene(world,2),bounds,true);

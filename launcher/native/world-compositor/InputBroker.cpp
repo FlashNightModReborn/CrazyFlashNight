@@ -34,7 +34,12 @@ struct TraceCollector {
     }
 };
 int wmain(int argc,wchar_t** argv) {
-    if(argc!=5)return 2;
+    if(argc!=5 && argc!=6)return 2;
+    uint32_t passiveMode=InputLegacy;
+    if(argc==6) {
+        if(wcscmp(argv[5],L"1")==0)passiveMode=InputPassiveDisabled;
+        else if(wcscmp(argv[5],L"0")!=0)return 2;
+    }
     HWND source=reinterpret_cast<HWND>(wcstoull(argv[1],nullptr,10));
     DWORD hostPid=wcstoul(argv[2],nullptr,10);
     HWND owner=reinterpret_cast<HWND>(wcstoull(argv[3],nullptr,10));
@@ -66,6 +71,7 @@ int wmain(int argc,wchar_t** argv) {
     if(!data){ReleaseMutex(exclusive.value);return 5;}
     *data={};data->magic=InputMagic;data->protocolVersion=InputProtocolVersion;
     data->hostPid=hostPid;data->sourcePid=pid;data->sourceWindow=reinterpret_cast<uint64_t>(source);
+    data->passiveMode=passiveMode;
     data->ownerWindow=reinterpret_cast<uint64_t>(owner);data->session=cookie;
     TraceCollector trace;trace.Open(name,cookie);
     ATOM atom=GlobalAddAtomW(name.c_str());
@@ -92,7 +98,8 @@ int wmain(int argc,wchar_t** argv) {
     while(initPosted && !ReadAtomic(&data->ready) && GetTickCount()-started<10000 && WaitForSingleObject(process.value,10)==WAIT_TIMEOUT) {
         if(GetTickCount()-lastInit>100) {lastInit=GetTickCount();PostMessageW(source,control,ControlInit,static_cast<LPARAM>(cookie));}
     }
-    bool ready=ReadAtomic(&data->ready)==1;
+    LONG initStatus=ReadAtomic(&data->ready);
+    bool ready=initStatus==1;
     if(ready)std::printf("READY imports=%ld version=%lu session=%llu\n",ReadAtomic(&data->patchMask),InputProtocolVersion,cookie);
     else std::printf("FAIL initialize ready=%ld session=%llu\n",ReadAtomic(&data->ready),cookie);
     std::fflush(stdout);
@@ -114,11 +121,18 @@ int wmain(int argc,wchar_t** argv) {
         }
     }
     RaiseAtomic(&data->closeTicket,1);RaiseAtomic(&data->minEpoch,InputEpochLimit+1);
-    InterlockedExchange(&data->stop,1);InterlockedIncrement(&data->cancelTicket);
+    InterlockedExchange(&data->stop,1);
+    LONG previous=ReadAtomic(&data->cancelTicket);
+    while(previous>=0 && previous<LONG_MAX) {
+        LONG seen=InterlockedCompareExchange(&data->cancelTicket,previous+1,previous);
+        if(seen==previous)break;
+        previous=seen;
+    }
+    if(previous<0 || previous==LONG_MAX)InterlockedExchange(&data->restoreError,1);
     started=GetTickCount();bool returned=false,reported=false;
     // Do not release installation ownership on timeout. Retain the exact hook,
     // property and mapping until verified restore or actual projector exit.
-    while(WaitForSingleObject(process.value,0)==WAIT_TIMEOUT) {
+    while(initStatus!=InputProfileRejected && WaitForSingleObject(process.value,0)==WAIT_TIMEOUT) {
         trace.Drain();
         response=0;
         if(SendMessageTimeoutW(source,control,(static_cast<WPARAM>(ReadAtomic(&data->closeTicket))<<32)|ControlRetire,static_cast<LPARAM>(cookie),SMTO_ABORTIFHUNG|SMTO_BLOCK,250,&response)
@@ -144,5 +158,6 @@ int wmain(int argc,wchar_t** argv) {
         ReadAtomic(&data->staleRejected),ReadAtomic(&data->invalidRejected),ReadAtomic(&data->cancelledTicket),ReadAtomic(&data->drained));std::fflush(stdout);
     bool okay=targetExited || (returned && unhooked && propertyOwned);
     UnmapViewOfFile(data);if(module)FreeLibrary(module);ReleaseMutex(exclusive.value);
+    if(initStatus==InputProfileRejected && unhooked && propertyOwned)return InputBrokerProfileRejected;
     return okay ? 0 : 13;
 }

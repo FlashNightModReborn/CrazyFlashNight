@@ -4328,17 +4328,26 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[Router] modifier rejected invalid source or token");
                 return;
             }
+            string token = data.Value<string>("token");
             if (_panelHost != null && _panelHost.IsPanelOpen)
             {
                 LogManager.Log("[Router] modifier rejected while another panel is active");
-                TrySendGameCommand("modifierPanelClosed");
+                SendModifierOpenRejected(token);
                 return;
             }
             if (_modifierOverlay == null || !_modifierOverlay.Open(data))
             {
                 LogManager.Log("[Router] modifier surface unavailable or not ready");
-                TrySendGameCommand("modifierPanelClosed");
+                SendModifierOpenRejected(token);
             }
+        }
+
+        private void SendModifierOpenRejected(string token)
+        {
+            string frame = ModifierTask.BuildPanelClosedFrame(token);
+            if (frame == null) return;
+            if (_gameCommandSenderOverride != null) _gameCommandSenderOverride(frame);
+            else if (_socketServer?.IsClientReady == true) _socketServer.TrySend(frame);
         }
 
         private void OpenSettingsPanel(string source)

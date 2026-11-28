@@ -358,8 +358,6 @@ Help composition 端点仅新增 `tutorial_preference:disable_auto_open` / `tuto
 | 参数 | 类别 | 作用 |
 |---|---|---|
 | `--project-root <abs>` | bootstrap → Core | 注入项目根；Core 消费后从其余参数剥离 |
-| `--hotkey-guard <pid> <mvid>` | 宿主内部 | 以同一 Core apphost 启动独立键盘守护进程；父路径与模块身份必须一致 |
-| `--diag-input` | 守护子模式内部 | 只随 hotkey-guard 输出有界白名单键态，不启动游戏或采任意键盘文本 |
 | `--bus-only` | 开发 | 跳过正式 Flash 启动链，保留 Bus/Overlay 供 CS6 testMovie 或工具连接 |
 | `--arena-worker <absolute-launch.json>` | 候选实验内部 | 在合法独立资源根启动一个 Host / Flash，固定专用存档并开放受鉴权的窄控制面；仅接受已验证 isolated candidate |
 | `--force-webview-fail` | 测试 | 强制 WebView2 预检失败分支 |
@@ -405,6 +403,8 @@ Bootstrap Web 发出的命令必须由 `BootstrapMessageHandler` exact dispatch�
 | `diagnostic` | 导出诊断包 |
 | `audio_preview` | 音频预览 |
 | `log` | web→host 日志回写（免回执、512 截断、1s/20 条节流） |
+| `flash_storage_status` | 查询 Flash 本地存储配额及当前状态 |
+| `flash_storage_set` | 通过启动器设置 Flash 本地存储配额 |
 | `config_set` | 用户偏好写入 |
 | `fontpack_status` | 字体包状态；逐文件返回 `verificationState` |
 | `fontpack_install` | 字体包安装；成功项返回同字节验证状态 |

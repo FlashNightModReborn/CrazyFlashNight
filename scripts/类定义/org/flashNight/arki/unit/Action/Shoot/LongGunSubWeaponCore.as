@@ -945,6 +945,13 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     private static function finishFireOnCurrentMan(unit:Object, state:Object, pending:Object):Void {
         if (!unit || unit.长枪副武器状态 !== state || state.pendingFire !== pending) return;
         pending.taskId = null;
+        var input:Object = _root.GameInput;
+        if (pending.actor != null && (!input.isCurrentActor(unit) || unit.__cf7InputIdentity !== pending.actor
+                || input.getActorPress(unit, unit.B键) !== pending.press
+                || !input.isInputCurrent(pending.epoch, pending.cancelSerial, pending.configInc))) {
+            cancelPendingFire(unit);
+            return;
+        }
         startShootingOnCurrentMan(unit);
     }
 
@@ -1081,6 +1088,16 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (pending == null) {
             // 仅未就绪时分配一次；同步切姿作业不持有跨帧状态。
             pending = {retries:0};
+            var input:Object = _root.GameInput;
+            if (input.passiveActive === true && unit._name === _root.控制目标) {
+                var press:Number = input.getActorPress(unit, unit.B键);
+                if (press == 0) return;
+                pending.actor = unit.__cf7InputIdentity;
+                pending.press = press;
+                pending.epoch = input.getKeyboardEpoch();
+                pending.cancelSerial = input.cancelSerial;
+                pending.configInc = input.configInc;
+            }
             state.pendingFire = pending;
         }
         if (pending.retries >= MAX_DEFERRED_RETRIES) {

@@ -83,6 +83,7 @@
           <Include href="sprite/Symbol 2811.xml" loadImmediate="false" itemID="6597607e-00000d8d" lastModified="1704196122"/>
           <Include href="sprite/点酒界面酒保.xml" loadImmediate="false" itemID="6637abba-00001c92" lastModified="1740847323"/>
           <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
+          <Include href="sprite/通缉令拖拽命中.xml" loadImmediate="false" itemID="692b9980-00000001"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="UI重构/通缉令UI/92副本酒杯.xml" loadImmediate="false" itemID="663a3fc5-00000e4e" lastModified="1715093445"/>
           <Include href="UI重构/通缉令UI/点酒-鸡尾酒.xml" loadImmediate="false" itemID="660d3341-00001dc4" lastModified="1714926727"/>
@@ -169,8 +170,49 @@
                          <frames>
                               <DOMFrame index="0" duration="3" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[this._x = 150;
+                                        <script><![CDATA[this.__cf7AuthoredWorldDragInstance = cf7BindBountyDrag(this);
+this._x = 150;
 this._y = 20;
+
+function cf7BindBountyDrag(panel:MovieClip):Object {
+    var instance:Object = {over:false};
+    instance.resumeAuthoredWorldDrag = function():Boolean {
+        var layer:MovieClip = _root.通用UI层;
+        var fullScreen:MovieClip = _root.全屏UI层;
+        if (layer.外部导入UI界面.__cf7AuthoredWorldDragInstance !== instance
+                || panel.__cf7AuthoredWorldDragInstance !== instance || !panel._visible || !layer._visible
+                || (fullScreen._visible && fullScreen.当前UI._visible) || instance.over !== true
+                || panel.__cf7BountyDragButton.enabled === false
+                || !panel.__cf7BountyDragHit.hitTest(_root._xmouse, _root._ymouse, true)) return false;
+        return panel.cf7BeginBountyDrag();
+    };
+    instance.releaseAuthoredWorldDrag = function():Void {
+        if (panel.__cf7AuthoredWorldDragInstance === instance) panel.cf7EndBountyDrag();
+    };
+    panel.onUnload = function():Void {
+        var server:Object = _root.server;
+        if (typeof server.retireAuthoredWorldDragInstance == "function") server.retireAuthoredWorldDragInstance(instance);
+    };
+    return instance;
+}
+
+function cf7BeginBountyDrag():Boolean {
+    var server:Object = _root.server;
+    if (typeof server.beginAuthoredWorldDrag == "function") {
+        if (!server.beginAuthoredWorldDrag(this.__cf7AuthoredWorldDragInstance)) return false;
+    } else if (_root.cf7R1PassiveInput == "1") return false;
+    startDrag(this, false);
+    _root.鼠标.gotoAndStop("手型抓取");
+    return true;
+}
+
+function cf7EndBountyDrag():Void {
+    var server:Object = _root.server;
+    if (typeof server.endAuthoredWorldDrag == "function" &&
+        !server.endAuthoredWorldDrag(this.__cf7AuthoredWorldDragInstance)) return;
+    stopDrag();
+    _root.鼠标.gotoAndStop("手型普通");
+}
 
 function 组装副本任务(对象)
 {
@@ -1037,7 +1079,7 @@ on (release) {
                          <frames>
                               <DOMFrame index="0" duration="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="button/Symbol 728" symbolType="button" centerPoint3DX="48.95" centerPoint3DY="113.8">
+                                        <DOMSymbolInstance libraryItemName="button/Symbol 728" name="__cf7BountyDragButton" symbolType="button" centerPoint3DX="48.95" centerPoint3DY="113.8">
                                              <matrix>
                                                   <Matrix a="1.99241638183594" b="-0.17431640625" c="0.17431640625" d="1.99241638183594" tx="48.95" ty="113.8"/>
                                              </matrix>
@@ -1045,21 +1087,30 @@ on (release) {
                                                   <Point/>
                                              </transformationPoint>
                                              <Actionscript>
-                                                  <script><![CDATA[on(release){
-   stopDrag();
+                                                  <script><![CDATA[on(release, releaseOutside){
+   this.cf7EndBountyDrag();
 }
 on(press){
-   startDrag(this,0);
-   _root.鼠标.gotoAndStop("手型抓取");
+   this.cf7BeginBountyDrag();
 }
 on(rollOver){
+   this.__cf7AuthoredWorldDragInstance.over = true;
    _root.鼠标.gotoAndStop("手型准备抓取");
 }
 on(rollOut){
+   this.__cf7AuthoredWorldDragInstance.over = false;
    _root.鼠标.gotoAndStop("手型普通");
 }
 ]]></script>
                                              </Actionscript>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="sprite/通缉令拖拽命中" name="__cf7BountyDragHit">
+                                             <matrix>
+                                                  <Matrix a="1.99241638183594" b="-0.17431640625" c="0.17431640625" d="1.99241638183594" tx="48.95" ty="113.8"/>
+                                             </matrix>
+                                             <color>
+                                                  <Color alphaMultiplier="0"/>
+                                             </color>
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>

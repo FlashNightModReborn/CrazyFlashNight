@@ -117,12 +117,6 @@ _root.gameCommands["openShop"] = function() {
 // toggleMercs 已移除：旧 Flash 佣兵信息界面(Symbol 923 簇) 已退役不实例化，且无任何派发方
 // （佣兵管理迁 web 战队页）。死命令删除，避免误以为还能切旧面板。
 
-_root.gameCommands["toggleTablet"] = function() {
-    if (!_root.平板电脑界面._visible) {
-        _root.平板电脑界面.初始化();
-    }
-};
-
 // 平板 Web 面板入口（替代 Flash 平板）：由 Host TABLET 命令触发，快照基建等级后经
 // panel_request 打开 web 侧 'tablet' 面板。等级归属仍是 _root.基建系统.infrastructure。
 _root.gameCommands["openTabletWeb"] = function():Void {
@@ -136,6 +130,8 @@ _root.gameCommands["openTabletWeb"] = function():Void {
         )
     );
 };
+// 兼容旧命令名，同时让平板入口统一使用当前面板。
+_root.gameCommands["toggleTablet"] = _root.gameCommands["openTabletWeb"];
 
 _root.gameCommands["safeExit"] = function() {
     // 安全退出界面已迁移到 Launcher Web 侧

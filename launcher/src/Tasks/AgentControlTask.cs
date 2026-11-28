@@ -3,6 +3,10 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Guardian.InputOwnership;
+using CF7Launcher.Guardian.WorldCompositor;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace CF7Launcher.Tasks
 {
@@ -174,6 +178,8 @@ namespace CF7Launcher.Tasks
             {
                 switch (action)
                 {
+                    case "r1PassiveProbe":
+                        return HandlePassiveProbe(msg).ToString(Newtonsoft.Json.Formatting.None);
                     case "status":
                         return BuildStatus(true, null).ToString(Newtonsoft.Json.Formatting.None);
                     case "start":
@@ -203,6 +209,202 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[AgentControlTask] control exception: " + ex);
                 return BuildError("exception", ex.Message).ToString(Newtonsoft.Json.Formatting.None);
             }
+        }
+
+        private SessionInputAuthority _passiveInput;
+        private WindowManager _passiveWindows;
+        private WorldCompositorController _passiveWorld;
+        private Form _probeOwner;
+        private Action _refreshAdmission;
+        private CF7Launcher.Bus.XmlSocketServer _probeSocket;
+        private NativeHudOverlay _probeHud;
+        private (string Slot,string Attempt,int Connection)? _probeGrant;
+        internal bool PassiveProbeHeld {get;private set;}
+        internal void BindPassiveProbe(SessionInputAuthority input,WindowManager windows,WorldCompositorController world,
+            Form owner,Action refresh,CF7Launcher.Bus.XmlSocketServer socket=null,NativeHudOverlay hud=null)
+        {
+            _passiveInput=input;_passiveWindows=windows;_passiveWorld=world;_probeOwner=owner;
+            _refreshAdmission=refresh;_probeSocket=socket;_probeHud=hud;
+        }
+        private bool ProbeAttemptMatches(string slot,string attempt)
+        {
+            if(!IsAgentAutomationSlot(slot) || string.IsNullOrEmpty(attempt))return false;
+            var launcher=_getLaunchSaveStatus();
+            if(launcher?.Value<string>("slot")!=slot || launcher.Value<string>("attemptId")!=attempt)return false;
+            lock(_gate)return _runtimeSaveStatus?.Value<string>("savePath")==slot &&
+                _runtimeSaveStatus.Value<string>("attemptId")==attempt;
+        }
+        internal bool HasPassiveProbeGrant()
+        {
+            if(_probeGrant is not {} scope)return false;
+            if(_passiveInput.ConnectionIncarnation==scope.Connection && _passiveInput.Bound &&
+                ProbeAttemptMatches(scope.Slot,scope.Attempt))return true;
+            _probeGrant=null;PassiveProbeHeld=false;return false;
+        }
+        private JObject HandlePassiveProbe(JObject msg)
+        {
+            string op=(string)msg["op"] ?? (string)msg["subOp"] ?? (string)msg["operation"];
+            string slot=(string)msg["expectedSlot"], attempt=(string)msg["expectedAttemptId"];
+            JObject reject(string reason) {
+                LogManager.Log("event=r1_probe_rejected stimulus=r1_agent_probe reason="+reason);
+                return BuildError(reason,"R1 probe refused");
+            }
+            if (_passiveInput == null) return reject("passive_off");
+            if(!IsAgentAutomationSlot(slot) || string.IsNullOrEmpty(attempt))return reject("probe_identity_required");
+            if(op=="queueCancelChallenge")return HandleQueueCancelChallenge(slot,attempt,reject);
+            if(_probeOwner.InvokeRequired)return (JObject)_probeOwner.Invoke(new Func<JObject>(()=>HandlePassiveProbe(msg)));
+            // Recheck on the executing UI turn. A queued operation may cross an attempt.
+            if(!ProbeAttemptMatches(slot,attempt))return reject("probe_attempt_mismatch");
+            bool focused;
+            bool known=op=="status" ? _passiveWindows.ReadPassiveFocus(out focused)
+                : _passiveWindows.AuditPassiveFocus(out focused,"r1_agent_probe");
+            if(op!="status" && (!known || focused || !_passiveInput.Bound))return reject("probe_source_unavailable");
+            if(op!="status" && op!="grantSessionForProbe" && !HasPassiveProbeGrant())return reject("probe_not_granted");
+            if(op!="status" && !_passiveWindows.PassiveSessionForeground() &&
+                !(_passiveWorld.ProbeWithoutWgc && _passiveWindows.IsForegroundVacuum()))return reject("external_foreground");
+            var a=_passiveInput;
+            string endpoint=(string)msg["endpointId"];
+            long inc=msg.Value<long?>("incarnation")??0;
+            JObject extra=null;
+            int parseButton()=>msg["button"]?.ToString() switch {
+                null or "left" or "1"=>1, "right" or "2"=>2, "middle" or "16"=>16, _=>0};
+            switch(op) {
+                case "status":break;
+                case "grantSessionForProbe":
+                    PassiveProbeHeld=false; _probeGrant=(slot,attempt,a.ConnectionIncarnation); a.Heartbeat(); _refreshAdmission();break;
+                case "keyEdge":
+                    if(msg["vk"]?.Type!=JTokenType.Integer || (long)msg["vk"] is <0 or >255 ||
+                        msg["down"]?.Type!=JTokenType.Boolean)return reject("invalid_key_edge");
+                    a.ObserveKey((int)msg["vk"],(bool)msg["down"],source:InputObservationSource.Injected);
+                    break;
+                case "acquireText":
+                    if(inc<=0) {
+                        if(!SessionInputAuthority.IsToken(endpoint))return reject("invalid_endpoint");
+                        inc=a.NextInstanceGeneration(endpoint);
+                    } else if(!a.RegisterObservedInstance(endpoint,inc))return reject("stale_instance");
+                    if(!a.AcquireText(endpoint,inc,new(a.CurrentSessionId,_probeOwner.Handle,_probeOwner.Handle,
+                        a.NextLocalFocusSerial(),true)).HasValue)return reject("text_acquire_refused");
+                    break;
+                case "releaseText":
+                    var lease=new TextInputLease(endpoint,inc,msg.Value<ulong?>("leaseId")??0);
+                    var receipt=a.ReleaseText(lease,new(a.CurrentSessionId,a.NextLocalFocusSerial(),"probe_release",true));
+                    if(receipt.Status==TextExitStatus.Stale)return reject("stale_lease");
+                    a.Heartbeat(); a.RequestGameKeyboard(receipt); _refreshAdmission();break;
+                case "cancel":
+                    string reason=(string)msg["reason"]??"probe_cancel";
+                    if(!SessionInputAuthority.IsToken(reason))return reject("invalid_reason");
+                    PassiveProbeHeld=true;
+                    a.SetBusinessEligible(false,reason); a.Cancel(reason);break;
+                case "pointerClick":
+                    if(msg["x"]?.Type!=JTokenType.Integer || msg["y"]?.Type!=JTokenType.Integer)return reject("invalid_point");
+                    if(!_passiveWorld.ProbePointerClick(new Point((int)msg["x"],(int)msg["y"]),parseButton()))
+                        return reject("pointer_post_refused");
+                    break;
+                case "pointerDown":
+                    if(msg["x"]?.Type!=JTokenType.Integer || msg["y"]?.Type!=JTokenType.Integer)return reject("invalid_point");
+                    if(!_passiveWorld.ProbePointerDown(new Point((int)msg["x"],(int)msg["y"]),parseButton()))
+                        return reject("pointer_post_refused");
+                    break;
+                case "pointerUp":
+                    if(msg["x"]?.Type!=JTokenType.Integer || msg["y"]?.Type!=JTokenType.Integer)return reject("invalid_point");
+                    if(!_passiveWorld.ProbePointerUp(new Point((int)msg["x"],(int)msg["y"]),parseButton()))
+                        return reject("pointer_post_refused");
+                    break;
+                case "pointerWheel":
+                    if(msg["x"]?.Type!=JTokenType.Integer || msg["y"]?.Type!=JTokenType.Integer ||
+                        msg["delta"]?.Type!=JTokenType.Integer)return reject("invalid_wheel");
+                    if(!_passiveWorld.ProbePointerWheel(new Point((int)msg["x"],(int)msg["y"]),(int)msg["delta"]))
+                        return reject("pointer_post_refused");
+                    break;
+                case "uiPointerClick":
+                    if(endpoint!="hud.notch.expand" || _probeHud==null)return reject("unsupported_ui_endpoint");
+                    bool committed=_probeHud.ProbeClickExpandButton();
+                    extra=new JObject{["committed"]=committed,["gestureCommitted"]=committed};
+                    break;
+                case "geometryChallenge":
+                    var geo=_passiveWorld.ProbeGeometryChallenge();
+                    extra=new JObject{
+                        ["sameSourceRefreshObserved"]=geo.SameSourceRefresh,
+                        ["keyboardEpochUnchanged"]=geo.KeyboardUnchanged,
+                        ["oldPointerRejected"]=geo.OldPointerRejected,
+                        ["freshPointerCommitted"]=geo.FreshPointerCommitted
+                    };
+                    break;
+                case "disconnect":
+                    if(_probeSocket==null)return reject("socket_unavailable");
+                    _probeSocket.ForceCloseCurrentClientIfGen(a.ConnectionIncarnation);
+                    break;
+                default:return reject("unknown_probe_op");
+            }
+            return BuildPassiveProbeState(op,a,known,focused,extra);
+        }
+        private JObject HandleQueueCancelChallenge(string slot,string attempt,Func<string,JObject> reject)
+        {
+            JObject rejected=null;
+            (bool QueueWasFull,InputCancel? Ticket,bool OldPointerRejected,bool EarlyGrantRejected) started=default;
+            bool known=false, focused=false;
+            void StartOnUi()
+            {
+                if(!ProbeAttemptMatches(slot,attempt)){rejected=reject("probe_attempt_mismatch");return;}
+                known=_passiveWindows.AuditPassiveFocus(out focused,"r1_agent_probe");
+                if(!known || focused || !_passiveInput.Bound){rejected=reject("probe_source_unavailable");return;}
+                if(!HasPassiveProbeGrant()){rejected=reject("probe_not_granted");return;}
+                if(!_passiveWindows.PassiveSessionForeground() &&
+                    !(_passiveWorld.ProbeWithoutWgc && _passiveWindows.IsForegroundVacuum())) {
+                    rejected=reject("external_foreground");return;
+                }
+                started=_passiveInput.RunQueueCancelChallengeForProbe();
+                if(!started.Ticket.HasValue)rejected=reject("queue_challenge_unavailable");
+            }
+            if(_probeOwner.InvokeRequired)_probeOwner.Invoke(new Action(StartOnUi));
+            else StartOnUi();
+            if(rejected!=null)return rejected;
+            var ticket=started.Ticket.Value;
+            var all=InputParticipant.AS2|InputParticipant.NativeBridge|InputParticipant.V8;
+            bool as2Observed=_passiveInput.IsWaiting(ticket,InputParticipant.AS2);
+            long deadline=Environment.TickCount64+1800;
+            while(Environment.TickCount64<deadline && _passiveInput.IsWaiting(ticket,all)) {
+                _passiveInput.Heartbeat();
+                System.Threading.Thread.Sleep(15);
+            }
+            bool settled=!_passiveInput.IsWaiting(ticket,all);
+            bool controlDelivered=as2Observed && !_passiveInput.IsWaiting(ticket,InputParticipant.AS2);
+            return (JObject)(_probeOwner.InvokeRequired
+                ? _probeOwner.Invoke(new Func<JObject>(()=>FinishQueueChallengeOnUi(settled,controlDelivered,started)))
+                : FinishQueueChallengeOnUi(settled,controlDelivered,started));
+        }
+        private JObject FinishQueueChallengeOnUi(bool settled,bool controlDelivered,
+            (bool QueueWasFull,InputCancel? Ticket,bool OldPointerRejected,bool EarlyGrantRejected) started)
+        {
+            _refreshAdmission?.Invoke();
+            bool known=_passiveWindows.AuditPassiveFocus(out bool focused,"r1_agent_probe");
+            var extra=new JObject{
+                ["queueWasFull"]=started.QueueWasFull,
+                ["controlDelivered"]=controlDelivered,
+                ["oldCommitRejected"]=started.OldPointerRejected,
+                ["earlySuccessorRejected"]=started.EarlyGrantRejected,
+                ["allParticipantsSettled"]=settled && _passiveInput.IsGameKeyboardAdmitted
+            };
+            return BuildPassiveProbeState("queueCancelChallenge",_passiveInput,known,focused,extra);
+        }
+        private JObject BuildPassiveProbeState(string op,SessionInputAuthority a,bool known,bool focused,JObject extra)
+        {
+            var state=JObject.FromObject(a.ProbeSnapshot());
+            if(extra!=null)foreach(var prop in extra.Properties())state[prop.Name]=prop.Value;
+            state["success"]=state["ok"]=true;state["stimulus"]="r1_agent_probe";
+            state["flashHwnd"]="0x"+_passiveWindows.FlashHwnd.ToString("X");
+            state["flashIsEnabled"]=_passiveWindows.FlashIsEnabled;
+            state["flashHasKeyboardFocus"]=known || focused ? (JToken)focused : JValue.CreateNull();
+            state["passiveFocusCounts"]=JObject.FromObject(_passiveWindows.PassiveFocusCounts());
+            state["pointerConsumedSeq"]=_passiveWorld?.InputBridgeForDiagnostics?.EndpointConsumedSeq;
+            state["pointerCancelAck"]=_passiveWorld?.InputBridgeForDiagnostics?.CancelAck;
+            state["noWgc"]=_passiveWorld?.ProbeWithoutWgc ?? false;
+            if(_passiveWorld?.ProbeWithoutWgc==true)state["wgcPresented"]=false;
+            state["supportedOps"]=new JArray("grantSessionForProbe","keyEdge","acquireText","releaseText","cancel",
+                "pointerClick","pointerDown","pointerUp","pointerWheel","queueCancelChallenge","uiPointerClick",
+                "geometryChallenge","disconnect","status");
+            LogManager.Log($"event=r1_probe stimulus=r1_agent_probe op={op} epoch={a.CurrentKeyboardEpoch} bound={a.Bound}");
+            return state;
         }
 
         public string HandleRuntimeStatus(JObject msg)

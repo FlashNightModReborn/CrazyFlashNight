@@ -7,11 +7,29 @@ using CF7Launcher.Guardian;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Process = System.Diagnostics.Process;
 
 namespace CF7Launcher.Tests.Guardian
 {
     public sealed class GameLaunchFlowRevealWatchdogTests
     {
+        [Fact]
+        public void CachedBootstrapReadyWaitsForTheCurrentProcessAndAttemptToFinishEmbedding()
+        {
+            using var harness = new Harness(60000);
+            using var flash = Process.GetCurrentProcess();
+            using var staleFlash = Process.GetCurrentProcess();
+            harness.ArmEmbedding("attempt-current-embed", flash);
+
+            InvokePrivate(harness.Flow, "OnEmbedResult", staleFlash, "attempt-current-embed", 0, true);
+            InvokePrivate(harness.Flow, "OnEmbedResult", flash, "attempt-replaced-embed", 0, true);
+            Assert.Equal(GameLaunchFlow.State.Embedding.ToString(), harness.Flow.CurrentState);
+            Assert.False(harness.Flow.RevealPerformed);
+
+            InvokePrivate(harness.Flow, "OnEmbedResult", flash, "attempt-current-embed", 0, true);
+            Assert.Equal(GameLaunchFlow.State.Ready.ToString(), harness.Flow.CurrentState);
+        }
+
         [Fact]
         public void ProductionDefault_IsBoundedTwentySeconds_AndDeadlineIsInjectable()
         {
@@ -387,6 +405,16 @@ namespace CF7Launcher.Tests.Guardian
             public void SendRevealReady(string attemptId)
             {
                 Assert.Null(Send("bootstrap_reveal_ready", attemptId));
+            }
+
+            public void ArmEmbedding(string attemptId, Process flash)
+            {
+                SetPrivateField(Flow, "_state", GameLaunchFlow.State.Embedding);
+                SetPrivateField(Flow, "_currentAttemptId", attemptId);
+                SetPrivateField(Flow, "_currentFlashProcess", flash);
+                SetPrivateField(Flow, "_revealWaitingJs", true);
+                Assert.Null(Send("bootstrap_ready", attemptId));
+                Assert.Equal(GameLaunchFlow.State.Embedding.ToString(), Flow.CurrentState);
             }
 
             public void Dispose()

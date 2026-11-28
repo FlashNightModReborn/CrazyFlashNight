@@ -36,7 +36,7 @@ var GameInput;
         getInputPath() { return this._inputPath; }
         /**
          * 热路径：内联 DFA 状态转移 + 路径追踪
-         * 与 AS2 原版语义一致：每帧 timer++，有效转移时 timer=0，超时回 ROOT。
+         * 一个调用消费整个归一化事件桶：timer 只推进一次，有效转移时 timer=0。
          */
         updateFast(events, timeout = DEFAULT_TIMEOUT) {
             const dfa = this._dfa;
@@ -157,6 +157,14 @@ var GameInput;
  */
 var GameInput;
 (function (GameInput) {
+    const MAX_WIRE_INT = 2147483647;
+    const MAX_FRAME_ATOMS = 64;
+    // I1 actionBit -> historical \x04 mask bit.
+    const atomMask = {
+        "1": 16, "2": 32, "4": 64, "8": 4, "16": 8, "32": 1, "64": 2, "128": 128,
+    };
+    let _versioned = null;
+    let _versionedContext = "";
     const _modules = {};
     let _sampler = null;
     let _currentModuleId = -1;
@@ -182,7 +190,9 @@ var GameInput;
     GameInput.flushLog = flushLog;
     function init() {
         _sampler = new GameInput.InputSampler();
-        _currentModuleId = -1;
+        _versioned = null;
+        _versionedContext = "";
+        clearInputHistory();
         _log("[GameInput] init OK");
     }
     GameInput.init = init;
@@ -212,6 +222,8 @@ var GameInput;
         const cmdDfa = new GameInput.CommandDfa();
         cmdDfa.setDfa(dfa);
         _modules[id] = { dfa, cmdDfa };
+        if (_versioned !== null && id === _currentModuleId)
+            cancelInput();
         _log("[GameInput] loadModule OK: id=" + id +
             " alpha=" + data.alphabetSize +
             " states=" + (data.accept ? data.accept.length : 0) +
@@ -241,25 +253,150 @@ var GameInput;
         }
         return buf;
     }
+    function clearDisplay() {
+        _lastHintState = -1;
+        _lastHintStr = "";
+        _displayHints = "";
+        _displayTyped = "";
+        _displayHoldTimer = 0;
+    }
+    function cancelInput(_reason) {
+        clearInputHistory();
+    }
+    GameInput.cancelInput = cancelInput;
+    function clearInputHistory(mask = 0) {
+        if (_sampler !== null)
+            _sampler.reset(mask);
+        for (const id of Object.keys(_modules))
+            _modules[Number(id)].cmdDfa.resetState();
+        _currentModuleId = -1;
+        _versionedContext = "";
+        clearDisplay();
+    }
+    function parseAtoms(wire, mask) {
+        if (wire === "-")
+            return [];
+        if (typeof wire !== "string" || wire.length > 4096)
+            throw new RangeError("I1 atoms length");
+        const fields = wire.split(";");
+        if (fields.length > MAX_FRAME_ATOMS)
+            throw new RangeError("I1 atom count");
+        const atoms = [];
+        let previousSeq = 0;
+        let previousAction = 0;
+        let touched = 0;
+        let projected = 0;
+        for (const field of fields) {
+            const match = /^([1-9][0-9]{0,9}),(1|2|4|8|16|32|64|128),([DU])$/.exec(field);
+            if (match === null || match[0] !== field)
+                throw new RangeError("I1 atom syntax");
+            const seq = Number(match[1]);
+            const action = Number(match[2]);
+            const bit = atomMask[match[2]];
+            const down = match[3] === "D";
+            // One raw VK edge may fan out to different actions with the same seq.
+            if (seq > MAX_WIRE_INT || seq < previousSeq ||
+                (seq === previousSeq && action <= previousAction)) {
+                throw new RangeError("I1 atom order");
+            }
+            if ((touched & bit) !== 0 && ((projected & bit) !== 0) === down) {
+                throw new RangeError("I1 atom transition");
+            }
+            touched |= bit;
+            projected = down ? projected | bit : projected & ~bit;
+            atoms.push({ bit, down });
+            previousSeq = seq;
+            previousAction = action;
+        }
+        if ((mask & touched) !== projected)
+            throw new RangeError("I1 atom mask");
+        return atoms;
+    }
+    function wireHints(hints) {
+        const rows = hints === "" ? [] : hints.split(";").map(row => {
+            const end = row.lastIndexOf(":");
+            const start = row.lastIndexOf(":", end - 1);
+            return { name: row.slice(0, start), sequence: row.slice(start + 1, end), steps: Number(row.slice(end + 1)) };
+        });
+        return JSON.stringify(rows).replace(/[|\u007f-\uffff]/g, ch => "\\u" + ch.charCodeAt(0).toString(16).padStart(4, "0"));
+    }
     function processFrame(mask, facingBit, moduleId, doubleTapDir) {
-        if (_sampler === null)
+        const result = advanceFrame(mask, facingBit, moduleId, doubleTapDir);
+        if (!result)
             return String.fromCharCode(0x20);
+        return String.fromCharCode(result.cmdId + 0x20) + result.cmdName +
+            "\x01" + result.typed + "\x02" + result.hints;
+    }
+    GameInput.processFrame = processFrame;
+    function processVersionedFrame(mask, facingBit, moduleId, doubleTapDir, atomsWire, sessionId, connectionIncarnation, keyboardEpoch, inputFrameSeq, actorInc, moduleInc, configInc) {
+        if (typeof sessionId !== "string" || sessionId.length !== 32 || !/^[0-9a-f]{32}$/.test(sessionId) ||
+            ![connectionIncarnation, keyboardEpoch, inputFrameSeq, actorInc, moduleInc, configInc]
+                .every(id => Number.isInteger(id) && id > 0 && id <= MAX_WIRE_INT) ||
+            !Number.isInteger(mask) || mask < 0 || mask > 255 || (facingBit !== 0 && facingBit !== 1) ||
+            !Number.isInteger(moduleId) || moduleId < 0 || moduleId > 2 ||
+            (doubleTapDir !== -1 && doubleTapDir !== 0 && doubleTapDir !== 1)) {
+            cancelInput();
+            throw new RangeError("I1 frame identity or levels");
+        }
+        const previous = _versioned;
+        const sameSession = previous !== null && previous.sessionId === sessionId;
+        const sameConnection = sameSession && previous.connectionIncarnation === connectionIncarnation;
+        const sameEpoch = sameConnection && previous.keyboardEpoch === keyboardEpoch;
+        if ((sameSession && connectionIncarnation < previous.connectionIncarnation) ||
+            (sameConnection && keyboardEpoch < previous.keyboardEpoch) ||
+            (sameEpoch && (inputFrameSeq <= previous.inputFrameSeq || actorInc < previous.actorInc ||
+                moduleInc < previous.moduleInc || configInc < previous.configInc ||
+                (moduleInc === previous.moduleInc && moduleId !== previous.moduleId))))
+            return "";
+        let atoms;
+        try {
+            atoms = parseAtoms(atomsWire, mask);
+        }
+        catch (error) {
+            cancelInput();
+            throw error;
+        }
+        const context = actorInc + "|" + moduleId + "|" + moduleInc + "|" + configInc;
+        if (!sameEpoch || context !== _versionedContext) {
+            // Within an existing grant a new scope inherits levels, while only
+            // explicitly observed presses can start an action on the boundary.
+            clearInputHistory(sameEpoch ? mask : 0);
+            _versionedContext = context;
+        }
+        const cursor = {
+            sessionId, connectionIncarnation, keyboardEpoch, inputFrameSeq, actorInc, moduleId, moduleInc, configInc,
+            commandSeq: sameEpoch ? previous.commandSeq : 0,
+        };
+        _versioned = cursor;
+        const result = advanceFrame(mask, facingBit, moduleId, doubleTapDir, atoms);
+        if (!result)
+            return "";
+        let commandSeq = 0;
+        if (result.cmdId > 0) {
+            if (cursor.commandSeq === MAX_WIRE_INT) {
+                cancelInput();
+                throw new RangeError("I1 command sequence exhausted");
+            }
+            commandSeq = ++cursor.commandSeq;
+        }
+        return JSON.stringify({ commandSeq, ...result, hintsJson: wireHints(result.hints) });
+    }
+    GameInput.processVersionedFrame = processVersionedFrame;
+    function advanceFrame(mask, facingBit, moduleId, doubleTapDir, atoms) {
+        if (_sampler === null)
+            return null;
         const mod = _modules[moduleId];
         if (!mod)
-            return String.fromCharCode(0x20);
+            return null;
         // 模组切换时重置 DFA + 显示缓存
         if (moduleId !== _currentModuleId) {
             mod.cmdDfa.resetState();
             _currentModuleId = moduleId;
-            _lastHintState = -1;
-            _lastHintStr = "";
-            _displayHints = "";
-            _displayTyped = "";
-            _displayHoldTimer = 0;
+            clearDisplay();
         }
         // 1. InputSampler → events
         const facingRight = facingBit !== 0;
-        const events = _sampler.sample(mask, facingRight, doubleTapDir);
+        const events = _sampler.sample(mask, facingRight, doubleTapDir, atoms);
         // 2. CommandDFA → cmdId (timeout 已内置 8 帧)
         mod.cmdDfa.updateFast(events);
         const cmdId = mod.cmdDfa.getCommandId();
@@ -302,7 +439,7 @@ var GameInput;
         }
         // 5. 格式化 K payload: chr(cmdId+0x20) \x01 typed \x02 hints
         if (cmdId === 0) {
-            return String.fromCharCode(0x20) + "\x01" + outTyped + "\x02" + outHints;
+            return { cmdId, cmdName: "", typed: outTyped, hints: outHints };
         }
         // 命中
         const cmdName = mod.dfa.getCommandName(cmdId);
@@ -311,9 +448,8 @@ var GameInput;
         _displayHoldTimer = 0;
         _displayHints = "";
         _displayTyped = "";
-        return String.fromCharCode(cmdId + 0x20) + cmdName + "\x01" + typedStr + "\x02";
+        return { cmdId, cmdName, typed: typedStr, hints: "" };
     }
-    GameInput.processFrame = processFrame;
 })(GameInput || (GameInput = {}));
 /**
  * InputSampler - 输入采样器 (镜像 AS2 InputSampler.as)
@@ -351,8 +487,9 @@ var GameInput;
             // 事件缓冲（复用）
             this._buf = [];
         }
-        reset() {
-            this._prevMask = 0;
+        reset(mask = 0) {
+            this._prevMask = mask;
+            this._buf.length = 0;
             this._prevDoubleTapDir = 0;
             this._frameCounter = 0;
             this._lastForwardFrame = -100;
@@ -368,27 +505,148 @@ var GameInput;
          * @param doubleTapDir -1/0/1（KeyManager 写入的双击方向）
          * @returns InputEvent ID 数组
          */
-        sample(mask, facingRight, doubleTapDir) {
+        sample(mask, facingRight, doubleTapDir, atoms) {
             this._frameCounter++;
             const buf = this._buf;
             buf.length = 0;
             const prevMask = this._prevMask;
-            // 解码 bitmask
-            const left = (mask & BIT_LEFT) !== 0;
-            const right = (mask & BIT_RIGHT) !== 0;
-            const up = (mask & BIT_UP) !== 0;
+            if (atoms && atoms.length > 0) {
+                this.appendVersionedEvents(buf, mask, prevMask, facingRight, atoms);
+            }
+            else {
+                this.appendDirections(buf, mask, facingRight);
+                this.appendActionPresses(buf, mask & ~prevMask);
+                this.appendShift(buf, mask, facingRight);
+            }
+            // === 双击检测通道1: doubleTapDir 边沿（KeyManager 逻辑帧）===
+            const prevDir = this._prevDoubleTapDir;
+            if (doubleTapDir !== 0 && prevDir === 0) {
+                if (facingRight) {
+                    buf.push(doubleTapDir > 0 ? GameInput.EV_DOUBLE_TAP_FORWARD : GameInput.EV_DOUBLE_TAP_BACK);
+                }
+                else {
+                    buf.push(doubleTapDir < 0 ? GameInput.EV_DOUBLE_TAP_FORWARD : GameInput.EV_DOUBLE_TAP_BACK);
+                }
+            }
+            // Fallback consumes horizontal changes at the same logical-frame timestamp.
+            if (atoms && atoms.length > 0)
+                this.replayFallback(buf, mask, facingRight, atoms);
+            else
+                this.appendFallback(buf, mask, facingRight);
+            this._prevMask = mask;
+            this._prevDoubleTapDir = doubleTapDir;
+            return buf;
+        }
+        replayFallback(buf, mask, facingRight, atoms) {
+            const horizontal = BIT_LEFT | BIT_RIGHT;
+            let touched = 0;
+            let levels = mask;
+            for (const atom of atoms) {
+                if (!(atom.bit & horizontal) || (touched & atom.bit))
+                    continue;
+                touched |= atom.bit;
+                levels = atom.down ? levels & ~atom.bit : levels | atom.bit;
+            }
+            this.appendFallback(buf, levels, facingRight);
+            if (touched === 0)
+                return;
+            for (const atom of atoms) {
+                if (!(atom.bit & horizontal))
+                    continue;
+                levels = atom.down ? levels | atom.bit : levels & ~atom.bit;
+                this.appendFallback(buf, levels, facingRight);
+            }
+        }
+        appendFallback(buf, mask, facingRight) {
+            const holdForward = (mask & (facingRight ? BIT_RIGHT : BIT_LEFT)) !== 0;
+            const holdBack = (mask & (facingRight ? BIT_LEFT : BIT_RIGHT)) !== 0;
+            const frame = this._frameCounter;
+            if (holdForward && !this._prevHoldForward) {
+                if (frame - this._lastForwardFrame <= this._doubleTapWindow) {
+                    buf.push(GameInput.EV_DOUBLE_TAP_FORWARD);
+                    this._lastForwardFrame = -100;
+                }
+            }
+            if (!holdForward && this._prevHoldForward)
+                this._lastForwardFrame = frame;
+            if (holdBack && !this._prevHoldBack) {
+                if (frame - this._lastBackFrame <= this._doubleTapWindow) {
+                    buf.push(GameInput.EV_DOUBLE_TAP_BACK);
+                    this._lastBackFrame = -100;
+                }
+            }
+            if (!holdBack && this._prevHoldBack)
+                this._lastBackFrame = frame;
+            this._prevHoldForward = holdForward;
+            this._prevHoldBack = holdBack;
+        }
+        appendVersionedEvents(buf, mask, prevMask, facingRight, atoms) {
+            let touched = 0;
+            let pressed = 0;
+            let initialDown = 0;
+            let hasPulse = false;
+            for (const atom of atoms) {
+                if (touched & atom.bit) {
+                    hasPulse = true;
+                }
+                else if (!atom.down) {
+                    initialDown |= atom.bit;
+                }
+                touched |= atom.bit;
+                if (atom.down)
+                    pressed |= atom.bit;
+            }
+            // For ordinary snapshots keep the original direction, A/B/C, Shift order.
+            // Bits represented by atoms never also contribute a rising mask edge.
+            const inferredPresses = mask & ~prevMask & ~touched;
+            if (!hasPulse) {
+                this.appendDirections(buf, mask, facingRight);
+                this.appendActionPresses(buf, pressed | inferredPresses);
+                this.appendShift(buf, mask, facingRight);
+                return;
+            }
+            // Reconstruct the intra-frame bucket only where the wire supplies edges.
+            // Untouched bits use their final levels, and can contribute at most once.
+            const directions = BIT_LEFT | BIT_RIGHT | BIT_UP | BIT_DOWN;
+            const shiftContext = directions | BIT_SHIFT;
+            let levels = (mask & ~touched) | initialDown;
+            let lastDirection = -1;
+            let lastShiftContext = -1;
+            if ((touched & directions) === 0) {
+                this.appendDirections(buf, levels, facingRight);
+                lastDirection = levels & directions;
+            }
+            for (const atom of atoms) {
+                if (!atom.down) {
+                    levels &= ~atom.bit;
+                    if (atom.bit & directions)
+                        lastDirection = -1;
+                    if (atom.bit & shiftContext)
+                        lastShiftContext = -1;
+                    continue;
+                }
+                levels |= atom.bit;
+                if (atom.bit & directions) {
+                    this.appendDirections(buf, levels, facingRight);
+                    lastDirection = levels & directions;
+                }
+                this.appendActionPresses(buf, atom.bit);
+                if ((levels & BIT_SHIFT) && (atom.bit & shiftContext)) {
+                    this.appendShift(buf, levels, facingRight);
+                    lastShiftContext = levels & shiftContext;
+                }
+            }
+            if ((mask & directions) !== lastDirection)
+                this.appendDirections(buf, mask, facingRight);
+            this.appendActionPresses(buf, inferredPresses);
+            if ((mask & shiftContext) !== lastShiftContext)
+                this.appendShift(buf, mask, facingRight);
+        }
+        appendDirections(buf, mask, facingRight) {
+            const holdForward = (mask & (facingRight ? BIT_RIGHT : BIT_LEFT)) !== 0;
+            const holdBack = (mask & (facingRight ? BIT_LEFT : BIT_RIGHT)) !== 0;
             const down = (mask & BIT_DOWN) !== 0;
-            const keyA = (mask & BIT_A) !== 0;
-            const keyB = (mask & BIT_B) !== 0;
-            const keyC = (mask & BIT_C) !== 0;
-            const shift = (mask & BIT_SHIFT) !== 0;
-            const prevA = (prevMask & BIT_A) !== 0;
-            const prevB = (prevMask & BIT_B) !== 0;
-            const prevC = (prevMask & BIT_C) !== 0;
-            // 方向归一化
-            const holdForward = facingRight ? right : left;
-            const holdBack = facingRight ? left : right;
-            // === 方向事件（复合优先）===
+            const up = (mask & BIT_UP) !== 0;
             if (down && holdForward) {
                 buf.push(GameInput.EV_DOWN_FORWARD);
             }
@@ -411,63 +669,29 @@ var GameInput;
                 if (holdBack)
                     buf.push(GameInput.EV_BACK);
             }
-            // === 按键边沿检测（按下瞬间）===
-            if (keyA && !prevA)
+        }
+        appendActionPresses(buf, presses) {
+            if (presses & BIT_A)
                 buf.push(GameInput.EV_A_PRESS);
-            if (keyB && !prevB)
+            if (presses & BIT_B)
                 buf.push(GameInput.EV_B_PRESS);
-            if (keyC && !prevC)
+            if (presses & BIT_C)
                 buf.push(GameInput.EV_C_PRESS);
-            // === Shift 组合事件 ===
-            if (shift) {
-                buf.push(GameInput.EV_SHIFT_HOLD);
-                if (holdForward)
-                    buf.push(GameInput.EV_SHIFT_FORWARD);
-                if (holdBack)
-                    buf.push(GameInput.EV_SHIFT_BACK);
-                if (down)
-                    buf.push(GameInput.EV_SHIFT_DOWN);
-                if (up && holdForward)
-                    buf.push(GameInput.EV_SHIFT_UP_FORWARD);
-            }
-            // === 双击检测通道1: doubleTapDir 边沿（KeyManager 毫秒级）===
-            const prevDir = this._prevDoubleTapDir;
-            if (doubleTapDir !== 0 && prevDir === 0) {
-                if (facingRight) {
-                    buf.push(doubleTapDir > 0 ? GameInput.EV_DOUBLE_TAP_FORWARD : GameInput.EV_DOUBLE_TAP_BACK);
-                }
-                else {
-                    buf.push(doubleTapDir < 0 ? GameInput.EV_DOUBLE_TAP_FORWARD : GameInput.EV_DOUBLE_TAP_BACK);
-                }
-            }
-            // === 双击检测通道2: 帧级 fallback（镜像 InputSampler.as:256-283）===
-            const frame = this._frameCounter;
-            // 前方向
-            if (holdForward && !this._prevHoldForward) {
-                if (frame - this._lastForwardFrame <= this._doubleTapWindow) {
-                    buf.push(GameInput.EV_DOUBLE_TAP_FORWARD);
-                    this._lastForwardFrame = -100;
-                }
-            }
-            if (!holdForward && this._prevHoldForward) {
-                this._lastForwardFrame = frame;
-            }
-            // 后方向
-            if (holdBack && !this._prevHoldBack) {
-                if (frame - this._lastBackFrame <= this._doubleTapWindow) {
-                    buf.push(GameInput.EV_DOUBLE_TAP_BACK);
-                    this._lastBackFrame = -100;
-                }
-            }
-            if (!holdBack && this._prevHoldBack) {
-                this._lastBackFrame = frame;
-            }
-            // === 更新 prev 状态 ===
-            this._prevMask = mask;
-            this._prevDoubleTapDir = doubleTapDir;
-            this._prevHoldForward = holdForward;
-            this._prevHoldBack = holdBack;
-            return buf;
+        }
+        appendShift(buf, mask, facingRight) {
+            if (!(mask & BIT_SHIFT))
+                return;
+            const holdForward = (mask & (facingRight ? BIT_RIGHT : BIT_LEFT)) !== 0;
+            const holdBack = (mask & (facingRight ? BIT_LEFT : BIT_RIGHT)) !== 0;
+            buf.push(GameInput.EV_SHIFT_HOLD);
+            if (holdForward)
+                buf.push(GameInput.EV_SHIFT_FORWARD);
+            if (holdBack)
+                buf.push(GameInput.EV_SHIFT_BACK);
+            if (mask & BIT_DOWN)
+                buf.push(GameInput.EV_SHIFT_DOWN);
+            if ((mask & BIT_UP) && holdForward)
+                buf.push(GameInput.EV_SHIFT_UP_FORWARD);
         }
     }
     GameInput.InputSampler = InputSampler;

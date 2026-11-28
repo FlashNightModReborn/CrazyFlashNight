@@ -23,8 +23,21 @@
 class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.ChargeKeyAccumulator {
 
     public static function tick(ref:Object, unit:MovieClip, keyConst:Number, isActive:Boolean):Void {
+        var input:Object = _root.GameInput;
+        var passive:Boolean = input.passiveActive === true;
+        if (passive && (ref.chargeActorInc !== input.actorInc
+                || !input.isInputCurrent(ref.chargeEpoch, ref.chargeCancelSerial, ref.chargeConfigInc))) {
+            if (unit.chargeComplete !== true) ref.chargeCount = 0;
+            ref.chargeActorInc = input.actorInc;
+            ref.chargeEpoch = input.getKeyboardEpoch();
+            ref.chargeCancelSerial = input.cancelSerial;
+            ref.chargeConfigInc = input.configInc;
+        }
         if (isActive) {
-            if (_root.按键输入检测(unit, keyConst)) {
+            var held:Boolean = passive
+                ? org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.KeyEdgeTrigger.getEquipmentPress(ref, unit, keyConst) > 0
+                : _root.按键输入检测(unit, keyConst);
+            if (held) {
                 ref.chargeCount = Math.min(ref.chargeCount + ref.chargeStep, ref.chargeCountMax);
             } else if (ref.chargeCount > 0) {
                 ref.chargeCount = Math.max(ref.chargeCount - ref.chargeStep, 0);

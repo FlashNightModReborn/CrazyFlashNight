@@ -12,24 +12,28 @@
 
 // Provided by InputBridge.cpp when compiled with CF7_INPUT_BRIDGE_SELFTEST.
 namespace InputBridgeSelfTest {
+    bool TryInitialize(HWND target,uint64_t cookie);
     void Install(HWND target,InputShared* state,UINT packetMessage);
     LRESULT Drive(UINT message,WPARAM wparam,LPARAM lparam);
     UINT LocalFloor();
     UINT LastEpoch();
     UINT Gesture();
+    SHORT MouseKey(int vk);
 }
 
 namespace {
 InputShared* state=nullptr;
 int focusGains=0, mouseDeliveries=0, nativeLeaves=0, failures=0;
 POINT lastMouseMove{};
-// The "original" window procedure the bridge forwards into. SetFocus performed
-// by the bridge shows up here as a real WM_SETFOCUS; CallWindowProcW deliveries
-// arrive as their real mouse message ids. Note that a forwarded button-down
-// can also make Windows itself juggle focus (mouse activation), so assertions
-// on focus are deltas, not exact counts.
+HWND observedChild=nullptr, expectedFocus=nullptr;
+bool focusChangedDuringMouseDelivery=false;
+unsigned seen[WM_MOUSELAST-WM_MOUSEFIRST+1]{};
 LRESULT CALLBACK TargetProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
-    if(message==WM_SETFOCUS) focusGains++;
+    if(hwnd==observedChild && message>=WM_MOUSEFIRST && message<=WM_MOUSELAST) {
+        ++seen[message-WM_MOUSEFIRST];
+        if(GetFocus()!=expectedFocus)focusChangedDuringMouseDelivery=true;
+    }
+    if(hwnd==observedChild && message==WM_SETFOCUS)focusGains++;
     if(message==WM_MOUSELEAVE) nativeLeaves++;
     if(message==WM_MOUSEMOVE) lastMouseMove={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
     if(message==WM_MOUSEMOVE || message==WM_LBUTTONDOWN || message==WM_LBUTTONUP
@@ -66,7 +70,7 @@ void SendMove(UINT packet,UINT epoch,UINT seq) {
     InputBridgeSelfTest::Drive(packet,PacketW(WM_MOUSEMOVE-WM_MOUSEFIRST,0,epoch),PacketL(1,1,seq));
 }
 // Dequeues a packet the host already issued (issuedEpoch was published at send
-// time): used for packets that sat in the queue across a focus-loss boundary.
+// time) across a published cancellation boundary.
 void DeliverDown(UINT packet,UINT epoch,UINT seq) {
     InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONDOWN-WM_MOUSEFIRST,MK_LBUTTON,epoch),PacketL(10,10,seq));
 }
@@ -89,69 +93,83 @@ int wmain(int argc,wchar_t** argv) {
     if(!RegisterClassW(&wc)) { std::printf("FAIL register_class error=%lu\n",GetLastError()); return 2; }
     HWND target=CreateWindowExW(0,wc.lpszClassName,L"target",WS_OVERLAPPED,0,0,200,100,nullptr,nullptr,wc.hInstance,nullptr);
     HWND other=CreateWindowExW(0,wc.lpszClassName,L"other",WS_OVERLAPPED,0,0,50,50,nullptr,nullptr,wc.hInstance,nullptr);
-    HANDLE mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,nullptr,PAGE_READWRITE,0,sizeof(InputShared),L"Local\\CF7.WorldPointer.SelfTest");
+    wchar_t sectionName[96];
+    swprintf_s(sectionName,L"Local\\CF7.WorldPointer.SelfTest.%lu",GetCurrentProcessId());
+    HANDLE mapping=CreateFileMappingW(INVALID_HANDLE_VALUE,nullptr,PAGE_READWRITE,0,sizeof(InputShared),sectionName);
     state=mapping ? static_cast<InputShared*>(MapViewOfFile(mapping,FILE_MAP_ALL_ACCESS,0,0,sizeof(InputShared))) : nullptr;
     if(!target || !other || !state) { std::printf("FAIL fixture error=%lu\n",GetLastError()); return 2; }
     *state={};
     state->magic=InputMagic;
     state->protocolVersion=InputProtocolVersion;
+    state->session=17;
+    state->hostPid=state->sourcePid=GetCurrentProcessId();
+    state->sourceWindow=reinterpret_cast<uint64_t>(target);
+    state->ownerWindow=reinterpret_cast<uint64_t>(other);
+    ATOM atom=GlobalAddAtomW(sectionName);
+    if(!atom || !SetPropW(target,InputProperty,reinterpret_cast<HANDLE>(static_cast<UINT_PTR>(atom))))return 2;
+    auto original=GetWindowLongPtrW(target,GWLP_WNDPROC);
+    SetParent(target,other);
+    SetWindowLongPtrW(target,GWL_STYLE,WS_CHILD|WS_DISABLED);
+    observedChild=target;
+    expectedFocus=other;
+    SetFocus(other);
+    Check(GetFocus()==other && !IsWindowEnabled(target),"fixture_focus_on_other_disabled_target");
+    for(uint32_t invalidMode:{0u,2u,3u,UINT32_MAX}) {
+        state->passiveMode=invalidMode;
+        state->ready=0;
+        Check(!InputBridgeSelfTest::TryInitialize(target,state->session) && state->ready==InputProfileRejected &&
+            state->patchMask==0 && GetWindowLongPtrW(target,GWLP_WNDPROC)==original,
+            invalidMode==0 ? "passive_mode_0_bind_rejected_before_install" :
+            invalidMode==2 ? "passive_mode_2_bind_rejected_before_install" : "invalid_passive_mode_bind_rejected_before_install");
+    }
+    state->passiveMode=InputPassiveDisabled;
+    Check(!InputBridgeSelfTest::TryInitialize(target,state->session) && state->ready==InputProfileRejected &&
+        GetWindowLongPtrW(target,GWLP_WNDPROC)==original,"rejected_bind_cannot_retry_with_valid_profile");
+    EnableWindow(target,TRUE);
+    state->ready=0;state->passiveMode=InputPassiveDisabled;
+    Check(!InputBridgeSelfTest::TryInitialize(target,state->session) && state->ready==InputProfileRejected &&
+        GetWindowLongPtrW(target,GWLP_WNDPROC)==original,"passive_bind_requires_disabled_window");
+    RemovePropW(target,InputProperty);GlobalDeleteAtom(atom);
+    EnableWindow(target,FALSE);
+    state->ready=0;
     UINT packet=RegisterWindowMessageW(InputMessage);
     InputBridgeSelfTest::Install(target,state,packet);
 
     if(argc>1) {std::puts("v3 --long-session evidence is frozen; run G1 -Mode renew to verify v4 continuity, never reinterpret the old failure as success");return 2;}
     (void)argv;
 
-    // 1. Down(epoch=5) is admitted: real SetFocus plus original-proc delivery
-    //    of the re-hover move and the button edge.
     int f0=focusGains, m0=mouseDeliveries;
     SendDown(packet,5,1);
-    Check(focusGains>f0 && mouseDeliveries==m0+2,"down_epoch5_admitted_focus_and_delivery");
+    Check(GetFocus()==other && focusGains==f0 && mouseDeliveries==m0+2,"down_epoch5_delivered_with_other_focused");
     Check(state->staleRejected==0,"admitted_down_not_counted_stale");
     Check(InputBridgeSelfTest::LastEpoch()==5,"admitted_epoch_updates_endpoint_high_water");
     int beforeLeave=nativeLeaves;
     InputBridgeSelfTest::Drive(WM_MOUSELEAVE,0,0);
     Check(nativeLeaves==beforeLeave,"covered_source_leave_cannot_clear_mapped_hover");
 
-    // 2. RCE-1 regression: the host has already issued Down(6) — issuedEpoch=6
-    //    was published at send time — but the packet is still queued behind the
-    //    focus-loss boundary. A real SetFocus to another window delivers
-    //    WM_KILLFOCUS through the installed bridge proc: the local floor must
-    //    rise one past the ISSUED epoch (max(lastEpoch=5, issued=6)+1=7), not
-    //    just past the newest packet this endpoint processed.
-    state->issuedEpoch=6; // host posted Down(6); the projector has not seen it yet
-    SetFocus(target); // guard: make sure the target holds focus first
-    SetFocus(other);
-    Check(InputBridgeSelfTest::LocalFloor()==7,"killfocus_floor_covers_issued_unseen_epoch");
-    InputBridgeSelfTest::Drive(WM_MOUSELEAVE,0,0);
-    Check(nativeLeaves==beforeLeave+1,"real_focus_loss_restores_native_leave_delivery");
-    // The queued Down(6) is dequeued after the boundary: zero SetFocus, zero
-    // original-proc mouse delivery, counted as stale.
-    f0=focusGains; m0=mouseDeliveries;
+    // The authority cancels through the highest issued epoch, including an
+    // unseen Down. Only the exact cancel reaches the original procedure.
+    state->issuedEpoch=6;
+    state->minEpoch=7;
+    state->cancelTicket=1;
+    auto priorDowns=seen[WM_LBUTTONDOWN-WM_MOUSEFIRST];
+    m0=mouseDeliveries;
     DeliverDown(packet,6,2);
-    Check(focusGains==f0 && mouseDeliveries==m0,"queued_epoch6_down_no_focus_no_delivery");
+    Check(state->cancelledTicket==1 && !state->heldButtons && InputBridgeSelfTest::LocalFloor()==7,
+        "cancel_floor_covers_issued_unseen_epoch");
+    Check(focusGains==f0 && GetFocus()==other && seen[WM_LBUTTONDOWN-WM_MOUSEFIRST]==priorDowns && mouseDeliveries==m0+1,
+        "queued_epoch6_down_no_focus_no_mouse_delivery");
+    InputBridgeSelfTest::Drive(WM_MOUSELEAVE,0,0);
+    Check(nativeLeaves==beforeLeave+1,"cancel_restores_native_leave_delivery");
     Check(state->staleRejected==1,"queued_stale_rejection_counted");
 
-    // 3. Recovery needs no other path: the host's next physical down starts a
-    //    new gesture, which mints the next epoch (7). That packet is admitted
-    //    exactly once — focus plus both deliveries.
-    f0=focusGains; m0=mouseDeliveries;
-    SendDown(packet,7,3);
-    Check(focusGains>f0 && mouseDeliveries==m0+2,"new_gesture_epoch7_readmitted_after_loss");
-
-    // 4. WM_ENTERMENULOOP (in-session menu focus loss, owner never deactivates)
-    //    raises the same issued-based floor; a packet issued before the menu
-    //    boundary is rejected, and the next gesture's down is admitted again.
-    InputBridgeSelfTest::Drive(WM_ENTERMENULOOP,0,0);
-    Check(InputBridgeSelfTest::LocalFloor()==8,"entermenuloop_floor_covers_issued_epoch");
-    f0=focusGains; m0=mouseDeliveries;
-    DeliverDown(packet,7,4);
-    Check(focusGains==f0 && mouseDeliveries==m0,"queued_epoch7_down_rejected_after_menuloop");
-    Check(state->staleRejected==2,"menuloop_stale_rejection_counted");
-    // Re-admission proof: ENTERMENULOOP never moved the real focus, so the next
-    // gesture's down is delivered (SetFocus is a no-op while target holds it).
+    // A direct SendMessage cannot admit even a current, otherwise valid Down.
     m0=mouseDeliveries;
-    SendDown(packet,8,5);
-    Check(mouseDeliveries==m0+2,"new_gesture_epoch8_readmitted_after_menuloop");
+    SendMessageW(target,packet,PacketW(WM_LBUTTONDOWN-WM_MOUSEFIRST,MK_LBUTTON,7),PacketL(10,10,3));
+    Check(mouseDeliveries==m0 && !state->heldButtons && GetFocus()==other,"direct_send_refused_before_delivery");
+    SendDown(packet,7,3);
+    Check(focusGains==f0 && GetFocus()==other && mouseDeliveries==m0+2,"new_gesture_epoch7_readmitted_without_focus");
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,7),PacketL(10,10,4));
 
     // v4 bounds: no artificial floor movement, no wire wrap. Domain failure
     // leaves high-water and original handler untouched. Actual continuation is
@@ -177,6 +195,90 @@ int wmain(int argc,wchar_t** argv) {
     Check(InputBridgeSelfTest::Gesture()==0 && state->heldButtons==0,"modifier_up_releases_mouse_gesture");
     InputBridgeSelfTest::Drive(packet,PacketW(WM_MOUSEMOVE-WM_MOUSEFIRST,0,2),PacketL(-1,-1,14));
     Check(lastMouseMove.x==-1 && lastMouseMove.y==-1,"presentation_leave_preserves_negative_sentinel");
+
+    // Drive all mapped buttons through the disabled child's original procedure.
+    *state={};state->passiveMode=InputPassiveDisabled;
+    InputBridgeSelfTest::Install(target,state,packet);
+    f0=focusGains;
+    auto downs=seen[WM_LBUTTONDOWN-WM_MOUSEFIRST], ups=seen[WM_LBUTTONUP-WM_MOUSEFIRST];
+    auto moves=seen[0], wheels=seen[WM_MOUSEWHEEL-WM_MOUSEFIRST];
+    SendDown(packet,2,1);
+    Check(!IsWindowEnabled(target) && InputBridgeSelfTest::MouseKey(VK_LBUTTON)<0,"passive_disabled_virtual_button_down");
+    InputBridgeSelfTest::Drive(WM_KILLFOCUS,reinterpret_cast<WPARAM>(other),0);
+    Check(InputBridgeSelfTest::Gesture()==1 && InputBridgeSelfTest::LocalFloor()==0,"passive_killfocus_preserves_gesture");
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_MOUSEMOVE-WM_MOUSEFIRST,MK_LBUTTON,2),PacketL(11,10,2));
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,2),PacketL(11,10,3));
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_MOUSEWHEEL-WM_MOUSEFIRST,0,2)|(120u<<16),PacketL(11,10,4));
+    Check(seen[WM_LBUTTONDOWN-WM_MOUSEFIRST]==downs+1 && seen[0]==moves+2 &&
+        seen[WM_LBUTTONUP-WM_MOUSEFIRST]==ups+1 && seen[WM_MOUSEWHEEL-WM_MOUSEFIRST]==wheels+1 &&
+        InputBridgeSelfTest::MouseKey(VK_LBUTTON)==0,"passive_disabled_original_down_move_up_wheel");
+    SendDown(packet,3,5);
+    state->minEpoch=4;state->cancelTicket=1;
+    SendMove(packet,3,6);
+    Check(state->cancelledTicket==1 && state->heldButtons==0 && !InputBridgeSelfTest::Gesture() &&
+        state->staleRejected==1,"passive_ticket_settled_old_epoch_rejected");
+    UINT sequence=7;
+    ups=seen[WM_LBUTTONUP-WM_MOUSEFIRST];
+    downs=seen[WM_LBUTTONDOWN-WM_MOUSEFIRST];
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,3),PacketL(11,10,sequence++));
+    Check(seen[WM_LBUTTONUP-WM_MOUSEFIRST]==ups && state->staleRejected==2 && !state->heldButtons &&
+        GetFocus()==other,"cancelled_epoch_tail_up_cannot_complete_the_old_press");
+    SendDown(packet,4,sequence++);
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,4),PacketL(10,10,sequence++));
+    Check(seen[WM_LBUTTONDOWN-WM_MOUSEFIRST]==downs+1 && seen[WM_LBUTTONUP-WM_MOUSEFIRST]==ups+1 &&
+        !state->heldButtons && GetFocus()==other,"first_fresh_left_click_after_cancel_delivered_once");
+    for(UINT down:{WM_RBUTTONDOWN,WM_MBUTTONDOWN,WM_XBUTTONDOWN}) {
+        UINT mask=down==WM_RBUTTONDOWN ? MK_RBUTTON : down==WM_MBUTTONDOWN ? MK_MBUTTON : MK_XBUTTON1;
+        WPARAM extra=down==WM_XBUTTONDOWN ? static_cast<WPARAM>(XBUTTON1)<<16 : 0;
+        auto delivered=seen[down-WM_MOUSEFIRST];
+        InputBridgeSelfTest::Drive(packet,PacketW(down-WM_MOUSEFIRST,mask,4)|extra,PacketL(4,4,sequence++));
+        InputBridgeSelfTest::Drive(packet,PacketW(down+1-WM_MOUSEFIRST,0,4)|extra,PacketL(4,4,sequence++));
+        Check(seen[down-WM_MOUSEFIRST]==delivered+1 && !state->heldButtons,"passive_disabled_button_pair");
+    }
+    auto completed=state->completedSeq;
+    DeliverDown(packet,4,1);
+    Check(state->completedSeq==completed && state->consumedSeq==completed && !state->heldButtons,"passive_replayed_sequence_refused");
+    auto horizontal=seen[WM_MOUSEHWHEEL-WM_MOUSEFIRST];
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_MOUSEHWHEEL-WM_MOUSEFIRST,0,4)|(120u<<16),PacketL(11,10,sequence++));
+    Check(seen[WM_MOUSEHWHEEL-WM_MOUSEFIRST]==horizontal+1,"passive_disabled_horizontal_wheel");
+    downs=seen[WM_LBUTTONDOWN-WM_MOUSEFIRST];ups=seen[WM_LBUTTONUP-WM_MOUSEFIRST];
+    SendDown(packet,4,sequence++);
+    auto priorMoves=seen[WM_MOUSEMOVE-WM_MOUSEFIRST];
+    SendMove(packet,4,sequence++); // No Up was admitted to release the held button.
+    Check(state->heldButtons==MK_LBUTTON && seen[WM_MOUSEMOVE-WM_MOUSEFIRST]==priorMoves && GetFocus()==other,
+        "move_cannot_release_an_open_gesture");
+    SendDown(packet,4,sequence++);
+    for(int i=0;i<2;i++)InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,4),PacketL(10,10,sequence++));
+    Check(seen[WM_LBUTTONDOWN-WM_MOUSEFIRST]==downs+1 && seen[WM_LBUTTONUP-WM_MOUSEFIRST]==ups+1 &&
+        state->duplicateDowns==1 && state->unownedReleases==1,"passive_disabled_duplicate_down_and_orphan_up_refused");
+    m0=mouseDeliveries;
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONDOWN-WM_MOUSEFIRST,0,4),PacketL(10,10,sequence++));
+    Check(!InputBridgeSelfTest::Gesture() && !state->heldButtons && mouseDeliveries==m0,
+        "down_without_its_button_flag_cannot_open_a_gesture");
+    Check(!focusChangedDuringMouseDelivery && focusGains==f0 && GetFocus()==other,"passive_disabled_zero_focus_transfer");
+    for(uint32_t changedMode:{2u,0u}) {
+        *state={};state->passiveMode=InputPassiveDisabled;
+        InputBridgeSelfTest::Install(target,state,packet);
+        SendMove(packet,4,1);
+        m0=mouseDeliveries;completed=state->completedSeq;
+        state->passiveMode=changedMode;
+        SendDown(packet,4,2);
+        Check(completed==1 && state->stop==1 && state->invalidRejected==1 && state->completedSeq==completed &&
+            mouseDeliveries==m0 && GetFocus()==other,
+            "passive_bound_mode_change_seals_delivery");
+        state->passiveMode=InputPassiveDisabled;
+        SendDown(packet,4,3);
+        Check(state->stoppedRejected==1 && state->completedSeq==completed && mouseDeliveries==m0,
+            "passive_mode_restored_field_cannot_reopen_sealed_bridge");
+    }
+
+    *state={};state->passiveMode=InputPassiveDisabled;
+    InputBridgeSelfTest::Install(target,state,packet);
+    EnableWindow(target,TRUE);
+    m0=mouseDeliveries;
+    SendDown(packet,4,1);
+    Check(state->stop==1 && state->completedSeq==0 && mouseDeliveries==m0 && GetFocus()==other,
+        "reenabled_passive_window_seals_mapped_input");
 
     // 7. Without a shared section nothing is admissible at all.
     InputBridgeSelfTest::Install(target,nullptr,packet);

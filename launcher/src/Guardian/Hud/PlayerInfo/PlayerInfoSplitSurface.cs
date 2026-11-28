@@ -102,7 +102,7 @@ internal sealed class PlayerInfoSplitSurface :
     private bool _disposed;
     private bool _qualificationClockOwned;
     /// <summary>插话输入浮窗前台探测：与主 HUD 同一判据；未注册时保持既有隐藏行为。</summary>
-    internal Func<bool>? InterjectInputForegroundProbe;
+    internal Func<bool>? NonModalInputForegroundProbe;
     [DllImport("gdi32.dll")] [return:MarshalAs(UnmanagedType.Bool)]
     private static extern bool GdiFlush();
     private long _repaintRequestCount;
@@ -600,7 +600,7 @@ internal sealed class PlayerInfoSplitSurface :
         {
             try
             {
-                Func<bool>? probe = InterjectInputForegroundProbe;
+                Func<bool>? probe = NonModalInputForegroundProbe;
                 return probe != null && probe();
             }
             catch { return false; }

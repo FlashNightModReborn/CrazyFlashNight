@@ -35,7 +35,6 @@ namespace CF7Launcher.Tests.Guardian
             internal Harness()
             {
                 Host = new PanelHostController(a => Queue.Enqueue(a), a => a());
-                Host.CloseInputHeldForTests = () => false;
                 // Run the real message handlers without constructing HWNDs, WebView2,
                 // cursor hooks or a player process. Only close-path dependencies exist.
                 Overlay = (WebOverlayForm)RuntimeHelpers.GetUninitializedObject(typeof(WebOverlayForm));

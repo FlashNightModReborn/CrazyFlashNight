@@ -230,7 +230,7 @@ namespace CF7Launcher.Tests.Guardian
                 < idle.IndexOf("ShowWindow(this.Handle, SW_HIDE)", StringComparison.Ordinal));
 
             string resume = Slice(source, "public bool ResumeForPanel(",
-                "private void QueuePanelFocusRestore(");
+                "private void QueuePanelOpeningFocus(");
             Assert.True(resume.IndexOf("SetWebViewControllerVisible(false,", StringComparison.Ordinal)
                 < resume.IndexOf("this.TransparencyKey = Color.Empty", StringComparison.Ordinal));
             Assert.True(resume.IndexOf("SetWindowPos(_webView.Handle", StringComparison.Ordinal)

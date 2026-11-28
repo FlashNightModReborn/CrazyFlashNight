@@ -1,4 +1,5 @@
 using System;
+using CF7Launcher.Guardian.InputOwnership;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -8,25 +9,19 @@ using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian
 {
+    /// <summary>前台采样归属分类（Null=前台真空，Session=本会话窗口，External=外部进程窗口）。</summary>
+    internal enum SessionForegroundOwnership
+    {
+        Null,
+        Session,
+        External
+    }
+
     internal interface IFlashFocusWindowApi
     {
         IntPtr GetForegroundWindow();
-        uint GetWindowThreadProcessId(
-            IntPtr windowHandle,
-            out uint processId);
         bool SetForegroundWindow(IntPtr windowHandle);
-        bool AttachThreadInput(
-            uint attachThreadId,
-            uint attachToThreadId,
-            bool attach);
-        IntPtr SetFocus(IntPtr windowHandle);
-        uint GetCurrentThreadId();
         bool IsWindow(IntPtr windowHandle);
-        IntPtr GetRootWindow(IntPtr windowHandle);
-        IntPtr GetFocusedWindow(IntPtr windowHandle);
-        bool IsChild(
-            IntPtr parentWindow,
-            IntPtr candidateChild);
     }
 
     /// <summary>
@@ -43,16 +38,6 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetFocus(IntPtr hWnd);
-
-        [DllImport("kernel32.dll")]
-        private static extern uint GetCurrentThreadId();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern void SetLastError(uint dwErrCode);
@@ -142,7 +127,6 @@ namespace CF7Launcher.Guardian
         private const uint DWMWA_CLOAK = 13;
 
         private const int SW_HIDE = 0;
-        private const int SW_SHOW = 5;
         private const int SW_SHOWNOACTIVATE = 4;
 
         private const int GWL_STYLE = -16;
@@ -157,7 +141,6 @@ namespace CF7Launcher.Guardian
         private const uint SWP_NOZORDER = 0x0004;
         private const uint SWP_FRAMECHANGED = 0x0020;
         private const uint SWP_NOACTIVATE = 0x0010;
-        private const uint GA_ROOT = 2;
 
         private readonly IFlashFocusWindowApi _focusApi;
         private uint _flashProcessId;
@@ -196,6 +179,220 @@ namespace CF7Launcher.Guardian
             SetTrackedFlashWindow(initialFlashWindow);
         }
 
+        internal SessionInputAuthority PassiveInput {get; private set;}
+        private volatile IntPtr _passiveRoot;
+        private (bool Known,bool Focused,bool Enabled,IntPtr Focus,IntPtr Source)? _lastAudit;
+        private IntPtr _revealedPassiveSource;
+        private long _focusSampleCount, _failedFocusQueries, _startupRawFocus, _runtimeRawFocus;
+        private long _startupCorrections, _runtimeStyleViolations, _runtimeFocusNotifications;
+        private long _lastAuditLog;
+        private WinEventCallback _focusEvent;
+        private IntPtr _hostFocusHook,_flashFocusHook,_foregroundHook;
+        internal event Action PassiveForegroundChanged;
+        private uint _auditedPid;
+        private delegate void WinEventCallback(IntPtr hook,uint evt,IntPtr hwnd,int obj,int child,uint thread,uint time);
+        [DllImport("user32.dll")] private static extern IntPtr SetWinEventHook(uint first,uint last,IntPtr module,
+            WinEventCallback callback,uint pid,uint thread,uint flags);
+        [DllImport("user32.dll")] private static extern bool UnhookWinEvent(IntPtr hook);
+        [DllImport("user32.dll")] private static extern bool IsWindowEnabled(IntPtr hwnd);
+        [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr hwnd);
+        [DllImport("user32.dll")] private static extern bool EnableWindow(IntPtr hwnd,bool enabled);
+        [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int vk);
+        internal static bool PassiveKeyHeld(int vk)=>(GetAsyncKeyState(vk)&0x8000)!=0;
+        internal bool FlashIsEnabled => _flashHwnd!=IntPtr.Zero && IsWindowEnabled(_flashHwnd);
+        internal bool PassiveSessionForeground() => IsPassiveInputWindow(GetForegroundWindow());
+        internal bool PassiveShortcutForeground() => IsPassiveInputWindow(GetForegroundWindow(), includeConfig: false);
+
+        internal bool IsPassiveInputWindow(IntPtr window, bool includeConfig = true)
+        {
+            if (window == IntPtr.Zero || _passiveRoot == IntPtr.Zero || !IsWindowEnabled(_passiveRoot) || IsIconic(_passiveRoot))
+                return false;
+            if (window == _passiveRoot) return true;
+            if (!IsWindowEnabled(window) || !IsSessionOwnedSource(window, _passiveRoot)) return false;
+            // Resolve the live top-level HWND. An owned picker, Wings window or other
+            // dialog never qualifies merely by sharing the process or root owner.
+            var surface = Control.FromHandle(window);
+            if (surface is Hud.Dialogue.DialogueInterjectConfigWindow config)
+                return includeConfig && config.IsRevealed;
+            return surface is WorldCompositor.WorldCompositionSurface or WebOverlayForm or CompositionHelpSurface
+                or SceneTransitionBackingForm or ModifierNativeSurface or ModifierInputOverlay
+                or NativeHudOverlay or Hud.Dialogue.DialogueInterjectInputOverlay;
+        }
+        internal void ConfigurePassiveInput(SessionInputAuthority input, Form root)
+        {
+            ArgumentNullException.ThrowIfNull(input);
+            ArgumentNullException.ThrowIfNull(root);
+            if (ReferenceEquals(input, PassiveInput) && ReferenceEquals(root, _sessionRoot)
+                && _foregroundHook != IntPtr.Zero && _hostFocusHook != IntPtr.Zero) return;
+            StopPassiveFocusAudit();
+            if (PassiveInput != null && !ReferenceEquals(PassiveInput, input)) {
+                PassiveInput.SetForeground(false);
+                PassiveInput.SetBusinessEligible(false, "session_rebound");
+            }
+            ConfigureSessionRoot(root);
+            PassiveInput = input;
+            ApplyPassiveStyle(_flashHwnd);
+            const uint foregroundEvent = 0x0003; // EVENT_SYSTEM_FOREGROUND
+            _focusEvent=(_,evt,window,_,_,_,eventTime)=> {
+                if (evt != foregroundEvent) {
+                    IntPtr flash = _flashHwnd;
+                    if (flash != IntPtr.Zero && flash == _revealedPassiveSource && InsideFlash(flash, window)) {
+                        Interlocked.Increment(ref _runtimeFocusNotifications);
+                        PassiveInput.SetForeground(false);
+                        LogManager.Log($"event=passive_focus_notification stage=runtime hwnd=0x{window:X} flash=0x{flash:X} eventTime={eventTime}");
+                    }
+                    if (_flashHwnd != IntPtr.Zero && AuditPassiveFocus(out _)) QueuePassiveBootstrapRecovery();
+                    return;
+                }
+                // Even a short excursion between two UI ticks invalidates the old
+                // observation generation. Only a fresh sample may requalify input.
+                if (!IsPassiveInputWindow(window)) PassiveInput.SetForeground(false);
+                if (!IsPassiveInputWindow(window, includeConfig: false))
+                    PassiveInput.SetBusinessEligible(false, "foreground_lost");
+                if (window == _passiveRoot) QueuePassiveBootstrapRecovery();
+                PassiveForegroundChanged?.Invoke();
+            };
+            _foregroundHook=SetWinEventHook(foregroundEvent,foregroundEvent,IntPtr.Zero,_focusEvent,0,0,0);
+            _hostFocusHook=SetWinEventHook(0x8005,0x8005,IntPtr.Zero,_focusEvent,(uint)Environment.ProcessId,0,0);
+        }
+        internal void StopPassiveFocusAudit()
+        {
+            CancelPassiveBootstrapPublication();
+            if(_hostFocusHook!=IntPtr.Zero)UnhookWinEvent(_hostFocusHook);
+            if(_flashFocusHook!=IntPtr.Zero)UnhookWinEvent(_flashFocusHook);
+            if(_foregroundHook!=IntPtr.Zero)UnhookWinEvent(_foregroundHook);
+            _hostFocusHook=_flashFocusHook=_foregroundHook=IntPtr.Zero; _auditedPid=0;
+        }
+        private void ApplyPassiveStyle(IntPtr flash)
+        {
+            if(flash!=IntPtr.Zero && IsWindowEnabled(flash))
+                EnableWindow(flash,false);
+        }
+        private static bool InsideFlash(IntPtr flash, IntPtr window)
+        {
+            return flash != IntPtr.Zero && (window == flash || (window != IntPtr.Zero && IsChild(flash, window)));
+        }
+
+        private bool SettleBootstrapFocus(IntPtr flash, string stage)
+        {
+            if (PassiveInput == null || flash == IntPtr.Zero || flash != _flashHwnd || flash == _revealedPassiveSource)
+                return false;
+            AuditPassiveFocus(out bool before, stage + "_before");
+            bool attempted = false;
+            if (before && _sessionRoot != null && !_sessionRoot.IsDisposed && !_sessionRoot.InvokeRequired
+                && GetParent(flash) != IntPtr.Zero)
+            {
+                IntPtr foreground = ReadCloseForeground();
+                if (InsideFlash(flash, foreground) || IsPassiveInputWindow(foreground))
+                {
+                    Control target = _hostPanel?.CanFocus == true ? _hostPanel : _sessionRoot.CanFocus ? _sessionRoot : null;
+                    if (target != null && ReadCloseForeground() == foreground && flash == _flashHwnd)
+                    {
+                        attempted = true;
+                        Interlocked.Increment(ref _startupCorrections);
+                        target.Focus();
+                    }
+                }
+            }
+            bool valid = AuditPassiveFocus(out bool after, stage + "_after");
+            LogManager.Log($"event=passive_bootstrap_focus stage={stage} flash=0x{flash:X} before={before} attempted={attempted} after={after} valid={valid}");
+            return valid;
+        }
+
+        internal object PassiveFocusCounts() => new {
+            samples = Interlocked.Read(ref _focusSampleCount), failedQueries = Interlocked.Read(ref _failedFocusQueries),
+            startupRawFocus = Interlocked.Read(ref _startupRawFocus), startupCorrections = Interlocked.Read(ref _startupCorrections),
+            runtimeRawFocus = Interlocked.Read(ref _runtimeRawFocus), runtimeFocusNotifications = Interlocked.Read(ref _runtimeFocusNotifications),
+            runtimeStyleViolations = Interlocked.Read(ref _runtimeStyleViolations),
+            sourceHook = _flashFocusHook != IntPtr.Zero, hostHook = _hostFocusHook != IntPtr.Zero
+        };
+
+        internal bool RefreshPassiveFocusAdmission()
+        {
+            if (AuditPassiveFocus(out _))
+            {
+                PassiveBootstrapPublication pending = Volatile.Read(ref _pendingPassiveBootstrap);
+                return pending == null || TryPublishPassiveBootstrap(pending, "passive_focus_available");
+            }
+            IntPtr flash = _flashHwnd;
+            if (flash != IntPtr.Zero && IsWindowEnabled(flash))
+            {
+                // A foreign re-enable closes admission on this sample. Enforce the disabled
+                // style, then require a later observation before any new grant.
+                Interlocked.Increment(ref _runtimeStyleViolations);
+                ApplyPassiveStyle(flash);
+                LogManager.Log($"event=passive_source_style_violation flash=0x{flash:X} enabledAfter={IsWindowEnabled(flash)}");
+            }
+            return false;
+        }
+        private readonly record struct PassiveFocusSample(bool Known, bool Focused, bool Enabled, IntPtr Focus,
+            IntPtr SourceThreadFocus, IntPtr RootThreadFocus);
+
+        private PassiveFocusSample ReadPassiveFocusSample(IntPtr flash, IntPtr root, uint sourceThread, bool matchingSource)
+        {
+#if CF7_TEST_SEAMS
+            if (PassiveBootstrapFocusForTests != null)
+            {
+                var sample = PassiveBootstrapFocusForTests();
+                IntPtr focusWindow = sample.Focused ? flash : root;
+                return new(sample.Known, sample.Focused, sample.Enabled, focusWindow, focusWindow, focusWindow);
+            }
+#endif
+            var info=new GUITHREADINFO{cbSize=Marshal.SizeOf<GUITHREADINFO>()};
+            uint rootThread = root == IntPtr.Zero ? 0 : GetWindowThreadProcessId(root, out _);
+            var rootInfo=info;
+            bool known = matchingSource && sourceThread != 0 && rootThread != 0
+                && GetGUIThreadInfo(sourceThread, ref info) && GetGUIThreadInfo(rootThread, ref rootInfo);
+            bool focused = known && (InsideFlash(flash, info.hwndFocus) || InsideFlash(flash, rootInfo.hwndFocus));
+            IntPtr focus=InsideFlash(flash,info.hwndFocus) || rootInfo.hwndFocus==IntPtr.Zero ? info.hwndFocus : rootInfo.hwndFocus;
+            bool enabled=flash!=IntPtr.Zero && IsWindowEnabled(flash);
+            return new(known, focused, enabled, focus, info.hwndFocus, rootInfo.hwndFocus);
+        }
+
+        internal bool ReadPassiveFocus(out bool flashFocused)
+        {
+            flashFocused = false;
+            if (PassiveInput == null) return false;
+            IntPtr flash = _flashHwnd, root = _passiveRoot;
+            if (flash == IntPtr.Zero || root == IntPtr.Zero) return false;
+            uint tid = GetWindowThreadProcessId(flash, out uint sourcePid);
+            var sample = ReadPassiveFocusSample(flash, root, tid, sourcePid == _flashProcessId);
+            if (flash != _flashHwnd || root != _passiveRoot || sourcePid != _flashProcessId) return false;
+            flashFocused = sample.Focused;
+            return sample.Known;
+        }
+
+        internal bool AuditPassiveFocus(out bool flashFocused, string stimulus = null)
+        {
+            flashFocused = false;
+            if (PassiveInput == null) return false;
+            IntPtr flash = _flashHwnd, root = _passiveRoot;
+            uint pid = 0, tid = flash == IntPtr.Zero ? 0 : GetWindowThreadProcessId(flash, out pid);
+            if (pid != _auditedPid) {
+                if (_flashFocusHook != IntPtr.Zero) UnhookWinEvent(_flashFocusHook);
+                _auditedPid = pid;
+                _flashFocusHook = pid == 0 ? IntPtr.Zero : SetWinEventHook(0x8005, 0x8005, IntPtr.Zero, _focusEvent, pid, 0, 0);
+            }
+            var sample = ReadPassiveFocusSample(flash, root, tid, pid == _flashProcessId);
+            bool known = sample.Known;
+            bool runtime = flash != IntPtr.Zero && flash == _revealedPassiveSource;
+            flashFocused = sample.Focused;
+            Interlocked.Increment(ref _focusSampleCount);
+            if(!known)Interlocked.Increment(ref _failedFocusQueries);
+            if(flashFocused) {
+                if(runtime)Interlocked.Increment(ref _runtimeRawFocus);
+                else Interlocked.Increment(ref _startupRawFocus);
+            }
+            bool valid = known && !flashFocused && !sample.Enabled && flash == _flashHwnd && root == _passiveRoot
+                && pid == _flashProcessId;
+            if(!valid)PassiveInput.SetForeground(false);
+            var state=(known,flashFocused,sample.Enabled,sample.Focus,flash);
+            if(state!=_lastAudit || stimulus!=null || Environment.TickCount64-_lastAuditLog>=1000) {
+                _lastAudit=state; _lastAuditLog=Environment.TickCount64;
+                LogManager.Log($"event=r1_passive_focus_audit mode={PassiveInput.Mode} flashFocused={flashFocused} root=0x{root:X} focus=0x{sample.Focus:X} flash=0x{flash:X} queried={known} enabled={sample.Enabled} stage={(runtime?"runtime":"bootstrap")} sourceThreadFocus=0x{sample.SourceThreadFocus:X} rootThreadFocus=0x{sample.RootThreadFocus:X}"+(stimulus==null?"":" stimulus="+stimulus));
+            }
+            return valid;
+        }
         public IntPtr FlashHwnd { get { return _flashHwnd; } }
 
         private sealed class Win32FlashFocusWindowApi
@@ -206,15 +403,6 @@ namespace CF7Launcher.Guardian
                 return WindowManager.GetForegroundWindow();
             }
 
-            public uint GetWindowThreadProcessId(
-                IntPtr windowHandle,
-                out uint processId)
-            {
-                return WindowManager.GetWindowThreadProcessId(
-                    windowHandle,
-                    out processId);
-            }
-
             public bool SetForegroundWindow(
                 IntPtr windowHandle)
             {
@@ -222,68 +410,9 @@ namespace CF7Launcher.Guardian
                     windowHandle);
             }
 
-            public bool AttachThreadInput(
-                uint attachThreadId,
-                uint attachToThreadId,
-                bool attach)
-            {
-                return WindowManager.AttachThreadInput(
-                    attachThreadId,
-                    attachToThreadId,
-                    attach);
-            }
-
-            public IntPtr SetFocus(IntPtr windowHandle)
-            {
-                return WindowManager.SetFocus(windowHandle);
-            }
-
-            public uint GetCurrentThreadId()
-            {
-                return WindowManager.GetCurrentThreadId();
-            }
-
             public bool IsWindow(IntPtr windowHandle)
             {
                 return WindowManager.IsWindow(windowHandle);
-            }
-
-            public IntPtr GetRootWindow(IntPtr windowHandle)
-            {
-                return WindowManager.GetAncestor(
-                    windowHandle,
-                    GA_ROOT);
-            }
-
-            public IntPtr GetFocusedWindow(
-                IntPtr windowHandle)
-            {
-                uint processId;
-                uint threadId =
-                    WindowManager.GetWindowThreadProcessId(
-                        windowHandle,
-                        out processId);
-                if (threadId == 0)
-                    return IntPtr.Zero;
-                GUITHREADINFO info = new GUITHREADINFO
-                {
-                    cbSize =
-                        Marshal.SizeOf<GUITHREADINFO>()
-                };
-                return WindowManager.GetGUIThreadInfo(
-                        threadId,
-                        ref info)
-                    ? info.hwndFocus
-                    : IntPtr.Zero;
-            }
-
-            public bool IsChild(
-                IntPtr parentWindow,
-                IntPtr candidateChild)
-            {
-                return WindowManager.IsChild(
-                    parentWindow,
-                    candidateChild);
             }
         }
 
@@ -291,11 +420,8 @@ namespace CF7Launcher.Guardian
         /// Phase 1c：嵌入结果事件。true = 成功嵌入；false = 10s 内未找到 Flash 窗口或外部主动通知失败。
         /// 触发封送到 _hostPanel 所在的 UI 线程（不变式 #5）。
         /// </summary>
-        public event Action<bool> OnEmbedResult;
-
-        private void FireEmbedResult(bool success)
+        private void FireEmbedResult(Action<bool> handler, bool success)
         {
-            Action<bool> handler = OnEmbedResult;
             if (handler == null) return;
 
             Control target = _hostPanel;
@@ -373,14 +499,13 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// Phase 1c：外部（如 GameLaunchFlow 检测异常）主动通知嵌入失败。
         /// </summary>
-        public void NotifyEmbedFailure()
+        internal void NotifyEmbedFailure(Action<bool> completed)
         {
-            FireEmbedResult(false);
+            FireEmbedResult(completed, false);
         }
 
         public void TrackProcess(Process flashProcess)
         {
-            _registeredFocusProcess = flashProcess;
             if (flashProcess != null)
                 _flashProcessId = (uint)flashProcess.Id;
             _guardianProcessId = (uint)Process.GetCurrentProcess().Id;
@@ -513,23 +638,32 @@ namespace CF7Launcher.Guardian
                         if (_currentFlashPid != pid) return;                         // attempt 已换
                         if (_embedPhase != EmbedPhase.None) return;                  // EmbedFlashWindow 抢先 → 它全权处理
                         _embedPhase = EmbedPhase.EarlyHiddenClaimed;
-                        SetTrackedFlashWindow(hwnd);
                         claimed = true;
                     }
 
                     if (!claimed) return;
+                    ApplyPassiveStyle(hwnd);
 
                     try
                     {
                         bool flashTookForeground = afterFlashHides != null && HoldsForeground(hwnd);
                         ReparentToHidden(hwnd, hiddenHost);
+                        lock (_embedClaimLock)
+                        {
+                            if (_currentFlashPid == pid && _flashHwnd == IntPtr.Zero)
+                                SetTrackedFlashWindow(hwnd);
+                        }
                         if (flashTookForeground && hiddenHost.IsHandleCreated)
                             hiddenHost.BeginInvoke(afterFlashHides, hwnd);
+                        if (PassiveInput != null && hiddenHost.IsHandleCreated)
+                            hiddenHost.BeginInvoke(new Action(() => SettleBootstrapFocus(hwnd, "early_reparent")));
                     }
                     finally
                     {
                         lock (_embedClaimLock)
                         {
+                            if (_currentFlashPid == pid && _flashHwnd == IntPtr.Zero)
+                                SetTrackedFlashWindow(hwnd);
                             // 若期间 EmbedFlashWindow 覆盖为 Revealed（理论上不应该，因为 Claimed 状态会阻止它），
                             // 保留 Revealed；正常完成 Claimed → Done
                             if (_embedPhase == EmbedPhase.EarlyHiddenClaimed)
@@ -550,11 +684,10 @@ namespace CF7Launcher.Guardian
         ///   - EarlyHiddenDone → Reveal only (SW_SHOW + MoveWindow + resize binding + watchdog)
         ///   - EarlyHiddenClaimed → spin 等 Done（1s 上限），超时降级为 needFullEmbed 幂等兜底
         ///   - None → 全量路径（自己 poll hwnd + style + SetParent + MoveWindow + Show + resize + watchdog）
-        /// 终点统一 FireEmbedResult(true) — 状态机 Embedding→WaitingGameReady 推进信号零改动.
+        /// The matching attempt advances from Embedding only after this source is safe to publish.
         /// </summary>
-        public void EmbedFlashWindow(Process flashProcess, Panel hostPanel)
+        internal void EmbedFlashWindow(Process flashProcess, Panel hostPanel, Action<bool> completed)
         {
-            _hostPanel = hostPanel;
             int pid = (flashProcess != null) ? flashProcess.Id : 0;
 
             IntPtr hwnd = IntPtr.Zero;
@@ -563,6 +696,8 @@ namespace CF7Launcher.Guardian
 
             lock (_embedClaimLock)
             {
+                if (pid == 0 || _flashProcessId != (uint)pid) return;
+                _hostPanel = hostPanel;
                 if (_currentFlashPid != pid)
                 {
                     // attempt 已换，脏句柄清零，走全量路径
@@ -595,10 +730,10 @@ namespace CF7Launcher.Guardian
                 if (hwnd == IntPtr.Zero)
                 {
                     LogManager.Log("[WindowManager] Flash window not found (full-embed path), embedding skipped");
-                    FireEmbedResult(false);
+                    FireEmbedResult(completed, false);
                     return;
                 }
-                lock (_embedClaimLock) { SetTrackedFlashWindow(hwnd); }
+                ApplyPassiveStyle(hwnd);
                 LogManager.Log("[WindowManager] Flash window found (full-embed path): 0x" + hwnd.ToString("X"));
             }
             else if (mustWaitForEarlyDone)
@@ -633,8 +768,21 @@ namespace CF7Launcher.Guardian
                     }
                     if (hwnd == IntPtr.Zero)
                     {
+                        IntPtr polled = PollMainWindowHandle(flashProcess, 2000);
+                        if (polled != IntPtr.Zero)
+                        {
+                            lock (_embedClaimLock)
+                            {
+                                hwnd = polled;
+                                needFullEmbed = true;
+                                _embedPhase = EmbedPhase.RevealedOrFullEmbedded;
+                            }
+                        }
+                    }
+                    if (hwnd == IntPtr.Zero)
+                    {
                         LogManager.Log("[WindowManager] EmbedFlashWindow: early-reparent spin timeout, no hwnd, fail");
-                        FireEmbedResult(false);
+                        FireEmbedResult(completed, false);
                         return;
                     }
                     LogManager.Log("[WindowManager] EmbedFlashWindow: spin timeout, degrading to full-embed");
@@ -650,17 +798,31 @@ namespace CF7Launcher.Guardian
                 LogManager.Log("[WindowManager] Flash window found (reveal path): 0x" + hwnd.ToString("X"));
             }
 
-            // 终点统一：UI 线程 DoEmbedOrReveal + FireEmbedResult(true)
+            // Prepare the source on the UI thread. Publishing success also
+            // requires the exact passive source to pass its focus audit.
             IntPtr hwndSnap = hwnd;
             bool fullSnap = needFullEmbed;
-            if (_hostPanel != null && _hostPanel.InvokeRequired)
+            void CompleteOnUi()
             {
-                _hostPanel.BeginInvoke(new Action(delegate { DoEmbedOrReveal(hwndSnap, fullSnap); FireEmbedResult(true); }));
+                if (_currentFlashPid != pid || _flashProcessId != (uint)pid || !ReferenceEquals(_hostPanel, hostPanel))
+                    return;
+                if (hostPanel.IsDisposed || hostPanel.Disposing || !hostPanel.IsHandleCreated
+                    || GetWindowThreadProcessId(hwndSnap, out uint sourcePid) == 0 || sourcePid != (uint)pid)
+                {
+                    FireEmbedResult(completed, false);
+                    return;
+                }
+                DoEmbedOrReveal(hwndSnap, fullSnap);
+                if (PassiveInput == null) FireEmbedResult(completed, true);
+                else StagePassiveBootstrapPublication(hwndSnap, sourcePid, hostPanel, completed);
+            }
+            if (hostPanel.InvokeRequired)
+            {
+                hostPanel.BeginInvoke(new Action(CompleteOnUi));
             }
             else
             {
-                DoEmbedOrReveal(hwndSnap, fullSnap);
-                FireEmbedResult(true);
+                CompleteOnUi();
             }
         }
 
@@ -673,17 +835,20 @@ namespace CF7Launcher.Guardian
             if (hwnd == IntPtr.Zero || _hostPanel == null)
                 return;
 
-            // 建角仍在启动页时这个 panel 是隐藏的；嵌入只预备画面。
-            bool activate = _allowForeground && _hostPanel.Visible;
+            ApplyPassiveStyle(hwnd);
             if (needFullEmbed)
             {
                 // 完整路径与启动 hidden 路径共用菜单 / 子窗口样式处理。
                 ApplyFlashChildStyle(hwnd, "embed");
 
                 if (!SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (activate ? 0u : SWP_NOACTIVATE)))
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOACTIVATE))
                     LogWin32Failure("SetWindowPos(embed framechanged)", hwnd);
                 SetParentLogged(hwnd, _hostPanel.Handle, "SetParent(embed host)");
+                lock (_embedClaimLock)
+                {
+                    if (_flashHwnd == IntPtr.Zero) SetTrackedFlashWindow(hwnd);
+                }
             }
 
             // 两路径公用：先 uncloak（早 path 在 ReparentToHidden 时打过 DWMWA_CLOAK；child 化后理论无效，
@@ -694,8 +859,9 @@ namespace CF7Launcher.Guardian
                 DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, ref cloakOff, sizeof(int));
             }
             catch { }
-            ShowWindow(hwnd, activate ? SW_SHOW : SW_SHOWNOACTIVATE);
+            ShowWindow(hwnd, SW_SHOWNOACTIVATE);
             ResizeFlashToPanel();
+            ApplyPassiveStyle(hwnd);
 
             _hostPanel.Resize -= OnHostPanelResize;
             _hostPanel.Resize += OnHostPanelResize;
@@ -734,11 +900,13 @@ namespace CF7Launcher.Guardian
                 // 直接 return（见该方法的早退守卫），导致第二次及之后的嵌入失去脱嵌恢复保护.
                 if (!IsWindow(_flashHwnd))
                 {
+                    PassiveBootstrapPublication pending = Volatile.Read(ref _pendingPassiveBootstrap);
                     SetTrackedFlashWindow(IntPtr.Zero);
                     System.Windows.Forms.Timer dying = _watchdog;
                     _watchdog = null;
                     try { dying.Stop(); dying.Dispose(); } catch { }
                     LogManager.Log("[WindowManager] Flash window destroyed, watchdog stopped+disposed");
+                    if (pending != null) FireEmbedResult(pending.Completed, false);
                     return;
                 }
 
@@ -762,6 +930,7 @@ namespace CF7Launcher.Guardian
         {
             if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
                 return false;
+            ApplyPassiveStyle(_flashHwnd);
             var physical = ResolveFlashRenderSize();
             if (!MoveWindow(_flashHwnd, 0, 0, physical.Width, physical.Height, true)) {
                 LogWin32Failure("MoveWindow(resize)", _flashHwnd);
@@ -802,7 +971,7 @@ namespace CF7Launcher.Guardian
                     style = style & ~WS_CHILD;
                     SetWindowLongLogged(_flashHwnd, GWL_STYLE, style, "SetWindowLong(detach remove WS_CHILD)");
                     if (!SetWindowPos(_flashHwnd, IntPtr.Zero, 0, 0, 0, 0,
-                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | (_allowForeground ? 0u : SWP_NOACTIVATE)))
+                        SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOACTIVATE))
                         LogWin32Failure("SetWindowPos(detach framechanged)", _flashHwnd);
                     SetParentLogged(_flashHwnd, IntPtr.Zero, "SetParent(detach desktop)");
                 }
@@ -812,9 +981,7 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 前台看门狗判定：当前是否处于"焦点真空"——没有任何窗口持有系统前台
-        /// （GetForegroundWindow() 返回 NULL）。后台程序抢焦后未归还前台时会留下此态。
-        /// GuardianForm 的前台看门狗据此把前台回收给 Flash。
+        /// 诊断采样：当前桌面前台是否为空。
         /// </summary>
         public bool IsForegroundVacuum()
         {
@@ -848,7 +1015,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// 判断 hwnd 是否属于 Flash 进程或 Guardian 进程。
-        /// 嵌入后 Flash 子窗口 pid 归 Guardian；独立运行时 pid 归 Flash。
+        /// 此进程归属用于诊断采样；输入准入由会话窗口身份决定。
         /// </summary>
         internal bool IsWindowInFlashSession(IntPtr hwnd)
         {
@@ -879,253 +1046,9 @@ namespace CF7Launcher.Guardian
 
         internal bool ReturnBootstrapForeground(IntPtr flash, IntPtr bootstrap)
         {
-            if (!_allowForeground || bootstrap == IntPtr.Zero || !_focusApi.IsWindow(bootstrap)
-                    || !IsCurrentFlashWindow(flash)) return false;
-            IntPtr current = _focusApi.GetForegroundWindow();
-            if (current == bootstrap) return true;
-            if (current != flash && current != IntPtr.Zero) return false;
-            // 已核实这个 Flash 刚抢走本次启动前台。隐藏后它可能仍持有前台，也可能留下空窗口。
-            return _focusApi.SetForegroundWindow(bootstrap) && HoldsForeground(bootstrap);
-        }
-
-        /// <summary>
-        /// 隐藏活动面板之前，把仍由该面板持有的前台交给 Flash 的顶层窗口。
-        /// exact 前台复核后仅尝试一次；不使用 AttachThreadInput 或外部前台恢复。
-        /// </summary>
-        internal bool HandoffFlashFocusBeforePanelHide(string reason, IntPtr expectedPanelForeground)
-        {
-            if (!_allowForeground) return false;
-            // 同步交接仅尝试一次；前台已变化时不调用 SetForegroundWindow，也不绑外部输入队列。
-            IntPtr flash = _flashHwnd;
-            try
-            {
-                if (expectedPanelForeground == IntPtr.Zero || !IsCurrentFlashWindow(flash)) return false;
-                IntPtr root = _focusApi.GetRootWindow(flash);
-                if (root == IntPtr.Zero || !_focusApi.IsWindow(root)
-                        || _focusApi.GetForegroundWindow() != expectedPanelForeground) return false;
-                // 激活顶层 Guardian/Flash 窗口，键盘焦点仍归 exact Flash 子窗口。
-                bool activated = _focusApi.SetForegroundWindow(root);
-                if (!activated || !IsCurrentFlashWindow(flash)
-                        || _focusApi.GetForegroundWindow() != root)
-                {
-                    LogManager.Log("[FocusRestore] " + reason + " handoff=failed");
-                    return false;
-                }
-                _focusApi.SetFocus(flash);
-                IntPtr handoffForeground = _focusApi.GetForegroundWindow();
-                bool restored = IsFlashForegroundRoot(flash, handoffForeground)
-                    && IsFlashInnerFocusHeld(flash);
-                LogManager.Log("[FocusRestore] " + reason + " handoff=" + (restored ? "ok" : "failed")
-                    + " root=0x" + root.ToString("X") + " flash=0x" + flash.ToString("X"));
-                return restored;
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[FocusRestore] " + reason + " handoff=throw type=" + ex.GetType().Name);
-                return false;
-            }
-        }
-
-        /// <summary>现役输入焦点恢复：直接设置并校验，失败时以严格配对的 AttachThreadInput 再试一次。</summary>
-        public bool RestoreFlashInputFocus(string reason,Func<bool> stillEligible=null)
-        {
-            return RestoreFlashInputFocusCore(
-                reason,
-                _flashHwnd,
-                requireSetForegroundSuccess: false,
-                requireExactInnerFocus: true,stillEligible: stillEligible);
-        }
-
-        /// <summary>
-        /// Agent Runtime variant: pins the restore to the registry-bound HWND.
-        /// Success requires the exact Flash HWND (or its exact root) to be the
-        /// foreground window and the tracked handle to remain unchanged.
-        /// </summary>
-        internal bool RestoreFlashInputFocus(
-            string reason,
-            IntPtr expectedFlashHwnd)
-        {
-            return RestoreFlashInputFocusCore(
-                reason,
-                expectedFlashHwnd,
-                requireSetForegroundSuccess: true,
-                requireExactInnerFocus: true);
-        }
-
-        /// <summary>
-        /// 成功谓词的三个事实分开判定、分开入日志：
-        /// requireSetForegroundSuccess —— SetForegroundWindow API 返回值必须为真；
-        /// 前台根匹配 —— IsFlashForegroundRoot（前台为 Flash 或其顶层根）恒为必要条件；
-        /// requireExactInnerFocus —— IsFlashInnerFocusHeld（Flash 线程 hwndFocus 落在
-        /// flash 或其子窗口）必须为真，覆盖"根正确但内部焦点错误"这一反例。
-        /// </summary>
-        private bool RestoreFlashInputFocusCore(
-            string reason,
-            IntPtr expectedFlashHwnd,
-            bool requireSetForegroundSuccess,
-            bool requireExactInnerFocus,Func<bool> stillEligible=null)
-        {
-            if (!_allowForeground) return false;
-            long totalStart = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("focus_restore.start", reason);
-
-            IntPtr flashHwnd = expectedFlashHwnd;
-            bool Eligible() => IsCurrentFlashWindow(flashHwnd)
-                && (stillEligible == null || stillEligible())
-                && IsCurrentFlashWindow(flashHwnd);
-            if (!IsCurrentFlashWindow(flashHwnd))
-            {
-                LogManager.Log("[FocusRestore] " + reason + ": no flash hwnd, skip");
-                LogFocusProbe(reason, totalStart, 0, 0, 0, 0, false, false, "no_flash");
-                return false;
-            }
-
-            long describeStart = Stopwatch.GetTimestamp();
-            IntPtr fgBefore = _focusApi.GetForegroundWindow();
-            string fgBeforeDesc = DescribeWindow(fgBefore);
-            double describeBeforeMs = ElapsedMs(describeStart);
-            PerfTrace.Duration("focus_restore.describe_before", describeStart, reason);
-
-            if (!Eligible()) return false;
-            // Pass 1：直接 SetForegroundWindow
-            long pass1Start = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("focus_restore.pass1.start", reason);
-            bool sfwOk1 = false;
-            try
-            {
-                using (PerfTrace.PanelScope("focus_restore.set_foreground", reason))
-                    sfwOk1 = _focusApi.SetForegroundWindow(
-                        flashHwnd);
-            }
-            catch (Exception ex)
-            {
-                LogManager.Log("[FocusRestore] " + reason + " pass1 SetForegroundWindow threw: " + ex.Message);
-            }
-            if (!Eligible()) return false;
-            try { using (PerfTrace.PanelScope("focus_restore.set_focus", reason)) _focusApi.SetFocus(flashHwnd); } catch { }
-
-            IntPtr fgAfter1 =
-                _focusApi.GetForegroundWindow();
-            // 三个事实分开判定：SFW 返回值 / 前台根匹配 / Flash 线程内部焦点。
-            bool rootMatch1;
-            using (PerfTrace.PanelScope("focus_restore.verify_root", reason))
-                rootMatch1 = IsFlashForegroundRoot(flashHwnd, fgAfter1);
-            bool innerMatch1;
-            using (PerfTrace.PanelScope("focus_restore.verify_inner", reason))
-                innerMatch1 = IsFlashInnerFocusHeld(flashHwnd);
-            double pass1Ms = ElapsedMs(pass1Start);
-            PerfTrace.Duration("focus_restore.pass1", pass1Start, reason);
-            if ((!requireSetForegroundSuccess || sfwOk1)
-                && rootMatch1
-                && (!requireExactInnerFocus || innerMatch1)
-                && Eligible())
-            {
-                describeStart = Stopwatch.GetTimestamp();
-                string fgAfter1Desc = DescribeWindow(fgAfter1);
-                string innerFocus1 = DescribeInnerFocus(flashHwnd);
-                double describeAfterMs = ElapsedMs(describeStart);
-                PerfTrace.Duration("focus_restore.describe_after", describeStart, reason + " path=pass1");
-                LogManager.Log("[FocusRestore] " + reason + " pass1=ok sfwReturn=" + sfwOk1
-                    + " fgMatch=" + rootMatch1
-                    + " fgBefore=" + fgBeforeDesc
-                    + " fgAfter=" + fgAfter1Desc
-                    + " innerFocus=" + innerFocus1);
-                LogFocusProbe(reason, totalStart, pass1Ms, 0, 0,
-                    describeBeforeMs + describeAfterMs, true, false, "pass1");
-                return true;
-            }
-
-            if (!Eligible()) return false;
-            // Pass 2：AttachThreadInput hack
-            long attachStart = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("focus_restore.attach.start", reason);
-            uint myTid = _focusApi.GetCurrentThreadId();
-            uint fgPid2;
-            uint fgTid = _focusApi.GetWindowThreadProcessId(
-                fgAfter1,
-                out fgPid2);
-            bool attached = false;
-            if (!Eligible()) return false;
-            double attachMs = 0;
-            long pass2Start = Stopwatch.GetTimestamp();
-            bool sfwOk2 = false;
-            try
-            {
-                if (fgTid != 0 && fgTid != myTid)
-                {
-                    try { attached = _focusApi.AttachThreadInput(myTid, fgTid, true); }
-                    catch (Exception ex)
-                    {
-                        LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput attach threw; cleanup_unknown: " + ex.Message);
-                        return false;
-                    }
-                    if (!attached) return false;
-                }
-                // The compensation scope already exists before attach and all diagnostics.
-                attachMs = ElapsedMs(attachStart);
-                PerfTrace.Duration("focus_restore.attach", attachStart, reason + " attached=" + attached);
-                pass2Start = Stopwatch.GetTimestamp();
-                PerfTrace.Mark("focus_restore.pass2.start", reason);
-                if (!Eligible()) return false;
-                try
-                {
-                    sfwOk2 =
-                        _focusApi.SetForegroundWindow(
-                            flashHwnd);
-                }
-                catch { }
-                if (!Eligible()) return false;
-                try { _focusApi.SetFocus(flashHwnd); } catch { }
-            }
-            finally
-            {
-                if (attached)
-                {
-                    try
-                    {
-                        if (!_focusApi.AttachThreadInput(myTid, fgTid, false))
-                            LogManager.Log("[FocusRestore] " + reason
-                                + " pass2 AttachThreadInput detach returned false");
-                    }
-                    catch (Exception ex)
-                    {
-                        // Preserve an unsuccessful cleanup result; it does not prove permanent attachment.
-                        LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput DETACH FAILED: " + ex.Message
-                            + " (myTid=" + myTid + " fgTid=" + fgTid + ")");
-                    }
-                }
-            }
-            double pass2Ms = ElapsedMs(pass2Start);
-            PerfTrace.Duration("focus_restore.pass2", pass2Start, reason);
-
-            IntPtr fgAfter2 =
-                _focusApi.GetForegroundWindow();
-            bool rootMatch2 =
-                IsFlashForegroundRoot(flashHwnd, fgAfter2);
-            bool innerMatch2 =
-                IsFlashInnerFocusHeld(flashHwnd);
-            bool finalOk =
-                (!requireSetForegroundSuccess || sfwOk2)
-                && rootMatch2
-                && (!requireExactInnerFocus || innerMatch2)
-                && Eligible();
-            describeStart = Stopwatch.GetTimestamp();
-            string fgAfter1Desc2 = DescribeWindow(fgAfter1);
-            string fgAfter2Desc = DescribeWindow(fgAfter2);
-            string innerFocus2 = DescribeInnerFocus(flashHwnd);
-            double describeFinalMs = ElapsedMs(describeStart);
-            PerfTrace.Duration("focus_restore.describe_after", describeStart, reason + " path=pass2");
-            LogManager.Log("[FocusRestore] " + reason + " pass1=fail pass2=" + (finalOk ? "ok" : "fail")
-                + " attached=" + attached
-                + " sfwReturn=" + sfwOk2
-                + " fgMatch=" + rootMatch2
-                + " fgBefore=" + fgBeforeDesc
-                + " fgAfter1=" + fgAfter1Desc2
-                + " fgAfter2=" + fgAfter2Desc
-                + " innerFocus=" + innerFocus2);
-            LogFocusProbe(reason, totalStart, pass1Ms, attachMs, pass2Ms,
-                describeBeforeMs + describeFinalMs, finalOk, true, "pass2");
-            return finalOk;
+            if (bootstrap != _passiveRoot || !IsCurrentFlashWindow(flash)) return false;
+            IntPtr current = ReadCloseForeground();
+            return (current == bootstrap || current == flash) && ActivateSessionRootBeforeHide(current);
         }
 
         private bool IsCurrentFlashWindow(
@@ -1141,106 +1064,5 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        /// <summary>
-        /// 前台根匹配：当前系统前台是 Flash 窗口本身或其顶层根窗口
-        /// （同时复核 tracked hwnd 仍是当前窗口）。
-        /// </summary>
-        private bool IsFlashForegroundRoot(
-            IntPtr expectedFlashHwnd,
-            IntPtr foregroundHwnd)
-        {
-            if (foregroundHwnd == IntPtr.Zero
-                || !IsCurrentFlashWindow(
-                    expectedFlashHwnd))
-            {
-                return false;
-            }
-            if (foregroundHwnd == expectedFlashHwnd)
-                return true;
-            IntPtr root = _focusApi.GetRootWindow(
-                expectedFlashHwnd);
-            return root != IntPtr.Zero
-                && foregroundHwnd == root;
-        }
-
-        /// <summary>
-        /// 内部 GUI 焦点：Flash 所属线程的 hwndFocus 落在 flashHwnd 自身
-        /// 或其子窗口上。前台根匹配正确但此项为假时，键盘输入不会落到
-        /// Flash——该反例不得报成功。
-        /// </summary>
-        private bool IsFlashInnerFocusHeld(
-            IntPtr expectedFlashHwnd)
-        {
-            IntPtr focused =
-                _focusApi.GetFocusedWindow(
-                    expectedFlashHwnd);
-            return focused == expectedFlashHwnd
-                || (focused != IntPtr.Zero
-                    && _focusApi.IsChild(
-                        expectedFlashHwnd,
-                        focused));
-        }
-
-        private static void LogFocusProbe(string reason, long totalStart, double pass1Ms,
-            double attachMs, double pass2Ms, double describeMs, bool finalOk, bool usedPass2, string path)
-        {
-            double totalMs = ElapsedMs(totalStart);
-            PerfTrace.Duration("focus_restore.total", totalStart,
-                (reason ?? "?") + " path=" + (path ?? "?") + " final=" + finalOk);
-
-            if (totalMs < 50.0 && pass1Ms < 50.0 && attachMs < 50.0 && pass2Ms < 50.0
-                && describeMs < 50.0 && finalOk && !usedPass2)
-                return;
-
-            LogManager.Log("[FocusProbe] reason=" + (reason ?? "?")
-                + " path=" + (path ?? "?")
-                + " total=" + FormatMs(totalMs) + "ms"
-                + " pass1=" + FormatMs(pass1Ms) + "ms"
-                + " attach=" + FormatMs(attachMs) + "ms"
-                + " pass2=" + FormatMs(pass2Ms) + "ms"
-                + " describe=" + FormatMs(describeMs) + "ms"
-                + " final=" + finalOk);
-        }
-
-        private static double ElapsedMs(long startTimestamp)
-        {
-            return (Stopwatch.GetTimestamp() - startTimestamp) * 1000.0 / Stopwatch.Frequency;
-        }
-
-        private static string FormatMs(double ms)
-        {
-            return ms.ToString("0.0", CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// 诊断用：查 Flash 主窗口所属线程的 GUI focus 状态，看 inner focus 是否真的落在 flashHwnd。
-        /// GetGUIThreadInfo 跨线程安全（无需 AttachThreadInput），返回的 hwndFocus 是该线程当前持有焦点的子窗口。
-        ///
-        /// 输出格式：
-        ///   "matches"       → hwndFocus == flashHwnd（最理想，AS2 能收键）
-        ///   "child=0x..."   → hwndFocus 是 flashHwnd 的子（也算 AS2 能收键的范围）
-        ///   "other=0x..."   → 焦点在 Flash 线程的其他窗口（应该不会出现，Flash SA 一般只有主窗口持焦）
-        ///   "none"          → 该线程当前无 GUI 焦点（SetFocus 没生效或被剥）
-        ///   "gti_fail"      → GetGUIThreadInfo 调用失败
-        /// </summary>
-        private static string DescribeInnerFocus(IntPtr flashHwnd)
-        {
-            if (flashHwnd == IntPtr.Zero) return "no_flash_hwnd";
-            uint flashPid;
-            uint flashTid = GetWindowThreadProcessId(flashHwnd, out flashPid);
-            if (flashTid == 0) return "no_flash_tid";
-
-            GUITHREADINFO gti = new GUITHREADINFO();
-            gti.cbSize = Marshal.SizeOf(typeof(GUITHREADINFO));
-            bool ok = false;
-            try { ok = GetGUIThreadInfo(flashTid, ref gti); }
-            catch { ok = false; }
-            if (!ok) return "gti_fail";
-            if (gti.hwndFocus == IntPtr.Zero) return "none";
-            if (gti.hwndFocus == flashHwnd) return "matches";
-            // 是不是 Flash 主窗口的子？快速检查 GetAncestor(GA_ROOT) 是 flashHwnd
-            // 这里不另引 P/Invoke 了，直接报 hwnd + 类名让人肉判断
-            return "other=" + DescribeWindow(gti.hwndFocus);
-        }
     }
 }

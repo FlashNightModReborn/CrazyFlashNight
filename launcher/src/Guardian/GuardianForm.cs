@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Microsoft.Win32;
 using CF7Launcher.Config;
 using CF7Launcher.Diagnostic;
+using CF7Launcher.Guardian.InputOwnership;
 
 namespace CF7Launcher.Guardian
 {
@@ -26,27 +27,23 @@ namespace CF7Launcher.Guardian
         }
 
         [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+            int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        [DllImport("user32.dll")]
-        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
-
-        [DllImport("user32.dll")]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
-            int X, int Y, int cx, int cy, uint uFlags);
-
-        private const uint MOD_CONTROL = 0x0002;
         private const int WM_HOTKEY = 0x0312;
-        private const uint KEYEVENTF_KEYUP = 0x0002;
         private const int WM_DPICHANGED = 0x02E0;
         private const int WM_SIZE = 0x0005;
         private const int WM_ACTIVATEAPP = 0x001C;
+        private const uint MOD_CONTROL = 0x0002;
+        private const int HK_CTRL_F = 0xCF01;
+        private const int HK_CTRL_Q = 0xCF02;
+        private const int HK_ESC = 0xCF10;
         private const int SIZE_RESTORED = 0;
         private const int SIZE_MINIMIZED = 1;
         private const int SIZE_MAXIMIZED = 2;
@@ -62,17 +59,12 @@ namespace CF7Launcher.Guardian
         private const int MinimumBootstrapClientWidth = 1120;
         private const int MinimumBootstrapClientHeight = 640;
 
-        // RegisterHotKey ID（仅 Guardian 自身动作）
-        private const int HK_CTRL_F = 0xCF01;
-        private const int HK_CTRL_Q = 0xCF02;
-        private const int HK_ESC = 0xCF10;
-
         // 工具栏按钮键
         private static readonly Keys[] AllHotkeyKeys = { Keys.Q, Keys.W, Keys.R, Keys.F, Keys.P, Keys.O };
 
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
-        private bool _trayMenuOpen;
+        private volatile bool _trayMenuOpen;
         internal bool NativeInteractionActive => _trayMenuOpen || _trayMenu?.Visible == true
             || (Form.ActiveForm is Form active && active != this && active.Owner == this && active.Modal);
         private ToolStripMenuItem _wingsTrayItem;
@@ -99,23 +91,18 @@ namespace CF7Launcher.Guardian
         private bool _runtimeViewportWasMaximized;
         private int _runtimeViewportLastSizeCode = -1;
 
-        private bool _hotkeysRegistered;
         private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
+        private readonly SessionInputAuthority _passiveInput;
         private WebOverlayForm _webOverlay; // 面板系统：ESC→PostToWeb
 
-        // 应用激活状态的权威源：WM_ACTIVATEAPP/WM_SIZE 喂入，KeyboardHook 与
-        // PerfDecisionEngine 据此判定前台/最小化，取代散落的 GetForegroundWindow() 轮询。
+        // 进程激活去抖用于呈现和性能决策。
         private readonly AppActivationState _activationState = new AppActivationState();
-        // 前台看门狗：观测"焦点真空"，并在恢复资格仍有效时回收 Flash 前台
-        // （资格语义与"执行前复核"详见 SetupForegroundWatchdog / ForegroundVacuumWatchdogPolicy）。
+        // UI 线程心跳，同时记录进入前台真空的时刻。
         private System.Windows.Forms.Timer _foregroundWatchdog;
         private volatile int _lastWatchdogTickTick;
         private long _guardianHwndForProbe;
         private UiFreezeProbe _uiFreezeProbe;
-        // A0.2：真空连续命中计数、恢复资格与输出节流收敛进纯状态机（可单测）；
-        // 资格授予/撤销依赖真实前台归属与 WM_ACTIVATEAPP，不由 NULL 持续时间创造。
-        private readonly ForegroundVacuumWatchdogPolicy _vacuumWatchdogPolicy =
-            new ForegroundVacuumWatchdogPolicy();
+        private SessionForegroundOwnership? _lastObservedForeground;
         // 工作站锁定 / 安全桌面 / 快速用户切换：此期间默认桌面侧前台恒为 NULL，看门狗须停。
         private volatile bool _sessionLocked;
         internal bool IsSessionLocked => _sessionLocked;
@@ -169,16 +156,30 @@ namespace CF7Launcher.Guardian
             bool isolatedRuntimeCandidate,
             bool arenaWorkerMode = false,
             bool arenaWorkerMinimalRendering = false)
+            : this(bootstrapWebDir, bootstrapWebView2DisableGpu, bootstrapWebView2AdditionalArgs,
+                bootstrapWebView2DeveloperMode, isolatedRuntimeCandidate, arenaWorkerMode, arenaWorkerMinimalRendering, null)
+        {
+        }
+
+        internal GuardianForm(string bootstrapWebDir, bool bootstrapWebView2DisableGpu, string bootstrapWebView2AdditionalArgs,
+            bool bootstrapWebView2DeveloperMode, bool isolatedRuntimeCandidate, bool arenaWorkerMode,
+            bool arenaWorkerMinimalRendering, SessionInputAuthority passiveInput)
         {
             if (arenaWorkerMinimalRendering && !arenaWorkerMode)
                 throw new ArgumentException("Minimal Worker rendering requires Arena Worker mode.");
             ArenaWorkerMode = arenaWorkerMode;
+            _passiveInput = passiveInput;
             InitializeComponent(
                 bootstrapWebDir,
                 bootstrapWebView2DisableGpu,
                 bootstrapWebView2AdditionalArgs,
                 bootstrapWebView2DeveloperMode,
                 isolatedRuntimeCandidate);
+            if (_passiveInput != null)
+            {
+                BindLogEditor(_searchBox, "guardian.log.search");
+                BindLogEditor(_logBox, "guardian.log.output");
+            }
             if (arenaWorkerMinimalRendering)
             {
                 // Reduce both the Flash raster and the native output surface.
@@ -190,7 +191,7 @@ namespace CF7Launcher.Guardian
             if (!ArenaWorkerMode)
             {
                 SetupTrayIcon();
-                SetupHotkeys();
+                if (_passiveInput != null) SetupHotkeys();
                 SetupForegroundWatchdog();
             }
             else
@@ -219,9 +220,33 @@ namespace CF7Launcher.Guardian
             StartUiFreezeProbe();
         }
 
+        private void BindLogEditor(TextBox editor, string endpoint)
+        {
+            TextInputLease? lease = null;
+            long generation = 0;
+            editor.GotFocus += (_, _) =>
+            {
+                if (!editor.Focused) return;
+                if (generation == 0) generation = _passiveInput.NextInstanceGeneration(endpoint);
+                lease = _passiveInput.AcquireText(endpoint, generation, new(_passiveInput.CurrentSessionId,
+                    Handle, editor.Handle, TextInputClaim.NextFocusSerial(), true));
+            };
+            void Release()
+            {
+                if (lease is not { } exact) return;
+                lease = null;
+                var receipt = _passiveInput.ReleaseText(exact, new(_passiveInput.CurrentSessionId,
+                    TextInputClaim.NextFocusSerial(), "log_editor_exit", true));
+                _passiveInput.RequestGameKeyboard(receipt);
+            }
+            editor.LostFocus += (_, _) => Release();
+            editor.HandleDestroyed += (_, _) => { Release(); generation = 0; };
+        }
+
         /// <summary>应用激活状态的权威源。Program.cs 注入给 PerfDecisionEngine。</summary>
         public AppActivationState ActivationState { get { return _activationState; } }
         public event Action<bool> AppActivationChanged;
+        internal IntPtr DeactivatingToWindow { get; private set; }
 
         /// <summary>Phase 2 PanelHostController FlashSnapshot.Capture 用。SA 进程重启时返回 IntPtr.Zero。</summary>
         public IntPtr GetFlashHwnd()
@@ -268,15 +293,11 @@ namespace CF7Launcher.Guardian
         /// Phase B Step B1: watchdog 去 ForceExit，只做 PID 追踪.
         /// 原 500ms poll 检测 HasExited → ForceExit 的行为已移除;
         /// Flash 退出唯一真源是 ProcessManager.OnFlashExited（GameLaunchFlow 订阅，按 state 分流）.
-        /// 本方法仅用于:
-        ///   - 把 Flash PID 传给 KeyboardHook，让热键在 Flash 前台时也能拦截
-        ///   - 为将来可能的 UI 侧 PID 匹配保留追踪字段
+        /// 记录本次启动的 Flash 进程。
         /// </summary>
         public void TrackFlashProcess(Process p)
         {
             _flashProcess = p;
-            if (_kbHook != null && p != null)
-                _kbHook.SetFlashPid((uint)p.Id);
         }
 
         // ============================================================
@@ -473,9 +494,10 @@ namespace CF7Launcher.Guardian
             // 会吞掉其他应用的 Ctrl+F 等快捷键，影响开发效率）
             _kbHook = new KeyboardHook();
 
-            // 钩子的前台判定改读去抖后的进程级激活状态（WM_ACTIVATEAPP 驱动），
-            // 不再在钩子回调里裸轮询 GetForegroundWindow()——后者会被后台程序瞬时抢焦打翻。
-            _kbHook.SetActivationProbe(delegate { return _activationState.IsAppActive; });
+            _kbHook.BindPassiveInput(_passiveInput,
+                    () => !IsShutdownAdmissionClosed && !_sessionLocked && !_trayMenuOpen && _windowManager?.PassiveSessionForeground() == true,
+                    action => { if (IsHandleCreated && !Disposing && !IsDisposed) BeginInvoke(action); },
+                    () => _windowManager?.PassiveShortcutForeground() == true);
 
             // Ctrl+F → 全屏（回调在钩子线程，需 BeginInvoke 回 UI 线程）
             // Phase A Step A3b: 非 Ready 态 no-op（bootstrap 期 Flash 未 embed，全屏切换无意义）
@@ -492,19 +514,19 @@ namespace CF7Launcher.Guardian
             _kbHook.RegisterAction(0x1B, delegate {
                 if (_kbHook.PanelEscEnabled)
                 {
-                    try { this.BeginInvoke(new Action(delegate {
+                    DispatchShortcutToUi(delegate {
                         if (_webOverlay != null) _webOverlay.PostToWeb(
                             "{\"type\":\"panel_esc\",\"reason\":\"escape\"}");
-                    })); } catch {}
+                    });
                 }
                 else if (_kbHook.InteractionEscActive)
                 {
                     // native_interaction：NPC 菜单 / pinned tooltip 存活 → ESC 关闭交互会话。
                     // 面板未开时才到达此分支（PanelEscEnabled 已先判定），不吃 Web 面板 ESC。
-                    try { this.BeginInvoke(new Action(delegate {
+                    DispatchShortcutToUi(delegate {
                         Action h = _interactionEscHandler;
                         if (h != null) h();
-                    })); } catch {}
+                    });
                 }
                 else
                 {
@@ -514,18 +536,38 @@ namespace CF7Launcher.Guardian
                 }
             });
 
-            if (_kbHook.Install())
+            if (!_kbHook.Install())
             {
-                _hotkeysRegistered = true;
-            }
-            else
-            {
-                // 钩子安装失败 → fallback 到 RegisterHotKey（全局但至少能用）
-                LogManager.Log("[Hotkey] KeyboardHook failed, falling back to RegisterHotKey");
                 _kbHook.Dispose();
                 _kbHook = null;
+                LogManager.Log("[Hotkey] Session keyboard source unavailable; registering emergency fallback hotkeys");
                 FallbackRegisterHotkeys();
             }
+        }
+
+        private void FallbackRegisterHotkeys()
+        {
+            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer { Interval = 200 };
+            t.Tick += delegate
+            {
+                if (!this.IsHandleCreated) return;
+                t.Stop();
+                t.Dispose();
+                bool f = RegisterHotKey(this.Handle, HK_CTRL_F, MOD_CONTROL, (uint)Keys.F);
+                bool q = RegisterHotKey(this.Handle, HK_CTRL_Q, MOD_CONTROL, (uint)Keys.Q);
+                LogManager.Log("[Hotkey] Fallback RegisterHotKey Ctrl+F=" + f + " Ctrl+Q=" + q);
+            };
+            t.Start();
+        }
+
+        private void DispatchShortcutToUi(Action action)
+        {
+            try
+            {
+                if (InvokeRequired) BeginInvoke(action);
+                else if (!IsDisposed && !Disposing) action();
+            }
+            catch (InvalidOperationException) { }
         }
 
         /// <summary>
@@ -535,7 +577,7 @@ namespace CF7Launcher.Guardian
         private bool IsReadyForHotkey()
         {
             if (_launchFlow == null) return false;
-            try { return _launchFlow.CurrentState == "Ready"; }
+            try { return _launchFlow.CurrentState == "Ready" && (_passiveInput == null || _launchFlow.RevealPerformed); }
             catch { return false; }
         }
 
@@ -550,37 +592,17 @@ namespace CF7Launcher.Guardian
             _kbHook.EnableBlockedVk(0x47); // G
             _kbHook.RegisterAction(0x47, delegate {
                 if (!IsReadyForHotkey()) return;
-                try { this.BeginInvoke(new Action(delegate {
+                DispatchShortcutToUi(delegate {
                     if (_webOverlay == null || _windowManager == null) return;
                     _webOverlay.ToggleCompositionProbe(_windowManager.FlashHwnd);
-                })); } catch {}
+                });
             });
             LogManager.Log("[GpuProbe] Ctrl+G enabled (dev-only)");
-        }
-
-        /// <summary>Fallback：KeyboardHook 安装失败时退化为 RegisterHotKey</summary>
-        private void FallbackRegisterHotkeys()
-        {
-            // 延迟到窗口句柄就绪
-            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-            t.Interval = 200;
-            t.Tick += delegate
-            {
-                if (!this.IsHandleCreated) return;
-                t.Stop();
-                t.Dispose();
-                bool f = RegisterHotKey(this.Handle, HK_CTRL_F, MOD_CONTROL, (uint)Keys.F);
-                bool q = RegisterHotKey(this.Handle, HK_CTRL_Q, MOD_CONTROL, (uint)Keys.Q);
-                _hotkeysRegistered = true;
-                LogManager.Log("[Hotkey] Fallback RegisterHotKey Ctrl+F=" + f + " Ctrl+Q=" + q);
-            };
-            t.Start();
         }
 
         private void DoUnregisterHotkeys()
         {
             StopUiFreezeProbe();
-            // 前台看门狗与热键同属输入/前台子系统，一并拆除（独立于 _hotkeysRegistered）。
             if (_foregroundWatchdog != null)
             {
                 _foregroundWatchdog.Stop();
@@ -593,16 +615,14 @@ namespace CF7Launcher.Guardian
                 // SystemEvents 持静态引用，不退订会泄漏 GuardianForm。
                 SystemEvents.SessionSwitch -= OnSessionSwitch;
             }
-            if (!_hotkeysRegistered) return;
-            if (_kbHook != null) { _kbHook.Dispose(); _kbHook = null; }
-            // fallback 清理（无论是否实际注册过，调用 Unregister 是安全的）
+            _kbHook?.Dispose();
+            _kbHook = null;
             if (this.IsHandleCreated)
             {
                 UnregisterHotKey(this.Handle, HK_CTRL_F);
                 UnregisterHotKey(this.Handle, HK_CTRL_Q);
                 UnregisterHotKey(this.Handle, HK_ESC);
             }
-            _hotkeysRegistered = false;
         }
 
         protected override void WndProc(ref Message m)
@@ -624,21 +644,18 @@ namespace CF7Launcher.Guardian
                 return;
             }
 
-            // fallback 模式下处理 RegisterHotKey 的 WM_HOTKEY
             if (m.Msg == WM_HOTKEY && _kbHook == null)
             {
                 int id = m.WParam.ToInt32();
                 if (id == HK_ESC || id == HK_CTRL_F)
                 {
-                    // Phase A Step A3b: 非 Ready 态 no-op
                     if (!IsReadyForHotkey()) return;
                     ToggleFullscreen();
                     return;
                 }
                 if (id == HK_CTRL_Q)
                 {
-                    EmergencyExit(
-                        EmergencyExitReason.CtrlQ);
+                    EmergencyExit(EmergencyExitReason.CtrlQ);
                     return;
                 }
             }
@@ -660,8 +677,6 @@ namespace CF7Launcher.Guardian
                         ? unchecked(nowTick - _lastDeactivateLogTick) : -1;
                     LogManager.Log("[Activation] gained gapMs=" + gapMs);
                     _lastDeactivateLogTick = 0;
-                    // A0.2：合法激活成立 = 仍有效的用户返回，重建看门狗恢复资格基线。
-                    _vacuumWatchdogPolicy.OnSessionActivated();
                 }
                 else
                 {
@@ -669,14 +684,9 @@ namespace CF7Launcher.Guardian
                         ? _windowManager.DescribeForeground() : "(no wm)";
                     LogManager.Log("[Activation] lost fg=" + fgDesc);
                     _lastDeactivateLogTick = nowTick;
-                    // A0.2 返修：失活即"当前这次用户返回"已结束，撤销看门狗恢复资格；
-                    // 历史激活不构成无限期夺焦许可。
-                    _vacuumWatchdogPolicy.OnSessionDeactivated();
                 }
                 _activationState.OnActivateApp(active);
                 AppActivationChanged?.Invoke(active && !_activationState.IsMinimized);
-                if (active && _webOverlay != null && !NativeInteractionActive)
-                    _webOverlay.RequestPanelFocusRestoreAfterAppActivation();
             }
             else if (m.Msg == WM_SIZE)
             {
@@ -722,25 +732,20 @@ namespace CF7Launcher.Guardian
                 _runtimeViewportLastSizeCode = sizeCode;
             }
 
-            base.WndProc(ref m);
+            // WinForms raises Deactivate while user32 can still report the old foreground.
+            // WM_ACTIVATE supplies the receiving HWND for this exact transfer.
+            if (m.Msg == 0x0006 && (m.WParam.ToInt64() & 0xffff) == 0)
+            {
+                IntPtr previous = DeactivatingToWindow;
+                DeactivatingToWindow = m.LParam;
+                try { base.WndProc(ref m); }
+                finally { DeactivatingToWindow = previous; }
+            }
+            else base.WndProc(ref m);
         }
 
         // ============================================================
-        // 前台看门狗：观测 + 受限兜底。
-        //
-        // 后台程序（QQ/Telegram 的通知窗）抢走系统前台后，有时不会把前台归还给游戏
-        // 窗口，留下"焦点真空"——GetForegroundWindow() 返回 NULL，没有任何窗口持有
-        // 系统前台。此状态下：
-        //   • KeyboardHook 的前台判定落空 → 快捷键失灵（玩家反馈"触发不了 UI"）；
-        //   • Flash SA 因非前台自行降帧 → 帧数大降。
-        //
-        // A0.2 收窄：真空本身不是用户意图——"连续 NULL"只证明没人持有前台，不证明
-        // 用户允许游戏夺回。恢复只在资格仍有效时执行：本会话最近一次合法激活
-        // （用户返回 / 会话内交接成立）之后没有观察到真实外部前台持有；判定、
-        // 连续确认与输出节流收敛在 ForegroundVacuumWatchdogPolicy（纯状态机，
-        // 单测覆盖）。无资格时仅记观察日志、零恢复调用。
-        // 前台属于真实外部窗口（用户自己切过去的）仍一律不抢。
-        // ============================================================
+        // 前台观察和 UI 心跳共用 Guardian 的 UI 线程计时器。
 
         private void SubscribeSessionSwitch()
         {
@@ -768,6 +773,7 @@ namespace CF7Launcher.Guardian
                 case SessionSwitchReason.ConsoleDisconnect:
                 case SessionSwitchReason.RemoteDisconnect:
                     _sessionLocked = true;
+                    _passiveInput?.SetForeground(false);
                     break;
                 case SessionSwitchReason.SessionUnlock:
                 case SessionSwitchReason.ConsoleConnect:
@@ -782,55 +788,13 @@ namespace CF7Launcher.Guardian
             _lastWatchdogTickTick = Environment.TickCount;
             if (this.IsHandleCreated)
                 Interlocked.Exchange(ref _guardianHwndForProbe, this.Handle.ToInt64());
-
-            // System.Windows.Forms.Timer.Tick 抛异常会冒到消息循环——本文件其余热键
-            // 回调均包 try/catch，此处保持一致（RestoreFlashInputFocus 文档承诺不抛，
-            // 但 IsReadyForHotkey 等仍可能在边界态抛）。
             try
             {
-                if (this.IsDisposed || !this.IsHandleCreated) return;
-                // 锁屏 / 安全桌面 / 快速用户切换期间，默认桌面侧前台恒为 NULL，看门狗须停
-                // ——否则整夜锁屏会刷上千条无效 [FgWatchdog] / [FocusRestore] 日志。
-                if (_sessionLocked) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
-                if (NativeInteractionActive) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
-                // 仅 Ready 态介入：bootstrap 期 Flash 未嵌入，谈不上前台回收。
-                if (!IsReadyForHotkey()) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
-                // 最小化是用户的主动选择，不打扰。
-                if (_activationState.IsMinimized) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
-                // 面板打开时前台合法地属于 WebOverlay（同进程），不在此处理。
-                if (_webOverlay != null && _webOverlay.IsPanelMode) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
-                if (_windowManager == null) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
-
-                // 单次前台采样同时承担真空检测与资格跟踪：NULL=真空（中性证据）、
-                // Session=本会话持有真实前台（重建资格）、External=真实外部窗口
-                // （用户去了别处，撤销资格）。连续命中、节流与"执行前复核"的资格
-                // 判定都在策略对象内以最新状态完成——NULL 持续时间本身不构成资格。
-                SessionForegroundOwnership foreground =
-                    _windowManager.GetForegroundOwnership();
-                ForegroundVacuumWatchdogPolicy.Decision decision =
-                    _vacuumWatchdogPolicy.OnForegroundTick(
-                        foreground, Environment.TickCount);
-
-                if (decision == ForegroundVacuumWatchdogPolicy.Decision.Restore)
-                {
-                    // 执行前复核：策略决策与真正夺焦之间前台可能已变（外部窗口先拿到
-                    // 前台），以最新采样为准；外部到达即放弃本次恢复（R1 RCE-3）。
-                    if (!_vacuumWatchdogPolicy.RecheckEligibility(
-                            _windowManager.GetForegroundOwnership()))
-                    {
-                        LogManager.Log("[FgWatchdog] restore skipped: eligibility lost before execution");
-                        return;
-                    }
-                    LogManager.Log("[FgWatchdog] foreground vacuum detected, reclaiming Flash foreground"
-                        + " claim=" + _vacuumWatchdogPolicy.LastClaimSource);
-                    _windowManager.RestoreFlashInputFocus("fg_watchdog:vacuum",
-                        ()=>GameInputOwnerEligible() && _vacuumWatchdogPolicy.RecheckEligibility(_windowManager.GetForegroundOwnership()));
-                }
-                else if (decision == ForegroundVacuumWatchdogPolicy.Decision.Observe)
-                {
-                    LogManager.Log("[FgWatchdog] foreground vacuum observed, restore ineligible"
-                        + " (no live user-return/session claim) — observe only");
-                }
+                if (_windowManager == null || _sessionLocked || !IsHandleCreated || IsDisposed) return;
+                var foreground = _windowManager.GetForegroundOwnership();
+                if (foreground == SessionForegroundOwnership.Null && _lastObservedForeground != foreground)
+                    LogManager.Log("[FgWatchdog] foreground vacuum observed");
+                _lastObservedForeground = foreground;
             }
             catch (Exception ex)
             {
@@ -879,39 +843,12 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        internal Func<bool> GameInputOwnerEligible = () => true;
-        internal void BindPanelEscapeCapture(Func<Action> capture) { if(_kbHook!=null)_kbHook.CapturePanelEscapeAction=capture; }
-        internal bool HasNativeEditFocus()
-        {
-            if (NativeInteractionActive) return true;
-            Form active=Form.ActiveForm;
-            if(active!=null && active!=this && active.Owner==this && active.Modal)return true;
-            Control control=active?.ActiveControl;
-            while(control is ContainerControl container && container.ActiveControl!=null)control=container.ActiveControl;
-            return control is TextBoxBase or ComboBox or NumericUpDown or DataGridView;
-        }
         public void SendKeyToFlash(Keys key)
         {
-            // 经 RestoreFlashInputFocus primitive 拉回前台 + 焦点（带 AttachThreadInput 兜底 + verify + 日志）；
-            // ctrl_combo 路径 keybd_event 是全局注入，必须先确认 Flash 真的在前台——否则按键命中
-            // 当前 fg（可能是 launcher 主窗口 / 用户切走的其他应用），引发误操作。
-            // primitive 内部已打 [FocusRestore] 详细日志，此处失败时只补一条 skip 摘要。
-            bool focusOk = GameInputOwnerEligible() && (_windowManager != null)
-                && _windowManager.RestoreFlashInputFocus("ctrl_combo:" + key, GameInputOwnerEligible);
-            if (!focusOk)
-            {
-                LogManager.Log("[Input] Skip Ctrl+" + key + " injection: focus restore failed");
-                return;
-            }
-
-            keybd_event((byte)Keys.ControlKey, 0, 0, UIntPtr.Zero);
-            keybd_event((byte)key, 0, 0, UIntPtr.Zero);
-            keybd_event((byte)key, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-            keybd_event((byte)Keys.ControlKey, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-
-            LogManager.Log("[Input] Sent Ctrl+" + key + " to Flash");
+            LogManager.Log("[Input] Suppressed Flash Player menu command Ctrl+" + key);
         }
 
+        internal void BindPanelEscapeCapture(Func<Action> capture) { if(_kbHook!=null)_kbHook.CapturePanelEscapeAction=capture; }
         // ============================================================
         //  面板系统
         // ============================================================
@@ -920,8 +857,7 @@ namespace CF7Launcher.Guardian
 
         /// <summary>
         /// 暴露 IPanelEscapeSource 给 PanelHostController 使用。
-        /// fallback 模式（_kbHook==null，RegisterHotKey 兜底）下 panel ESC 不支持，返回 null；
-        /// PanelHostController 已对 null escSource 做 null-check（panel ESC 不可用，但其它路径不阻塞）。
+        /// 钩子未安装时返回 null。
         /// </summary>
         public IPanelEscapeSource GetPanelEscapeSource()
         {
@@ -936,7 +872,6 @@ namespace CF7Launcher.Guardian
         /// native_interaction 的 ESC 面：activeProbe 注入 KeyboardHook（ESC 拦截判定），
         /// escHandler 在 ESC 动作回调里经 BeginInvoke 到 UI 线程执行。
         /// 优先级：PanelEscEnabled（Web 面板）> 交互会话 > 全屏——与原"面板优先于全屏"同构。
-        /// fallback（_kbHook==null）下交互 ESC 不可用，handler 永不触发；调用方不得依赖。
         /// </summary>
         public void SetInteractionEscSurface(Func<bool> activeProbe, Action escHandler)
         {
@@ -947,15 +882,6 @@ namespace CF7Launcher.Guardian
         public void SetDialogueKeyboardSurface(Func<uint, Action> captureAction)
         {
             if (_kbHook != null) _kbHook.SetDialogueKeyProbe(captureAction);
-        }
-
-        /// <summary>
-        /// 插话输入框焦点同步（exe 可用、输入层接线后调用）：
-        /// true = 输入框持有焦点，低级钩子全局放行按键，游戏热键与对话推进键都不生效。
-        /// </summary>
-        public void SetTextInputActive(bool active)
-        {
-            if (_kbHook != null) _kbHook.SetTextInputActive(active);
         }
 
         /// <summary>
@@ -1044,12 +970,7 @@ namespace CF7Launcher.Guardian
         {
             // 前门先处理弹窗、返回和启动取消，正式交接 Flash 后才挂游戏的全屏 Esc。
             bool capture = _isFullscreen && _bootstrapPanel?.Visible != true;
-            if (_kbHook != null) _kbHook.SetEscapeEnabled(capture);
-            else if (IsHandleCreated && !Disposing && !IsDisposed)
-            {
-                if (capture) RegisterHotKey(Handle, HK_ESC, 0, (uint)Keys.Escape);
-                else UnregisterHotKey(Handle, HK_ESC);
-            }
+            _kbHook?.SetEscapeEnabled(capture);
         }
 
         private void ScheduleViewportRefresh(string reason)
@@ -1240,7 +1161,7 @@ namespace CF7Launcher.Guardian
         private void SetupTrayIcon()
         {
             _trayMenu = new ContextMenuStrip();
-            _trayMenu.Opening += delegate { _trayMenuOpen = true; };
+            _trayMenu.Opening += delegate { _trayMenuOpen = true; _passiveInput?.SetForeground(false); };
             _trayMenu.Opened += delegate { LogManager.Log("[TrayMenu] opened"); };
             _trayMenu.Closed += delegate(object sender, ToolStripDropDownClosedEventArgs e)
             {

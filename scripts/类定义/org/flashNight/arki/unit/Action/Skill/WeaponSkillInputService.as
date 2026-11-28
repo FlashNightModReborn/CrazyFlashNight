@@ -35,6 +35,8 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
 
         var bridge:Object = {};
         bridge.update = function(unit:Object, keyDown:Boolean):Object {
+            var input:Object = rootRef.GameInput;
+            if (input.passiveActive === true && input.gateOpen !== true) return null;
             var inputEnabled:Boolean = !rootRef.暂停 && rootRef.当前玩家总数 === 1;
             var inputFrame:Number = rootRef.帧计时器 ? Number(rootRef.帧计时器.当前帧数) : 0;
             var result:Object = WeaponSkillInputService.updateUnit(unit, keyDown, inputEnabled, cooldownPort, inputFrame);
@@ -55,6 +57,15 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
         };
 
         root.武器技能输入控制器 = bridge;
+    }
+
+    public static function cancelPassiveInput(unit:Object):Void {
+        if (unit == null) return;
+        delete unit.__weaponSkillInputConsumed;
+        UnitActionIntentService.cancelKind(unit, UnitActionIntentService.CHANNEL_COMBAT,
+            UnitActionIntentService.KIND_WEAPON_SKILL);
+        UnitActionIntentService.cancelKind(unit, UnitActionIntentService.CHANNEL_COMBAT,
+            UnitActionIntentService.KIND_SUBWEAPON_RELOAD);
     }
 
     /**

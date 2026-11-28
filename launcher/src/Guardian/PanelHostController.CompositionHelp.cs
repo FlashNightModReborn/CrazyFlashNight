@@ -13,7 +13,6 @@ namespace CF7Launcher.Guardian
         private bool _compositionIntelligenceSelected;
         private bool _compositionIntelligencePreparing;
         private Action<bool> _compositionPanelState;
-        private Func<string, bool> _compositionRestoreFocus;
         private Action<Func<Action<string>>> _intelligenceAcquireResponseChannel;
         private Action _intelligenceRestoreResponseChannel;
 
@@ -82,12 +81,11 @@ namespace CF7Launcher.Guardian
         }
 
         internal void ConfigureCompositionHelp(string webRoot, string profileRoot,
-            Action<bool> panelState, Func<string, bool> restoreFocus, bool deferPrewarm = false,
+            Action<bool> panelState, bool deferPrewarm = false,
             SceneTransitionPresentationPolicy presentationPolicy = null)
         {
             if (_compositionHelp != null) throw new InvalidOperationException("Help surface already configured");
             _compositionPanelState = panelState;
-            _compositionRestoreFocus = restoreFocus;
             _compositionHelp = new CompositionHelpSurface(_ownerForm, webRoot, profileRoot,
                 presentationPolicy: presentationPolicy);
             _compositionHelp.AttachHostLifetime(_hostLifetime);
@@ -154,6 +152,9 @@ namespace CF7Launcher.Guardian
         // 退休时归还 WebOverlay，避免回包落入没有该页面的旧 Web 文档。
         private void SetCompositionSurfaceSelected(CompositionHelpSurface surface)
         {
+            var previous = SelectedOwnedCompositionSurface;
+            if (_passiveInput != null && previous != null && !ReferenceEquals(previous, surface))
+                previous.NotifySurfaceModalState(false);
             _compositionHelpSelected = surface != null && ReferenceEquals(surface, _compositionHelp);
             bool intelligence = surface != null && ReferenceEquals(surface, _compositionIntelligence);
             if (intelligence == _compositionIntelligenceSelected) return;
@@ -166,9 +167,14 @@ namespace CF7Launcher.Guardian
         private IntPtr PanelSurfaceHandle => SelectedCompositionSurface?.Handle ?? (_web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
         private bool ResumePanelSurface(Rectangle rect)
         {
-            if (SelectedCompositionSurface==null) return _web.ResumeForPanel(rect);
-            bool resumed = SelectedCompositionSurface.ResumePanel(rect);
-            if (resumed) _compositionPanelState?.Invoke(true);
+            var surface = SelectedCompositionSurface;
+            if (surface == null) return _web.ResumeForPanel(rect);
+            bool resumed = surface.ResumePanel(rect);
+            if (resumed)
+            {
+                if (_passiveInput != null) surface.NotifySurfaceModalState(true);
+                _compositionPanelState?.Invoke(true);
+            }
             return resumed;
         }
         private bool TryPostToPanelSurface(string json) => SelectedCompositionSurface!=null

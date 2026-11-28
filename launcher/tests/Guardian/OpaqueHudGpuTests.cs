@@ -78,7 +78,7 @@ namespace CF7Launcher.Tests.Guardian
                 commands.TakeUiData("pi:"+PlayerHudStateTests.Encode(state));
                 using var resources=PlayerInfoSplitSurface.CreateLive(output,anchor,commands.State);
                 using var main=new NativeHudOverlay(output,anchor);
-                using var coordinator=new WorldCompositorController(output,anchor,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+                using var coordinator=new WorldCompositorController(output,anchor,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{});
                 using var runtime=new PlayerHudRuntime(output,anchor,resources,commands,Path.Combine(root,"launcher","web","icons"),main);
                 var legacyCommits=new CommitCount();
                 foreach(var surface in runtime.PresentationSurfaces)surface.SetCommitObserver(legacyCommits);

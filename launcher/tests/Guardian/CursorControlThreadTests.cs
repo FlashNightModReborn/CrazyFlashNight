@@ -26,7 +26,7 @@ namespace CF7Launcher.Tests.Guardian
                     owner.Controls.Add(anchor);
                     string missing = Path.Combine(Path.GetTempPath(), "cf7-web-missing-" + Guid.NewGuid().ToString("N"));
                     using var overlay = new WebOverlayForm(owner, anchor, missing, missing,
-                        false, false, false, 60, false, "", false, false, false, null);
+                        false, false, false, 60, false, "", false, false, false);
                     object Read(string name) => typeof(WebOverlayForm).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(overlay);
                     Assert.Equal(IntPtr.Zero, (IntPtr)Read("_cursorHook"));
                     Assert.True((bool)Read("_cursorHookInstallPending"));
@@ -68,7 +68,7 @@ namespace CF7Launcher.Tests.Guardian
                     owner.Controls.Add(anchor);
                     string missing = Path.Combine(Path.GetTempPath(), "cf7-web-missing-" + Guid.NewGuid().ToString("N"));
                     using var overlay = new WebOverlayForm(owner, anchor, missing, missing,
-                        false, false, false, 60, false, "", false, false, false, null);
+                        false, false, false, 60, false, "", false, false, false);
                     overlay.Dispose();
                     Application.DoEvents();
                     var hook = typeof(WebOverlayForm).GetField("_cursorHook", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -95,7 +95,7 @@ namespace CF7Launcher.Tests.Guardian
                     owner.Controls.Add(anchor);
                     string missing = Path.Combine(Path.GetTempPath(), "cf7-web-missing-" + Guid.NewGuid().ToString("N"));
                     using var overlay = new WebOverlayForm(owner, anchor, missing, missing,
-                        false, false, false, 60, false, "", false, false, false, null);
+                        false, false, false, 60, false, "", false, false, false);
                     var callback = typeof(WebOverlayForm).GetMethod("CursorHookCallback", BindingFlags.Instance | BindingFlags.NonPublic);
                     var errors = typeof(WebOverlayForm).GetField("_cursorHookErrors", BindingFlags.Instance | BindingFlags.NonPublic);
                     IntPtr sample = Marshal.AllocHGlobal(32);

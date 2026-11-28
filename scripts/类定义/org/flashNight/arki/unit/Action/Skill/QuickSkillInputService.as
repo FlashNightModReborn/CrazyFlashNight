@@ -33,6 +33,9 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
         var rootRef:Object = root;
         var bridge:Object = {};
         bridge.update = function(unit:Object):Number {
+            var input:Object = rootRef.GameInput;
+            var passive:Boolean = input.passiveActive === true;
+            var canSample:Boolean = !passive || input.gateOpen === true;
             var inputEnabled:Boolean = !rootRef.暂停 && rootRef.当前玩家总数 == 1;
             var interfaceRoot:Object = rootRef.玩家信息界面;
             var view:Object = interfaceRoot ? interfaceRoot.快捷技能界面 : null;
@@ -41,11 +44,13 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
             for (var slotIndex:Number = 1; slotIndex <= QuickSkillInputService.SLOT_COUNT; slotIndex++) {
                 var keyName:String = QuickSkillInputService.getKeyName(slotIndex);
                 var keyCode:Number = Number(rootRef[keyName]);
-                var keyDown:Boolean = !isNaN(keyCode) && (Key.isDown(keyCode)
-                    || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
-                        && rootRef._agentHarnessBridge.isKeyDown(keyCode) === true));
+                var keyDown:Boolean = passive ? input.getActorPress(unit, keyCode) > 0
+                    : (!isNaN(keyCode) && (Key.isDown(keyCode)
+                        || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
+                            && rootRef._agentHarnessBridge.isKeyDown(keyCode) === true)));
 
                 QuickSkillInputService.syncKeyLabel(view, slotIndex, keyCode, rootRef);
+                if (!canSample) continue;
                 var result:Object = QuickSkillInputService.updateSlot(
                     unit,
                     slotIndex,
@@ -279,6 +284,11 @@ class org.flashNight.arki.unit.Action.Skill.QuickSkillInputService {
     public static function getKeyName(slotIndex:Number):String {
         if (!isValidSlotIndex(slotIndex)) return null;
         return String(KEY_NAMES[slotIndex]);
+    }
+
+    public static function cancelPassiveInput(unit:Object):Void {
+        // Slots release synchronously. Only an uncommitted held wait remains here.
+        clearUnit(unit);
     }
 
     public static function clearUnit(unit:Object):Void {

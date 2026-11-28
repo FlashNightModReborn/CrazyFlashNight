@@ -22,7 +22,7 @@ UINT buttons=0, activeGesture=0;
 bool enabled=false, captured=false;
 LONGLONG lastPaintTicks=0;
 RECT lastPaintBounds{};
-UINT lastEpoch=0, localFloor=0, controlMessage=0;
+UINT lastEpoch=0, localFloor=0, controlMessage=0, passiveSequence=0;
 DWORD targetThread=0, lastCursorTrace=0;
 LONG lastCursorKind=0;
 void Observe(LONG stage,UINT sequence=0,UINT epoch=0,UINT message=0,POINT point={}) {
@@ -221,8 +221,14 @@ LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
         UINT diagnosticType=kind==0xFE ? WM_CANCELMODE : WM_MOUSEFIRST+kind;
         bool edge=diagnosticType!=WM_MOUSEMOVE;
         if(!shared)return 0;
+        if(shared->passiveMode!=InputPassiveDisabled || !(GetWindowLongPtrW(hwnd,GWL_STYLE)&WS_DISABLED)) {
+            InterlockedExchange(&shared->stop,1);
+            InterlockedIncrement(&shared->invalidRejected);
+            return 0;
+        }
         if(reinterpret_cast<WNDPROC>(GetWindowLongPtrW(hwnd,GWLP_WNDPROC))!=WindowProc){if(edge)Observe(TraceStopped,seq,epoch,diagnosticType);InterlockedExchange(&shared->stop,1);return 0;}
-        InterlockedExchange(&shared->consumedSeq,static_cast<LONG>(seq));
+        if(seq>0 && seq<=static_cast<UINT>(InputSequenceLimit))
+            RaiseAtomic(&shared->consumedSeq,static_cast<LONG>(seq));
         CancelEndpoint();
         if(ReadAtomic(&shared->stop) || ReadAtomic(&shared->cancelTicket)!=ReadAtomic(&shared->cancelledTicket)) {
             if(edge)Observe(TraceStopped,seq,epoch,diagnosticType);
@@ -234,10 +240,15 @@ LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
         }
         UINT floor=static_cast<UINT>(ReadAtomic(&shared->minEpoch));
         if(floor>static_cast<UINT>(InputEpochLimit+1)) {if(edge)Observe(TraceInvalid,seq,epoch,diagnosticType);InterlockedIncrement(&shared->invalidRejected);InterlockedExchange(&shared->stop,1);return 0;}
-        if(epoch<floor || epoch<localFloor) {
+        localFloor=std::max(localFloor,floor);
+        if(epoch<localFloor) {
             if(edge)Observe(TraceStale,seq,epoch,diagnosticType);
             InterlockedIncrement(&shared->staleRejected);return 0;
         }
+        if(seq<=passiveSequence || epoch<lastEpoch) {
+            InterlockedIncrement(&shared->staleRejected);return 0;
+        }
+        passiveSequence=seq;
         UINT type=kind==0xFE ? WM_CANCELMODE : WM_MOUSEFIRST+kind;
         if(type!=WM_MOUSEMOVE && type!=WM_LBUTTONDOWN && type!=WM_LBUTTONUP
             && type!=WM_RBUTTONDOWN && type!=WM_RBUTTONUP && type!=WM_MBUTTONDOWN && type!=WM_MBUTTONUP
@@ -261,15 +272,30 @@ LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
         bool down=type==WM_LBUTTONDOWN || type==WM_RBUTTONDOWN || type==WM_MBUTTONDOWN || type==WM_XBUTTONDOWN;
         bool up=type==WM_LBUTTONUP || type==WM_RBUTTONUP || type==WM_MBUTTONUP || type==WM_XBUTTONUP;
         UINT bit=PacketButtonBit(type,extra);
-        // Gesture ownership is classified, not trusted: a down for an already-held
-        // button is a duplicate; an up/cancel without an open gesture is unowned.
-        // Both are still forwarded so the projector's own button state can release.
-        // The data envelope carries no gesture id: an admitted down opens the endpoint-owned
-        // gesture; the matching release or a cancel closes it again.
-        if(down) { if(bit && (buttons&bit)) InterlockedIncrement(&shared->duplicateDowns); activeGesture=1; SetFocus(hwnd); }
+        // A fresh Down owns its button until Up or cancellation.
+        if(down && (buttons&bit)) {
+            InterlockedIncrement(&shared->duplicateDowns);
+            return 0;
+        }
         if((up && (!activeGesture || !(buttons&bit))) || (type==WM_CANCELMODE && !activeGesture && !buttons))
+        {
             InterlockedIncrement(&shared->unownedReleases);
-        { WriteLock guard; enabled=true; virtualPoint=point; buttons=flags&0x73; }
+            return 0;
+        }
+        UINT nextButtons=buttons;
+        if(down)nextButtons|=bit;
+        if(up)nextButtons&=~bit;
+        if(type==WM_CANCELMODE)nextButtons=0;
+        if((flags&0x73)!=nextButtons) {
+            InterlockedIncrement(&shared->invalidRejected);
+            return 0;
+        }
+        {
+            WriteLock guard;
+            enabled=true; virtualPoint=point; buttons=nextButtons;
+            activeGesture=buttons!=0;
+            if(type==WM_CANCELMODE)captured=false;
+        }
         InterlockedExchange(&shared->heldButtons,static_cast<LONG>(buttons));
         WPARAM nativeFlags=flags;
         LPARAM nativePosition=MAKELPARAM(static_cast<SHORT>(point.x),static_cast<SHORT>(point.y));
@@ -278,10 +304,7 @@ LRESULT Deliver(HWND hwnd,WPARAM wp,LPARAM lp) {
             POINT screen=point; ClientToScreen(hwnd,&screen);
             nativePosition=MAKELPARAM(static_cast<SHORT>(screen.x),static_cast<SHORT>(screen.y));
         } else if(type==WM_XBUTTONDOWN || type==WM_XBUTTONUP) nativeFlags=MAKEWPARAM(flags,extra);
-        if(type==WM_CANCELMODE) { WriteLock guard; buttons=0; captured=false; activeGesture=0; }
-        else if(up && !buttons) activeGesture=0;
-        // Activation can clear Flash's hover target. Re-establish the mapped
-        // location after focus and before the button edge, on its own UI thread.
+        // Update the target's hover position before delivering its button edge.
         if(down) Original(hwnd,WM_MOUSEMOVE,flags,nativePosition);
         if(edge)Observe(TraceEnter,seq,epoch,type,point);
         else if(static_cast<SHORT>(LOWORD(lp))<0 || static_cast<SHORT>(HIWORD(lp))<0)Observe(TraceLeave,seq,epoch,type,point);
@@ -331,7 +354,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
     // pointer is over P, not this covered source F, so Windows immediately emits
     // a source-window LEAVE even when the mapped pointer remains over a button.
     // While mapped input owns hover, only the host's mapped outside point may
-    // leave it. Actual focus/menu revocation below still disables this guard.
+    // leave it. Session cancellation also releases the mapped hover.
     if(enabled && message==WM_MOUSELEAVE) {
         Observe(TraceSourceLeaveSuppressed,0,lastEpoch,message,virtualPoint);
         return 0;
@@ -339,18 +362,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
     if(message==WM_MOUSELEAVE || message==WM_MOUSEHOVER || message==WM_CAPTURECHANGED || message==WM_SETFOCUS) {
         Observe(TraceNativePointer,0,lastEpoch,message,virtualPoint);
     }
-    if(message==WM_ENTERMENULOOP || message==WM_KILLFOCUS) {
-        { WriteLock guard; enabled=false; buttons=0; captured=false; activeGesture=0; }
-        if(shared) {
-            InterlockedExchange(&shared->heldButtons,0);
-            UINT issued=static_cast<UINT>(ReadAtomic(&shared->issuedEpoch));
-            if(issued>static_cast<UINT>(InputEpochLimit)) {InterlockedIncrement(&shared->invalidRejected);InterlockedExchange(&shared->stop,1);issued=InputEpochLimit;}
-            UINT top=std::max(lastEpoch,issued);
-            localFloor=std::max(localFloor,std::min(top+1,static_cast<UINT>(InputEpochLimit+2)));
-            Observe(TraceFocusLost,0,issued,message);
-        }
-    }
-    if(enabled && message==WM_MOUSEMOVE)return 0;
+    // The session's cancel ticket and epoch floor settle mapped gestures.
+    // Native focus changes and OS mouse messages carry no mapped gesture identity.
+    if(shared && (message==WM_KILLFOCUS || (message>=WM_MOUSEFIRST && message<=WM_MOUSELAST)))return 0;
     LRESULT result=Original(hwnd,message,wp,lp);
     if(message==WM_PAINT) {
         LARGE_INTEGER painted{};QueryPerformanceCounter(&painted);
@@ -372,11 +386,21 @@ bool Initialize(HWND hwnd,uint64_t cookie) {
     // Protocol negotiation: a version mix must fail loudly. MapViewOfFile also
     // fails outright when the broker's section is smaller than this v3 view.
     if(!shared) { CloseHandle(mapping); mapping=nullptr; return false; }
+    uint32_t mode=shared->passiveMode;
     if(shared->magic!=InputMagic || shared->protocolVersion!=InputProtocolVersion) {
         InterlockedExchange(&shared->ready,-3);
+        UnmapViewOfFile(shared);shared=nullptr;CloseHandle(mapping);mapping=nullptr;
         return false;
     }
     if(shared->session!=cookie) { UnmapViewOfFile(shared);shared=nullptr;CloseHandle(mapping);mapping=nullptr;return false; }
+    if(ReadAtomic(&shared->ready)==InputProfileRejected || mode!=InputPassiveDisabled ||
+        !(GetWindowLongPtrW(hwnd,GWL_STYLE)&WS_DISABLED)) {
+        // A queued init retry cannot revive this mapping. The broker still
+        // owns its dequeue hook and window property, but there is no endpoint to retire.
+        InterlockedExchange(&shared->ready,InputProfileRejected);
+        UnmapViewOfFile(shared);shared=nullptr;CloseHandle(mapping);mapping=nullptr;
+        return false;
+    }
     DWORD ownerPid=0; GetWindowThreadProcessId(reinterpret_cast<HWND>(shared->ownerWindow),&ownerPid);
     if(shared->sourcePid!=GetCurrentProcessId()
         || shared->session!=cookie || !cookie
@@ -402,7 +426,7 @@ bool Initialize(HWND hwnd,uint64_t cookie) {
     }
     targetThread=GetCurrentThreadId();lastCursorTrace=0;lastCursorKind=0;
     lastPaintTicks=0; lastPaintBounds={};
-    lastEpoch=0; localFloor=0;
+    lastEpoch=0; localFloor=0; passiveSequence=0;
     // The subclass and import wrappers must remain mapped until process exit even
     // if the owner dies while a callback is still unwinding.
     HMODULE pinned=nullptr;
@@ -426,17 +450,19 @@ bool Initialize(HWND hwnd,uint64_t cookie) {
 // and shared section. The shipping FlashInputBridge.dll build never defines
 // the macro; production behavior is unchanged.
 namespace InputBridgeSelfTest {
+    bool TryInitialize(HWND hwnd,uint64_t cookie) { return Initialize(hwnd,cookie); }
     // Installs the real WindowProc as the window's subclass, mirroring the
     // production Initialize path; OS messages (WM_SETFOCUS/WM_KILLFOCUS and the
     // like) then flow through the bridge exactly as they do in the projector.
     void Install(HWND hwnd,InputShared* state,UINT message) {
         target=hwnd; shared=state; packetMessage=message;
         enabled=false; buttons=0; captured=false; activeGesture=0;
-        lastEpoch=0; localFloor=0;
+        lastEpoch=0; localFloor=0; passiveSequence=0;
         if(!originalProc)
             originalProc=reinterpret_cast<WNDPROC>(SetWindowLongPtrW(hwnd,GWLP_WNDPROC,reinterpret_cast<LONG_PTR>(&WindowProc)));
     }
     LRESULT Drive(UINT message,WPARAM wp,LPARAM lp) { return message==packetMessage ? Deliver(target,wp,lp) : WindowProc(target,message,wp,lp); }
+    SHORT MouseKey(int vk) { return KeyValue(vk,false); }
     UINT LocalFloor() { return localFloor; }
     UINT LastEpoch() { return lastEpoch; }
     UINT Gesture() { return activeGesture; }
