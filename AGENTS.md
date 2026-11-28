@@ -65,6 +65,7 @@ PowerShell 先 `chcp.com 65001`；文本直接用 UTF-8 中文，不无故改成
 
 先 [数据格式与归属](agentsDoc/data-schemas.md#data-entry) → [数据验证](agentsDoc/testing-guide.md#data)。
 数值/配方/成长调整追加 [游戏设计](agentsDoc/game-design.md) 对应规则与其工作簿来源；不把派生 XML 覆盖公式权威。
+仅在需要计算和调整怪物数值时，查看 [怪物数值重算工具](tools/cf7-balance-tool/packages/cli/src/monster-recalc.ts)（`npm run monster-recalc`），系数分类、参考区间与执行方法都写在该文件头部注释里。
 生成器/sidecar/闭包改动追加 [派生物验证](agentsDoc/testing-guide.md#derived)。
 
 ### Web 局部界面与跨层面板
