@@ -28,7 +28,7 @@ for (const name of ['installAuthoredWorldDragMouse', 'onAuthoredWorldMouseDown',
   'retireAuthoredWorldDragInstance', 'beginAuthoredWorldDrag', 'endAuthoredWorldDrag', 'cancelAuthoredWorldDrag',
   'stageWorldPointerCancel', 'settleWorldPointerCancel']) code.push(action(serverSource, 'function ' + name));
 for (const name of ['cf7BindBountyDrag', 'cf7BeginBountyDrag', 'cf7EndBountyDrag']) code.push(action(bountySource, 'function ' + name));
-for (const name of ['canRecoverAuthoredWorldPointer', 'settleInputObligations']) {
+for (const name of ['canRecoverAuthoredWorldPointer', 'canAcceptAuthoredWorldPointer', 'settleInputObligations']) {
   if (serverSource.includes('function ' + name)) code.push(action(serverSource, 'function ' + name));
 }
 for (const name of ['cf7BountyOwnsPointer', 'cf7CloseBounty']) {
@@ -316,6 +316,22 @@ assert(panel._visible, 'OnUnload and same-display-path replacement retire the ol
 oldUnload();
 assert.equal(panel.__cf7AuthoredWorldDragInstance, next, 'A late old unload does not retire the new instance');
 
+// A cancelled old drag sends no Up to the projector. Its content is then truly
+// unloaded before a different instance installs at the same display path.
+const retiredBeforeFirstX = openAfterCancel();
+panel.onUnload();
+const reopenedToken = bind();
+assert.notEqual(reopenedToken, retiredBeforeFirstX.instance);
+assert.equal(transport.worldDragResume, null);
+const reopenedEffects = closes;
+mouse.onMouseDown();
+assert(panel._visible, 'A true fresh X press on replacement still waits for its own Up');
+mouse.onMouseUp();
+assert(!panel._visible && closes === reopenedEffects + 1,
+  'The very first fresh X must close a reloaded panel even though its prior cancel ticket retired');
+mouse.onMouseUp();
+assert.equal(closes, reopenedEffects + 1, 'No orphan Up after the fresh replacement pair');
+
 openAfterCancel();
 mouse.onMouseDown();
 input.connectionIncarnation++;
@@ -346,5 +362,6 @@ console.log(JSON.stringify({ status: 'PASS', level: 'T0 source transcript', star
   checks: ['paired normal and recovered start/release', 'exact, duplicate and pending cancellation', 'active I1 grant and replacement token',
     'outside hit, covering screen and disabled Button', 'other drag lease retained', 'same published hit artwork',
     'first exact post-cancel close', 'authored/native ordering and repeated Up', 'miss and outside X release',
-    'gate or epoch loss', 'subsequent and duplicate cancel', 'unload, same-path replacement and disconnect'],
+    'gate or epoch loss', 'subsequent and duplicate cancel', 'unload, same-path replacement and disconnect',
+    'first genuine X on reloaded current instance with the former drag ticket retired'],
   runtimeStillRequired: ['native AVM1 MouseDown/Up behavior for secondary buttons', 'alpha-zero exact shape hitTest in FP20'] }, null, 2));

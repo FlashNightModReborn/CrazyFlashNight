@@ -927,12 +927,11 @@ class org.flashNight.neur.Server.ServerManager {
         Mouse.addListener(_authoredWorldDragMouse);
     }
 
-    private function canRecoverAuthoredWorldPointer(state:Object, receipt:Object):Boolean {
+    private function canAcceptAuthoredWorldPointer(state:Object):Boolean {
         return _inputCell.bound === true && _inputCell.passiveActive === true && _inputCell.gateOpen === true
                 && _inputCell.connectionIncarnation === state.connection && state.cancel == null
                 && state.fault == null && state.needsCancel !== true && state.localCancel == null
-                && state.worldPointerCancel == null && state.lastWorldPointerReceipt === receipt
-                && _authoredWorldDrag == null;
+                && state.worldPointerCancel == null && _authoredWorldDrag == null;
     }
 
     private function onAuthoredWorldMouseDown():Void {
@@ -940,18 +939,25 @@ class org.flashNight.neur.Server.ServerManager {
         if (state == null) return;
         state.mouseWorldClose = null;
         var resume:Object = state.worldDragResume;
-        if (resume == null) return;
-        // The first real AVM1 primary Down consumes the recovery ticket.
+        // The first real AVM1 primary Down consumes the drag recovery ticket.
         state.worldDragResume = null;
-        if (!canRecoverAuthoredWorldPointer(state, resume.receipt)) return;
-        var instance:Object = resume.instance;
-        if (instance.resumeAuthoredWorldDrag() === true && _authoredWorldDrag === instance) {
-            state.mouseWorldDrag = instance;
-        } else if (typeof instance.isAuthoredWorldCloseHit == "function"
+        if (!canAcceptAuthoredWorldPointer(state)) return;
+        if (resume != null && state.lastWorldPointerReceipt === resume.receipt) {
+            var dragInstance:Object = resume.instance;
+            if (dragInstance.resumeAuthoredWorldDrag() === true && _authoredWorldDrag === dragInstance) {
+                state.mouseWorldDrag = dragInstance;
+                return;
+            }
+        }
+
+        // Closing belongs to a new press on the currently loaded panel.
+        var layer:MovieClip = _root.通用UI层;
+        var panel:MovieClip = layer == null ? null : layer.外部导入UI界面;
+        var instance:Object = panel == null ? null : panel.__cf7AuthoredWorldDragInstance;
+        if (instance != null && typeof instance.isAuthoredWorldCloseHit == "function"
                 && typeof instance.releaseAuthoredWorldClose == "function"
                 && instance.isAuthoredWorldCloseHit() === true) {
-            state.mouseWorldClose = {instance:instance, receipt:resume.receipt,
-                keyboardEpoch:_inputCell.snapshot.keyboardEpoch};
+            state.mouseWorldClose = {instance:instance, keyboardEpoch:_inputCell.snapshot.keyboardEpoch};
         }
     }
 
@@ -960,8 +966,8 @@ class org.flashNight.neur.Server.ServerManager {
         if (state == null) return;
         var close:Object = state.mouseWorldClose;
         state.mouseWorldClose = null;
-        if (close != null && close.keyboardEpoch === _inputCell.snapshot.keyboardEpoch
-                && canRecoverAuthoredWorldPointer(state, close.receipt)) {
+        if (close != null && canAcceptAuthoredWorldPointer(state)
+                && close.keyboardEpoch === _inputCell.snapshot.keyboardEpoch) {
             close.instance.releaseAuthoredWorldClose();
         }
         var instance:Object = state.mouseWorldDrag;
