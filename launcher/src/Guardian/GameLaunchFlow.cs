@@ -108,7 +108,11 @@ namespace CF7Launcher.Guardian
         private Process _currentFlashProcess;
         private int _passiveLaunchConnection;
         private CancellationTokenSource _passiveEmbeddingCancellation;
+        private bool _closingUnpublishedBootstrap;
         private int _timerGen;
+
+        private readonly record struct UnpublishedBootstrapClose(string AttemptId, int Connection,
+            WindowManager.UnpublishedBootstrapCloseTarget Target);
 
         // per-attempt ready 缓存（attemptId → arrived？）不变式 #8
         private readonly Dictionary<string, int> _cachedReady = new Dictionary<string, int>();
@@ -247,6 +251,11 @@ namespace CF7Launcher.Guardian
         public bool RevealPerformed
         {
             get { lock (_stateLock) { return _revealPerformed; } }
+        }
+
+        internal bool ClosingUnpublishedBootstrap
+        {
+            get { lock (_stateLock) { return _closingUnpublishedBootstrap; } }
         }
 
         internal AgentRuntimeLaunchSnapshot
@@ -2257,6 +2266,7 @@ namespace CF7Launcher.Guardian
             DismissRevealCurtain();
             List<Action> idleFlushIfAlready = null;
             Process oldProcess = null;
+            UnpublishedBootstrapClose? unpublishedClose = null;
             Action<string> heldCbForReset = null;   // prewarm 拆除时取走的 held callback
             bool enterWorker = false;
             bool restoreFrontdoorBgmWhenIdle = false;
@@ -2313,8 +2323,19 @@ namespace CF7Launcher.Guardian
 
                     // 第一个入场者: 拿 ownership
                     _resetInFlight = true;
-                    SetState(State.Resetting, "");
                     oldProcess = _currentFlashProcess;
+                    // Capture the exact unpublished source before Resetting retires its ticket.
+                    // A Ready or revealed session always follows the existing persistence and teardown path.
+                    if (reason == "user_close" && _form?.IsShutdownAdmissionClosed == true
+                        && _state == State.Embedding && !_revealPerformed && !string.IsNullOrEmpty(_currentAttemptId)
+                        && oldProcess != null && _passiveLaunchConnection > 0 && _passiveEmbeddingCancellation != null
+                        && _windowManager.TryGetUnpublishedBootstrapCloseTarget(_passiveEmbeddingCancellation.Token,
+                            (uint)oldProcess.Id, out var target))
+                    {
+                        unpublishedClose = new(_currentAttemptId, _passiveLaunchConnection, target);
+                        _closingUnpublishedBootstrap = true;
+                    }
+                    SetState(State.Resetting, "");
                     CancelWaitTimerLocked();
                     CancelZombieTimerLocked();
                     CancelPrewarmDeadlineLocked();
@@ -2363,19 +2384,27 @@ namespace CF7Launcher.Guardian
                 bool resetSucceeded = true;
                 try
                 {
-                    if (oldProc != null)
+                    bool closedUnpublished = false;
+                    if (unpublishedClose is { } pending)
+                    {
+                        LogManager.Log($"[LaunchFlow] closing unpublished bootstrap attempt={pending.AttemptId} generation={pending.Connection}");
+                        closedUnpublished = _processManager.TryCloseUnpublishedFlash(oldProc, pending.Target);
+                        if (closedUnpublished)
+                            _socketServer.ForceCloseCurrentClientIfGen(pending.Connection);
+                    }
+                    if (!closedUnpublished && oldProc != null)
                     {
                         try
                         {
                             if (!oldProc.HasExited)
                             {
-                                _processManager.KillFlash();
+                                _processManager.KillFlash(oldProc);
                                 oldProc.WaitForExit(3000);
                             }
                         }
                         catch { }
                     }
-                    if (needWaitDc)
+                    if (needWaitDc && !closedUnpublished)
                     {
                         if (!dcGate.Wait(5000))
                         {

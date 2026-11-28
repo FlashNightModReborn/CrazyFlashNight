@@ -324,6 +324,74 @@ namespace CF7Launcher.Tests.RagTerminal
         }
 
         [Fact]
+        public void UnpublishedCloseDoesNotContactAnUnusedTerminal()
+        {
+            var handler = new RagHttpStub(request => RagHttpStub.Json("{\"ok\":true}"));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+
+            service.UnbindInBackground(closingUnpublishedBootstrap: true);
+            service.ShutdownEmbeddedOnExit(closingUnpublishedBootstrap: true);
+
+            Assert.Empty(handler.Requests);
+        }
+
+        [Fact]
+        public async Task UnpublishedCloseStillShutsDownAnEmbeddedTerminalThisHostStarted()
+        {
+            string directory = NewTempInstallRoot();
+            string exe = TouchExe(directory, "CFN-RAG-v1.exe", DateTime.UtcNow);
+            try
+            {
+                var started = new List<string>();
+                var handler = new RagHttpStub(request =>
+                {
+                    if (request.RequestUri.AbsolutePath != "/api/health") return RagHttpStub.Json("{\"ok\":true}");
+                    return started.Count == 0 ? RagHttpStub.Json("{}", HttpStatusCode.ServiceUnavailable)
+                        : RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}");
+                });
+                using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", exe, handler, started.Add)
+                {
+                    PollIntervalMs = 1
+                };
+
+                Assert.True((await service.EnsureReadyAsync()).Success);
+                service.ShutdownEmbeddedOnExit(closingUnpublishedBootstrap: true);
+
+                Assert.Equal(exe, Assert.Single(started));
+                Assert.Equal("/api/integration/shutdown", handler.Requests[^1].RequestUri.AbsolutePath);
+                Assert.False(service.IsReady);
+            }
+            finally
+            {
+                File.Delete(exe);
+                Directory.Delete(directory);
+            }
+        }
+
+        [Fact]
+        public async Task UnpublishedCloseStillUnbindsAfterAnUnknownBindResult()
+        {
+            var unbound = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var handler = new RagHttpStub(request =>
+            {
+                if (request.RequestUri.AbsolutePath == "/api/integration/unbind")
+                {
+                    unbound.TrySetResult(true);
+                    return RagHttpStub.Json("{\"ok\":true}");
+                }
+                return RagHttpStub.Json("{}", HttpStatusCode.ServiceUnavailable);
+            });
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+            Assert.False((await service.BindAsync("save1")).Success);
+
+            service.UnbindInBackground(closingUnpublishedBootstrap: true);
+            service.ShutdownEmbeddedOnExit(closingUnpublishedBootstrap: true);
+
+            Assert.True(await unbound.Task.WaitAsync(TimeSpan.FromSeconds(2)));
+            Assert.DoesNotContain(handler.Requests, request => request.RequestUri.AbsolutePath == "/api/integration/shutdown");
+        }
+
+        [Fact]
         public async Task PrepareHappyPathProbesHealthThenBinds()
         {
             var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"

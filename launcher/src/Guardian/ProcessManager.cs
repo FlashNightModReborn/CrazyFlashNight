@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace CF7Launcher.Guardian
 {
@@ -9,6 +10,20 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class ProcessManager : IDisposable
     {
+        private const uint CloseWindowMessage = 0x0010;
+        private const int UnpublishedCloseGraceMs = 700;
+        private const int UnpublishedExitWaitMs = 200;
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetParent(IntPtr window);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool PostMessageW(IntPtr window, uint message, IntPtr wParam, IntPtr lParam);
+
         private Process _flashProcess;
         private readonly object _lock = new object();
         private readonly string _flashPlayerPath;
@@ -111,12 +126,14 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void KillFlash()
         {
-            Process target;
-            lock (_lock)
-            {
-                target = _flashProcess;
-            }
+            KillFlash(FlashProcess);
+        }
+
+        internal void KillFlash(Process target)
+        {
             if (target == null) return;
+            lock (_lock)
+                if (!ReferenceEquals(target, _flashProcess)) return;
             try
             {
                 if (!target.HasExited)
@@ -134,6 +151,52 @@ namespace CF7Launcher.Guardian
                 }
             }
             catch { }
+        }
+
+        internal static bool TryPostUnpublishedBootstrapClose(
+            WindowManager.UnpublishedBootstrapCloseTarget target, uint pid)
+        {
+            return target.Window != IntPtr.Zero && target.Host != IntPtr.Zero && pid != 0
+                && GetWindowThreadProcessId(target.Window, out uint owner) != 0 && owner == pid
+                && GetParent(target.Window) == target.Host
+                && PostMessageW(target.Window, CloseWindowMessage, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        internal bool TryCloseUnpublishedFlash(Process target, WindowManager.UnpublishedBootstrapCloseTarget window)
+        {
+            if (target == null || !ReferenceEquals(target, FlashProcess)) return false;
+            try
+            {
+                if (target.HasExited) return true;
+                bool posted;
+                lock (_lock)
+                {
+                    if (!ReferenceEquals(target, _flashProcess)) return false;
+                    // CloseMainWindow skips disabled or reparented windows. Deliver the
+                    // ordinary close message to the captured child without changing focus.
+                    posted = TryPostUnpublishedBootstrapClose(window, (uint)target.Id);
+                }
+                LogManager.Log($"[Guardian] unpublished Flash close pid={target.Id} hwnd=0x{window.Window:X} posted={posted}");
+                if (!posted) return target.HasExited;
+                if (target.WaitForExit(UnpublishedCloseGraceMs))
+                {
+                    LogManager.Log($"[Guardian] unpublished Flash exited after close message code={target.ExitCode}");
+                    return true;
+                }
+                if (target.HasExited) return true;
+                lock (_lock)
+                {
+                    if (!ReferenceEquals(target, _flashProcess)) return false;
+                    LogManager.Log($"[Guardian] unpublished Flash close grace elapsed; terminating owned pid={target.Id}");
+                    target.Kill();
+                }
+                return target.WaitForExit(UnpublishedExitWaitMs);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[Guardian] unpublished Flash close failed: " + ex.GetType().Name);
+                return false;
+            }
         }
 
         public void Dispose()

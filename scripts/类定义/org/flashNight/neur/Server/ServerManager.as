@@ -927,28 +927,43 @@ class org.flashNight.neur.Server.ServerManager {
         Mouse.addListener(_authoredWorldDragMouse);
     }
 
+    private function canRecoverAuthoredWorldPointer(state:Object, receipt:Object):Boolean {
+        return _inputCell.bound === true && _inputCell.passiveActive === true && _inputCell.gateOpen === true
+                && _inputCell.connectionIncarnation === state.connection && state.cancel == null
+                && state.fault == null && state.needsCancel !== true && state.localCancel == null
+                && state.worldPointerCancel == null && state.lastWorldPointerReceipt === receipt
+                && _authoredWorldDrag == null;
+    }
+
     private function onAuthoredWorldMouseDown():Void {
         var state:Object = _inputWire;
         if (state == null) return;
+        state.mouseWorldClose = null;
         var resume:Object = state.worldDragResume;
         if (resume == null) return;
-        // The first real AVM1 primary-button Down retires this one-shot ticket,
-        // even when it belongs to a different target or finds the gate closed.
+        // The first real AVM1 primary Down consumes the recovery ticket.
         state.worldDragResume = null;
-        if (_inputCell.bound !== true || _inputCell.passiveActive !== true || _inputCell.gateOpen !== true
-                || _inputCell.connectionIncarnation !== state.connection || state.cancel != null
-                || state.fault != null || state.needsCancel === true || state.localCancel != null
-                || state.worldPointerCancel != null || state.lastWorldPointerReceipt !== resume.receipt
-                || _authoredWorldDrag != null) return;
+        if (!canRecoverAuthoredWorldPointer(state, resume.receipt)) return;
         var instance:Object = resume.instance;
         if (instance.resumeAuthoredWorldDrag() === true && _authoredWorldDrag === instance) {
             state.mouseWorldDrag = instance;
+        } else if (typeof instance.isAuthoredWorldCloseHit == "function"
+                && typeof instance.releaseAuthoredWorldClose == "function"
+                && instance.isAuthoredWorldCloseHit() === true) {
+            state.mouseWorldClose = {instance:instance, receipt:resume.receipt,
+                keyboardEpoch:_inputCell.snapshot.keyboardEpoch};
         }
     }
 
     private function onAuthoredWorldMouseUp():Void {
         var state:Object = _inputWire;
         if (state == null) return;
+        var close:Object = state.mouseWorldClose;
+        state.mouseWorldClose = null;
+        if (close != null && close.keyboardEpoch === _inputCell.snapshot.keyboardEpoch
+                && canRecoverAuthoredWorldPointer(state, close.receipt)) {
+            close.instance.releaseAuthoredWorldClose();
+        }
         var instance:Object = state.mouseWorldDrag;
         if (instance == null || _authoredWorldDrag !== instance) return;
         state.mouseWorldDrag = null;
@@ -957,8 +972,9 @@ class org.flashNight.neur.Server.ServerManager {
 
     public function retireAuthoredWorldDragInstance(instance:Object):Void {
         var state:Object = _inputWire;
-        if (state != null && state.worldDragResume != null && state.worldDragResume.instance === instance) {
-            state.worldDragResume = null;
+        if (state != null) {
+            if (state.worldDragResume != null && state.worldDragResume.instance === instance) state.worldDragResume = null;
+            if (state.mouseWorldClose != null && state.mouseWorldClose.instance === instance) state.mouseWorldClose = null;
         }
         if (_authoredWorldDrag === instance && instance != null) cancelAuthoredWorldDrag();
     }
@@ -974,6 +990,7 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
         if (ticket <= state.worldPointerCancelTicket || state.worldPointerCancel != null) return;
+        state.mouseWorldClose = null;
         state.worldPointerCancel = {ticket:ticket, identity:identity};
     }
 
@@ -994,6 +1011,7 @@ class org.flashNight.neur.Server.ServerManager {
     }
 
     private function settleInputObligations():Void {
+        if (_inputWire != null) _inputWire.mouseWorldClose = null;
         ++_inputCell.cancelSerial;
         _inputCell.clearKeyPresses();
         if (!cancelAuthoredWorldDrag() && typeof _root.stopDrag == "function") _root.stopDrag();

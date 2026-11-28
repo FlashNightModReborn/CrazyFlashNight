@@ -24,7 +24,7 @@ namespace InputBridgeSelfTest {
 namespace {
 InputShared* state=nullptr;
 int focusGains=0, mouseDeliveries=0, nativeLeaves=0, failures=0;
-POINT lastMouseMove{}, lastLeftUp{};
+POINT lastMouseMove{}, lastLeftUp{}, lastWheel{};
 HWND observedChild=nullptr, expectedFocus=nullptr;
 bool focusChangedDuringMouseDelivery=false;
 unsigned seen[WM_MOUSELAST-WM_MOUSEFIRST+1]{};
@@ -37,6 +37,7 @@ LRESULT CALLBACK TargetProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
     if(message==WM_MOUSELEAVE) nativeLeaves++;
     if(message==WM_MOUSEMOVE) lastMouseMove={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
     if(message==WM_LBUTTONUP) lastLeftUp={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
+    if(message==WM_MOUSEWHEEL) lastWheel={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
     if(message==WM_MOUSEMOVE || message==WM_LBUTTONDOWN || message==WM_LBUTTONUP
         || message==WM_RBUTTONDOWN || message==WM_RBUTTONUP
         || message==WM_MBUTTONDOWN || message==WM_MBUTTONUP
@@ -75,9 +76,119 @@ void SendMove(UINT packet,UINT epoch,UINT seq) {
 void DeliverDown(UINT packet,UINT epoch,UINT seq) {
     InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONDOWN-WM_MOUSEFIRST,MK_LBUTTON,epoch),PacketL(10,10,seq));
 }
+
+bool RunDpiWindow(POINT position, bool mirrored, HINSTANCE module) {
+    const HWND parent=CreateWindowExW(0,L"CF7InputBridgeDpiFixture",L"private DPI owner",WS_POPUP,
+        position.x,position.y,1600,900,nullptr,nullptr,module,nullptr);
+    if(!parent)return false;
+    const auto parentContext=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE);
+    if(!parentContext){DestroyWindow(parent);return false;}
+    const HWND flash=CreateWindowExW(mirrored ? WS_EX_LAYOUTRTL : 0,L"CF7InputBridgeDpiFixture",L"private DPI source",
+        WS_CHILD|WS_DISABLED,0,0,857,482,parent,nullptr,module,nullptr);
+    if(!flash || GetDpiForWindow(parent)!=120 || GetDpiForWindow(flash)!=96) {
+        if(flash)DestroyWindow(flash);
+        SetThreadDpiAwarenessContext(parentContext);
+        DestroyWindow(parent);
+        return false;
+    }
+    RECT logical{},physical{};
+    const bool hasLogical=GetClientRect(flash,&logical)!=FALSE;
+    const auto unaware=SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    const bool hasPhysical=unaware && GetClientRect(flash,&physical);
+    if(unaware)SetThreadDpiAwarenessContext(unaware);
+    const bool exactFixture=hasLogical && hasPhysical && logical.right==857 && logical.bottom==482
+        && physical.right==1071 && physical.bottom==602;
+    if(exactFixture) {
+        InputShared dpiState{};dpiState.passiveMode=InputPassiveDisabled;
+        state=&dpiState;
+        observedChild=flash;
+        expectedFocus=GetFocus();
+        const UINT packet=RegisterWindowMessageW(InputMessage);
+        InputBridgeSelfTest::Install(flash,state,packet);
+        UINT sequence=0;
+        auto send=[&](UINT message,UINT flags,int x,int y,UINT extra=0) {
+            InputBridgeSelfTest::Drive(packet,PacketW(message-WM_MOUSEFIRST,flags,2)|(extra<<16),
+                PacketL(x,y,++sequence));
+        };
+        const auto release=[&](int x,int y) {
+            const auto before=seen[WM_LBUTTONUP-WM_MOUSEFIRST];
+            send(WM_LBUTTONDOWN,MK_LBUTTON,318,100);
+            send(WM_LBUTTONUP,0,x,y);
+            return seen[WM_LBUTTONUP-WM_MOUSEFIRST]==before+1 && !state->heldButtons;
+        };
+        send(WM_MOUSEMOVE,0,318,100);
+        const POINT inner=lastMouseMove;
+        Check(inner.y==80 && (mirrored ? inner.x>=602 && inner.x<=603 : inner.x==254),
+            "dpi_valid_inner_point_uses_native_units");
+        Check(release(318,-15) && lastLeftUp.y==-12 && (mirrored ? lastLeftUp.x>=602 && lastLeftUp.x<=603 : lastLeftUp.x==254),
+            "dpi_outside_top_delivers_one_signed_held_release");
+        Check(release(-15,100) && lastLeftUp.y==80 && (mirrored ? lastLeftUp.x>=logical.right : lastLeftUp.x==-12),
+            "dpi_outside_left_keeps_the_correct_side");
+        Check(release(1071,100) && lastLeftUp.y==80 && (mirrored ? lastLeftUp.x<0 : lastLeftUp.x==logical.right),
+            "dpi_outside_right_boundary_is_not_a_client_hit");
+        Check(release(318,602) && lastLeftUp.y==logical.bottom,"dpi_outside_bottom_boundary_is_not_a_client_hit");
+        Check(release(1099,100) && lastLeftUp.y==80 && (mirrored ? lastLeftUp.x==-23 : lastLeftUp.x==879),
+            "dpi_points_beyond_the_right_edge_use_signed_client_scale");
+        Check(release(318,615) && lastLeftUp.y==492,"dpi_points_beyond_the_bottom_edge_use_signed_client_scale");
+        Check(release(318,-1) && lastLeftUp.y==-1,"dpi_one_pixel_outside_does_not_round_into_client");
+        send(WM_MOUSEMOVE,0,-1,-1);
+        Check(lastMouseMove.x==-1 && lastMouseMove.y==-1,"dpi_unheld_leave_sentinel_is_not_transformed");
+        send(WM_LBUTTONDOWN,MK_LBUTTON,318,100);
+        send(WM_MOUSEMOVE,MK_LBUTTON,-1,-1);
+        Check(lastMouseMove.y==-1 && (mirrored ? lastMouseMove.x>=logical.right : lastMouseMove.x==-1),
+            "dpi_held_motion_at_sentinel_position_is_transformed");
+        send(WM_LBUTTONUP,0,318,-1);
+        const auto wheels=seen[WM_MOUSEWHEEL-WM_MOUSEFIRST];
+        send(WM_MOUSEWHEEL,0,318,100,120);
+        POINT nativeScreen=inner;
+        ClientToScreen(flash,&nativeScreen);
+        Check(seen[WM_MOUSEWHEEL-WM_MOUSEFIRST]==wheels+1 && lastWheel.x==nativeScreen.x && lastWheel.y==nativeScreen.y,
+            "dpi_wheel_still_delivers_native_screen_units");
+        Check(!focusChangedDuringMouseDelivery,"dpi_mouse_packets_never_acquire_focus");
+        SendDown(packet,2,++sequence);
+        const auto releases=seen[WM_LBUTTONUP-WM_MOUSEFIRST];
+        Check(SetWindowPos(flash,nullptr,0,0,0,0,SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE)!=FALSE,"dpi_fixture_remove_client_bounds");
+        send(WM_LBUTTONUP,0,318,-15);
+        Check(seen[WM_LBUTTONUP-WM_MOUSEFIRST]==releases && state->stop==1,"dpi_unknown_mapping_is_not_a_mouse_release");
+        const int beforeCancel=mouseDeliveries;
+        state->cancelTicket=1;
+        send(WM_MOUSEMOVE,0,1,1);
+        Check(state->cancelledTicket==1 && !state->heldButtons && mouseDeliveries==beforeCancel+1,
+            "dpi_unknown_mapping_still_settles_the_real_cancel_ticket");
+        observedChild=nullptr;
+        DestroyWindow(flash);
+        state=nullptr;
+    } else DestroyWindow(flash);
+    SetThreadDpiAwarenessContext(parentContext);
+    DestroyWindow(parent);
+    return exactFixture;
+}
+
+int RunMixedDpiFixture(const wchar_t* mode) {
+    BOOL receivesInput=TRUE;
+    if(!GetUserObjectInformationW(GetThreadDesktop(GetCurrentThreadId()),UOI_IO,&receivesInput,sizeof(receivesInput),nullptr)
+        || receivesInput) { std::puts("BLOCKED: mixed DPI fixture needs a non-input desktop");return 2; }
+    if(!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
+        || SetThreadDpiHostingBehavior(DPI_HOSTING_BEHAVIOR_MIXED)==DPI_HOSTING_BEHAVIOR_INVALID) return 2;
+    WNDCLASSW wc{};
+    wc.lpfnWndProc=TargetProc;
+    wc.hInstance=GetModuleHandleW(nullptr);
+    wc.lpszClassName=L"CF7InputBridgeDpiFixture";
+    if(!RegisterClassW(&wc))return 2;
+    const bool mirroredNegative=wcscmp(mode,L"rtl-negative")==0;
+    const bool negative=mirroredNegative || wcscmp(mode,L"negative")==0;
+    const bool mirrored=mirroredNegative || wcscmp(mode,L"rtl")==0;
+    if(!negative && !mirrored && wcscmp(mode,L"ltr")!=0)return 2;
+    if(!RunDpiWindow(negative ? POINT{-130,-96} : POINT{160,74},mirrored,wc.hInstance)) {
+        std::puts("BLOCKED: actual 120-to-96 DPI with 1071x602 physical source is required");return 2;
+    }
+    std::printf("MIXED DPI RESULT %s failures=%d\n",failures?"FAIL":"PASS",failures);
+    return failures ? 1 : 0;
+}
 }
 
 int wmain(int argc,wchar_t** argv) {
+    if(argc==3 && wcscmp(argv[1],L"--mixed-dpi")==0)return RunMixedDpiFixture(argv[2]);
     InputTraceShared diagnostic{};
     for(int n=1;n<=static_cast<int>(InputTraceCapacity)+3;n++)
         TraceWrite(&diagnostic,TraceReturn,n,n+10,WM_LBUTTONUP,POINT{n,-n},0,0,nullptr);

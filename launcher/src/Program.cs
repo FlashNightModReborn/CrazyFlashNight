@@ -1899,7 +1899,10 @@ class Program
             ragTerminalService = new CF7Launcher.RagTerminal.RagTerminalService(projectRoot, config.RagTerminalExePath);
             ragTerminalService.AutoStartPreferenceProvider = () => userPrefs.RagTerminalAutoStart;
             commandRouter.SetRagTerminalService(ragTerminalService);
-            socketServer.OnClientDisconnected += ragTerminalService.UnbindInBackground;
+            socketServer.OnClientDisconnected += delegate
+            {
+                ragTerminalService.UnbindInBackground(launchFlow?.ClosingUnpublishedBootstrap == true);
+            };
             // 可用性（exe 存在）在每次 AS2 连接就绪时重推一次；OnClientReady 重连即触发。
             socketServer.OnClientReady += commandRouter.PushRagTerminalAvailability;
             if (socketServer.IsClientReady) commandRouter.PushRagTerminalAvailability();
@@ -3512,9 +3515,10 @@ class Program
 
             // AI 终端 exe：仅当 7077 实例确为本游戏拉起（--embedded）时被后端接受退出；
             // standalone 实例回 409，用户手动启动的进程不受影响。
+            // 取消未交付的启动时，本次 Host 未启动终端就无需接触 7077。
             // 必须排在上面「顺序敏感」两步与 overlay Hide 之后：这是最长 1.5 秒的同步 HTTP 等待，
             // 早于卸鼠标钩子会让全系统鼠标消息多排队 1.5 秒。此处 UI 已全部隐藏，等待不可见。
-            try { ragTerminalService?.ShutdownEmbeddedOnExit(); }
+            try { ragTerminalService?.ShutdownEmbeddedOnExit(launchFlow?.ClosingUnpublishedBootstrap == true); }
             catch (Exception ex)
             {
                 LogManager.Log(

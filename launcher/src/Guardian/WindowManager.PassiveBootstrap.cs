@@ -21,6 +21,7 @@ namespace CF7Launcher.Guardian
         }
 
         private readonly record struct PassiveBootstrapWindows(IntPtr Host, IntPtr Root);
+        internal readonly record struct UnpublishedBootstrapCloseTarget(IntPtr Window, IntPtr Host);
 
         internal const int PassiveBootstrapForegroundGraceMs = 6000;
         private PassiveBootstrapPublication _pendingPassiveBootstrap;
@@ -64,6 +65,22 @@ namespace CF7Launcher.Guardian
             lock (_embedClaimLock)
                 if (_pendingPassiveBootstrap?.Cancellation == ticket)
                     RetirePassiveBootstrapLocked(EmbedResult.Cancelled, reason);
+        }
+
+        internal bool TryGetUnpublishedBootstrapCloseTarget(CancellationToken ticket, uint pid,
+            out UnpublishedBootstrapCloseTarget target)
+        {
+            target = default;
+            lock (_embedClaimLock)
+            {
+                PassiveBootstrapPublication pending = _pendingPassiveBootstrap;
+                if (pending == null || !ticket.CanBeCanceled || pending.Cancellation != ticket || pending.Pid != pid
+                    || !IsCurrentBootstrapAttempt(pending) || !IsBootstrapSourceAlive(pending)
+                    || !TryReadBootstrapWindows(pending, out PassiveBootstrapWindows windows)
+                    || GetParent(pending.Source) != windows.Host) return false;
+                target = new(pending.Source, windows.Host);
+                return true;
+            }
         }
 
         private void RetirePassiveBootstrapLocked(EmbedResult result, string reason)
