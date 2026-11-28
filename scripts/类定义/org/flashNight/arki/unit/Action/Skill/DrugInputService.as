@@ -44,6 +44,9 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         var rootRef:Object = root;
         var bridge:Object = {};
         bridge.update = function(unit:Object):Number {
+            var input:Object = rootRef.GameInput;
+            var passive:Boolean = input.passiveActive === true;
+            var canSample:Boolean = !passive || input.gateOpen === true;
             var inputEnabled:Boolean = !rootRef.暂停 && rootRef.当前玩家总数 == 1;
             var view:Object = rootRef.玩家信息界面 ? rootRef.玩家信息界面.快捷药剂界面 : null;
             var inventory:Object = rootRef.物品栏 ? rootRef.物品栏.药剂栏 : null;
@@ -54,22 +57,25 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             DrugInputService.syncBankView(view, inventory);
 
             var switchKeyCode:Number = Number(rootRef[DrugInputService.getSwitchKeyName()]);
-            var switchKeyDown:Boolean = !isNaN(switchKeyCode) && (Key.isDown(switchKeyCode)
-                || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
-                    && rootRef._agentHarnessBridge.isKeyDown(switchKeyCode) === true));
+            var switchKeyDown:Boolean = passive ? input.getActorPress(unit, switchKeyCode) > 0
+                : (!isNaN(switchKeyCode) && (Key.isDown(switchKeyCode)
+                    || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
+                        && rootRef._agentHarnessBridge.isKeyDown(switchKeyCode) === true)));
             DrugInputService.syncSwitchView(view, switchKeyCode, rootRef);
-            var switchResult:Object = DrugInputService.updateSwitch(
-                unit, switchKeyDown, inputEnabled, rootRef, view);
+            var switchResult:Object = canSample
+                ? DrugInputService.updateSwitch(unit, switchKeyDown, inputEnabled, rootRef, view) : null;
             var switched:Boolean = switchResult.switched === true;
             if (switched) DrugInputService.syncBankView(view, inventory);
 
             for (var lane:Number = 0; lane < DrugInputService.LANE_COUNT; lane++) {
                 var keyName:String = DrugInputService.getKeyName(lane);
                 var keyCode:Number = Number(rootRef[keyName]);
-                var keyDown:Boolean = !isNaN(keyCode) && (Key.isDown(keyCode)
-                    || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
-                        && rootRef._agentHarnessBridge.isKeyDown(keyCode) === true));
+                var keyDown:Boolean = passive ? input.getActorPress(unit, keyCode) > 0
+                    : (!isNaN(keyCode) && (Key.isDown(keyCode)
+                        || (rootRef._agentHarnessActive === true && rootRef._agentHarnessBridge != undefined
+                            && rootRef._agentHarnessBridge.isKeyDown(keyCode) === true)));
                 DrugInputService.syncView(view, lane, keyCode, rootRef);
+                if (!canSample) continue;
                 var result:Object = DrugInputService.updateSlot(
                     unit,
                     lane,
@@ -564,6 +570,11 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             ManualCooldownService.reset(ManualCooldownService.drugKey(lane));
         }
         ManualCooldownService.reset(ManualCooldownService.drugSwitchKey());
+    }
+
+    public static function cancelPassiveInput(unit:Object):Void {
+        switchKeyConsumed = false;
+        clearUnit(unit);
     }
 
     public static function clearUnit(unit:Object):Void {

@@ -4,6 +4,8 @@ import org.flashNight.gesh.path.PathManager;
 import org.flashNight.arki.item.LootContainerService;
 import org.flashNight.arki.audio.AudioBridge;
 import FastJSON;
+import org.flashNight.arki.key.KeyManager;
+import org.flashNight.arki.render.FrameBroadcaster;
 
 /**
  * ServerManager — AS2 ↔ C# Guardian Launcher 通信管理器（单例）
@@ -78,6 +80,12 @@ class org.flashNight.neur.Server.ServerManager {
     public var socketPort:Number = null;
     public var isSocketConnected:Boolean = false;
 
+    private var _inputCell:Object;
+    private var _inputWire:Object;
+    private var _authoredWorldDrag:Object;
+    private var _authoredWorldDragMouse:Object;
+    private var _inputResetPending:Boolean = false;
+
     // ==================== JSON ====================
     private var jsonParser:FastJSON;
 
@@ -125,6 +133,7 @@ class org.flashNight.neur.Server.ServerManager {
         currentFrame = 0;
         gameFrame = 0;
         gameFrameAdvanced = false;
+        _inputCell = _root.GameInput;
         _state = S_DISCONNECTED;
         _stateEnteredFrame = 0;
         _retryCount = 0;
@@ -412,6 +421,7 @@ class org.flashNight.neur.Server.ServerManager {
 
     public function onEnterFrameHandler():Void {
         currentFrame++;
+        if (this._inputCell != null && this._inputCell.passiveActive === true) commitPassiveInput();
         // 本拍只采样一次。分发中取得或释放的暂停租约从下一拍生效。
         gameFrameAdvanced = (_root.暂停 !== true);
         if (gameFrameAdvanced) gameFrame++;
@@ -545,6 +555,7 @@ class org.flashNight.neur.Server.ServerManager {
     // ==================== XMLSocket ====================
 
     public function initXMLSocket():Void {
+        retirePassiveInput();
         var self = this;
         var socket:XMLSocket = new XMLSocket();
         xmlSocket = socket;
@@ -588,12 +599,521 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
+    // I1's serial commit point is the system frame, including while gameplay is paused.
+    // The socket callbacks own only the inbox, except for closing an unavailable gate.
+    private static function inputUInt(value:String, minimum:Number):Number {
+        if (typeof value != "string") return -1;
+        var count:Number = length(value);
+        if (count == 0 || count > 10 || (count > 1 && value.charAt(0) === "0")) return -1;
+        var n:Number = 0;
+        for (var i:Number = 0; i < count; ++i) {
+            var digit:Number = value.charCodeAt(i) - 48;
+            if (digit < 0 || digit > 9) return -1;
+            n = n * 10 + digit;
+        }
+        return n < minimum || n > 2147483647 ? -1 : n;
+    }
+
+    private static function inputToken(value:String):Boolean {
+        if (typeof value != "string") return false;
+        var count:Number = length(value);
+        if (count == 0 || count > 96) return false;
+        for (var i:Number = 0; i < count; ++i) {
+            var ch:Number = value.charCodeAt(i);
+            if ((ch >= 48 && ch <= 57) || (ch >= 65 && ch <= 90) || (ch >= 97 && ch <= 122)
+                    || ch == 45 || ch == 46 || ch == 95) continue;
+            return false;
+        }
+        return true;
+    }
+
+    private function onInputWire(data:String):Void {
+        var count:Number = length(data);
+        if (count > 4096 || data.substr(0, 3) !== "I1|") {
+            faultInput("input_wire_version_or_size", 0);
+            return;
+        }
+        for (var i:Number = 0; i < count; ++i) {
+            var ch:Number = data.charCodeAt(i);
+            if (ch < 32 || ch > 126) {
+                faultInput("input_wire_characters", 0);
+                return;
+            }
+        }
+
+        var parts:Array = data.split("|");
+        var state:Object = _inputWire;
+        var connection:Number = inputUInt(parts[3], 1);
+        if (length(parts[2]) != 32 || connection < 1) {
+            faultInput("input_wire_identity", 0);
+            return;
+        }
+        for (i = 0; i < 32; ++i) {
+            ch = parts[2].charCodeAt(i);
+            if ((ch < 48 || ch > 57) && (ch < 97 || ch > 102)) {
+                faultInput("input_wire_identity", 0);
+                return;
+            }
+        }
+        if (state != null && (parts[2] !== state.session || connection !== state.connection)) return;
+        if (parts[1] === "Bind") {
+            bindPassiveInput(parts, connection);
+            return;
+        }
+        if (state == null) return;
+        switch (parts[1]) {
+            case "InputBatch": stageInputBatch(state, parts); break;
+            case "WorldPointerCancel": stageWorldPointerCancel(state, parts); break;
+            case "Cancel": stageInputCancel(state, parts); break;
+            case "Cancelled":
+                if (parts.length == 11 && parts[9] === "1" && parts[10] === "1"
+                        && parts.slice(2, 9).join("|") === state.localCancel) {
+                    _inputCell.lastHostCancelled = state.localCancel;
+                    state.localCancel = null;
+                }
+                break;
+            case "K": stageComboResult(state, parts, data); break;
+            default: faultInput("input_wire_kind", 0); break;
+        }
+    }
+
+    private function bindPassiveInput(parts:Array, connection:Number):Void {
+        var cell:Object = _inputCell;
+        if (cell == null) return;
+        if (cell.facadeInstalled !== true || parts.length != 7 || parts[4] !== "15"
+                || parts[5] !== "1" || parts[6] !== "64") {
+            faultInput("input_wire_capability", 0);
+            return;
+        }
+
+        var session:String = parts[2];
+        if (_inputWire == null) {
+            _inputWire = {session:session, connection:connection, receivedEpoch:0, receivedBatch:0,
+                observationGeneration:0, observedThrough:0, revokedEpoch:0, inputFrameSeq:0,
+                highestTicket:0, receipts:{}, worldPointerCancelTicket:0};
+            cell.sessionId = session;
+            cell.connectionIncarnation = connection;
+            cell.bound = true;
+            cell.passiveActive = true;
+            installAuthoredWorldDragMouse();
+            closeInputSnapshot(cell, 0);
+            var timer:Object = _root.帧计时器;
+            if (timer != null) timer.dfaSentToLauncher = false;
+            _inputResetPending = true;
+            trace("[I1] Bound C=" + connection);
+        }
+        sendSocketMessage("I1|Capability|" + session + "|" + connection + "|15|1|64");
+    }
+
+    private function faultInput(reason:String, epoch:Number):Void {
+        var state:Object = _inputWire;
+        if (state == null) {
+            if (_inputCell != null && _inputCell.passiveActive === true) _inputCell.lastFault = reason;
+            return;
+        }
+        if (state.fault != null) return;
+        var knownEpoch:Number = Math.max(state.receivedEpoch, _inputCell.snapshot.keyboardEpoch);
+        state.fault = reason;
+        // Prefer the grant we have actually seen over a future epoch in a broken packet.
+        state.faultEpoch = knownEpoch > state.revokedEpoch ? knownEpoch : (epoch > state.revokedEpoch ? epoch : 0);
+    }
+
+    private function stageInputBatch(state:Object, parts:Array):Void {
+        if (state.fault != null || state.localCancel != null) return;
+        var epoch:Number = inputUInt(parts[4], 1);
+        if (epoch > 0 && (epoch <= state.revokedEpoch || epoch < state.receivedEpoch
+                || (state.cancel != null && epoch <= state.cancel.epoch))) return;
+        if (parts.length != 11 || epoch < 1) {
+            faultInput("input_batch_fields", epoch);
+            return;
+        }
+        if (state.needsCancel === true) {
+            faultInput("input_epoch_unqualified", epoch);
+            return;
+        }
+
+        var batchSeq:Number = inputUInt(parts[5], 1);
+        var obsGen:Number = inputUInt(parts[6], 1);
+        var obsThrough:Number = inputUInt(parts[7], 0);
+        var edgeCount:Number = inputUInt(parts[9], 0);
+        if (batchSeq < 1 || obsGen < 1 || obsThrough < 0 || edgeCount < 0 || edgeCount > 64) {
+            faultInput("input_batch_fields", epoch);
+            return;
+        }
+
+        var newEpoch:Boolean = epoch !== state.receivedEpoch;
+        var previousBatch:Number = newEpoch ? 0 : state.receivedBatch;
+        if (batchSeq <= previousBatch) return;
+        if (batchSeq !== previousBatch + 1 || (!newEpoch && (obsGen !== state.observationGeneration
+                || obsThrough < state.observedThrough))) {
+            faultInput("input_sequence", epoch);
+            return;
+        }
+
+        var words:Array = inputBitmap(parts[8]);
+        if (words == null || (edgeCount == 0 ? parts[10] !== "-" : parts[10] === "-")) {
+            faultInput("input_batch_bitmap_or_edges", epoch);
+            return;
+        }
+        var rows:Array = edgeCount == 0 ? _inputCell.noEdges : String(parts[10]).split(";");
+        if (rows.length !== edgeCount) {
+            faultInput("input_batch_edge_count", epoch);
+            return;
+        }
+        var earlier:Object = newEpoch ? null : state.staged;
+        var stagedCount:Number = (earlier == null ? 0 : earlier.edgeCount) + edgeCount;
+        if (stagedCount > 64) {
+            faultInput("input_edges_overflow", epoch);
+            return;
+        }
+        var priorWords:Array = newEpoch ? _inputCell.neutralWords
+            : (earlier != null ? earlier.words : _inputCell.snapshot.words);
+        var edges:Array = inputEdges(rows, newEpoch ? 0 : state.observedThrough, obsThrough, priorWords, words);
+        if (edges == null) {
+            faultInput("input_projection", epoch);
+            return;
+        }
+        var stagedEdges:Array = earlier == null ? [] : earlier.edges;
+        for (var i:Number = 0; i < edges.length; ++i) stagedEdges.push(edges[i]);
+        state.staged = {epoch:epoch, seq:batchSeq, words:words, edges:stagedEdges, edgeCount:stagedCount};
+        state.receivedEpoch = epoch;
+        state.receivedBatch = batchSeq;
+        state.observationGeneration = obsGen;
+        state.observedThrough = obsThrough;
+    }
+
+    private function inputBitmap(hex:String):Array {
+        if (length(hex) != 64) return null;
+        var words:Array = [];
+        var at:Number = 0;
+        for (var word:Number = 0; word < 8; ++word) {
+            var value:Number = 0;
+            for (var n:Number = 0; n < 8; ++n) {
+                var digit:Number = hex.charCodeAt(at++);
+                if (digit >= 48 && digit <= 57) digit -= 48;
+                else if (digit >= 65 && digit <= 70) digit -= 55;
+                else return null;
+                value = value * 16 + digit;
+            }
+            words[word] = value;
+        }
+        return words;
+    }
+
+    private function inputEdges(rows:Array, previousSeq:Number, observedThrough:Number,
+                                priorWords:Array, words:Array):Array {
+        var projected:Array = priorWords.slice();
+        var edges:Array = [];
+        for (var i:Number = 0; i < rows.length; ++i) {
+            var fields:Array = String(rows[i]).split(",");
+            if (fields.length != 3) return null;
+            var seq:Number = inputUInt(fields[0], 1);
+            var vk:Number = inputUInt(fields[1], 0);
+            var direction:String = fields[2];
+            if (seq <= previousSeq || seq > observedThrough || vk < 0 || vk > 255
+                    || (direction !== "D" && direction !== "U")) return null;
+            previousSeq = seq;
+            var index:Number = vk >>> 5;
+            var bit:Number = 1 << (vk & 31);
+            var down:Boolean = direction === "D";
+            var wasDown:Boolean = (projected[index] & bit) != 0;
+            // An observed Up for an already suppressed key is a physical fact only.
+            if (down && wasDown) return null;
+            if (!down && !wasDown) continue;
+            projected[index] = (down ? projected[index] | bit : projected[index] & ~bit) >>> 0;
+            edges.push({seq:seq, vk:vk, down:down});
+        }
+        for (var word:Number = 0; word < 8; ++word) {
+            if (projected[word] !== words[word]) return null;
+        }
+        return edges;
+    }
+
+    private function stageInputCancel(state:Object, parts:Array):Void {
+        var epoch:Number = inputUInt(parts[5], 1);
+        var ticket:Number = inputUInt(parts[6], 1);
+        var currentEpoch:Number = Math.max(state.receivedEpoch, _inputCell.snapshot.keyboardEpoch);
+        if (parts.length != 10 || ticket < 1 || epoch < 1 || !inputToken(parts[9])) {
+            if (epoch < 1 || epoch >= currentEpoch) faultInput("input_cancel_fields", epoch);
+            return;
+        }
+        if (parts[4] !== "Game" || parts[7] !== "AS2" || inputUInt(parts[8], 1) !== state.connection) return;
+
+        var identity:String = parts.slice(2, 9).join("|");
+        var receipt:Object = state.receipts[ticket];
+        if (receipt != null) {
+            if (receipt.identity === identity) sendSocketMessage(receipt.wire);
+            return;
+        }
+        if (state.cancel != null || ticket <= state.highestTicket || epoch < currentEpoch
+                || (epoch <= state.revokedEpoch && !(epoch === state.revokedEpoch && state.localCancel != null))
+                || (epoch > currentEpoch && _inputCell.gateOpen === true && state.fault == null)) return;
+        // A grant may be revoked before its first batch reaches Flash.
+        state.cancel = {epoch:epoch, ticket:ticket, identity:identity};
+    }
+
+    private function stageComboResult(state:Object, parts:Array, wire:String):Void {
+        if (_inputCell.gateOpen !== true || state.fault != null || state.cancel != null) return;
+        var epoch:Number = inputUInt(parts[4], 1);
+        if (epoch > 0 && epoch !== _inputCell.snapshot.keyboardEpoch) return;
+        if (parts.length != 15 || epoch < 1) {
+            faultInput("input_combo_fields", epoch);
+            return;
+        }
+        var inputFrame:Number = inputUInt(parts[5], 1);
+        var actor:Number = inputUInt(parts[6], 1);
+        var module:Number = inputUInt(parts[7], 0);
+        var moduleInc:Number = inputUInt(parts[8], 1);
+        var config:Number = inputUInt(parts[9], 1);
+        var commandSeq:Number = inputUInt(parts[10], 0);
+        var cmdId:Number = inputUInt(parts[11], 0);
+        if (inputFrame < 1 || actor < 1 || module < 0 || module > 2 || moduleInc < 1
+                || config < 1 || commandSeq < 0 || cmdId < 0 || ((cmdId == 0) != (commandSeq == 0))) {
+            faultInput("input_combo_fields", epoch);
+            return;
+        }
+
+        var fault:String = FrameBroadcaster.stageVersionedResult({
+            epoch:epoch, inputFrameSeq:inputFrame, actorInc:actor, moduleId:module,
+            moduleInc:moduleInc, configInc:config, commandSeq:commandSeq, cmdId:cmdId,
+            cmdName:unescape(parts[12]), hintsJson:parts[14], wire:wire
+        });
+        if (fault != null) faultInput(fault, epoch);
+    }
+
+    public function faultPassiveCombo(reason:String):Void {
+        if (_inputCell.gateOpen === true) faultInput(reason, _inputCell.snapshot.keyboardEpoch);
+    }
+
+    private function closeInputSnapshot(cell:Object, epoch:Number):Void {
+        cell.gateOpen = false;
+        cell.snapshot = {systemFrame:currentFrame, inputFrameSeq:cell.bound ? _inputWire.inputFrameSeq : 0,
+            keyboardEpoch:epoch, words:cell.neutralWords, edges:cell.noEdges};
+    }
+
+    public function beginAuthoredWorldDrag(instance:Object):Boolean {
+        if (instance == null || _authoredWorldDrag != null) return false;
+        if (_root.cf7R1PassiveInput == "1" || _inputCell.passiveActive === true) {
+            if (_inputWire == null || _inputWire.worldPointerCancel != null ||
+                    _inputCell.gateOpen !== true) return false;
+        }
+        _authoredWorldDrag = instance;
+        return true;
+    }
+
+    public function endAuthoredWorldDrag(instance:Object):Boolean {
+        if (_authoredWorldDrag == null || _authoredWorldDrag !== instance) return false;
+        _authoredWorldDrag = null;
+        if (_inputWire != null) _inputWire.mouseWorldDrag = null;
+        return true;
+    }
+
+    private function cancelAuthoredWorldDrag():Boolean {
+        if (_authoredWorldDrag == null) return false;
+        _authoredWorldDrag = null;
+        if (_inputWire != null) _inputWire.mouseWorldDrag = null;
+        _root.stopDrag();
+        _root.鼠标.gotoAndStop("手型普通");
+        return true;
+    }
+
+    private function installAuthoredWorldDragMouse():Void {
+        if (_authoredWorldDragMouse != null) return;
+        var server:ServerManager = this;
+        _authoredWorldDragMouse = {
+            onMouseDown:function():Void { server.onAuthoredWorldMouseDown(); },
+            onMouseUp:function():Void { server.onAuthoredWorldMouseUp(); }
+        };
+        Mouse.addListener(_authoredWorldDragMouse);
+    }
+
+    private function onAuthoredWorldMouseDown():Void {
+        var state:Object = _inputWire;
+        if (state == null) return;
+        var resume:Object = state.worldDragResume;
+        if (resume == null) return;
+        // The first real AVM1 primary-button Down retires this one-shot ticket,
+        // even when it belongs to a different target or finds the gate closed.
+        state.worldDragResume = null;
+        if (_inputCell.bound !== true || _inputCell.passiveActive !== true || _inputCell.gateOpen !== true
+                || _inputCell.connectionIncarnation !== state.connection || state.cancel != null
+                || state.fault != null || state.needsCancel === true || state.localCancel != null
+                || state.worldPointerCancel != null || state.lastWorldPointerReceipt !== resume.receipt
+                || _authoredWorldDrag != null) return;
+        var instance:Object = resume.instance;
+        if (instance.resumeAuthoredWorldDrag() === true && _authoredWorldDrag === instance) {
+            state.mouseWorldDrag = instance;
+        }
+    }
+
+    private function onAuthoredWorldMouseUp():Void {
+        var state:Object = _inputWire;
+        if (state == null) return;
+        var instance:Object = state.mouseWorldDrag;
+        if (instance == null || _authoredWorldDrag !== instance) return;
+        state.mouseWorldDrag = null;
+        instance.releaseAuthoredWorldDrag();
+    }
+
+    public function retireAuthoredWorldDragInstance(instance:Object):Void {
+        var state:Object = _inputWire;
+        if (state != null && state.worldDragResume != null && state.worldDragResume.instance === instance) {
+            state.worldDragResume = null;
+        }
+        if (_authoredWorldDrag === instance && instance != null) cancelAuthoredWorldDrag();
+    }
+
+    private function stageWorldPointerCancel(state:Object, parts:Array):Void {
+        var ticket:Number = inputUInt(parts[4], 1);
+        var nativeEpoch:Number = inputUInt(parts[5], 1);
+        if (parts.length != 6 || ticket < 1 || nativeEpoch < 1) return;
+        var identity:String = parts.slice(2).join("|");
+        var prior:Object = state.lastWorldPointerReceipt;
+        if (prior != null && prior.identity === identity) {
+            sendSocketMessage(prior.wire);
+            return;
+        }
+        if (ticket <= state.worldPointerCancelTicket || state.worldPointerCancel != null) return;
+        state.worldPointerCancel = {ticket:ticket, identity:identity};
+    }
+
+    private function settleWorldPointerCancel(state:Object):Void {
+        var pending:Object = state.worldPointerCancel;
+        if (pending == null) return;
+        var instance:Object = _authoredWorldDrag;
+        var oldDrag:Boolean = cancelAuthoredWorldDrag();
+        state.worldPointerCancel = null;
+        state.worldPointerCancelTicket = pending.ticket;
+        var wire:String = "I1|WorldPointerCancelled|" + pending.identity + "|1";
+        var receipt:Object = {identity:pending.identity, wire:wire};
+        state.lastWorldPointerReceipt = receipt;
+        state.worldDragResume = oldDrag && typeof instance.resumeAuthoredWorldDrag == "function"
+                && typeof instance.releaseAuthoredWorldDrag == "function" ? {instance:instance, receipt:receipt} : null;
+        sendSocketMessage(wire);
+        trace("[I1] WorldPointerCancelled " + pending.identity + " authoredDrag=" + oldDrag);
+    }
+
+    private function settleInputObligations():Void {
+        ++_inputCell.cancelSerial;
+        _inputCell.clearKeyPresses();
+        if (!cancelAuthoredWorldDrag() && typeof _root.stopDrag == "function") _root.stopDrag();
+        KeyManager.cancelPassiveInput();
+        FrameBroadcaster.cancelVersionedInput();
+        // Logic loads after Shared. Keep the explicit gameplay hooks on its root bridge.
+        var timer:Object = _root.帧计时器;
+        if (typeof timer.cancelPassiveInput == "function") timer.cancelPassiveInput();
+    }
+
+    private function retirePassiveInput():Void {
+        var state:Object = _inputWire;
+        if (state == null) return;
+        _inputCell.bound = false;
+        // PassiveActive remains armed in a VM that had switched to Host input.
+        // An unavailable Host cannot turn raw Flash keys into a new grant.
+        closeInputSnapshot(_inputCell, _inputCell.snapshot.keyboardEpoch);
+        _inputWire = null;
+        _inputResetPending = true;
+    }
+
+    private function commitPassiveInput():Void {
+        var cell:Object = _inputCell;
+        var state:Object = _inputWire;
+        if (_inputResetPending) {
+            _inputResetPending = false;
+            settleInputObligations();
+        }
+
+        if (state != null) {
+            settleWorldPointerCancel(state);
+            var control:Object = state.cancel;
+            if (control != null) {
+                state.cancel = null;
+                state.highestTicket = control.ticket;
+                var alreadySettled:Boolean = control.epoch === state.revokedEpoch;
+                state.revokedEpoch = control.epoch;
+                state.needsCancel = false;
+                closeInputSnapshot(cell, control.epoch);
+                if (state.staged != null && state.staged.epoch <= control.epoch) state.staged = null;
+                if (state.localCancel != null && state.localCancel !== control.identity) state.localCancel = null;
+                if (!alreadySettled) settleInputObligations();
+                var receipt:String = "I1|Cancelled|" + control.identity + "|1|1";
+                state.receipts[control.ticket] = {identity:control.identity, wire:receipt};
+                cell.lastCancelled = receipt;
+                sendSocketMessage(receipt);
+                trace("[I1] Cancelled " + control.identity);
+            }
+
+            if ((state.staged != null || cell.gateOpen === true)
+                    && (state.inputFrameSeq >= 2147483647 || currentFrame > 2147483647)) {
+                faultInput("input_frame_exhausted", 0);
+            }
+            if (state.fault != null) {
+                var fault:String = state.fault;
+                var faultEpoch:Number = state.faultEpoch;
+                state.fault = null;
+                cell.lastFault = fault;
+                trace("[I1] fault=" + fault + " epoch=" + faultEpoch);
+                if (faultEpoch > state.revokedEpoch) {
+                    closeInputSnapshot(cell, faultEpoch);
+                    state.staged = null;
+                    state.revokedEpoch = faultEpoch;
+                    settleInputObligations();
+                    if (state.highestTicket < 2147483647) {
+                        var localTicket:Number = Math.max(faultEpoch, state.highestTicket + 1);
+                        state.localCancel = state.session + "|" + state.connection + "|Game|" + faultEpoch
+                            + "|" + localTicket + "|AS2|" + state.connection;
+                        sendSocketMessage("I1|Cancel|" + state.localCancel + "|" + fault);
+                    }
+                } else if (faultEpoch == 0 && control == null && state.localCancel == null) {
+                    // A malformed first batch can omit any usable epoch. Stay closed,
+                    // then request cancellation as soon as the peer identifies its grant.
+                    state.staged = null;
+                    closeInputSnapshot(cell, cell.snapshot.keyboardEpoch);
+                    if (state.needsCancel !== true) settleInputObligations();
+                    state.needsCancel = true;
+                }
+            }
+
+            var batch:Object = state.staged;
+            if (batch != null) {
+                state.staged = null;
+                if (cell.snapshot.keyboardEpoch !== batch.epoch || cell.gateOpen !== true) {
+                    if (cell.gateOpen === true) {
+                        state.revokedEpoch = cell.snapshot.keyboardEpoch;
+                        closeInputSnapshot(cell, state.revokedEpoch);
+                        settleInputObligations();
+                    }
+                    FrameBroadcaster.beginVersionedInputEpoch();
+                }
+                cell.gateOpen = true;
+                cell.snapshot = {systemFrame:currentFrame, inputFrameSeq:++state.inputFrameSeq,
+                    keyboardEpoch:batch.epoch, words:batch.words, edges:batch.edges};
+                sendSocketMessage("I1|Latch|" + state.session + "|" + state.connection + "|" + batch.epoch
+                    + "|" + batch.seq + "|" + currentFrame + "|" + state.inputFrameSeq);
+            } else if (cell.gateOpen === true) {
+                var previous:Object = cell.snapshot;
+                cell.snapshot = {systemFrame:currentFrame, inputFrameSeq:++state.inputFrameSeq,
+                    keyboardEpoch:previous.keyboardEpoch, words:previous.words, edges:cell.noEdges};
+            }
+        }
+        if (cell.gateOpen !== true) closeInputSnapshot(cell, cell.snapshot.keyboardEpoch);
+        var timer:Object = _root.帧计时器;
+        if (typeof timer.preparePassiveActor == "function") timer.preparePassiveActor();
+        cell.recordKeyEdges(cell.snapshot.edges);
+        cell.recordPhase("server", currentFrame);
+        KeyManager.tickPassiveInput(cell.snapshot, cell.gateOpen);
+    }
+
     // 使用 try/catch 包住 FastJSON.parse 处理服务器返回的数据
     // 契约：热路径(frame)走快车道不经过此方法；冷路径(task 响应)用 try/catch 兜底
     private function onSocketData(data:String):Void {
         // XMLSocket.onData 已剥除帧终止符。CS6 的 '\0' 是空串，split 会拆坏代理对。
         if (data.length == 0) return;
         var prefix:String = data.charAt(0);
+        if (prefix == "I") {
+            onInputWire(data);
+            return;
+        }
 
         // C# 打击数字源头开关：H0=关闭入队/序列化，H1=开启。
         // 行为模式与世界行上限由 Host 独占，Flash 只需要知道是否应产出事件。
@@ -608,9 +1128,11 @@ class org.flashNight.neur.Server.ServerManager {
             return;
         }
 
-        // 搓招输入快车道：K{cmdId+0x20}[{cmdName}\x01{hints}]（绕过 JSON 解析）
+        // Raw K no longer feeds combo input. Only the standalone protocol
+        // latency fixture hooks this diagnostic echo.
         if (prefix == "K") {
-            org.flashNight.arki.render.FrameBroadcaster.receiveK(data.substring(1));
+            if (_root.__protocolBench != null && _root.GameInput.passiveActive !== true)
+                FrameBroadcaster.receiveK(data.substring(1));
             return;
         }
 
@@ -874,6 +1396,7 @@ class org.flashNight.neur.Server.ServerManager {
         // 主动 uncertainty recovery 会本地执行一次 onSocketClose；若服务器关闭事件
         // 已经排队，后到的重复通知必须保持幂等，不能再次推进 loot proof/FSM。
         if (xmlSocket == null && !isSocketConnected && _state != S_CONNECTED) return;
+        retirePassiveInput();
         trace("XMLSocket connection closed");
         isSocketConnected = false;
         org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(false);

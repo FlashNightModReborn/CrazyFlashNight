@@ -10,6 +10,8 @@ using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Guardian.Hud.Loot;
 using CF7Launcher.Guardian.Hud.Tooltip;
+using CF7Launcher.Guardian.InputOwnership;
+using CF7Launcher.Tests.Guardian;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -312,9 +314,9 @@ namespace Launcher.Tests.Guardian
         }
 
         [SkippableFact]
-        public void ModifierMouseWorkflowPreservesGameKeyboardFocus()
+        public void ModifierEditorReleasesItsLeaseOnEscapeAndClickOutsideTheEditor()
         {
-            const string pending = "not run: panel show, search input, click, owner keyboard focus";
+            const string pending = "not run: panel show, search input, Escape, click, lease release";
             using var process = Process.GetCurrentProcess();
             string initial = $"session={process.SessionId} testPid={process.Id} foregroundBefore={DescribeWindow(GetForegroundWindow())}";
             Skip.IfNot(Environment.UserInteractive, $"BLOCKED non-interactive session; {initial}; {pending}");
@@ -334,19 +336,10 @@ namespace Launcher.Tests.Guardian
             _output.WriteLine(activation);
             Skip.IfNot(acquired, $"BLOCKED initial foreground unavailable; {activation}; {pending}");
 
-            using var gameKeyTarget = new Button();
-            owner.Controls.Add(gameKeyTarget);
-            Assert.True(gameKeyTarget.Focus());
-            int returns = 0;
-            Func<bool> currentReturn = null;
+            var authority = R1UiAdapterTests.StartGameAuthority();
             using var task = new ModifierTask(() => true, _ => true);
-            using var surface = new ModifierNativeSurface(owner, "owned", "owned", task, restoreGameKeyboard: current =>
-            {
-                Assert.True(current());
-                currentReturn = current;
-                returns++;
-                Assert.True(gameKeyTarget.Focus());
-            });
+            using var surface = new ModifierNativeSurface(owner, "owned", "owned", task);
+            surface.BindInputAuthority(authority, authority);
             try
             {
                 Assert.True((bool)typeof(ModifierNativeSurface).GetProperty("ShowWithoutActivation",
@@ -357,33 +350,42 @@ namespace Launcher.Tests.Guardian
 
                 typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(surface, new object[] { "items" });
-                bool? textInputActive = null;
-                surface.TextInputFocusChanged += active => textInputActive = active;
                 var input = (TextBox)typeof(ModifierNativeSurface).GetField(
                     "_itemQuery", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(surface);
                 Assert.True(input.Focus());
                 Application.DoEvents();
-                Assert.True(textInputActive);
+                TextInputLease first = Assert.IsType<TextInputLease>(authority.CurrentTextLease);
+                Assert.Equal("modifier.edit.itemQuery", first.EndpointId);
+                R1UiAdapterTests.SettleGameCancel(authority);
+
                 SendMessage(input.Handle, 0x0102 /* WM_CHAR */, (IntPtr)'q', IntPtr.Zero);
                 Assert.Equal("q", input.Text);
                 var editClick = Message.Create(input.Handle, 0x0201, (IntPtr)1, IntPtr.Zero);
                 Assert.False(surface.PreFilterMessage(ref editClick));
-                Assert.True(input.Focused);
-                Assert.Equal(0, returns);
-                _output.WriteLine($"query received q, input={DescribeWindow(input.Handle)}");
+                Assert.Equal<TextInputLease?>(first, authority.CurrentTextLease);
+
+                var escape = Message.Create(input.Handle, 0x0100, (IntPtr)(int)Keys.Escape, IntPtr.Zero);
+                Assert.True(surface.PreFilterMessage(ref escape));
+                Assert.Null(authority.CurrentTextLease);
+                Assert.True(authority.IsGameKeyboardAdmitted);
+                Assert.True(authority.TryTakeOutput(out _)); // Consume the new grant before another acquisition.
+
+                Assert.True(input.Focus());
+                Application.DoEvents();
+                TextInputLease second = Assert.IsType<TextInputLease>(authority.CurrentTextLease);
+                Assert.Equal(first.EndpointId, second.EndpointId);
+                Assert.NotEqual(first.LeaseId, second.LeaseId);
+                R1UiAdapterTests.SettleGameCancel(authority);
 
                 IntPtr point = (IntPtr)((10 << 16) | 10);
                 SendMessage(surface.Handle, 0x0201 /* WM_LBUTTONDOWN */, (IntPtr)1, point);
                 SendMessage(surface.Handle, 0x0202 /* WM_LBUTTONUP */, IntPtr.Zero, point);
                 Application.DoEvents();
-                Assert.False(textInputActive);
-                Assert.True(WaitForForeground(owner.Handle), $"Click returned foreground to {DescribeWindow(GetForegroundWindow())}");
-                Assert.Equal(1, returns);
-                Assert.True(gameKeyTarget.Focused);
-                _output.WriteLine($"click returned keyboard focus to the game child={DescribeWindow(gameKeyTarget.Handle)}");
+                Assert.Null(authority.CurrentTextLease);
+                Assert.True(authority.IsGameKeyboardAdmitted);
+                Assert.True(surface.Active);
             }
             finally { surface.SuspendPanel(); }
-            Assert.False(currentReturn());
         }
 
         private sealed class CommitObserver : ILayeredWindowCommitObserver

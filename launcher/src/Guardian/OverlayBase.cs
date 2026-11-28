@@ -15,7 +15,7 @@ namespace CF7Launcher.Guardian
     /// - Win32 P/Invoke 声明（UpdateLayeredWindow、ShowWindow、SetWindowPos 等）
     /// - CreateParams（WS_EX_LAYERED | TOOLWINDOW | NOACTIVATE，可选 WS_EX_TRANSPARENT）
     /// - WndProc HTTRANSPARENT（仅 IsClickThrough 时启用）
-    /// - Owner 跟随（Activated/Deactivated/Minimized → Show/Hide）
+    /// - 会话显隐跟随（owner、已登记的编辑器前台、最小化）
     /// - CommitBitmap() 统一提交
     /// - ShowOverlay / HideOverlay / DismissOverlay 三分法
     ///
@@ -31,6 +31,12 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         protected static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern bool IsChild(IntPtr parent, IntPtr child);
 
         [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         private static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst,
@@ -108,6 +114,7 @@ namespace CF7Launcher.Guardian
         private EventHandler _ownerResizeHandler;
         private EventHandler _ownerActivatedHandler;
         private EventHandler _ownerDeactivateHandler;
+        private readonly Action<bool> _appActivationChanged;
         private EventHandler _anchorResizeHandler;
         private LayeredWindowCommitObserverSlot _commitObservation;
 
@@ -204,7 +211,17 @@ namespace CF7Launcher.Guardian
             _ownerDeactivateHandler = delegate { OnOwnerDeactivated(); };
             owner.Activated += _ownerActivatedHandler;
             owner.Deactivate += _ownerDeactivateHandler;
+            if (owner is GuardianForm guardian)
+            {
+                _appActivationChanged = active =>
+                {
+                    if (!active && _ownerVisible) HideForInactiveSession();
+                };
+                guardian.AppActivationChanged += _appActivationChanged;
+            }
         }
+
+        protected override bool ShowWithoutActivation => true;
 
         protected override CreateParams CreateParams
         {
@@ -251,7 +268,7 @@ namespace CF7Launcher.Guardian
                     LogVisibilityHookFailure("activate", ex);
                 }
             }
-            if (_shown)
+            if (_shown && CanShowOverlayNow)
             {
                 IntPtr handle;
                 if (!TryGetExistingHandle(out handle)) return;
@@ -267,10 +284,14 @@ namespace CF7Launcher.Guardian
             HandleOwnerDeactivated();
         }
 
+        internal void RestoreForNonModalForeground()
+        {
+            if (!_ownerVisible && !IsDisposed && !Disposing && ShouldKeepPresentedOnOwnerDeactivate)
+                OnOwnerActivated();
+        }
+
         /// <summary>
-        /// owner 失活的唯一处理入口（Activated/Deactivated 回调与测试共用）：
-        /// 白名单输入窗顶替前台时只记诊断，不改 _ownerVisible、不隐藏、不触发
-        /// OnOwnerBecameHidden —— 否则打字期间对话面板会被整块隐藏/压隐。
+        /// 对当前 owner 失活状态应用会话显示规则。
         /// </summary>
         internal void HandleOwnerDeactivated()
         {
@@ -280,6 +301,12 @@ namespace CF7Launcher.Guardian
                 TraceFocusLifecycle("owner_deactivate_kept");
                 return;
             }
+            HideForInactiveSession();
+        }
+
+        private void HideForInactiveSession()
+        {
+            if (IsDisposed || Disposing) return;
             bool visibilityChanged = _ownerVisible;
             _ownerVisible = false;
             if (visibilityChanged)
@@ -756,6 +783,8 @@ namespace CF7Launcher.Guardian
                 try { if (_owner != null && _ownerResizeHandler != null) _owner.Resize -= _ownerResizeHandler; } catch { }
                 try { if (_owner != null && _ownerActivatedHandler != null) _owner.Activated -= _ownerActivatedHandler; } catch { }
                 try { if (_owner != null && _ownerDeactivateHandler != null) _owner.Deactivate -= _ownerDeactivateHandler; } catch { }
+                if (_owner is GuardianForm guardian && _appActivationChanged != null)
+                    guardian.AppActivationChanged -= _appActivationChanged;
                 try { if (_anchor != null && _anchorResizeHandler != null) _anchor.Resize -= _anchorResizeHandler; } catch { }
                 try { if (_anchor != null && _anchorResizeHandler != null) _anchor.LocationChanged -= _anchorResizeHandler; } catch { }
             }

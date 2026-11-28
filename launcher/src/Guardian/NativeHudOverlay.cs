@@ -33,27 +33,27 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 插话输入浮窗前台探测：输入层接线后由宿主注册
-        /// （返回 true 当且仅当那个输入窗是本进程当前的系统前台）。默认 null＝不生效。
+        /// 修改器及插话输入窗口的前台探测，由宿主注册
+        /// （仅当已注册的非模态输入窗持有系统前台时为 true）。默认 null＝不生效。
         /// </summary>
-        internal Func<bool> InterjectInputForegroundProbe;
+        internal Func<bool> NonModalInputForegroundProbe;
 
         /// <summary>
         /// 输入浮窗顶替前台时跳过 owner 失活的隐藏（P0.5）：对话面板必须留在屏幕上，
         /// 玩家才能在打字时看见自己插话的上下文。判据只认注册的输入窗，别的窗口
-        /// 成为前台时 IsInterjectInputForeground 返回 false → 走原有隐藏逻辑。
+        /// 成为前台时 IsNonModalInputForeground 返回 false → 走原有隐藏逻辑。
         /// </summary>
         protected override bool ShouldKeepPresentedOnOwnerDeactivate
         {
-            get { return IsInterjectInputForeground(); }
+            get { return IsNonModalInputForeground(); }
         }
 
         /// <summary>读取注册探针；未注册/异常一律按"不是输入窗前台"处理（fail-closed 到原行为）。</summary>
-        internal bool IsInterjectInputForeground()
+        internal bool IsNonModalInputForeground()
         {
             try
             {
-                Func<bool> probe = InterjectInputForegroundProbe;
+                Func<bool> probe = NonModalInputForegroundProbe;
                 return probe != null && probe();
             }
             catch { return false; }
@@ -453,6 +453,7 @@ namespace CF7Launcher.Guardian
         {
             if (FrontDoorVisible)
             {
+                CancelPointerGesture("game_panel_hidden");
                 _animTick?.Stop();
                 DismissHudPresentation();
                 return;
@@ -1131,9 +1132,42 @@ namespace CF7Launcher.Guardian
                 NativeMouseFocusSample sample = TraceFocusNativeMouse(m, "enter", started, lease: traceLease,
                     available: queued, messageTime: pointerTime);
                 string dispatchOutcome = "threw";
-                try { base.WndProc(ref m); dispatchOutcome = "returned"; }
+                try { DispatchWindowPointer(ref m); dispatchOutcome = "returned"; }
                 finally { TraceFocusNativeMouse(m, "exit", started, sample, outcome: dispatchOutcome); }
                 return;
+            }
+            DispatchWindowPointer(ref m);
+        }
+
+        private void DispatchWindowPointer(ref Message m)
+        {
+            if (_worldPointerAuthority != null)
+            {
+                if (m.Msg == 0x001F) CancelPointerGesture("hud_cancel_mode"); // WM_CANCELMODE
+                if (m.Msg is >= 0x0201 and <= 0x020D && m.Msg != 0x020A)
+                {
+                    // Game keeps keyboard focus. WinForms need not run its default mouse
+                    // activation or capture path to deliver a HUD button edge.
+                    if (FallbackPointerAvailable && m.Msg is (0x0201 or 0x0202 or 0x0203))
+                    {
+                        long packed = m.LParam.ToInt64();
+                        var args = new MouseEventArgs(MouseButtons.Left, 1, (short)packed, (short)(packed >> 16), 0);
+                        if (m.Msg == 0x0202) OnMouseUp(args);
+                        else OnMouseDown(args);
+                    }
+                    m.Result = IntPtr.Zero;
+                    return;
+                }
+                if (m.Msg == 0x020A)
+                {
+                    long packed = m.LParam.ToInt64();
+                    if (TryRouteBoundFallbackWheel(new Point((short)packed, (short)(packed >> 16)),
+                        (short)(m.WParam.ToInt64() >> 16)))
+                    {
+                        m.Result = IntPtr.Zero;
+                        return;
+                    }
+                }
             }
             base.WndProc(ref m);
         }
@@ -1151,6 +1185,8 @@ namespace CF7Launcher.Guardian
         {
             ++_pointerInputGeneration;
             if (advanceBoundary) _pointerBoundary = unchecked((uint)Environment.TickCount);
+            _mainHudWorldInput?.Cancel(reason);
+            _fallbackHudInput?.Cancel(reason);
             if (FocusTrace.Enabled && _leftDownWidget != null)
                 FocusTrace.Record("hud.cancel", new { reason, widget = _leftDownWidget.GetType().Name }, _focusGesture);
             INativeHudWidget down = _leftDownWidget;
@@ -1229,8 +1265,14 @@ namespace CF7Launcher.Guardian
             base.OnMouseCaptureChanged(e);
             if (FocusTrace.Enabled && _leftDownWidget != null)
                 FocusTrace.Record("hud.capture_changed", new { capture = Capture, handlingUp = _handlingMouseUp }, _focusGesture);
-            if (!_handlingMouseUp && !Capture)
+            if (!_handlingMouseUp && _sharedPresentation == null && !Capture)
                 CancelPointerGesture("capture_lost");
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            CancelPointerGesture("hud_handle_destroyed");
+            base.OnHandleDestroyed(e);
         }
 
         private INativeHudWidget HitTestScreen(Point screenPt)
@@ -1245,6 +1287,11 @@ namespace CF7Launcher.Guardian
             if(_sharedPresentation!=null)return;
             base.OnMouseMove(e);
             Point screenPt = this.PointToScreen(e.Location);
+            if (_worldPointerAuthority != null)
+            {
+                DispatchFallbackPointer(0x0200, screenPt);
+                return;
+            }
             INativeHudWidget hit = HitTestScreen(screenPt);
             MouseEventArgs screenArgs = new MouseEventArgs(e.Button, e.Clicks, screenPt.X, screenPt.Y, e.Delta);
             if (hit != _lastHoverWidget)
@@ -1265,6 +1312,13 @@ namespace CF7Launcher.Guardian
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
+            if (_worldPointerAuthority != null)
+            {
+                // A dedicated drag handle can retain a real native capture outside
+                // the window. Ordinary presses must still match at the next edge.
+                if (!Capture) _fallbackHudInput?.Cancel("hud_pointer_left");
+                return;
+            }
             if (_lastHoverWidget != null)
             {
                 try { _lastHoverWidget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0), MouseEventKind.Leave); }
@@ -1284,6 +1338,15 @@ namespace CF7Launcher.Guardian
             base.OnMouseDown(e);
             Point screenPt = this.PointToScreen(e.Location);
             INativeHudWidget hit = HitTestScreen(screenPt);
+            if (_worldPointerAuthority != null)
+            {
+                if (e.Button != MouseButtons.Left) return;
+                if (FocusTrace.Enabled) _focusGesture = FocusTrace.HudDown(screenPt, Handle, hit?.GetType().Name);
+                using (FocusTrace.Enabled ? FocusTrace.UseGesture(_focusGesture) : null)
+                    DispatchFallbackPointer(0x0201, screenPt);
+                if (FallbackPointerAvailable && _fallbackHudInput?.IsPressed == true) Capture = true;
+                return;
+            }
             if (e.Button == MouseButtons.Left)
             {
                 _leftDownWidget = hit;
@@ -1313,6 +1376,17 @@ namespace CF7Launcher.Guardian
                     receiver = Handle.ToInt64(), screenPt, widget = hit?.GetType().Name,
                     downWidget = downWidget?.GetType().Name, windows = FocusWindowSnapshot.At(screenPt) }, _focusGesture);
 
+                if (_worldPointerAuthority != null)
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        using (FocusTrace.Enabled ? FocusTrace.UseGesture(_focusGesture) : null)
+                            DispatchFallbackPointer(0x0202, screenPt);
+                        if (Capture) Capture = false;
+                    }
+                    return;
+                }
+
                 if (e.Button == MouseButtons.Left
                     && (hit == null || (downWidget != null && hit != downWidget)))
                 {
@@ -1339,6 +1413,17 @@ namespace CF7Launcher.Guardian
                 }
             }
             finally { _handlingMouseUp = false; _focusGesture = null; }
+        }
+
+        private void DispatchFallbackPointer(int message, Point screen)
+        {
+            var input = FallbackHudInput;
+            try { input.Dispatch(message, screen, 0, input.HitTest(screen)); }
+            catch (Exception error)
+            {
+                input.Cancel("hud_fallback_dispatch_failed");
+                LogManager.Log("[NativeHud] fallback input failed: " + error.Message);
+            }
         }
 
         #endregion
@@ -1539,6 +1624,7 @@ namespace CF7Launcher.Guardian
             if (disposing && _requireVisibleGamePanel) _anchor.VisibleChanged -= OnGamePanelVisibilityChanged;
             if (disposing)
             {
+                CancelPointerGesture("hud_disposed");
                 DisposeSharedPresentation();
                 DisposeFocusInputProbe();
                 if (_animTick != null) { _animTick.Stop(); _animTick.Dispose(); _animTick = null; }

@@ -1,4 +1,5 @@
 using System;
+using CF7Launcher.Guardian.InputOwnership;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.HitNumbers;
@@ -30,7 +31,7 @@ namespace CF7Launcher.Tasks
         private readonly object _hitNumberLock = new object();
         private readonly FpsRingBuffer _fpsBuffer;
         private PerfDecisionEngine _decisionEngine; // 可空，Phase 1 之前为 null
-        private CF7Launcher.Bus.XmlSocketServer _socket; // 用于 K 前缀推送
+        private CF7Launcher.Bus.XmlSocketServer _socket;
         private Action<int> _hitNumberReady, _hitNumberDisconnected;
         private int _hitNumberConnectionGeneration;
         private Action<string> _uiDataHandler; // combo hints → WebView2
@@ -255,6 +256,55 @@ namespace CF7Launcher.Tasks
         /// <summary>
         /// 加载搓招模组 DFA 数据（由 D 前缀触发）。
         /// </summary>
+        private readonly object _versionedInputLock=new();
+        private SessionInputAuthority _inputAuthority;
+        internal void BindInputAuthority(SessionInputAuthority authority)
+        {
+            _inputAuthority=authority;
+            authority.V8Cancellation+=SettleV8;
+        }
+        private void SettleV8(InputCancel ticket,string reason)
+        {
+            lock(_versionedInputLock) {
+                if(!_inputAuthority.IsWaiting(ticket,InputParticipant.V8))return;
+                try {
+                    if(_v8.CancelInput(reason))_inputAuthority.Acknowledge(ticket,InputParticipant.V8);
+                } catch(Exception e) {LogManager.Log("event=r1_v8_cancel_unsettled reason="+e.Message);}
+            }
+        }
+        private void HandleVersionedInput(string wire,int generation)
+        {
+            if(_inputAuthority==null || !VersionedComboFrame.TryParse(wire,out var f))return;
+            lock(_versionedInputLock) {
+                if(!_inputAuthority.BeginCombo(f,generation))return;
+                try {
+                    int atomCount=f.Atoms=="-" ? 0 : 1+System.Linq.Enumerable.Count(f.Atoms,ch=>ch==';');
+                    if(atomCount>0)
+                        LogManager.Log($"event=r1_v8_frame inputFrameSeq={f.Frame} normalizedAtomCount={atomCount} dfaTimerSteps=1 maskDiffDuplicateEdges=0 {f.Wire}");
+                    string json=_v8.ProcessVersionedFrame(f);
+                    if(json==null){_inputAuthority.EndComboFrame(f,"v8_unavailable");return;}
+                    if(json.Length==0){_inputAuthority.EndComboFrame(f);return;}
+                    var k=JObject.Parse(json);
+                    if(k["commandSeq"]?.Type!=JTokenType.Integer || k["cmdId"]?.Type!=JTokenType.Integer) {
+                        _inputAuthority.EndComboFrame(f,"combo_result_invalid");return;
+                    }
+                    int seq=(int)k["commandSeq"], id=(int)k["cmdId"];
+                    string name=k.Value<string>("cmdName")??"", typed=k.Value<string>("typed")??"";
+                    string hints=k.Value<string>("hintsJson")??"[]";
+                    hints=hints.Replace("|","\\u007c");
+                    string payload=$"{seq}|{id}|{Uri.EscapeDataString(name)}|{Uri.EscapeDataString(typed)}|{hints}";
+                    if(_inputAuthority.CompleteCombo(f,payload)) {
+                        if(atomCount>0 || id>0)
+                            LogManager.Log($"event=r1_v8_result inputFrameSeq={f.Frame} commandSeq={seq} cmdId={id} I1|K|{f.Origin}|{payload}");
+                        _uiDataHandler?.Invoke("combo|"+name+"|"+typed+"|"+(k.Value<string>("hints")??""));
+                    }
+                } catch(Exception e) {
+                    _inputAuthority.EndComboFrame(f,"v8_frame_error");
+                    LogManager.Log("event=r1_v8_frame_error reason="+e.Message);
+                }
+            }
+        }
+
         public void LoadInputModule(string moduleId, string dataJson)
         {
             if (_stopped) return;
@@ -312,56 +362,9 @@ namespace CF7Launcher.Tasks
                 } finally { VisualFrameCompleted?.Invoke(); }
                 Issue205Probe.Current?.Hit(Issue205Counter.ConsumerVisualDone);
 
-                // 搓招输入处理：解析 \x04 payload -> V8 -> K 前缀推送
-                if (!string.IsNullOrEmpty(inputPayload) && _socket != null)
-                {
-                    // \x04 诊断日志已验证，不再输出
-                    // 格式: mask|facingBit|moduleId|doubleTapDir
-                    string[] inputParts = inputPayload.Split('|');
-                    if (inputParts.Length >= 4)
-                    {
-                        int mask, facingBit, moduleId, doubleTapDir;
-                        if (int.TryParse(inputParts[0], out mask) &&
-                            int.TryParse(inputParts[1], out facingBit) &&
-                            int.TryParse(inputParts[2], out moduleId) &&
-                            int.TryParse(inputParts[3], out doubleTapDir))
-                        {
-                            string kPayload = _v8.ProcessInput(mask, facingBit, moduleId, doubleTapDir);
-                            if (!string.IsNullOrEmpty(kPayload))
-                            {
-                                _socket.PushToClient("K" + kPayload);
-
-                                // 推送 combo 状态到 WebView2 overlay
-                                // kPayload v2: chr(cmdId+0x20)[cmdName]\x01{typed}\x02{hints}
-                                if (_uiDataHandler != null && kPayload.Length > 0)
-                                {
-                                    int rawCmdId = (int)kPayload[0] - 0x20;
-                                    int sep1 = kPayload.IndexOf('\x01');
-                                    int sep2 = kPayload.IndexOf('\x02');
-                                    string cmdName = "";
-                                    string typed = "";
-                                    string hints = "";
-                                    if (sep1 >= 0)
-                                    {
-                                        if (rawCmdId > 0 && sep1 > 1)
-                                            cmdName = kPayload.Substring(1, sep1 - 1);
-                                        if (sep2 > sep1)
-                                        {
-                                            typed = kPayload.Substring(sep1 + 1, sep2 - sep1 - 1);
-                                            hints = (sep2 < kPayload.Length - 1) ? kPayload.Substring(sep2 + 1) : "";
-                                        }
-                                        else
-                                        {
-                                            typed = kPayload.Substring(sep1 + 1);
-                                        }
-                                    }
-                                    // combo|{cmdName}|{typed}|{hints}
-                                    _uiDataHandler("combo|" + cmdName + "|" + typed + "|" + hints);
-                                }
-                            }
-                        }
-                    }
-                }
+                // Only the identity-checked combo frame can advance V8.
+                if (inputPayload?.StartsWith("I1|",StringComparison.Ordinal)==true)
+                    HandleVersionedInput(inputPayload,connectionGeneration);
 
                 if (!string.IsNullOrEmpty(fps)) {
                     Issue205Probe.Current?.Hit(Issue205Counter.FpsSection);
@@ -393,6 +396,11 @@ namespace CF7Launcher.Tasks
             if (_stopped) return;
             try
             {
+                if(_inputAuthority!=null)lock(_versionedInputLock) {
+                    var t=_inputAuthority.Cancel("scene_reset");
+                    if(t is {} ticket && _inputAuthority.IsWaiting(ticket,InputParticipant.V8))SettleV8(ticket,"scene_reset");
+                    else _v8.CancelInput("scene_reset");
+                }
                 lock (_combatFxLock) WorldShakeCleared?.Invoke();
                 HitNumberRuntimeSnapshot snapshot;
                 lock (_hitNumberLock) snapshot = _hitNumberRuntime.Reset();

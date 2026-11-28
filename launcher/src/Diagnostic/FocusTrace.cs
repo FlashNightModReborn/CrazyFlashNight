@@ -228,14 +228,15 @@ namespace CF7Launcher.Diagnostic
             _ringHead = (_ringHead + 1) % PhysicalRingCapacity;
         }
 
-        internal static string PhysicalEdge(int message, Point point, uint flags, uint time, int panelGeneration)
+        internal static string PhysicalEdge(int message, Point point, uint flags, uint time, int panelGeneration,
+            bool inOwnedModifier = false)
         {
             if (!Enabled || (message != 0x0201 && message != 0x0202)) return null;
             TraceLease lease = TryCaptureLease();
             long observed = ObservedNow();
             // 快照放 Gate 外采集：CaptureHudInput 会取 _widgetsLock，持 Gate 再取它会与
             // widget 在 _widgetsLock 内 Record（取 Gate）构成 ABBA。
-            bool inTargetDown = message == 0x0201 && _target.Contains(point);
+            bool inTargetDown = message == 0x0201 && (inOwnedModifier || _target.Contains(point));
             object windows = null, hudInput = null;
             long foreground = 0;
             if (message == 0x0201)

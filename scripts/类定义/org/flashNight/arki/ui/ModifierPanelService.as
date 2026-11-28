@@ -68,8 +68,8 @@ class org.flashNight.arki.ui.ModifierPanelService {
         _root.gameCommands["openModifier"] = function():Boolean {
             return org.flashNight.arki.ui.ModifierPanelService.openPanel();
         };
-        _root.gameCommands["modifierPanelClosed"] = function():Void {
-            org.flashNight.arki.ui.ModifierPanelService.onPanelClosed();
+        _root.gameCommands["modifierPanelClosed"] = function(params):Void {
+            org.flashNight.arki.ui.ModifierPanelService.onPanelClosed(params);
         };
     }
 
@@ -673,13 +673,18 @@ class org.flashNight.arki.ui.ModifierPanelService {
             message:"已生成佣兵并写入雇佣池（需保存）"};
     }
 
-    private static function onPanelClosed():Void {
+    private static function onPanelClosed(params:Object):Void {
+        var token:String = tokenOf(params);
         var session:Object = _active;
-        if (session == undefined) return;
+        if (session == undefined || token !== session.token) {
+            observePanelClose(params, token, false);
+            return;
+        }
         var action:Object = session.pendingAction;
         session.pendingAction = null;
         session.phase = "closed";
         _active = undefined;
+        observePanelClose(params, token, true);
         if (action == null) return;
         try {
             if (action.type == "finish_stage" && typeof _root.关卡结束 == "function") {
@@ -694,6 +699,20 @@ class org.flashNight.arki.ui.ModifierPanelService {
         } catch (closeActionError) {
             trace("[Modifier] pending close action failed: " + closeActionError);
         }
+    }
+
+    private static function observePanelClose(params:Object, token:String, accepted:Boolean):Void {
+        if (params == undefined || typeof params.focusTraceSession != "string" ||
+                params.focusTraceSession.length != 32 || token == "") return;
+        var diagnosticSession:String = String(params.focusTraceSession);
+        var hex:String = "0123456789abcdef";
+        for (var i:Number = 0; i < diagnosticSession.length; i++) {
+            if (hex.indexOf(diagnosticSession.charAt(i)) == -1) return;
+        }
+        try {
+            _root.server.sendServerMessage("[FocusTraceAS2] session=" + diagnosticSession
+                + " event=modifier.closed token=" + token + " accepted=" + accepted + " t=" + getTimer());
+        } catch (ignoreCloseObservation) {}
     }
 
     private static function retireActive():Void {

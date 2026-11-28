@@ -115,6 +115,19 @@ namespace CF7Launcher.Tasks
             };
         }
 
+        internal static string BuildPanelClosedFrame(string token, string focusTraceSession = null)
+        {
+            if (!SafeToken.IsMatch(token ?? "")) return null;
+            var command = new JObject
+            {
+                ["task"] = "cmd",
+                ["action"] = "modifierPanelClosed",
+                ["token"] = token
+            };
+            if (!string.IsNullOrEmpty(focusTraceSession)) command["focusTraceSession"] = focusTraceSession;
+            return command.ToString(Formatting.None) + "\0";
+        }
+
         public void HandleWebRequest(string cmd, JObject parsed)
         {
             string callId = Text(parsed?["callId"]);

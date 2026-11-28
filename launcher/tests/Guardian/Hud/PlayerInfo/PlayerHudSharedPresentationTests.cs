@@ -70,9 +70,9 @@ public sealed class PlayerHudSharedPresentationTests
                 using var resources=PlayerInfoSplitSurface.CreateLive(owner,owner,commands.State);
                 using var main=new NativeHudOverlay(owner,owner);
                 main.AddWidget(new MovingWidget(owner));
-                using var surface=new WorldCompositionSurface(()=>owner.Handle,()=>{},new Flash()) {Owner=owner};
+                using var surface=new WorldCompositionSurface(()=>owner.Handle,new Flash()) {Owner=owner};
                 surface.Bounds=owner.RectangleToScreen(owner.ClientRectangle);surface.Show();
-                using var world=new WorldCompositorController(owner,owner,()=>owner.Handle,()=>true,_=>{},root,()=>false,_=>{},()=>{});
+                using var world=new WorldCompositorController(owner,owner,()=>owner.Handle,()=>true,_=>{},root,()=>false,_=>{});
                 Set(world,"_surface",surface);Set(world,"_active",true);
                 var scenes=new[]{new Raster(),new Raster(),new Raster(),new Raster(),new Raster()};
                 string[] names={"_damageRasterScene","_resourceRasterScene","_bottomRasterScene","_buffRasterScene","_mainHudRasterScene"};

@@ -12,7 +12,13 @@ import org.flashNight.gesh.depth.DepthManager;
 /** A07 fixed car encounter. Scene transition, reward, save and failure authority stay outside. */
 class org.flashNight.arki.scene.Cf6VehicleService {
     private static var serial:Number=0;
-    private static function readInput():Object {
+    private static function readInput(actor:MovieClip):Object {
+        var input:Object = _root.GameInput;
+        if (input.passiveActive === true) {
+            return {x:(input.getActorPress(actor, _root.右键)>0?1:0)-(input.getActorPress(actor, _root.左键)>0?1:0),
+                z:(input.getActorPress(actor, _root.下键)>0?1:0)-(input.getActorPress(actor, _root.上键)>0?1:0),
+                fire:input.getActorPress(actor, _root.A键)>0};
+        }
         return {x:(Key.isDown(_root.右键)?1:0)-(Key.isDown(_root.左键)?1:0),
             z:(Key.isDown(_root.下键)?1:0)-(Key.isDown(_root.上键)?1:0),fire:Key.isDown(_root.A键)};
     }
@@ -237,12 +243,23 @@ class org.flashNight.arki.scene.Cf6VehicleService {
             }
             return s.status;
         }
+        var authority:Object = _root.GameInput;
+        if (authority.passiveActive === true && (s.fireEpoch !== authority.getKeyboardEpoch()
+                || s.fireCancelSerial !== authority.cancelSerial || s.fireActorInc !== authority.actorInc
+                || s.fireConfigInc !== authority.configInc)) {
+            s.fireEpoch = authority.getKeyboardEpoch();
+            s.fireCancelSerial = authority.cancelSerial;
+            s.fireActorInc = authority.actorInc;
+            s.fireConfigInc = authority.configInc;
+            s.rules.firing = false;
+            s.rules.fireCredit = 0;
+        }
         if(PauseManager.isPaused() || _root.场景转换中===true || s.world.__stageIntroExecutionHeld===true
                 || s.world.__combatAdmitted===false) return s.status;
         s.age++;
         var input:Object={x:0,z:0,fire:false};
         if(s.rules.phase!="boss-intro") {
-            input=readInput();
+            input=readInput(s.actorAdapter.hero);
         }
         // The real hero/boss clips are the only health authorities. Pure legacy
         // hit helpers remain testable but are not used for production deduction.

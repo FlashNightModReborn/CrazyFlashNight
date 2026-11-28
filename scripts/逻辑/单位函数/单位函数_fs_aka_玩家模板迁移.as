@@ -1171,15 +1171,31 @@ _root.主角函数.根据模式重新读取武器加成 = function(模式) {
 }
 
 _root.主角函数.按键控制攻击模式 = function() {
+    var input:Object = _root.GameInput;
+    var passive:Boolean = input != null && input.passiveActive === true;
+    if (passive && (!input.isInputCurrent(this.__键3输入代, this.__键3取消序, this.__键3输入配置)
+            || !input.isCurrentActor(this) || this.__键3输入码 !== _root.键3)) {
+        _root.主角函数.取消键3输入.call(this);
+        this.__键3取消序 = input.cancelSerial;
+        this.__键3输入代 = input.getKeyboardEpoch();
+        this.__键3输入配置 = input.configInc;
+        this.__键3输入码 = _root.键3;
+    }
     if (_root.gameworld.__combatAdmitted === false) return;
     if(this.__cf6TraversalOwner!==undefined || this.__cf6ElevatorPoseOwner!==undefined || this.__cf6VehicleOwner!==undefined) return;
-    var harness:Object = _root._agentHarnessActive === true ? _root._agentHarnessBridge : null;
+    if (passive && (!input.isInputAdmitted() || !input.isCurrentActor(this))) return;
+    var harness:Object = !passive && _root._agentHarnessActive === true ? _root._agentHarnessBridge : null;
+    var key3Press:Number = passive ? input.getActorPress(this, _root.键3) : 0;
+    var key3Down:Boolean = passive ? key3Press > 0 : (Key.isDown(_root.键3) || (harness && harness.isKeyDown(_root.键3)));
+    if (passive && key3Down && this.__键3按住中 && key3Press !== this.__键3按下序)
+        _root.主角函数.取消键3输入.call(this);
     if (_root.当前玩家总数 == 1) {
         if (Key.isDown(_root.键1) || (harness && harness.isKeyDown(_root.键1))) {
             this.攻击模式切换("空手");
         } else if (Key.isDown(_root.键2) || (harness && harness.isKeyDown(_root.键2))) {
             this.攻击模式切换("兵器");
-        } else if (Key.isDown(_root.键3) || (harness && harness.isKeyDown(_root.键3))) {
+        } else if (key3Down) {
+            this.__键3按下序 = key3Press;
             // 键3（2026-11-27 改边沿+时长判定）：短按=双枪（单持回落不变），长按=双持时 手枪1↔手枪2 循环
             // 注意：初始化玩家模板 只按固定名单复制方法到单位，键3辅助函数不在名单上，
             // 必须经 _root.主角函数 绝对路径调度（否则真实单位上 this.键3攻击模式判定 为 undefined，
@@ -1191,9 +1207,9 @@ _root.主角函数.按键控制攻击模式 = function() {
             this.攻击模式切换("手雷");
         }
         // 键3 松开边沿：独立于上方 else-if 链检测，保证松开时短按能补触发
-        if (this.__键3按住中
-                && !(Key.isDown(_root.键3) || (harness && harness.isKeyDown(_root.键3)))) {
+        if (this.__键3按住中 && !key3Down) {
             this.__键3按住中 = false;
+            if (passive && !input.wasActorPressReleased(this, _root.键3, this.__键3按下序)) return;
             // 未在按住期间达阈值触发过长按 → 按最近一次见到的按住帧时长判定
             // （最近按住帧由 键3攻击模式判定 每次轮询刷新，避免把按住期间未轮询的
             //   攻击/技能动画帧误计入时长）
@@ -1217,6 +1233,14 @@ _root.主角函数.按键控制攻击模式 = function() {
 //   长按阈值 15 帧（≈0.5s @30fps），按住达阈值立即切换（不等松开），松开不再重复触发；
 //   未双持时长按退化为短按行为。判定只在行走状态机轮询点进行，与键1/2/4/5 同口径。
 // ============================================================================
+_root.主角函数.取消键3输入 = function() {
+    delete this.__键3按住中;
+    delete this.__键3按下序;
+    delete this.__键3起始帧;
+    delete this.__键3最近按住帧;
+    delete this.__键3长按已触发;
+};
+
 _root.主角函数.键3长按阈值帧 = 15;
 
 _root.主角函数.键3攻击模式判定 = function() {

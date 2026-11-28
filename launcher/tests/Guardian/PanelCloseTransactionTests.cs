@@ -86,22 +86,22 @@ namespace CF7Launcher.Tests.Guardian
             host.ClosePanel(); while(queue.Count>0)queue.Dequeue()(); host.SetTransitionInputHeld(false);
             Assert.False(host.GameOwnsInput); Assert.Equal(EffectiveInputOwnerKind.Unavailable,host.EffectiveInputOwner.Kind);
         }
-        [Fact] public void LegacyCloseWaitsForReleaseWithoutConsumingItsAuthorityGate()
+        [Fact]
+        public void CloseExecutesOnFirstPumpAndCommitsExactlyOnce()
         {
-            using var h=new Harness(); bool held=true; int commits=0; bool? result=null;
-            h.Host.CloseInputHeldForTests=()=>held;
-            h.Host.TryClosePanelExact("help",h.Host.ActivePanelInstanceId,true,()=>true,()=>commits++,r=>result=r);
-            h.Pump(); Assert.Equal(0,commits); Assert.Null(result); Assert.True(h.Host.IsPanelOpen);
-            held=false; h.Host.PollPhysicalClosesForTests(); h.Pump();
-            Assert.Equal(1,commits); Assert.True(result); Assert.True(h.Host.GameOwnsInput);
-        }
-        [Fact] public void WaitingLegacyCloseCannotBeRelabeledAfterReplacement()
-        {
-            using var h=new Harness(); bool held=true; bool? result=null; h.Host.CloseInputHeldForTests=()=>held;
-            h.Host.TryClosePanelExact("help",h.Host.ActivePanelInstanceId,r=>result=r); h.Pump();
-            h.Host.OpenPanel("intelligence","{}"); h.Pump();
-            held=false; h.Host.PollPhysicalClosesForTests(); h.Pump();
-            Assert.False(result); Assert.Equal("intelligence",h.Host.ActivePanelName);
+            using var h = new Harness();
+            string instance = h.Host.ActivePanelInstanceId;
+            int commits = 0;
+            bool? result = null;
+            Assert.True(h.Host.TryClosePanelExact("help", instance, true, () => true, () => commits++, r => result = r));
+            h.Pump();
+            Assert.Equal(1, commits);
+            Assert.True(result);
+            Assert.True(h.Host.GameOwnsInput);
+
+            h.Host.TryClosePanelExact("help", instance, true, () => true, () => commits++, _ => { });
+            h.Pump();
+            Assert.Equal(1, commits);
         }
     }
 }

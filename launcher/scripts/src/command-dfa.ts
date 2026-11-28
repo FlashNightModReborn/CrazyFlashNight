@@ -39,9 +39,9 @@ namespace GameInput {
 
         /**
          * 热路径：内联 DFA 状态转移 + 路径追踪
-         * 与 AS2 原版语义一致：每帧 timer++，有效转移时 timer=0，超时回 ROOT。
+         * 一个调用消费整个归一化事件桶：timer 只推进一次，有效转移时 timer=0。
          */
-        updateFast(events: number[], timeout: number = DEFAULT_TIMEOUT): void {
+        updateFast(events: readonly number[], timeout: number = DEFAULT_TIMEOUT): void {
             const dfa = this._dfa;
             if (dfa === null || !dfa.isLoaded()) {
                 this._commandId = NO_COMMAND;

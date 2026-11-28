@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -25,10 +26,11 @@ namespace CF7Launcher.Guardian
     ///   • idle-hide @3s 内置（与状态机融合，不引入额外字段）
     ///   • 任何 SW_HIDE 路径必伴 Cursor.Show()，避免"全黑"死区（NI-2）
     ///
-    /// Phase 1：feature flag 控制装配，默认 OFF，旧 CursorOverlayForm 仍是默认路径。
+    /// L6 可选视觉光标。窗口透明命中，随会话显隐并与系统光标交替显示。
     /// </summary>
     public class DesktopCursorOverlay : Form, INativeCursor
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool UsesDesktopCoordinates { get { return true; } }
 
         #region Win32 P/Invoke

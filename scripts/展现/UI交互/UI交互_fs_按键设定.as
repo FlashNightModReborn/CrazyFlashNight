@@ -59,21 +59,25 @@ _root.keyshow = Delegate.create(KeyManager, KeyManager.getKeyName);
 _root.getKeySetting = Delegate.create(KeyManager, KeyManager.getKeySetting)
 
 
-KeyManager.onRepeat("互动键", 30, function() {
+_root.派发互动键 = function(repeat:Boolean):Void {
     if (org.flashNight.arki.scene.CutsceneService.blocksWorldInteraction()) return;
-    // _root.发布消息("互动键重复");
-    _root.帧计时器.eventBus.publish("interactionKeyDown");
-});
+    if (_root.GameInput.passiveActive === true) {
+        var interaction:Object = org.flashNight.arki.scene.SceneInteractionManager.instance;
+        if (interaction != null) interaction.keyboardInteraction(repeat);
+    } else {
+        _root.帧计时器.eventBus.publish("interactionKeyDown");
+    }
+};
 
-KeyManager.onKeyDown("互动键", function() {
-    if (org.flashNight.arki.scene.CutsceneService.blocksWorldInteraction()) return;
-    //_root.发布消息("互动键按下");
-    _root.帧计时器.eventBus.publish("interactionKeyDown");
-});
-
+KeyManager.onRepeat("互动键", 30, function() { _root.派发互动键(true); });
+KeyManager.onKeyDown("互动键", function() { _root.派发互动键(false); });
 KeyManager.onKeyUp("互动键", function() {
-    // _root.发布消息("互动键松开");
-    _root.帧计时器.eventBus.publish("interactionKeyUp");
+    if (_root.GameInput.passiveActive === true) {
+        var interaction:Object = org.flashNight.arki.scene.SceneInteractionManager.instance;
+        if (interaction != null) interaction.cancelPassiveInput();
+    } else {
+        _root.帧计时器.eventBus.publish("interactionKeyUp");
+    }
 });
 
 if (_root.交互鼠标监听器 != undefined) {
@@ -82,10 +86,10 @@ if (_root.交互鼠标监听器 != undefined) {
 
 _root.交互鼠标监听器 = {};
 _root.交互鼠标监听器.onMouseDown = function():Void {
-    _root.帧计时器.eventBus.publish("interactionMouseDown");
+    if (_root.GameInput.passiveActive !== true) _root.帧计时器.eventBus.publish("interactionMouseDown");
 };
 _root.交互鼠标监听器.onMouseUp = function():Void {
-    _root.帧计时器.eventBus.publish("interactionMouseUp");
+    if (_root.GameInput.passiveActive !== true) _root.帧计时器.eventBus.publish("interactionMouseUp");
 };
 Mouse.addListener(_root.交互鼠标监听器);
 

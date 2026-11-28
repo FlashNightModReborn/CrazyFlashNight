@@ -94,7 +94,7 @@ namespace CF7Launcher.Tests.Guardian
                     owner.Show();
                     using (var hud = new ProbeHud(owner, anchor))
                     {
-                        hud.InterjectInputForegroundProbe = () => true;
+                        hud.NonModalInputForegroundProbe = () => true;
                         hud.HandleOwnerDeactivated();
 
                         Assert.True(hud.OwnerVisibleForTest);      // 不置 false
@@ -117,7 +117,7 @@ namespace CF7Launcher.Tests.Guardian
                     owner.Show();
                     using (var hud = new ProbeHud(owner, anchor))
                     {
-                        hud.InterjectInputForegroundProbe = () => false;   // 前台是别的窗口
+                        hud.NonModalInputForegroundProbe = () => false;   // 前台是别的窗口
                         hud.HandleOwnerDeactivated();
 
                         Assert.False(hud.OwnerVisibleForTest);
@@ -144,7 +144,7 @@ namespace CF7Launcher.Tests.Guardian
                         Assert.False(hud.OwnerVisibleForTest);
                         Assert.Equal(1, hud.HiddenHooks);
 
-                        hud.InterjectInputForegroundProbe = () => { throw new InvalidOperationException("probe"); };
+                        hud.NonModalInputForegroundProbe = () => { throw new InvalidOperationException("probe"); };
                         hud.HandleOwnerDeactivated();          // 探针异常也要按原行为隐藏
                         Assert.Equal(2, hud.HiddenHooks);
                     }
@@ -183,21 +183,35 @@ namespace CF7Launcher.Tests.Guardian
                     var anchor = new Panel { Dock = DockStyle.Fill };
                     owner.Controls.Add(anchor);
                     owner.Show();
+                    var authority = new CF7Launcher.Guardian.InputOwnership.SessionInputAuthority(
+                        CF7Launcher.Guardian.InputOwnership.PassiveFlashInputMode.Disabled);
+                    authority.SetForeground(true, _ => false, () => true);
                     var overlay = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputOverlay();
+                    overlay.BindInputAuthority(authority, authority);
                     overlay.AttachOwner(owner);
                     try
                     {
                         Assert.Same(owner, overlay.Owner);
                         Assert.False(overlay.IsTextInputActive());
 
-                        // 焦点事件是热键放行的唯一来源：聚焦/失焦必须成对翻转
-                        overlay.SetFocused(true);
+                        // 焦点事件经精确 TextInputLease 驱动文字输入态：聚焦/失焦必须成对翻转
+                        overlay.SetInputEnabled(true);
+                        overlay.ExpandForTest();
+                        overlay.Show();
+                        var editor = (TextBox)typeof(CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputOverlay)
+                            .GetField("_textBox", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                            .GetValue(overlay);
+                        Assert.True(editor.Focus());
                         Assert.True(overlay.IsTextInputActive());
-                        overlay.SetFocused(false);
+                        owner.Activate();
+                        owner.Focus();
+                        Application.DoEvents();
                         Assert.False(overlay.IsTextInputActive());
 
-                        overlay.SetFocused(true);
+                        Assert.True(editor.Focus());
+                        Assert.True(overlay.IsTextInputActive());
                         overlay.DismissToOwner();
+                        Application.DoEvents();
                         Assert.False(overlay.IsTextInputActive());   // 收起必须清掉文字输入态
                     }
                     finally
@@ -226,13 +240,13 @@ namespace CF7Launcher.Tests.Guardian
                                owner, anchor, resources, controller,
                                Path.Combine(root, "launcher", "web", "icons"), main))
                     {
-                        runtime.SetInterjectInputForegroundProbe(() => true);
+                        runtime.SetNonModalInputForegroundProbe(() => true);
                         foreach (OverlayBase surface in runtime.PresentationSurfaces)
                             surface.HandleOwnerDeactivated();
                         foreach (OverlayBase surface in runtime.PresentationSurfaces)
                             Assert.True(surface.OwnerVisibleForTest);
 
-                        runtime.SetInterjectInputForegroundProbe(() => false);
+                        runtime.SetNonModalInputForegroundProbe(() => false);
                         foreach (OverlayBase surface in runtime.PresentationSurfaces)
                             surface.HandleOwnerDeactivated();
                         foreach (OverlayBase surface in runtime.PresentationSurfaces)
@@ -254,11 +268,11 @@ namespace CF7Launcher.Tests.Guardian
                     owner.Show();
                     using (var surface = PlayerInfoSplitSurface.CreateFixture(owner, anchor, "full"))
                     {
-                        surface.InterjectInputForegroundProbe = () => true;
+                        surface.NonModalInputForegroundProbe = () => true;
                         surface.HandleOwnerDeactivated();
                         Assert.True(surface.OwnerVisibleForTest);
 
-                        surface.InterjectInputForegroundProbe = () =>
+                        surface.NonModalInputForegroundProbe = () =>
                             { throw new InvalidOperationException("probe"); };
                         surface.HandleOwnerDeactivated();
                         Assert.False(surface.OwnerVisibleForTest);

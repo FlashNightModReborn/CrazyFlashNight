@@ -146,7 +146,7 @@ namespace CF7Launcher.Tests.Guardian
                     owner.Controls.Add(anchor);
                     string missing = Path.Combine(Path.GetTempPath(), "cf7-observer-missing-" + Guid.NewGuid().ToString("N"));
                     using var overlay = new WebOverlayForm(owner, anchor, missing, missing,
-                        false, false, false, 60, false, "", false, false, false, null);
+                        false, false, false, 60, false, "", false, false, false);
                     using var shield = new InputShieldForm(owner, anchor);
                     overlay.SetInputShield(shield);
                     test(overlay, shield);

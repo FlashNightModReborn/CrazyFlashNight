@@ -37,7 +37,7 @@ namespace CF7Launcher.Tests.Guardian
             => new PointerPacket(message,Point.Empty,Point.Empty,0,0,epoch,gesture,geometry,seq);
         private static WorldCompositionSurface Surface(FakeSink sink,Func<IntPtr> flash)
         {
-            var surface=new WorldCompositionSurface(flash,()=>{},sink);
+            var surface=new WorldCompositionSurface(flash,sink);
             _=surface.Handle; // create the handle so PointToClient works without a pump
             return surface;
         }
@@ -166,7 +166,7 @@ namespace CF7Launcher.Tests.Guardian
             var sink=new FakeSink();
             int held=1;
             using var flash=FakeSource();
-            using var surface=new WorldCompositionSurface(()=>flash.Handle,()=>{},sink,physicalButtons:()=>held);
+            using var surface=new WorldCompositionSurface(()=>flash.Handle,sink,physicalButtons:()=>held);
             surface.Show();
             var point=new Point(5,5);
             surface.IntakePointer(Down,point,0);
@@ -196,7 +196,7 @@ namespace CF7Launcher.Tests.Guardian
                 using var surface=Surface(sink,()=>flash.Handle);
                 surface.Bounds=new Rectangle(10,10,50,40);
                 surface.Show();
-                var controller=new WorldCompositorController(owner,anchor,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+                var controller=new WorldCompositorController(owner,anchor,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{});
                 SetSurface(controller,surface);
                 surface.IntakePointer(Down,new Point(5,5),0); // in-flight gesture mints epoch 2
                 owner.RaiseDeactivated();
@@ -228,7 +228,7 @@ namespace CF7Launcher.Tests.Guardian
             var sink=new FakeSink();
             using var surface=Surface(sink,()=>flash.Handle);
             surface.Bounds=new Rectangle(10,10,50,40);surface.Show();
-            using var controller=new WorldCompositorController(owner,anchor,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+            using var controller=new WorldCompositorController(owner,anchor,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{});
             SetSurface(controller,surface);
             // The old scene can still be capture-ready when its curtain arrives.
             typeof(WorldCompositorController).GetField("_schedulingAllowed",BindingFlags.NonPublic|BindingFlags.Instance)
@@ -263,10 +263,10 @@ namespace CF7Launcher.Tests.Guardian
             using var anchor=new Panel {Dock=DockStyle.Fill};owner.Controls.Add(anchor);owner.Show();
             var sink=new FakeSink();
             using var source=FakeSource(429,241);
-            using var surface=new WorldCompositionSurface(()=>source.Handle,()=>{},sink) {Owner=owner};
+            using var surface=new WorldCompositionSurface(()=>source.Handle,sink) {Owner=owner};
             surface.Bounds=anchor.RectangleToScreen(anchor.ClientRectangle);surface.Show();
             string root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
-            using var controller=new WorldCompositorController(owner,anchor,()=>source.Handle,()=>true,_=>{},root,()=>false,_=>{},()=>{});
+            using var controller=new WorldCompositorController(owner,anchor,()=>source.Handle,()=>true,_=>{},root,()=>false,_=>{});
             SetSurface(controller,surface);
             IntPtr handle=surface.Handle;int hidden=0;
             surface.VisibleChanged+=(_,__)=>{if(!surface.Visible)hidden++;};
@@ -284,7 +284,7 @@ namespace CF7Launcher.Tests.Guardian
         [Fact] public void SoftLimitSealsNewInputWithoutRevokingTheAlreadyPostedUp()
         {
             using var source=FakeSource();var sink=new FakeSink();
-            using var surface=new WorldCompositionSurface(()=>source.Handle,()=>{},sink,8,128,()=>0);
+            using var surface=new WorldCompositionSurface(()=>source.Handle,sink,8,128,()=>0);
             surface.Show();var handle=surface.Handle;Point p=surface.PointToScreen(new Point(10,10));
             for(int i=0;i<5;i++){surface.IntakePointer(Down,p,0);surface.Drain();surface.IntakePointer(Up,p,0);surface.Drain();}
             int before=sink.Sent.Count;
@@ -301,7 +301,7 @@ namespace CF7Launcher.Tests.Guardian
         [Fact] public void RepeatedCancelDoesNotInvalidateTheQueuedRenewalNotification()
         {
             using var source=FakeSource();var sink=new FakeSink();
-            using var surface=new WorldCompositionSurface(()=>source.Handle,()=>{},sink,8,128,()=>0);
+            using var surface=new WorldCompositionSurface(()=>source.Handle,sink,8,128,()=>0);
             surface.Show();int requests=0;surface.RenewalRequested+=()=>requests++;
             for(int i=0;i<9;i++)surface.CancelPointer("hide");
             Assert.True(surface.InputRenewing);
@@ -310,7 +310,7 @@ namespace CF7Launcher.Tests.Guardian
         [Fact] public void HardSequenceLimitExplicitlyCancelsAHeldGesture()
         {
             using var source=FakeSource();var sink=new FakeSink();
-            using var surface=new WorldCompositionSurface(()=>source.Handle,()=>{},sink,32,16);
+            using var surface=new WorldCompositionSurface(()=>source.Handle,sink,32,16);
             surface.Show();Point p=surface.PointToScreen(new Point(10,10));
             surface.IntakePointer(Down,p,0);surface.Drain();
             for(int i=0;i<20;i++){surface.IntakePointer(Move,p,0);surface.FlushMove();}

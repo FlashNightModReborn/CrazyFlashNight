@@ -18,6 +18,34 @@ namespace GameInput {
         cmdDfa: CommandDfa;
     }
 
+    interface FrameResult {
+        cmdId: number;
+        cmdName: string;
+        typed: string;
+        hints: string;
+    }
+
+    interface VersionedCursor {
+        sessionId: string;
+        connectionIncarnation: number;
+        keyboardEpoch: number;
+        inputFrameSeq: number;
+        actorInc: number;
+        moduleId: number;
+        moduleInc: number;
+        configInc: number;
+        commandSeq: number;
+    }
+
+    const MAX_WIRE_INT = 2147483647;
+    const MAX_FRAME_ATOMS = 64;
+    // I1 actionBit -> historical \x04 mask bit.
+    const atomMask: Record<string, number> = {
+        "1": 16, "2": 32, "4": 64, "8": 4, "16": 8, "32": 1, "64": 2, "128": 128,
+    };
+    let _versioned: VersionedCursor | null = null;
+    let _versionedContext = "";
+
     const _modules: { [id: number]: ModuleSlot } = {};
     let _sampler: InputSampler | null = null;
     let _currentModuleId: number = -1;
@@ -45,7 +73,9 @@ namespace GameInput {
 
     export function init(): void {
         _sampler = new InputSampler();
-        _currentModuleId = -1;
+        _versioned = null;
+        _versionedContext = "";
+        clearInputHistory();
         _log("[GameInput] init OK");
     }
 
@@ -77,6 +107,7 @@ namespace GameInput {
         const cmdDfa = new CommandDfa();
         cmdDfa.setDfa(dfa);
         _modules[id] = { dfa, cmdDfa };
+        if (_versioned !== null && id === _currentModuleId) cancelInput();
         _log("[GameInput] loadModule OK: id=" + id +
              " alpha=" + data.alphabetSize +
              " states=" + (data.accept ? data.accept.length : 0) +
@@ -106,31 +137,153 @@ namespace GameInput {
         return buf;
     }
 
-    export function processFrame(
-        mask: number,
-        facingBit: number,
-        moduleId: number,
-        doubleTapDir: number
+    function clearDisplay(): void {
+        _lastHintState = -1;
+        _lastHintStr = "";
+        _displayHints = "";
+        _displayTyped = "";
+        _displayHoldTimer = 0;
+    }
+
+    export function cancelInput(_reason?: string): void {
+        clearInputHistory();
+    }
+
+    function clearInputHistory(mask: number = 0): void {
+        if (_sampler !== null) _sampler.reset(mask);
+        for (const id of Object.keys(_modules)) _modules[Number(id)].cmdDfa.resetState();
+        _currentModuleId = -1;
+        _versionedContext = "";
+        clearDisplay();
+    }
+
+    function parseAtoms(wire: string, mask: number): InputAtom[] {
+        if (wire === "-") return [];
+        if (typeof wire !== "string" || wire.length > 4096) throw new RangeError("I1 atoms length");
+        const fields = wire.split(";");
+        if (fields.length > MAX_FRAME_ATOMS) throw new RangeError("I1 atom count");
+        const atoms: InputAtom[] = [];
+        let previousSeq = 0;
+        let previousAction = 0;
+        let touched = 0;
+        let projected = 0;
+        for (const field of fields) {
+            const match = /^([1-9][0-9]{0,9}),(1|2|4|8|16|32|64|128),([DU])$/.exec(field);
+            if (match === null || match[0] !== field) throw new RangeError("I1 atom syntax");
+            const seq = Number(match[1]);
+            const action = Number(match[2]);
+            const bit = atomMask[match[2]];
+            const down = match[3] === "D";
+            // One raw VK edge may fan out to different actions with the same seq.
+            if (seq > MAX_WIRE_INT || seq < previousSeq ||
+                (seq === previousSeq && action <= previousAction)) {
+                throw new RangeError("I1 atom order");
+            }
+            if ((touched & bit) !== 0 && ((projected & bit) !== 0) === down) {
+                throw new RangeError("I1 atom transition");
+            }
+            touched |= bit;
+            projected = down ? projected | bit : projected & ~bit;
+            atoms.push({ bit, down });
+            previousSeq = seq;
+            previousAction = action;
+        }
+        if ((mask & touched) !== projected) throw new RangeError("I1 atom mask");
+        return atoms;
+    }
+
+    function wireHints(hints: string): string {
+        const rows = hints === "" ? [] : hints.split(";").map(row => {
+            const end = row.lastIndexOf(":");
+            const start = row.lastIndexOf(":", end - 1);
+            return { name: row.slice(0, start), sequence: row.slice(start + 1, end), steps: Number(row.slice(end + 1)) };
+        });
+        return JSON.stringify(rows).replace(/[|\u007f-\uffff]/g,
+            ch => "\\u" + ch.charCodeAt(0).toString(16).padStart(4, "0"));
+    }
+
+    export function processFrame(mask: number, facingBit: number, moduleId: number,
+                                 doubleTapDir: number): string {
+        const result = advanceFrame(mask, facingBit, moduleId, doubleTapDir);
+        if (!result) return String.fromCharCode(0x20);
+        return String.fromCharCode(result.cmdId + 0x20) + result.cmdName +
+            "\x01" + result.typed + "\x02" + result.hints;
+    }
+
+    export function processVersionedFrame(
+        mask: number, facingBit: number, moduleId: number, doubleTapDir: number,
+        atomsWire: string, sessionId: string, connectionIncarnation: number,
+        keyboardEpoch: number, inputFrameSeq: number, actorInc: number, moduleInc: number, configInc: number
     ): string {
-        if (_sampler === null) return String.fromCharCode(0x20);
+        if (typeof sessionId !== "string" || sessionId.length !== 32 || !/^[0-9a-f]{32}$/.test(sessionId) ||
+            ![connectionIncarnation, keyboardEpoch, inputFrameSeq, actorInc, moduleInc, configInc]
+                .every(id => Number.isInteger(id) && id > 0 && id <= MAX_WIRE_INT) ||
+            !Number.isInteger(mask) || mask < 0 || mask > 255 || (facingBit !== 0 && facingBit !== 1) ||
+            !Number.isInteger(moduleId) || moduleId < 0 || moduleId > 2 ||
+            (doubleTapDir !== -1 && doubleTapDir !== 0 && doubleTapDir !== 1)) {
+            cancelInput();
+            throw new RangeError("I1 frame identity or levels");
+        }
+        const previous = _versioned;
+        const sameSession = previous !== null && previous.sessionId === sessionId;
+        const sameConnection = sameSession && previous.connectionIncarnation === connectionIncarnation;
+        const sameEpoch = sameConnection && previous.keyboardEpoch === keyboardEpoch;
+        if ((sameSession && connectionIncarnation < previous.connectionIncarnation) ||
+            (sameConnection && keyboardEpoch < previous.keyboardEpoch) ||
+            (sameEpoch && (inputFrameSeq <= previous.inputFrameSeq || actorInc < previous.actorInc ||
+                moduleInc < previous.moduleInc || configInc < previous.configInc ||
+                (moduleInc === previous.moduleInc && moduleId !== previous.moduleId)))) return "";
+
+        let atoms: InputAtom[];
+        try {
+            atoms = parseAtoms(atomsWire, mask);
+        } catch (error) {
+            cancelInput();
+            throw error;
+        }
+        const context = actorInc + "|" + moduleId + "|" + moduleInc + "|" + configInc;
+        if (!sameEpoch || context !== _versionedContext) {
+            // Within an existing grant a new scope inherits levels, while only
+            // explicitly observed presses can start an action on the boundary.
+            clearInputHistory(sameEpoch ? mask : 0);
+            _versionedContext = context;
+        }
+
+        const cursor = {
+            sessionId, connectionIncarnation, keyboardEpoch, inputFrameSeq, actorInc, moduleId, moduleInc, configInc,
+            commandSeq: sameEpoch ? previous.commandSeq : 0,
+        };
+        _versioned = cursor;
+        const result = advanceFrame(mask, facingBit, moduleId, doubleTapDir, atoms);
+        if (!result) return "";
+        let commandSeq = 0;
+        if (result.cmdId > 0) {
+            if (cursor.commandSeq === MAX_WIRE_INT) {
+                cancelInput();
+                throw new RangeError("I1 command sequence exhausted");
+            }
+            commandSeq = ++cursor.commandSeq;
+        }
+        return JSON.stringify({ commandSeq, ...result, hintsJson: wireHints(result.hints) });
+    }
+
+    function advanceFrame(mask: number, facingBit: number, moduleId: number,
+                          doubleTapDir: number, atoms?: readonly InputAtom[]): FrameResult | null {
+        if (_sampler === null) return null;
 
         const mod = _modules[moduleId];
-        if (!mod) return String.fromCharCode(0x20);
+        if (!mod) return null;
 
         // 模组切换时重置 DFA + 显示缓存
         if (moduleId !== _currentModuleId) {
             mod.cmdDfa.resetState();
             _currentModuleId = moduleId;
-            _lastHintState = -1;
-            _lastHintStr = "";
-            _displayHints = "";
-            _displayTyped = "";
-            _displayHoldTimer = 0;
+            clearDisplay();
         }
 
         // 1. InputSampler → events
         const facingRight = facingBit !== 0;
-        const events = _sampler.sample(mask, facingRight, doubleTapDir);
+        const events = _sampler.sample(mask, facingRight, doubleTapDir, atoms);
 
         // 2. CommandDFA → cmdId (timeout 已内置 8 帧)
         mod.cmdDfa.updateFast(events);
@@ -178,7 +331,7 @@ namespace GameInput {
 
         // 5. 格式化 K payload: chr(cmdId+0x20) \x01 typed \x02 hints
         if (cmdId === 0) {
-            return String.fromCharCode(0x20) + "\x01" + outTyped + "\x02" + outHints;
+            return { cmdId, cmdName: "", typed: outTyped, hints: outHints };
         }
 
         // 命中
@@ -190,6 +343,6 @@ namespace GameInput {
         _displayHints = "";
         _displayTyped = "";
 
-        return String.fromCharCode(cmdId + 0x20) + cmdName + "\x01" + typedStr + "\x02";
+        return { cmdId, cmdName, typed: typedStr, hints: "" };
     }
 }

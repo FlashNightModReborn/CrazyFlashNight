@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using CF7Launcher.Guardian.InputOwnership;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -16,10 +17,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
         PointerPostStatus Send(in PointerPacket packet,Point point);
         bool RaiseMinEpoch(uint epoch);
         long EndpointConsumedSeq { get; }
+        long EndpointCompletedSeq => EndpointConsumedSeq;
     }
     internal sealed class NativePointerBridge : IDisposable,IWorldPointerSink
     {
-        internal const uint InputMagic=0xCF710001, ProtocolVersion=4;
+        internal const uint InputMagic=0xCF710001, ProtocolVersion=5;
+        private const int BrokerRejectedBeforeInstall=14;
         private readonly IntPtr _source;
         private readonly uint _message,_control,_pid;
         private readonly object _gate=new object();
@@ -38,13 +41,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _control=RegisterWindowMessage("CF7.WorldPointer.Control.v4");GetWindowThreadProcessId(source,out _pid);
             _cookie=BitConverter.ToUInt64(RandomNumberGenerator.GetBytes(8))|1;
         }
-        internal static async Task<NativePointerBridge> Start(IntPtr source,IntPtr owner)
+        internal static async Task<NativePointerBridge> Start(IntPtr source, IntPtr owner,
+            PassiveFlashInputMode mode = PassiveFlashInputMode.Disabled)
         {
+            if (mode != PassiveFlashInputMode.Disabled)
+                throw new ArgumentOutOfRangeException(nameof(mode));
             string exe=Path.Combine(AppContext.BaseDirectory,"FlashInputBroker.exe");
             if(!File.Exists(exe) || !File.Exists(Path.Combine(AppContext.BaseDirectory,"FlashInputBridge.dll")))throw new FileNotFoundException("Missing paired input bridge",exe);
             var bridge=new NativePointerBridge(source);
             var start=new ProcessStartInfo(exe) {UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true};
             foreach(var arg in new[]{source.ToInt64().ToString(CultureInfo.InvariantCulture),Environment.ProcessId.ToString(CultureInfo.InvariantCulture),owner.ToInt64().ToString(CultureInfo.InvariantCulture),bridge._cookie.ToString(CultureInfo.InvariantCulture)})start.ArgumentList.Add(arg);
+            start.ArgumentList.Add(((int)mode).ToString(CultureInfo.InvariantCulture));
             try {
                 try {
                     uint sourceThread=GetWindowThreadProcessId(source,out uint sourcePid);
@@ -57,7 +64,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 string ready=await WaitForReady(bridge._ready.Task,bridge._broker,bridge._cookie,TimeSpan.FromSeconds(12));
                 string name="Local\\CF7.WorldPointer."+bridge._pid+"."+bridge._broker.Id;
                 bridge._state=SharedInputStateView.Open(name,InputMagic,ProtocolVersion);
-                if(bridge._state.Session!=bridge._cookie)throw new InvalidOperationException("Input session mismatch");
+                if(bridge._state.Session!=bridge._cookie || bridge._state.ReadAtomic(84)!=(int)mode)throw new InvalidOperationException("Input session mismatch");
                 LogManager.Log("event=world_pointer_bridge_ready brokerPid="+bridge._broker.Id+" "+ready);
                 return bridge;
             } catch {
@@ -139,10 +146,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         public PointerPostStatus Send(in PointerPacket packet,Point point)
         {
             lock(_gate) {
-                if(_closing || _ended)return PointerPostStatus.BridgeClosed;
+                if(_closing || _ended || _state==null || _state.ReadAtomic(36)!=0)return PointerPostStatus.BridgeClosed;
                 if(GetWindowThreadProcessId(_source,out uint pid)==0 || pid!=_pid)return PointerPostStatus.SourceGone;
                 if(packet.Epoch==0 || packet.Epoch>WorldPointerMapper.EpochLimit || packet.Sequence<1 || packet.Sequence>WorldPointerMapper.SequenceLimit)return PointerPostStatus.BridgeClosed;
-                _state?.WriteIssuedEpoch(packet.Epoch);
+                _state.WriteIssuedEpoch(packet.Epoch);
                 if(!PostMessage(_source,_message,new IntPtr(WorldPointerMapper.PackWParam(packet.Message,packet.Flags,packet.Data,packet.Epoch,packet.Geometry)),new IntPtr(WorldPointerMapper.PackLParam(point,packet.Sequence))))return PointerPostStatus.PostFailed;
                 return PointerPostStatus.Posted;
             }
@@ -150,13 +157,32 @@ namespace CF7Launcher.Guardian.WorldCompositor
         public bool RaiseMinEpoch(uint epoch)
         {
             lock(_gate) {
-                if(_closing || _ended || _state==null)return false;
+                if(_closing || _ended || _state==null || epoch>WorldPointerMapper.EpochLimit+1)return false;
                 _state.WriteMinEpoch(epoch);
-                _state.RequestCancellation(); // persistent, broker control wakes an otherwise idle endpoint
-                return true;
+                return _state.RequestCancellation()>0;
+            }
+        }
+        internal int CancelAck {get {lock(_gate)return _state?.ReadAtomic(108) ?? -1;}}
+        private bool _retirementConfirmed;
+        internal Func<bool> BeginSemanticCancel()
+        {
+            lock(_gate) {
+                int ticket=0;
+                if(_state!=null && !_closing) {
+                    int issued=_state.ReadAtomic(80);
+                    if(issued>=0 && issued<=WorldPointerMapper.EpochLimit) {
+                        _state.WriteMinEpoch((uint)issued+1);
+                        ticket=_state.RequestCancellation();
+                    } else _state.Exchange(36,1);
+                }
+                return ()=> {
+                    lock(_gate)return _retirementConfirmed || (_state!=null &&
+                        (_state.ReadAtomic(164)==1 || (ticket>0 && _state.ReadAtomic(108)>=ticket)));
+                };
             }
         }
         public long EndpointConsumedSeq {get {lock(_gate)return _state?.ReadConsumedSeq() ?? -1;}}
+        public long EndpointCompletedSeq {get {lock(_gate)return _state?.ReadAtomic(120) ?? -1;}}
         internal async Task<double> RepaintAsync(double after,double deadline,CancellationToken target)
         {
             int RemainingMs() {
@@ -172,6 +198,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 lock(_gate) {
                     if(_closing || _state==null)throw new InvalidOperationException("Input session closing");
                     ticket=_state.RequestPaint((long)(after*Stopwatch.Frequency/1000.0));
+                    if(ticket==0)throw new InvalidOperationException("Input repaint sequence exhausted");
                 }
                 bool returned=await Task.Run(()=> {
                     target.ThrowIfCancellationRequested();
@@ -207,15 +234,24 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if(!await _paintGate.WaitAsync(TimeSpan.FromSeconds(12)))throw new TimeoutException("repaint still in flight");
                 try {
                     int code=await _exit.Task.WaitAsync(TimeSpan.FromSeconds(15));
-                    lock(_gate)confirmed=code==0 && (_state==null || (_state.ReadAtomic(100)==_state.ReadAtomic(96) || _state.ReadAtomic(164)==1));
+                    lock(_gate)confirmed=(code==BrokerRejectedBeforeInstall && _state==null) ||
+                        (code==0 && (_state==null || _state.ReadAtomic(100)==_state.ReadAtomic(96) || _state.ReadAtomic(164)==1));
                 } finally {_paintGate.Release();}
             } catch(Exception e) {LogManager.Log("event=world_pointer_closed_unconfirmed session="+_cookie+" reason="+e.Message);}
-            if(confirmed)ReleaseMapping();
+            if(confirmed){lock(_gate)_retirementConfirmed=true;ReleaseMapping();}
             else _=ReleaseAfterExit(); // retain mapping while old callbacks/broker may still use it
             LogManager.Log("event=world_pointer_close session="+_cookie+" confirmed="+confirmed);
             return confirmed;
         }
-        private async Task ReleaseAfterExit() {await _exit.Task;await _paintGate.WaitAsync();try {ReleaseMapping();}finally {_paintGate.Release();}}
+        private async Task ReleaseAfterExit()
+        {
+            int result=await _exit.Task; await _paintGate.WaitAsync();
+            try {
+                lock(_gate)if(result==0 && _state!=null)
+                    _retirementConfirmed=_state.ReadAtomic(164)==1 || (_state.ReadAtomic(96)>0 && _state.ReadAtomic(96)==_state.ReadAtomic(100));
+                ReleaseMapping();
+            } finally {_paintGate.Release();}
+        }
         private void ReleaseMapping() {lock(_gate){_state?.Dispose();_state=null;_broker?.Dispose();}}
         public void Dispose() {if(_broker!=null)_=CloseAsync();}
         [DllImport("user32.dll",CharSet=CharSet.Unicode)] private static extern uint RegisterWindowMessage(string name);
@@ -253,8 +289,21 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void WriteMinEpoch(uint epoch) {if(epoch>WorldPointerMapper.EpochLimit+1)throw new ArgumentOutOfRangeException(nameof(epoch));Raise(56,epoch);}
         internal void WriteIssuedEpoch(uint epoch) {if(epoch==0 || epoch>WorldPointerMapper.EpochLimit)throw new ArgumentOutOfRangeException(nameof(epoch));Raise(80,epoch);}
-        internal void RequestCancellation() {lock(_gate)Interlocked.Increment(ref Word(104));}
-        internal int RequestPaint(long ticks) {lock(_gate){Interlocked.Exchange(ref *(long*)((byte*)_view+128),ticks);return Interlocked.Increment(ref Word(136));}}
+        private int NextTicket(int offset,int limit)
+        {
+            ref int counter=ref Word(offset);
+            int current=Volatile.Read(ref counter);
+            while(current>=0 && current<limit) {
+                int seen=Interlocked.CompareExchange(ref counter,current+1,current);
+                if(seen==current)return current+1;
+                current=seen;
+            }
+            Exchange(36,1);
+            return 0;
+        }
+        // The broker owns the final cancel number for retirement.
+        internal int RequestCancellation() {lock(_gate)return NextTicket(104,int.MaxValue-1);}
+        internal int RequestPaint(long ticks) {lock(_gate){Interlocked.Exchange(ref *(long*)((byte*)_view+128),ticks);return NextTicket(136,int.MaxValue);}}
         internal int ReadConsumedSeq()=>ReadAtomic(60);
         public void Dispose() {lock(_gate){if(_view!=IntPtr.Zero){UnmapViewOfFile(_view);_view=IntPtr.Zero;}if(_mapping!=IntPtr.Zero){CloseHandle(_mapping);_mapping=IntPtr.Zero;}}}
         [DllImport("kernel32.dll",CharSet=CharSet.Unicode,SetLastError=true)] private static extern IntPtr OpenFileMappingW(uint access,bool inherit,string name);

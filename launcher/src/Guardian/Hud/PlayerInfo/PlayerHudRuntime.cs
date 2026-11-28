@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using CF7Launcher.Guardian.Hud.Loot;
+using CF7Launcher.Guardian.InputOwnership;
 using CF7Launcher.Guardian.WorldCompositor;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
@@ -90,6 +91,14 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
             _bottom.Dispose(); _buffs.Dispose(); throw;
         }
     }
+    internal void BindPointerAuthority(IUiPointerAuthority pointerAuthority)
+    {
+        if (_disposed) return;
+        _bottom.BindPointerAuthority(pointerAuthority);
+        _buffs.BindPointerAuthority(pointerAuthority);
+        _sharedInput.BindPointerAuthority(pointerAuthority, _bottom.PointerInstanceGeneration);
+    }
+
     private void OnTick(object? sender, EventArgs args) => _controller.Tick(Environment.TickCount64);
     internal void SetPortraitBakeSink(IDollBakeSink? dollBake)
     {
@@ -101,12 +110,18 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         _focusTargetWidget.NotifyPortraitReady(key);
         _allyWidget.NotifyPortraitReady(key);
     }
-    /// <summary>把插话输入浮窗的前台探针分发给本组三个 surface（主 HUD 由宿主单独接线）。</summary>
-    internal void SetInterjectInputForegroundProbe(Func<bool> probe)
+    /// <summary>把非模态输入浮窗的前台探针分发给三个玩家 HUD 窗口（主 HUD 由宿主单独接线）。</summary>
+    internal void SetNonModalInputForegroundProbe(Func<bool> probe)
     {
-        _bottom.InterjectInputForegroundProbe = probe;
-        _buffs.InterjectInputForegroundProbe = probe;
-        _resources.InterjectInputForegroundProbe = probe;
+        _bottom.NonModalInputForegroundProbe = probe;
+        _buffs.NonModalInputForegroundProbe = probe;
+        _resources.NonModalInputForegroundProbe = probe;
+    }
+    internal void RestoreForNonModalForeground()
+    {
+        _bottom.RestoreForNonModalForeground();
+        _buffs.RestoreForNonModalForeground();
+        _resources.RestoreForNonModalForeground();
     }
     internal void SetSharedWorld(WorldCompositorController? world)
     {
@@ -147,8 +162,10 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
                 if(shared==_sharedActive)continue;
                 // Only a gesture actually owned by the legacy HUD transfers this
                 // release barrier. A held Flash gesture must retain its own release.
-                if(shared && (_bottom.HasLegacyPointerGesture || _buffs.HasLegacyPointerGesture || (_shareMainHud && _existingHud.HasLegacyPointerGesture)))_world!.RetireLegacyHudGesture();
+                if (shared && (HasFallbackPress(_bottom) || HasFallbackPress(_buffs)
+                    || _shareMainHud && HasFallbackPress(_existingHud))) _world!.RetireLegacyHudGesture();
                 _sharedActive=shared;
+                _sharedInput.RetireBinding();
                 _combinedInput.Cancel();
                 _mainInput?.Cancel();
                 _world?.SetHudInput(null);
@@ -172,6 +189,8 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         }
         finally { _changingBackend=false; }
     }
+
+    private static bool HasFallbackPress(NativeHudOverlay hud) => hud.HasLegacyPointerGesture || hud.HasBoundFallbackPress;
     private void RestoreStack()
     {
         if (_disposed || _suspended || _restoringOrder) return;

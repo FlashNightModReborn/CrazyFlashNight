@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.scene.SceneInteractionManager;
+import org.flashNight.arki.scene.StageReturnFlow;
 import org.flashNight.arki.item.LootContainerService;
 
 /**
@@ -44,16 +45,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
         }
         if (BoxInteractionArbiter.findWorldEntry(gameworld) != null) return true;
 
-        var handler:Function = function():Void {
-            BoxInteractionArbiter.handleGlobalInteraction(gameworld);
-        };
-        if (!gameworld.dispatcher.subscribeGlobal(
-            "interactionKeyDown", handler, gameworld)) {
-            return false;
+        var handler:Function = null;
+        if (_root.GameInput.passiveActive !== true) {
+            handler = function():Void { BoxInteractionArbiter.handleGlobalInteraction(gameworld); };
+            if (!gameworld.dispatcher.subscribeGlobal("interactionKeyDown", handler, gameworld)) return false;
         }
 
         worldEntries.push({
             gameworld: gameworld,
+            worldIdentity: StageReturnFlow.worldIdentity(gameworld),
             handler: handler,
             knownRecords: [],
             activeRecords: [],
@@ -65,14 +65,25 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
     /** 注册箱子；重复注册幂等，撤销后重注册复用首次 order。 */
     public static function register(target:Object, gameworld:Object):Boolean {
         if (!target || !BoxInteractionArbiter.isBoxPreset(target.presetName)) return false;
+        return registerTarget(target, gameworld, false);
+    }
+
+    public static function registerElement(target:Object, gameworld:Object):Boolean {
+        return target != null && registerTarget(target, gameworld, true);
+    }
+
+    private static function registerTarget(target:Object, gameworld:Object, element:Boolean):Boolean {
         if (!gameworld) gameworld = target._parent;
         if (!BoxInteractionArbiter.initialize(gameworld)) return false;
 
         var entry:Object = BoxInteractionArbiter.findWorldEntry(gameworld);
+        if (target.__cf7InteractionTargetIdentity == null) target.__cf7InteractionTargetIdentity = {};
         var record:Object = BoxInteractionArbiter.findKnownRecord(entry, target);
         if (record == null) {
             record = {
                 target: target,
+                identity: target.__cf7InteractionTargetIdentity,
+                element: element,
                 registrationOrder: entry.nextOrder++,
                 active: false
             };
@@ -92,7 +103,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
             var records:Array = worldEntries[i].activeRecords;
             for (var j:Number = 0; j < records.length; j++) {
                 var record:Object = records[j];
-                if (record.target === target) {
+                if (record.target === target && record.identity === target.__cf7InteractionTargetIdentity) {
                     record.active = false;
                     var last:Number = records.length - 1;
                     if (j != last) records[j] = records[last];
@@ -147,7 +158,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
         for (var i:Number = 0; i < worldEntries.length; i++) {
             var entry:Object = worldEntries[i];
             if (entry.gameworld === gameworld) {
-                if (gameworld && gameworld.dispatcher &&
+                if (entry.handler != null && gameworld && gameworld.dispatcher &&
                     typeof gameworld.dispatcher.unsubscribeGlobal == "function") {
                     gameworld.dispatcher.unsubscribeGlobal(
                         "interactionKeyDown", entry.handler, gameworld);
@@ -193,6 +204,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
         BoxInteractionArbiter.dispatchWinner(gameworld, hero, sceneCurrent);
     }
 
+    public static function dispatchKeyboard(gameworld:Object, hero:Object):Boolean {
+        return BoxInteractionArbiter.dispatchWinner(gameworld, hero, null);
+    }
+
     /** 单次候选快照 + 单遍最小值裁决。 */
     private static function dispatchWinner(
         gameworld:Object, hero:Object, sceneCurrent:Object):Boolean {
@@ -211,11 +226,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
         for (i = 0; i < snapshot.length; i++) {
             var record:Object = snapshot[i];
             var target:Object = record.target;
-            if (!record.active ||
-                !BoxInteractionArbiter.isBoxPreset(target.presetName) ||
-                !BoxInteractionArbiter.canInteract(target, hero)) {
-                continue;
-            }
+            if (!record.active || record.identity !== target.__cf7InteractionTargetIdentity) continue;
+            if (record.element) {
+                if (target._killed || !InteractionHandler.canInteract(target, hero)) continue;
+            } else if (!BoxInteractionArbiter.isBoxPreset(target.presetName)
+                    || !BoxInteractionArbiter.canInteract(target, hero)) continue;
 
             var distance:Number = BoxInteractionArbiter.distanceSquared(target, hero);
             var order:Number = record.registrationOrder;
@@ -313,7 +328,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
 
     private static function findWorldEntry(gameworld:Object):Object {
         for (var i:Number = 0; i < worldEntries.length; i++) {
-            if (worldEntries[i].gameworld === gameworld) return worldEntries[i];
+            var entry:Object = worldEntries[i];
+            if (entry.gameworld === gameworld && entry.worldIdentity === gameworld.__stageReturnWorldIdentity)
+                return entry;
         }
         return null;
     }
@@ -321,7 +338,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInt
     private static function findKnownRecord(entry:Object, target:Object):Object {
         var known:Array = entry.knownRecords;
         for (var i:Number = 0; i < known.length; i++) {
-            if (known[i].target === target) return known[i];
+            if (known[i].target === target && known[i].identity === target.__cf7InteractionTargetIdentity)
+                return known[i];
         }
         return null;
     }

@@ -14,6 +14,7 @@
     var _previewActive = false, _previewTimer = null, _closeTimer = null;
     var _capturing = -1, _activeTab = 'common', _confirmAction = '', _confirmTimer = null;
     var _keyFilterQuery = '';
+    var _keySearchFocusTurn = 0, _retireKeySearchFocus = null;
     var _flashPreview = null, _hitNumberPreview = null;
     var _cameraPreviewImage = null, _inlineCameraImage = null, _inlineCameraHud = null;
     var _inlineCameraSafeFrame = null, _inlineCameraHudBand = null;
@@ -234,6 +235,7 @@
     }
 
     function cleanup() {
+        retireKeySearchFocus();
         _mux.closeSession();
         window.removeEventListener('keydown', onCaptureKey, true);
         stopHitPreviewLoop();
@@ -494,6 +496,7 @@
         _inlineCameraSafeFrame = null;
         _inlineCameraHudBand = null;
         if (_tooltipScope && _tooltipScope.releaseTree) _tooltipScope.releaseTree(_content);
+        retireKeySearchFocus();
         clear(_content);
         if (_requiresReconcile) {
             var reconcile = node('div', 'settings-empty');
@@ -1450,6 +1453,73 @@
     // ══════════════════════════════════════════════════════════════
     // 页签 3：36 项权威键位（保持 1024×576 零滚动 + 搜索高亮）
     // ══════════════════════════════════════════════════════════════
+    function retireKeySearchFocus() {
+        if (!_retireKeySearchFocus) return;
+        _retireKeySearchFocus();
+        _retireKeySearchFocus = null;
+    }
+
+    function bindKeySearchFocus(input) {
+        if (!window.chrome || !window.chrome.webview
+                || typeof window.chrome.webview.postMessage !== 'function'
+                || typeof Bridge === 'undefined' || !Bridge || !_instance
+                || typeof Bridge.send !== 'function' || typeof Bridge.on !== 'function'
+                || typeof Bridge.off !== 'function') return;
+
+        var endpoint = 'web.settings.keys.search';
+        var instance = _instance;
+        var turn = 0, composing = false, documentToken = '';
+        function report(phase, focused) {
+            Bridge.send({
+                type: 'ui_field_focus', endpointId: endpoint, panelInstanceId: instance,
+                documentToken: documentToken, focusTurn: turn, phase: phase,
+                focused: focused, composing: composing
+            });
+        }
+        function locallyFocused() {
+            return input.isConnected && document.activeElement === input && document.hasFocus();
+        }
+        function focusIn() {
+            if (turn || !locallyFocused()) return;
+            turn = ++_keySearchFocusTurn;
+            report('focusin', true);
+        }
+        function focusOut() {
+            if (!turn) return;
+            composing = false;
+            report('focusout', false);
+            turn = 0;
+        }
+        function acceptBinding(message) {
+            if (!turn || !locallyFocused() || message.endpointId !== endpoint
+                    || message.panelInstanceId !== instance || !message.documentToken
+                    || message.documentToken === documentToken) return;
+            documentToken = message.documentToken;
+            report('focusin', true);
+        }
+        input.addEventListener('focusin', focusIn);
+        input.addEventListener('focusout', focusOut);
+        input.addEventListener('compositionstart', function() {
+            if (!turn || !locallyFocused()) return;
+            composing = true;
+            report('compositionstart', true);
+        });
+        input.addEventListener('compositionend', function() {
+            if (!turn || !locallyFocused()) return;
+            composing = false;
+            report('compositionend', true);
+        });
+        window.addEventListener('focus', focusIn);
+        window.addEventListener('blur', focusOut);
+        Bridge.on('ui_field_focus_binding', acceptBinding);
+        _retireKeySearchFocus = function() {
+            focusOut();
+            window.removeEventListener('focus', focusIn);
+            window.removeEventListener('blur', focusOut);
+            Bridge.off('ui_field_focus_binding', acceptBinding);
+        };
+    }
+
     function renderKeys() {
         var validation = SettingsRuntime.validateKeyDraft(_draft.keys, _snapshot.allowedKeyCodes);
         var searchInput = document.createElement('input');
@@ -1458,6 +1528,7 @@
         searchInput.placeholder = '筛查键位（如 技能 / 药剂 / 奔跑）';
         searchInput.value = _keyFilterQuery;
         searchInput.setAttribute('aria-label', '筛查键位');
+        bindKeySearchFocus(searchInput);
 
         var actions = [];
         if (!validation.valid) {

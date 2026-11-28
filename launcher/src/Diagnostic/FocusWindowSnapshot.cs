@@ -275,7 +275,7 @@ namespace CF7Launcher.Diagnostic
             public Rect caretRect;
         }
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll")] private static extern IntPtr WindowFromPoint(Point point);
+        [DllImport("user32.dll")] internal static extern IntPtr WindowFromPoint(Point point);
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
         [DllImport("user32.dll")] private static extern bool GetGUIThreadInfo(uint tid, ref GuiThreadInfo info);
         [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr h, out Rect rect);

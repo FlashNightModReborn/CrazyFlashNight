@@ -25,21 +25,24 @@ internal readonly record struct ObservedInputEdge(
 internal sealed class PhysicalInputLedger
 {
     private readonly Dictionary<int, ObservedKeyState> _keys;
+    private readonly Dictionary<int,HashSet<long>> _heldDevices=new();
+    private readonly HashSet<int> _unattributed=new();
     private long _generation=1, _sequence;
     private bool _baselineQualified;
-    internal PhysicalInputLedger(IEnumerable<int> supportedKeys)
+    internal PhysicalInputLedger(IEnumerable<int> supportedKeys, bool fullVkRange=false)
     {
         ArgumentNullException.ThrowIfNull(supportedKeys);
         var keys=supportedKeys.ToArray();
-        if(keys.Length==0 || keys.Any(k=>k<1 || k>254) || keys.Distinct().Count()!=keys.Length)
+        if(keys.Length==0 || keys.Any(k=>fullVkRange ? k<0 || k>255 : k<1 || k>254) || keys.Distinct().Count()!=keys.Length)
             throw new ArgumentException("Supported physical keys must be a nonempty exact set",nameof(supportedKeys));
         _keys=keys.ToDictionary(k=>k,_=>ObservedKeyState.Unknown);
     }
     internal ObservationPrefix Prefix=>new(_generation,_sequence);
     internal bool SourcesHealthy {get;private set;}
-    internal bool HasQualifiedBaseline => _baselineQualified;
+    private bool PrefixExhausted => _generation==long.MaxValue || _sequence==long.MaxValue;
+    internal bool HasQualifiedBaseline => _baselineQualified && !PrefixExhausted;
     internal string BlockReason {get;private set;}="boot_unknown";
-    internal bool IsNeutral=>SourcesHealthy && _baselineQualified && _keys.Values.All(v=>v==ObservedKeyState.Up);
+    internal bool IsNeutral=>SourcesHealthy && HasQualifiedBaseline && _keys.Values.All(v=>v==ObservedKeyState.Up);
     internal ObservedKeyState this[int key]=>_keys.TryGetValue(key,out var state)?state:ObservedKeyState.Unknown;
     internal bool Supports(int key)=>_keys.ContainsKey(key);
     // Neutral except Down keys admitted through fresh same-generation edges in
@@ -47,25 +50,37 @@ internal sealed class PhysicalInputLedger
     // only an edge admitted via AcceptContinuousEdge enters the exempt set.
     internal bool IsNeutralExcept(IReadOnlySet<int> admittedHeld,int exceptKey=0)
     {
-        if(!SourcesHealthy || !_baselineQualified)return false;
+        if(!SourcesHealthy || !HasQualifiedBaseline)return false;
         foreach(var pair in _keys)
             if(pair.Value!=ObservedKeyState.Up
                 && !(pair.Value==ObservedKeyState.Down && (pair.Key==exceptKey || admittedHeld.Contains(pair.Key))))return false;
         return true;
     }
 
+    private void MarkUnknown(string reason)
+    {
+        SourcesHealthy=false;_baselineQualified=false;BlockReason=reason;
+        _heldDevices.Clear();_unattributed.Clear();
+        foreach(int key in _keys.Keys.ToArray())_keys[key]=ObservedKeyState.Unknown;
+    }
+    private bool AdvanceSequence()
+    {
+        if(!PrefixExhausted)++_sequence;
+        if(!PrefixExhausted)return true;
+        MarkUnknown("sequence_exhausted");
+        return false;
+    }
     internal ObservationPrefix Invalidate(string reason)
     {
-        checked{_generation++;_sequence++;}
-        SourcesHealthy=false;_baselineQualified=false;BlockReason=reason;
-        foreach(int key in _keys.Keys.ToArray())_keys[key]=ObservedKeyState.Unknown;
+        if(!PrefixExhausted)++_generation;
+        if(AdvanceSequence())MarkUnknown(reason);
         return Prefix;
     }
     // Only a fresh source registration/health proof may follow an invalidation.
     // It does not itself manufacture a neutral baseline.
     internal bool ConfirmSources(ObservationPrefix registrationPrefix)
     {
-        if(registrationPrefix!=Prefix)return false;
+        if(registrationPrefix!=Prefix || PrefixExhausted)return false;
         SourcesHealthy=true;BlockReason="baseline_unknown";return true;
     }
     // An ordinary sampling race is not loss of the observation source. Revoke
@@ -73,17 +88,44 @@ internal sealed class PhysicalInputLedger
     // No owner may grant input while this baseline is awaiting reconciliation.
     private void DeferSnapshot(string reason)
     {
-        checked{_sequence++;}
+        if(!AdvanceSequence())return;
         _baselineQualified=false;BlockReason=reason;
     }
     // Query eligibility or per-device consistency can be temporarily unavailable
     // without losing the source. Preserve held state but revoke neutral proofs.
     internal void RequireReconciliation(string reason) => DeferSnapshot(reason);
-    internal ObservedInputEdge? Observe(long sourceGeneration,int key,bool down,InputObservationSource source)
+    internal ObservedInputEdge? Observe(long sourceGeneration,int key,bool down,InputObservationSource source,long? deviceId=null)
     {
-        if(sourceGeneration!=_generation || !_keys.TryGetValue(key,out var previous))return null;
+        if(sourceGeneration!=_generation || !_keys.ContainsKey(key))return null;
+        // An identified release removes only that device. A sampled hold has
+        // no device identity and survives orphan releases until reconciliation.
+        if(deviceId is long device) {
+            if(down) {
+                if(!_heldDevices.TryGetValue(key,out var holders))_heldDevices[key]=holders=new();
+                holders.Add(device);
+            } else if(_heldDevices.TryGetValue(key,out var holders)) {
+                holders.Remove(device);
+                if(holders.Count==0)_heldDevices.Remove(key);
+            }
+        } else if(down)_unattributed.Add(key);
+        else _unattributed.Remove(key);
+        return RecordLevel(key,source);
+    }
+    internal ObservedInputEdge? ObserveModifierAlias(int generic,InputObservationSource source)
+    {
+        if(generic is <16 or >18 || !_keys.ContainsKey(generic))return null;
+        return RecordLevel(generic,source);
+    }
+    private ObservedInputEdge? RecordLevel(int key,InputObservationSource source)
+    {
         bool neutral=IsNeutral;
-        checked{_sequence++;}
+        if(!AdvanceSequence())return null;
+        var previous=_keys[key];
+        bool down=_heldDevices.ContainsKey(key) || _unattributed.Contains(key);
+        if(key is >=16 and <=18) {
+            int left=0xA0+2*(key-16);
+            down|=this[left]==ObservedKeyState.Down || this[left+1]==ObservedKeyState.Down;
+        }
         var state=down?ObservedKeyState.Down:ObservedKeyState.Up;
         _keys[key]=state;
         if (_baselineQualified) BlockReason = IsNeutral ? "" : "held";
@@ -99,7 +141,7 @@ internal sealed class PhysicalInputLedger
         IReadOnlyDictionary<int,bool> before,IReadOnlyDictionary<int,bool> after,
         bool environmentQualified,bool prefixDrained)
     {
-        if(!SourcesHealthy || fence!=Prefix)return false;
+        if(!SourcesHealthy || fence!=Prefix || PrefixExhausted)return false;
         if(!environmentQualified || before.Count!=_keys.Count || after.Count!=_keys.Count) {
             Invalidate("snapshot_unqualified");return false;
         }
@@ -109,10 +151,20 @@ internal sealed class PhysicalInputLedger
                 Invalidate("snapshot_key_set_mismatch");return false;
             }
         if(_keys.Keys.Any(key=>before[key]!=after[key])){DeferSnapshot("snapshot_raced");return false;}
-        foreach(int key in _keys.Keys.ToArray())_keys[key]=after[key]?ObservedKeyState.Down:ObservedKeyState.Up;
+        if(_heldDevices.Keys.Any(key=>!after[key])){DeferSnapshot("device_snapshot_conflict");return false;}
         // Sampling is an observation too. Even all-zero refresh invalidates a
         // prior grant proof, preventing a cached proof from crossing a new fence.
-        checked{_sequence++;}
+        if(!AdvanceSequence())return false;
+        _unattributed.Clear();
+        foreach(int key in _keys.Keys.ToArray()) {
+            _keys[key]=after[key]?ObservedKeyState.Down:ObservedKeyState.Up;
+            if(!after[key] || _heldDevices.ContainsKey(key))continue;
+            if(key is >=16 and <=18) {
+                int left=0xA0+2*(key-16);
+                if(after.GetValueOrDefault(left) || after.GetValueOrDefault(left+1))continue;
+            }
+            _unattributed.Add(key);
+        }
         _baselineQualified=true;
         BlockReason=IsNeutral?"":"held";
         return true;

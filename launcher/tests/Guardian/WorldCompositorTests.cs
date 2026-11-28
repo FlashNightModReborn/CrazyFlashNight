@@ -86,6 +86,83 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.Same(request,TransitionPaint(controller));
         }
 
+        private static WorldCompositorController.CaptureView ProvenView() => new(3,new IntPtr(85),7,1,2,
+            new Size(1602,939),new Size(1600,938),new Rectangle(160,74,1600,900),144);
+
+        [Theory]
+        [InlineData(540,"LOW",2)]
+        [InlineData(482,"LOW",2)]
+        public void ProvenRefreshKeepsKeyboardThroughCommonPresentationWait(int height,string quality,int effects)
+        {
+            using var owner=new Form(); using var c=RenderController(owner);
+            var view=ProvenView();
+            c.ApplyRenderSelection(new RenderSelection(3,height,quality,effects),0,_=>{});
+            SetRenderField(c,"_appliedHeight",540);
+            SetRenderField(c,"_presentedView",view);
+            c.BeginBudgetWait(view,true);
+            var reason=CaptureWaitReason.RenderRefresh;
+            Assert.True(c.CaptureInputBlocked); Assert.False(c.KeyboardBlockRequested);
+            SetRenderField(c,"_geometryWaitStartedMs",100d);
+            c.BeginCaptureWait(reason,false);
+            c.ObserveRefreshDeadline(reason,true,799.99);
+            Assert.True(c.CaptureInputBlocked); Assert.False(c.KeyboardBlockRequested);
+            c.EndCaptureWait();
+            Assert.False(c.CaptureInputBlocked); Assert.False(c.KeyboardBlockRequested);
+        }
+
+        [Theory]
+        [InlineData("no_current_P")] [InlineData("scene")] [InlineData("flash")] [InlineData("embed")]
+        [InlineData("generation")] [InlineData("extent")] [InlineData("capture_size")] [InlineData("root_client")]
+        [InlineData("viewport")] [InlineData("dpi")] [InlineData("modal_or_transition")]
+        public void RealIdentityLossImmediatelyEscalatesAndCannotBeDowngraded(string invalidated)
+        {
+            using var owner=new Form(); using var c=RenderController(owner);
+            var view=ProvenView();
+            var changed=invalidated switch {
+                "scene" => view with {Scene=4}, "flash" => view with {Source=new IntPtr(86)},
+                "embed" => view with {Embed=8}, "generation" => view with {Generation=2},
+                "capture_size" => view with {CaptureSize=Size.Empty},
+                "extent" => view with {Extent=3}, "root_client" => view with {RootClient=new Size(2160,1368)},
+                "viewport" => view with {Output=new Rectangle(160,75,1600,900)}, "dpi" => view with {Dpi=96}, _=>view
+            };
+            c.BeginCaptureWait(CaptureWaitReason.RenderRefresh,true);
+            SetRenderField(c,"_geometryWaitStartedMs",10d);
+            var reason=WorldCompositorController.ClassifyRefresh(invalidated=="no_current_P" ? null : view,
+                changed,invalidated!="modal_or_transition");
+            Assert.NotEqual(CaptureWaitReason.RenderRefresh,reason);
+            c.ObserveRefreshDeadline(reason,true,11);
+            c.BeginCaptureWait(CaptureWaitReason.RenderRefresh,false);
+            Assert.True(c.CaptureInputBlocked); Assert.True(c.KeyboardBlockRequested);
+            GeometryWait(c,10010);
+            Assert.IsType<TimeoutException>(Assert.Throws<TargetInvocationException>(()=>GeometryWait(c,10011)).InnerException);
+        }
+        [Fact] public void OnlyAnOutstandingFreshReceiptEscalatesAtTheFrozenDeadline()
+        {
+            using var owner=new Form(); using var c=RenderController(owner);
+            c.BeginCaptureWait(CaptureWaitReason.RenderRefresh,true);
+            SetRenderField(c,"_geometryWaitStartedMs",300d);
+            c.ObserveRefreshDeadline(CaptureWaitReason.RenderRefresh,false,1000);
+            Assert.False(c.KeyboardBlockRequested);
+            c.ObserveRefreshDeadline(CaptureWaitReason.RenderRefresh,true,1000);
+            Assert.True(c.KeyboardBlockRequested);
+            c.EndCaptureWait();
+            c.ObserveRefreshDeadline(CaptureWaitReason.RenderRefresh,false,900000);
+            Assert.False(c.CaptureInputBlocked); Assert.False(c.KeyboardBlockRequested);
+        }
+        [Fact] public void SourceResetAndExplicitTransitionFenceInvalidateRefreshImmediately()
+        {
+            using var owner=new Form(); using var c=RenderController(owner);
+            c.BeginCaptureWait(CaptureWaitReason.RenderRefresh,true);
+            c.RequireFreshTransitionFrame(4);
+            Assert.True(c.KeyboardBlockRequested);
+            c.EndCaptureWait();
+            c.BeginCaptureWait(CaptureWaitReason.RenderRefresh,true);
+            c.ResetSource();
+            Assert.True(c.KeyboardBlockRequested);
+            c.BeginCaptureWait(CaptureWaitReason.RenderRefresh,true);
+            Assert.True(c.KeyboardBlockRequested);
+        }
+
         private static void GeometryWait(WorldCompositorController controller,double now) =>
             typeof(WorldCompositorController).GetMethod("CheckGeometryRecoveryTimeout",BindingFlags.NonPublic|BindingFlags.Instance)
                 .Invoke(controller,new object[]{now});
@@ -272,9 +349,9 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.True(CompleteRender(controller,request,150));
             Assert.Equal(1,calls);
         }
-        private static WorldCompositorController RenderController(Form owner) {
+        internal static WorldCompositorController RenderController(Form owner) {
             string root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
-            return new WorldCompositorController(owner,owner,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+            return new WorldCompositorController(owner,owner,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{});
         }
         private static object PendingRender(WorldCompositorController controller)=>
             typeof(WorldCompositorController).GetField("_renderCompletion",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(controller);

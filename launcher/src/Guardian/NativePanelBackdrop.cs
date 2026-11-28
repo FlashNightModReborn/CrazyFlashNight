@@ -6,7 +6,9 @@ using System.Windows.Forms;
 namespace CF7Launcher.Guardian
 {
     /// <summary>
-    /// Panel 态背景层。
+    /// Legacy WebOverlay modal dim and outside-click barrier.
+    /// SceneTransitionBackingForm separately conceals the source while the
+    /// transition is waiting for its WebView2 covered acknowledgement.
     ///
     /// 故意不继承 OverlayBase（layered window）：
     /// 普通不透明 Form 让 DWM 按 opaque surface 合成，避免 per-pixel α traversal。
@@ -38,8 +40,12 @@ namespace CF7Launcher.Guardian
 
         private const int WS_EX_TOOLWINDOW = 0x00000080;
         private const int WS_EX_NOACTIVATE = 0x08000000;
+        private const int WM_MOUSEACTIVATE = 0x0021;
+        private const int MA_NOACTIVATE = 3;
 
         #endregion
+
+        protected override bool ShowWithoutActivation => true;
 
         protected override CreateParams CreateParams
         {
@@ -143,6 +149,16 @@ namespace CF7Launcher.Guardian
             // 抑制默认背景擦除：_composed 全覆盖时无意义；空图时 OnPaint 已绘 Black
             if (_composed == null)
                 base.OnPaintBackground(e);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_MOUSEACTIVATE)
+            {
+                m.Result = (IntPtr)MA_NOACTIVATE;
+                return;
+            }
+            base.WndProc(ref m);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

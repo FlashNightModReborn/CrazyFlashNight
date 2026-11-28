@@ -150,9 +150,10 @@ int Fail(const char* why) { if(gLog){Log("FAIL %s err=%lu",why,GetLastError());s
 }
 
 int wmain(int argc,wchar_t** argv) {
-    const wchar_t* logPath=nullptr; const wchar_t* hwndFile=nullptr;bool stress=false;
+    const wchar_t* logPath=nullptr; const wchar_t* hwndFile=nullptr;bool stress=false,disabledSource=false;
     for(int i=1;i+1<argc;i+=2) {
         if(!wcscmp(argv[i],L"--stress-iat"))stress=wcstoul(argv[i+1],nullptr,10)!=0;
+        else if(!wcscmp(argv[i],L"--disabled-source"))disabledSource=wcstoul(argv[i+1],nullptr,10)!=0;
         else if(!wcscmp(argv[i],L"--owner")) gOwner=(HWND)_wcstoui64(argv[i+1],nullptr,10);
         else if(!wcscmp(argv[i],L"--log")) logPath=argv[i+1];
         else if(!wcscmp(argv[i],L"--stall")) wcscpy_s(gStall,argv[i+1]);
@@ -194,6 +195,12 @@ int wmain(int argc,wchar_t** argv) {
     Log("TOPOLOGY hwnd=0x%p parent=0x%p root=0x%p rootIsOwner=%d",
         (void*)gChild,(void*)GetParent(gChild),(void*)root,root==gOwner?1:0);
     if(root!=gOwner) return Fail("root_not_owner");
+    if(disabledSource) {
+        EnableWindow(gChild,FALSE);
+        bool disabled=(GetWindowLongPtrW(gChild,GWL_STYLE)&WS_DISABLED)!=0 && !IsWindowEnabled(gChild);
+        Log("SOURCE_PROFILE disabled=%d",disabled?1:0);
+        if(!disabled) return Fail("source_disable_unconfirmed");
+    }
     FitToParent();
     ShowWindow(gChild,SW_SHOW);
 

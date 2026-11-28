@@ -27,18 +27,23 @@ class org.flashNight.arki.unit.Action.Input.UnitActionIntentService {
                                   priority:Number):Boolean {
         if (!unit || channel <= 0 || kind <= 0) return false;
 
+        var input:Object = _root.GameInput;
+        var scoped:Boolean = channel == CHANNEL_COMBAT && input.passiveActive === true
+            && unit._name === _root.控制目标;
+        if (scoped && (!input.isInputAdmitted() || !input.isCurrentActor(unit))) return false;
+
         var frame:Number = normalizeFrame(inputFrame);
         var ttl:Number = normalizeTtl(ttlFrames);
         var resolvedPriority:Number = normalizePriority(priority);
         var slots:Object = getSlots(unit, true);
         var current:Object = slots[channel];
 
-        if (current && !isExpired(current, frame)) {
+        if (current && isCurrent(unit, current, frame)) {
             var currentPriority:Number = normalizePriority(current.priority);
             if (currentPriority > resolvedPriority) return false;
         }
 
-        slots[channel] = {
+        var intent:Object = {
             channel: channel,
             kind: kind,
             frame: frame,
@@ -46,6 +51,18 @@ class org.flashNight.arki.unit.Action.Input.UnitActionIntentService {
             payload: payload,
             priority: resolvedPriority
         };
+        if (scoped) {
+            intent.actor = unit.__cf7InputIdentity;
+            intent.epoch = input.getKeyboardEpoch();
+            intent.cancelSerial = input.cancelSerial;
+            intent.configInc = input.configInc;
+            intent.mode = unit.攻击模式;
+            intent.modeSerial = unit.__attackModeSwitchSerial;
+            intent.longGun = unit.长枪;
+            intent.pistol = unit.手枪;
+            intent.pistol2 = unit.手枪2;
+        }
+        slots[channel] = intent;
         return true;
     }
 
@@ -57,18 +74,9 @@ class org.flashNight.arki.unit.Action.Input.UnitActionIntentService {
                                 expectedKind:Number,
                                 currentFrame:Number,
                                 suppressed:Boolean):Object {
-        var slots:Object = getSlots(unit, false);
-        if (!slots) return null;
-
-        var intent:Object = slots[channel];
-        if (!intent) return null;
-        if (isExpired(intent, normalizeFrame(currentFrame))) {
-            delete slots[channel];
-            return null;
-        }
-        if (expectedKind > 0 && intent.kind != expectedKind) return null;
-
-        delete slots[channel];
+        var intent:Object = peek(unit, channel, currentFrame);
+        if (!intent || (expectedKind > 0 && intent.kind != expectedKind)) return null;
+        delete unit.__unitActionIntentSlots[channel];
         return suppressed ? null : intent;
     }
 
@@ -78,7 +86,7 @@ class org.flashNight.arki.unit.Action.Input.UnitActionIntentService {
 
         var intent:Object = slots[channel];
         if (!intent) return null;
-        if (isExpired(intent, normalizeFrame(currentFrame))) {
+        if (!isCurrent(unit, intent, normalizeFrame(currentFrame))) {
             delete slots[channel];
             return null;
         }
@@ -114,9 +122,15 @@ class org.flashNight.arki.unit.Action.Input.UnitActionIntentService {
         return slots;
     }
 
-    private static function isExpired(intent:Object, currentFrame:Number):Boolean {
+    private static function isCurrent(unit:Object, intent:Object, currentFrame:Number):Boolean {
         var age:Number = currentFrame - Number(intent.frame);
-        return isNaN(age) || age < 0 || age > normalizeTtl(intent.ttlFrames);
+        if (isNaN(age) || age < 0 || age > normalizeTtl(intent.ttlFrames)) return false;
+        if (intent.actor == null) return true;
+        var input:Object = _root.GameInput;
+        return input.isCurrentActor(unit) && unit.__cf7InputIdentity === intent.actor
+            && input.isInputCurrent(intent.epoch, intent.cancelSerial, intent.configInc)
+            && intent.mode === unit.攻击模式 && intent.modeSerial === unit.__attackModeSwitchSerial
+            && intent.longGun === unit.长枪 && intent.pistol === unit.手枪 && intent.pistol2 === unit.手枪2;
     }
 
     private static function normalizeFrame(frame:Number):Number {

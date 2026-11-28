@@ -1,123 +1,76 @@
 using System;
-using System.Diagnostics;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace CF7Launcher.Guardian
 {
     public partial class WindowManager
     {
-        private long _focusTargetEpoch = 1;
-        private Process _registeredFocusProcess;
-        internal bool HasCaptureKeyboardFocus(IntPtr owner)
-            => _focusApi.GetForegroundWindow()==owner && _focusApi.GetFocusedWindow(owner)==owner;
-        internal bool SuspendFlashKeyboardForCapture(IntPtr owner)
-        {
-            IntPtr flash=_flashHwnd;
-            if(flash==IntPtr.Zero || owner==IntPtr.Zero)return false;
-            IntPtr foreground=_focusApi.GetForegroundWindow();
-            if(foreground!=owner && foreground!=flash)return false;
-            IntPtr focus=_focusApi.GetFocusedWindow(flash);
-            if(focus!=flash && (focus==IntPtr.Zero || !_focusApi.IsChild(flash,focus)))return false;
-            _focusApi.SetFocus(owner);
-            return HasCaptureKeyboardFocus(owner);
-        }
-        internal IntPtr ReadCloseForeground() { try { return _focusApi.GetForegroundWindow(); } catch { return IntPtr.Zero; } }
-        internal sealed class FlashFocusTarget
-        {
-            internal readonly IntPtr Window, Root;
-            internal readonly uint Pid, Tid, RootPid, RootTid;
-            internal readonly long EmbedEpoch;
-            internal readonly DateTime ProcessBirth;
-            internal readonly Process Process;
-            internal FlashFocusTarget(IntPtr window, IntPtr root, uint pid, uint tid, uint rootPid, uint rootTid,
-                long epoch, Process process, DateTime birth)
-            { Window=window; Root=root; Pid=pid; Tid=tid; RootPid=rootPid; RootTid=rootTid;
-              EmbedEpoch=epoch; Process=process; ProcessBirth=birth; }
-        }
+        private long _embedEpoch = 1;
+        private Form _sessionRoot;
+
+        internal long EmbedEpoch => Interlocked.Read(ref _embedEpoch);
+
         private void SetTrackedFlashWindow(IntPtr window)
-        { _flashHwnd=window; Interlocked.Increment(ref _focusTargetEpoch); }
-        internal FlashFocusTarget CaptureFlashFocusTarget()
         {
-            try {
-                IntPtr window=_flashHwnd; long epoch=Interlocked.Read(ref _focusTargetEpoch);
-                if(!_allowForeground || !IsCurrentFlashWindow(window) || _registeredFocusProcess==null || _registeredFocusProcess.HasExited)return null;
-                uint tid=_focusApi.GetWindowThreadProcessId(window,out uint pid);
-                IntPtr root=_focusApi.GetRootWindow(window);
-                uint rootTid=_focusApi.GetWindowThreadProcessId(root,out uint rootPid);
-                if(pid!=(uint)_registeredFocusProcess.Id || tid==0 || rootTid==0 || root==IntPtr.Zero)return null;
-                var target=new FlashFocusTarget(window,root,pid,tid,rootPid,rootTid,epoch,_registeredFocusProcess,
-                    _registeredFocusProcess.StartTime.ToUniversalTime());
-                return ValidateFlashFocusTarget(target) ? target : null;
-            } catch { return null; }
+            CancelPassiveBootstrapPublication();
+            if (_flashHwnd != window) _revealedPassiveSource = IntPtr.Zero;
+            _flashHwnd = window;
+            Interlocked.Increment(ref _embedEpoch);
         }
-        private bool ValidateFlashFocusTarget(FlashFocusTarget target)
+
+        internal void ConfigureSessionRoot(Form root)
         {
-            try {
-                if(target==null || target.EmbedEpoch!=Interlocked.Read(ref _focusTargetEpoch)
-                    || !IsCurrentFlashWindow(target.Window) || !_focusApi.IsWindow(target.Root)
-                    || target.Process.HasExited || target.Process.StartTime.ToUniversalTime()!=target.ProcessBirth)return false;
-                uint tid=_focusApi.GetWindowThreadProcessId(target.Window,out uint pid);
-                uint rootTid=_focusApi.GetWindowThreadProcessId(target.Root,out uint rootPid);
-                return tid==target.Tid && pid==target.Pid && rootTid==target.RootTid && rootPid==target.RootPid
-                    && _focusApi.GetRootWindow(target.Window)==target.Root;
-            } catch { return false; }
-        }
-        internal bool IsCurrentFlashInputFocused()
-        {
-            IntPtr window=_flashHwnd; long epoch=Interlocked.Read(ref _focusTargetEpoch);
-            try {
-                if(!IsCurrentFlashWindow(window))return false;
-                IntPtr root=_focusApi.GetRootWindow(window);
-                if(root==IntPtr.Zero || !_focusApi.IsWindow(root) || _focusApi.GetForegroundWindow()!=root)return false;
-                return epoch==Interlocked.Read(ref _focusTargetEpoch) && IsCurrentFlashWindow(window)
-                    && _focusApi.GetRootWindow(window)==root && IsFlashInnerFocusHeld(window)
-                    && epoch==Interlocked.Read(ref _focusTargetEpoch) && IsCurrentFlashWindow(window)
-                    && _focusApi.GetForegroundWindow()==root;
-            } catch { return false; }
-        }
-        internal bool HandoffFlashFocusOnce(string reason, IntPtr source, FlashFocusTarget target, Func<bool> guard,Action cleanupUnknown=null)
-        {
-            if(!_allowForeground || source==IntPtr.Zero)return false;
-            bool eligible() => guard() && ValidateFlashFocusTarget(target) && guard();
-            try {
-                if(!eligible() || _focusApi.GetForegroundWindow()!=source || !eligible())return false;
-                if(!_focusApi.SetForegroundWindow(target.Root))return false;
-                if(!eligible() || _focusApi.GetForegroundWindow()!=target.Root || !eligible())return false;
-                RestoreFlashInnerFocusOnce(reason,target,guard,cleanupUnknown);
-                return eligible() && _focusApi.GetForegroundWindow()==target.Root;
-            } catch { return false; }
-        }
-        internal bool RestoreFlashInnerFocusOnce(string reason, FlashFocusTarget target, Func<bool> guard,Action cleanupUnknown=null)
-        {
-            bool eligible() => guard() && ValidateFlashFocusTarget(target)
-                && _focusApi.GetForegroundWindow()==target.Root && guard();
-            void reportCleanupUnknown() { try { cleanupUnknown?.Invoke(); } catch { } }
-            bool attached=false,attachAttempted=false,attachUnknown=false; uint from=0, to=target?.Tid ?? 0;
-            try {
-                if(!eligible())return false;
-                if(IsFlashInnerFocusHeld(target.Window))return eligible();
-                from=_focusApi.GetCurrentThreadId();
-                if(from!=to) {
-                    if(!eligible())return false;
-                    attachAttempted=true;
-                    try { attached=_focusApi.AttachThreadInput(from,to,true); }
-                    catch { attachUnknown=true; throw; }
-                    if(!attached)return false;
-                }
-                if(!eligible())return false;
-                _focusApi.SetFocus(target.Window);
-                return eligible() && IsFlashInnerFocusHeld(target.Window) && eligible();
-            } catch(Exception error) {
-                try { LogManager.Log("[PanelCloseFocus] native failure reason="+reason+" type="+error.GetType().Name); } catch { }
-                return false;
-            } finally {
-                if(attached || attachAttempted && attachUnknown) {
-                    try { if(!_focusApi.AttachThreadInput(from,to,false)) {
-                        reportCleanupUnknown(); LogManager.Log("[PanelCloseFocus] detach returned false reason="+reason);
-                    } }
-                    catch(Exception error) { reportCleanupUnknown(); try { LogManager.Log("[PanelCloseFocus] cleanup_unknown reason="+reason+" type="+error.GetType().Name); } catch { } }
-                }
+            ArgumentNullException.ThrowIfNull(root);
+            if (ReferenceEquals(_sessionRoot, root)) return;
+            if (_sessionRoot != null)
+            {
+                _sessionRoot.HandleCreated -= SessionRootCreated;
+                _sessionRoot.HandleDestroyed -= SessionRootDestroyed;
+                SessionRootDestroyed(_sessionRoot, EventArgs.Empty);
             }
+            _sessionRoot = root;
+            root.HandleCreated += SessionRootCreated;
+            root.HandleDestroyed += SessionRootDestroyed;
+            _passiveRoot = root.Handle;
         }
+
+        private void SessionRootCreated(object sender, EventArgs args) => _passiveRoot = _sessionRoot.Handle;
+
+        private void SessionRootDestroyed(object sender, EventArgs args)
+        {
+            CancelPassiveBootstrapPublication();
+            _passiveRoot = IntPtr.Zero;
+            PassiveInput?.SetForeground(false);
+            PassiveInput?.SetBusinessEligible(false, "guardian_handle_destroyed");
+        }
+
+        internal IntPtr ReadCloseForeground() => _focusApi.GetForegroundWindow();
+
+        internal static bool IsSessionOwnedSource(IntPtr window, IntPtr root)
+        {
+            if (window == IntPtr.Zero || root == IntPtr.Zero) return false;
+            if (window == root) return true;
+            if (GetAncestor(window, 3 /* GA_ROOTOWNER */) == root) return true;
+            // An owned top-level WinForms tool window may be its own GA_ROOTOWNER.
+            // The actual managed owner chain also identifies nested editing surfaces.
+            for (var form = Control.FromChildHandle(window)?.FindForm(); form != null; form = form.Owner)
+                if (form.IsHandleCreated && form.Handle == root) return true;
+            return false;
+        }
+
+        internal bool ActivateSessionRootBeforeHide(IntPtr expectedForeground)
+        {
+            IntPtr root = _passiveRoot;
+            if (!_allowForeground || root == IntPtr.Zero || expectedForeground == IntPtr.Zero
+                || !_focusApi.IsWindow(root) || IsIconic(root) || !IsWindowEnabled(root)
+                || !IsSessionOwnedSource(expectedForeground, root)
+                || ReadCloseForeground() != expectedForeground)
+                return false;
+            if (expectedForeground != root) _focusApi.SetForegroundWindow(root);
+            return _passiveRoot == root && ReadCloseForeground() == root;
+        }
+
+        internal bool ReturnPassiveRoot(IntPtr expectedForeground) => ActivateSessionRootBeforeHide(expectedForeground);
     }
 }

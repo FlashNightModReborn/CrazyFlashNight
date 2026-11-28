@@ -59,6 +59,7 @@ namespace G1Fixture
 
     internal sealed class Fixture
     {
+        private const int RenewalEpochLimit = 8;
         private readonly Options _opt;
         private readonly List<string> _asserts = new List<string>();
         private readonly StringBuilder _logAll = new StringBuilder();
@@ -142,6 +143,9 @@ namespace G1Fixture
         [DllImport("user32.dll")] private static extern bool PostMessage(IntPtr h, uint m, IntPtr w, IntPtr l);
         [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr h);
         [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")] private static extern IntPtr WindowFromPoint(Point screenPoint);
+        [DllImport("user32.dll")] private static extern IntPtr GetAncestor(IntPtr hwnd, uint flags);
+        [DllImport("user32.dll")] private static extern bool IsWindowEnabled(IntPtr hwnd);
         [DllImport("user32.dll")] private static extern uint RegisterWindowMessage(string s);
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
         [DllImport("user32.dll")] private static extern bool ShowWindow(IntPtr h, int n);
@@ -172,7 +176,10 @@ namespace G1Fixture
             var pt = caption
                 ? new Point(win.Bounds.X + win.Bounds.Width / 2, win.Bounds.Y + 12)
                 : win.PointToScreen(new Point(win.ClientSize.Width / 2, win.ClientSize.Height / 2));
-            ClickAt(pt, phase + "_activate");
+            if (_opt.Mode != "renew" || GetAncestor(WindowFromPoint(pt), 2) == win.Handle)
+                ClickAt(pt, phase + "_activate");
+            else
+                HostLog($"click_skipped {phase} caption occluded; waiting for exact foreground");
             var sw = Stopwatch.StartNew();
             while (sw.ElapsedMilliseconds < 9000)
             {
@@ -353,7 +360,7 @@ namespace G1Fixture
             if (File.Exists(_stallPath)) File.Delete(_stallPath);
             if (File.Exists(_focusKillPath)) File.Delete(_focusKillPath);
             _target = Process.Start(Path.Combine(rundir, "G1Target.exe"),
-                $"--owner {(long)Owner.Handle} --log \"{_targetLogPath}\" --stall \"{_stallPath}\" --focuskill \"{_focusKillPath}\" --hwndfile \"{hwndFile}\"" + " --stress-iat " + (_opt.Mode=="renew" ? "1" : "0"));
+                $"--owner {(long)Owner.Handle} --log \"{_targetLogPath}\" --stall \"{_stallPath}\" --focuskill \"{_focusKillPath}\" --hwndfile \"{hwndFile}\"" + (_opt.Mode == "renew" ? " --stress-iat 1 --disabled-source 1" : ""));
             Assert(await WaitFile(hwndFile, 8000), "target_started", $"pid={_target?.Id}");
             var ids = File.ReadAllText(hwndFile);
             HostLog("target_ids " + ids.Trim());
@@ -366,6 +373,12 @@ namespace G1Fixture
 
             if(_opt.Mode=="geometry" || _opt.Mode=="maximize") {await RunGeometry();return;}
 
+            if (_opt.Mode == "renew")
+            {
+                bool sourceProfile = !IsWindowEnabled(_child) && TargetSince(0).Contains("SOURCE_PROFILE disabled=1");
+                Assert(sourceProfile, "target_source_disabled", "G1Target confirmed the stock disabled source profile before broker Start");
+                if (!sourceProfile) throw new InvalidOperationException("Required disabled source profile was not established.");
+            }
             _bridge = await NativePointerBridge.Start(_child, Owner.Handle);
             _brokerProc = (Process)F(_bridge, "_broker").GetValue(_bridge);
             HostLog($"broker pid={_brokerProc.Id} source=0x{_child.ToInt64():X} owner=0x{Owner.Handle.ToInt64():X}");
@@ -374,7 +387,8 @@ namespace G1Fixture
             _viewPtr = (IntPtr)F(_view, "_view").GetValue(_view);
             HostLog("shared_view " + Snap());
 
-            _surface = new WorldCompositionSurface(() => _child, () => HostLog("focus_cb"), _bridge, _opt.Mode=="renew" ? 8u : WorldPointerMapper.EpochLimit) { Owner = Owner };
+            _surface = new WorldCompositionSurface(flash: () => _child, sink: _bridge,
+                inputEpochLimit: _opt.Mode == "renew" ? RenewalEpochLimit : (int)WorldPointerMapper.EpochLimit) { Owner = Owner };
             _surface.Bounds = Owner.RectangleToScreen(Owner.ClientRectangle);
             _surface.Show();
             Assert(_surface.Visible, "surface_visible", $"bounds={_surface.Bounds}");
@@ -422,7 +436,7 @@ namespace G1Fixture
             Mark("S2 production pairing (controller cancel on deactivate)", 102);
             var anchor = new Control();
             _controller = new WorldCompositorController(Owner, anchor, () => _child,
-                () => false, m => HostLog("notify:" + m), _opt.Root, () => false, _ => { }, () => { });
+                () => false, m => HostLog("notify:" + m), _opt.Root, () => false, setFlashRenderHeight: _ => { });
             F(_controller, "_surface").SetValue(_controller, _surface);
             HostLog("controller_attached (real owner.Deactivate->CancelPointer wiring)");
 
@@ -516,7 +530,7 @@ namespace G1Fixture
             Owner.BackColor=Color.Magenta;
             _controller=new WorldCompositorController(Owner,Owner,()=>_child,()=>true,
                 text=>HostLog("notify:"+text),_opt.Root,()=>true,
-                height=>SendMessageTimeout(_child,_cmdMsg,new IntPtr(11),new IntPtr(height),2,1000,out _),()=>{});
+                setFlashRenderHeight: height => SendMessageTimeout(_child, _cmdMsg, new IntPtr(11), new IntPtr(height), 2, 1000, out _));
             _controller.Adopt(new WorldLightingFrame {Sequence=1,Scene=1,Ready=true,Light=7,Mode="光照",Parameters=new double[]{1,1,1,1,0,0,0,0}});
             int reducedHeight=(int)Math.Round(Owner.ClientSize.Height*.67);
             _controller.ApplyRenderSelection(new RenderSelection(3,reducedHeight,"LOW",0),0);
@@ -738,7 +752,9 @@ namespace G1Fixture
         private async Task RunRenewals()
         {
             var anchor=new Panel();Owner.Controls.Add(anchor);
-            _controller=new WorldCompositorController(Owner,anchor,()=>_child,()=>false,_=>{},_opt.Root,()=>false,_=>{},()=>{} ,8);
+            Environment.SetEnvironmentVariable("CF7_INPUT_SESSION_TEST_CAP", RenewalEpochLimit.ToString());
+            _controller = new WorldCompositorController(Owner, anchor, () => _child, () => false,
+                _ => { }, _opt.Root, () => false, setFlashRenderHeight: _ => { });
             _controller.BindInput(_bridge,_surface);
             ulong session=_bridge.SessionIdentity;
             bool refused=false;try {var duplicate=await NativePointerBridge.Start(_child,Owner.Handle);duplicate.Dispose();}catch {refused=true;}

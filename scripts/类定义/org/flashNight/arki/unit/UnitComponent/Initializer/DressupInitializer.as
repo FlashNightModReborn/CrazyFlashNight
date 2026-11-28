@@ -1355,6 +1355,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             if (target.__rocketPunchItem !== item) {
                 target.火箭重拳蓄力中 = false;
                 target.__rocketPunchKeyDown = Key.isDown(_root.武器变形键);
+                target.__rocketPunchPressFloor = _root.GameInput.pressSerial;
+                delete target.__rocketPunchPress;
             }
             target.__rocketPunchItem = item;
             target.火箭重拳许可 = true;
@@ -1366,6 +1368,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             target.火箭重拳蓄力中 = false;
             delete target.__rocketPunchItem;
             delete target.__rocketPunchKeyDown;
+            delete target.__rocketPunchPressFloor;
+            delete target.__rocketPunchPress;
             delete target.更新火箭重拳按键;
         }
     }
@@ -1373,14 +1377,35 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
     private static function updateRocketPunchKey(target:MovieClip, source:Object, pressed:Boolean):Boolean {
         if (source == null || source.name !== "末日铁拳" || source !== target.__rocketPunchItem || source !== target.手部装备
                 || target._name !== _root.控制目标) return false;
-        var rising:Boolean = pressed && !target.__rocketPunchKeyDown;
-        target.__rocketPunchKeyDown = pressed;
+        var input:Object = _root.GameInput;
+        var rising:Boolean;
+        if (input.passiveActive === true) {
+            var vk:Number = _root.武器变形键;
+            var press:Number = input.getActorPress(target, vk);
+            rising = !_root.暂停 && pressed && press > target.__rocketPunchPressFloor
+                && press !== target.__rocketPunchPress && input.hasKeyDownEdge(vk);
+            if (rising) target.__rocketPunchPress = press;
+        } else {
+            rising = pressed && !target.__rocketPunchKeyDown;
+            target.__rocketPunchKeyDown = pressed;
+        }
         if (!rising || target.攻击模式 !== "空手" || target.火箭重拳蓄力中
                 || _root.物品栏.装备栏.getItem("手部装备") !== source) return false;
         target.火箭重拳 = !target.火箭重拳;
         source.value.火箭重拳 = target.火箭重拳;
         if (typeof _root.存档系统.markDirty == "function") _root.存档系统.markDirty();
         return true;
+    }
+
+    public static function cancelPassiveRocketCharge(target:MovieClip):Void {
+        if (target.火箭重拳蓄力中 !== true) return;
+        var man:MovieClip = target.man;
+        target.火箭重拳蓄力中 = false;
+        if (man == null || man._parent !== target || man._currentframe !== man.当前初始帧) return;
+        // 两个 things0 容器在蓄力帧暂停。离开蓄力帧时走原跳跃/站立收尾。
+        man.蓄力 = 0;
+        if (target.状态 === "空手跳") man.gotoAndPlay("跳跃状态");
+        else if (typeof target.动画完毕 == "function") target.动画完毕();
     }
 
     public static function updateActions(target:MovieClip, deferModeValidation:Boolean):Void{

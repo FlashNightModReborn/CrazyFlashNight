@@ -536,7 +536,6 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[LaunchFlow] bootstrap_reveal_ready registered");
             LogManager.Log("[LaunchFlow] character_create_response registered");
 
-            _windowManager.OnEmbedResult += OnEmbedResult;
             _processManager.OnFlashExited += OnFlashExitedExternal;
             _socketServer.OnClientReadyForGeneration += OnSocketClientReady;
             _socketServer.OnClientDisconnectedForGeneration += OnSocketClientDisconnected;
@@ -2544,13 +2543,16 @@ namespace CF7Launcher.Guardian
                 SetState(State.WaitingGameReady, "");
                 return;
             }
+            string attempt = _currentAttemptId;
+            int connection = _socketServer.CurrentGeneration;
+            Action<bool> embedded = success => OnEmbedResult(flash, attempt, connection, success);
             ThreadPool.QueueUserWorkItem(delegate
             {
-                try { wm.EmbedFlashWindow(flash, form.FlashHostPanel); }
+                try { wm.EmbedFlashWindow(flash, form.FlashHostPanel, embedded); }
                 catch (Exception ex)
                 {
                     LogManager.Log("[LaunchFlow] EmbedFlashWindow threw: " + ex.Message);
-                    wm.NotifyEmbedFailure();
+                    wm.NotifyEmbedFailure(embedded);
                 }
             });
         }
@@ -2724,7 +2726,8 @@ namespace CF7Launcher.Guardian
                         LogManager.Log("[RevealProbe] panel_swap.flash_show " + ElapsedMs(tFlash).ToString("0.0") + "ms");
 
                         long tAct = System.Diagnostics.Stopwatch.GetTimestamp();
-                        if (!_form.ArenaWorkerMode) _form.Activate();
+                        if (!_form.ArenaWorkerMode && (_windowManager?.PassiveInput == null || _windowManager.PassiveSessionForeground()))
+                            _form.Activate();
                         LogManager.Log("[RevealProbe] panel_swap.activate " + ElapsedMs(tAct).ToString("0.0") + "ms");
 
                         if (curtain != null)
@@ -3370,14 +3373,21 @@ namespace CF7Launcher.Guardian
 
         // ==================== 事件源回调 ====================
 
-        private void OnEmbedResult(bool success)
+        private void OnEmbedResult(Process flash, string attempt, int connection, bool success)
         {
             LogManager.Log("[LaunchFlow] OnEmbedResult=" + success);
             PerfTrace.Mark("launch.embed_result", "success=" + success);
             lock (_stateLock)
             {
-                if (_state != State.Embedding) return;  // 旧事件 / 状态已变
+                if (_state != State.Embedding || !ReferenceEquals(flash, _currentFlashProcess)
+                    || !string.Equals(attempt, _currentAttemptId, StringComparison.Ordinal)) return;
                 if (!success) { TransitionToError("embed_timeout"); return; }
+                if (_windowManager.PassiveInput != null
+                    && (connection != _socketServer.CurrentGeneration || !_socketServer.IsClientReady))
+                {
+                    TransitionToError("embed_socket_replaced");
+                    return;
+                }
 
                 // C2-β: 存档残留 fffd → 进 RepairPending 显式 gate.
                 //   即便 AS2 端 (旧 asLoader 不识别 saveDecision="repairable") 抢先发 bootstrap_ready,

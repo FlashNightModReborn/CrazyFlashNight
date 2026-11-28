@@ -1378,6 +1378,25 @@ class org.flashNight.arki.scene.StageManager {
         if(door==undefined) return;
         var manager:StageManager=this;
         var worldIdentity:Object=StageReturnFlow.worldIdentity(world);
+        if (_root.GameInput.passiveActive === true) {
+            door.被点击 = false;
+            if (_root.全鼠标控制) {
+                var doorIdentity:Object = {};
+                door.__cf7ExitIdentity = doorIdentity;
+                door.onPress = function():Void {
+                    var current:MovieClip = _root.gameworld;
+                    if (_root.暂停 || !_root.全鼠标控制 || current.允许通行 !== true
+                            || current.__stageReturnWorldIdentity !== worldIdentity || manager.gameworld !== current
+                            || current.门1.__cf7ExitIdentity !== doorIdentity) return;
+                    var actor:MovieClip = current[_root.控制目标];
+                    if (!(actor.hp > 0) || !this.hitTest(actor.area)) return;
+                    var point:Object = {x:0,y:0};
+                    actor.localToGlobal(point);
+                    if (this.hitTest(point.x, point.y, true) && manager.nextStage()) this.gotoAndStop(3);
+                };
+                door.useHandCursor = false;
+            }
+        }
         door.切换场景=function(entry,frame,effect,direction:String):Void {
             var current:MovieClip=_root.gameworld;
             if(current!==this._parent || manager.gameworld!==current || current.允许通行!==true
@@ -1388,14 +1407,17 @@ class org.flashNight.arki.scene.StageManager {
             if(direction=="上") keyCode=_root.上键;
             else if(direction=="左") keyCode=_root.左键;
             else if(direction=="下") keyCode=_root.下键;
-            // Player20 的隔离验收角色也必须实际站在出口、按下同一个方向键。
-            var keyDown:Boolean = Key.isDown(keyCode) || (_root._agentHarnessActive === true
-                && _root._agentHarnessBridge.isKeyDown(keyCode) === true);
-            var requested:Boolean=_root.全鼠标控制
-                ? (this.hitTest(_root.鼠标) && this.被点击) : keyDown;
+            var input:Object = _root.GameInput;
+            var passive:Boolean = input.passiveActive === true;
+            var keyDown:Boolean = passive ? (!_root.暂停 && input.getActorPress(actor, keyCode) > 0)
+                : (Key.isDown(keyCode) || (_root._agentHarnessActive === true
+                    && _root._agentHarnessBridge.isKeyDown(keyCode) === true));
+            var requested:Boolean = _root.全鼠标控制
+                ? (!passive && this.hitTest(_root.鼠标) && this.被点击) : keyDown;
             var point:Object={x:0,y:0};actor.localToGlobal(point);
             if(requested && this.hitTest(point.x,point.y,true) && manager.nextStage()) this.gotoAndStop(3);
-            if(_root.全鼠标控制 && this.hitTest(point.x,point.y,true) && this.hitTest(_root.鼠标))
+            if(_root.全鼠标控制 && this.hitTest(point.x,point.y,true)
+                    && (passive ? _root.鼠标代理.命中目标(this, false) : this.hitTest(_root.鼠标)))
                 _root.鼠标.gotoAndPlay("开门");
         };
     }

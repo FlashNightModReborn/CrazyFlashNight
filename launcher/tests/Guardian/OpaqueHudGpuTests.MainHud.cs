@@ -58,7 +58,7 @@ public sealed partial class OpaqueHudGpuTests
             dialogue.ShowFrame(new NativeDialogueFrame {RequestId="fixture-dialogue",SceneId="fixture-scene",Revision=1,
                 Name="角色",Text="原有绘制器与输入目标，合入同一世界输出。",LineIndex=0,LineCount=2,PortraitKey="",Expression="普通",ImageAction="clear"});
             dialogue.TypingIntervalMs=1;dialogue.Tick(5000);
-            using var coordinator=new WorldCompositorController(output,output,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{},()=>{});
+            using var coordinator=new WorldCompositorController(output,output,()=>IntPtr.Zero,()=>false,_=>{},root,()=>false,_=>{});
             using var runtime=new PlayerHudRuntime(output,output,resources,commands,Path.Combine(root,"launcher","web","icons"),main,shareMainHud:true);
             var observed=new CommitCount();main.SetCommitObserver(observed);
             foreach(var surface in runtime.PresentationSurfaces)surface.SetCommitObserver(observed);

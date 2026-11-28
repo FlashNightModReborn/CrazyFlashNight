@@ -153,6 +153,7 @@ _root.技能函数._清预输入 = function(自机:MovieClip):Void {
 	自机.搓招缓冲帧 = -9999;
 	自机.搓招缓冲已消费 = true;
 	自机.搓招缓冲修饰键 = false;
+	自机.__comboBufferBPress = 0;
 	自机.当前搓招ID = 0;
 	自机.当前搓招名 = "";
 };
@@ -161,11 +162,18 @@ _root.技能函数._清预输入 = function(自机:MovieClip):Void {
 // 释放
 // ============================================================================
 
-_root.技能函数._技能释放 = function(自机:MovieClip, 技能名:String, 触发码:Number):Number {
+_root.技能函数._技能释放 = function(自机:MovieClip, 技能名:String, 触发码:Number, originPress:Number):Number {
 	// 同一次按下 B 只尝试一次：后摇窗口跨多帧，避免重复入栈/反复起冷却。
-	// 锁存期间一律返回 -1：B 还按着就继续吞，松开（见 冷兵器主动技能搓招 的复位）才会重新判定。
-	if (自机.__黑猫技能B已消费) return -1;
-	自机.__黑猫技能B已消费 = true;
+	var input:Object = _root.GameInput;
+	if (input.passiveActive === true) {
+		if (!input.isInputAdmitted() || !input.isCurrentActor(自机)) return -1;
+		var press:Number = 触发码 == 1 ? originPress : input.getActorPress(自机, 自机.B键);
+		if (!(press > 0) || press <= 自机.__comboBPressConsumed) return -1;
+		自机.__comboBPressConsumed = press;
+	} else {
+		if (自机.__黑猫技能B已消费) return -1;
+		自机.__黑猫技能B已消费 = true;
+	}
 
 	// 双通道释放：已装备走槽（含 MP 事务 / 冷却 / HUD），未装备走名字通道。
 	// 判定为「不可释放」（未学会、数据缺失、冷却中、MP 不足、条件不满足）时返回 -1，
@@ -194,9 +202,11 @@ _root.技能函数.冷兵器主动技能搓招 = function(自机:MovieClip, 窗�
 	if (自机 == undefined || 自机 == null) return 0;
 	if (自机._name != _root.控制目标) return 0;
 
-	// B 松开后复位锁存。放在模式门之前：切到空手/长枪/手枪时也能复位，
-	// 否则锁存会一路带到切回冷兵器之后的第一次按键（那一下会被白吞）。
-	if (!自机.动作B) {
+	// 被动输入用按下序隔离同一按住；Off 仍在真实电平松开时复位。
+	var input:Object = _root.GameInput;
+	if (input.passiveActive === true) {
+		if (!input.isInputAdmitted() || !input.isCurrentActor(自机)) return 0;
+	} else if (!自机.动作B) {
 		delete 自机.__黑猫技能B已消费;
 	}
 
@@ -240,7 +250,7 @@ _root.技能函数.冷兵器主动技能搓招 = function(自机:MovieClip, 窗�
 	//    所以 shift 变招一律用方向电平裁决，且排在名字通道前面。
 	if (shift技能 != "" && 自机.动作B && _root.技能函数._方向命中(自机, "shift前")) {
 		_root.技能函数._清预输入(自机);
-		return _root.技能函数._技能释放(自机, shift技能, 2);
+		return _root.技能函数._技能释放(自机, shift技能, 2, 0);
 	}
 
 	// ① DFA 名字优先：先判名字再判按键电平（快速点按 B 时，cmdName 到手时 B 可能已松）
@@ -275,8 +285,9 @@ _root.技能函数.冷兵器主动技能搓招 = function(自机:MovieClip, 窗�
 		}
 		for (var i:Number = 0; i < 表.length; i++) {
 			if (表[i].技能 == 候选名) {
+				var originPress:Number = 自机.__comboBufferBPress;
 				_root.技能函数._清预输入(自机);
-				return _root.技能函数._技能释放(自机, 候选名, 1);
+				return _root.技能函数._技能释放(自机, 候选名, 1, originPress);
 			}
 		}
 	}
@@ -295,7 +306,7 @@ _root.技能函数.冷兵器主动技能搓招 = function(自机:MovieClip, 窗�
 			// ★ 命中即刻清预输入：这条路径原先不清，缓冲名会一直留到
 			//   末帧窗口（45 帧）过期为止，于是「放开所有键后再单按 K」
 			//   会把上一轮的旧指令重新放一遍（表现为残留/串招）。
-			var 本帧出手:Number = _root.技能函数._技能释放(自机, 表[j].技能, 2);
+			var 本帧出手:Number = _root.技能函数._技能释放(自机, 表[j].技能, 2, 0);
 			if (本帧出手 != 0) _root.技能函数._清预输入(自机);
 			return 本帧出手;
 		}

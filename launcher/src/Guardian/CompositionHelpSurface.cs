@@ -93,15 +93,12 @@ namespace CF7Launcher.Guardian
         private object? _webVisual;
         private TaskCompletionSource<bool>? _readyTcs;
         private int _prepareVersion;
-        private bool _ready, _active, _disposed, _closePending, _trackingLeave, _capturedButton;
+        private bool _ready, _active, _disposed, _trackingLeave, _capturedButton;
         private Rectangle _committed = Rectangle.Empty;
         private Rectangle _presentedViewport = Rectangle.Empty, _postedViewport = Rectangle.Empty;
         private int _postedViewportGeneration = -1;
         private string _panelInstance = "";
-        private string _closeReason = "page_close";
-        private JObject? _closeEnvelope;
         private int _pressedButtons;
-        private readonly System.Windows.Forms.Timer _closeTimer = new() { Interval = 25 };
 
         internal string PanelName => _profile.PanelName;
         // DelegateCloseToAuthority 面板的非 close 入站消息（查询、精确实例导航、panel-toast）。
@@ -164,7 +161,7 @@ namespace CF7Launcher.Guardian
             if (_disposed) throw new ObjectDisposedException(nameof(CompositionHelpSurface));
             if (InvokeRequired) throw new InvalidOperationException("PrepareAsync must run on the surface UI thread.");
             int version = unchecked(++_prepareVersion);
-            _ready = false; _active = false; _closePending = false;
+            _ready = false; _active = false; _pendingHostClose = null;
             TearDownEndpoint();
             try {
                 var environment = await FixedWebViewRuntime.CreateAsync(_profileRoot);
@@ -224,7 +221,7 @@ namespace CF7Launcher.Guardian
             Owner = _owner;
             Bounds = rect;
             _active = true;
-            _closePending = false;
+            _pendingHostClose = null;
             if (!Visible) Show();
             SyncViewport();
             // 仅当前台已属本进程窗口（游戏/owner 同进程）才允许激活；
@@ -311,9 +308,8 @@ namespace CF7Launcher.Guardian
             _active = false;
             _committed = Rectangle.Empty;
             _panelInstance = "";
-            _pressedButtons = 0;
-            _capturedButton = false;
-            Capture = false;
+            _pendingHostClose = null;
+            CancelActivePointerGesture("surface_suspend");
             if (Visible) Hide();
             SyncViewport();
         }
@@ -324,11 +320,10 @@ namespace CF7Launcher.Guardian
             System.Threading.Interlocked.Increment(ref _endpointSessionGeneration);
             System.Threading.Interlocked.Increment(ref _controllerGeneration);
             DetachEndpointCallbacks();
-            _pendingHostClose=null;
+            _pendingHostClose = null;
             unchecked { _prepareVersion++; }
-            _ready = false; _active = false; _closePending = false; _committed = Rectangle.Empty;
-            _closeTimer.Stop(); _panelInstance = ""; _pressedButtons = 0; _closeEnvelope = null;
-            _capturedButton = false; Capture = false;
+            _ready = false; _active = false; _committed = Rectangle.Empty;
+            _panelInstance = "";
             TearDownEndpoint();
             if (Visible) Hide();
             LogManager.Log(LogTag + " retired gen=" + SessionGeneration);
@@ -360,20 +355,23 @@ namespace CF7Launcher.Guardian
             if (!_transition || _disposed) return;
             _active = false; _committed = Rectangle.Empty;
             _backgroundTransition = false;
-            _pressedButtons = 0; _capturedButton = false; Capture = false;
+            CancelActivePointerGesture("transition_hide");
             if (Visible) Hide();
             SyncViewport();
         }
         internal void SuppressTransition() {
             _backgroundTransition = false;
-            if (_transition && !_disposed && Visible) { _pressedButtons = 0; _capturedButton = false; Capture = false; Hide(); SyncViewport(); }
+            if (_transition && !_disposed && Visible) {
+                CancelActivePointerGesture("transition_suppress");
+                Hide();
+                SyncViewport();
+            }
         }
         internal void RaiseTransition() {
             if (_transition && Active && Visible && (CanRestoreGameFocus || _backgroundTransition))
                 SceneTransitionWindowOrder.RaiseIfCovered(this, _owner,preserveForeignOrder:_presentationPolicy.NonActivating);
         }
-        internal bool TransitionInputReleased => _pressedButtons == 0
-            && (GetAsyncKeyState(0x01) | GetAsyncKeyState(0x02) | GetAsyncKeyState(0x0D) | GetAsyncKeyState(0x20)) >= 0;
+        internal bool TransitionInputReleased => _pressedButtons == 0 && !Capture;
 
         // 仅本窗、原 owner，或转场构造时绑定且仍由该 owner 持有的可见 backing。
         // 不把其他同进程窗口当作游戏输入所有者。
@@ -600,6 +598,7 @@ namespace CF7Launcher.Guardian
 
         protected override void OnDeactivate(EventArgs e)
         {
+            QueueCompositionFocusExit("composition_deactivated");
             base.OnDeactivate(e);
             // 普通阅读面板切到其他应用时保留当前会话和阅读位置，与地图一致。
             // 不关闭、不重开，也不申请焦点；实际捕获丢失和进程故障仍走独立清理。
@@ -625,17 +624,8 @@ namespace CF7Launcher.Guardian
 
         private void RequestClose(string reason, JObject? envelope = null)
         {
-            if (_transition) return;
-            if (_disposed || !_active || _closePending) return;
-            _closePending = true;
-            _closeReason = reason;
-            _closeEnvelope = envelope;
-            QueueHostClose(reason,envelope);
-        }
-
-        private void TryDeliverClose()
-        {
-            if(_pendingHostClose!=null)DeliverHostClose(_pendingHostClose);
+            if (_transition || _disposed || !_active || _pendingHostClose != null) return;
+            QueueExactClose(reason, envelope);
         }
 
         protected override void WndProc(ref Message m)
@@ -647,7 +637,8 @@ namespace CF7Launcher.Guardian
             bool input = m.Msg is WmMouseMove or WmMouseLeave or WmLButtonDown
                 or WmLButtonUp or WmRButtonDown or WmRButtonUp or WmMouseWheel
                 or WmLButtonDoubleClick or WmRButtonDoubleClick;
-            if (input && (!Active || _committed.IsEmpty || _closePending))
+            if (input && _pendingHostClose != null) { m.Result = IntPtr.Zero; return; }
+            if (input && (!Active || _committed.IsEmpty))
             { base.WndProc(ref m); return; }
             if (_profile.AllowNativeDrag && m.Msg == WmLButtonDown && Active && !_committed.IsEmpty)
             {
@@ -704,10 +695,9 @@ namespace CF7Launcher.Guardian
                         m.Msg == WmLButtonUp ? CoreWebView2MouseEventKind.LeftButtonUp : CoreWebView2MouseEventKind.RightButtonUp,
                         MouseKeys(m.WParam), 0, MousePoint(m.LParam));
                     _capturedButton = _pressedButtons != 0;
-                    if (!_capturedButton) Capture = false;
-                    if (_closePending) {
-                        var pending=_pendingHostClose;
-                        if(pending!=null)BeginInvoke((Action)(()=>DeliverHostClose(pending)));
+                    if (!_capturedButton) {
+                        _captureEndpointLease = null;
+                        Capture = false;
                     }
                     break;
                 case WmMouseWheel:
@@ -717,10 +707,9 @@ namespace CF7Launcher.Guardian
                 case WmCaptureChanged:
                     if (_capturedButton && !Capture) {
                         // The new capture owner receives the button-up, even for an unbound report preview.
-                        // Cancel this window's gesture; the physical-key check still gates transition actions.
-                        _pressedButtons = 0;
-                        _capturedButton = false;
-                        if (IsLeaseCurrent(_captureEndpointLease)) RequestClose("capture_lost");
+                        var captured = _captureEndpointLease;
+                        CancelActivePointerGesture("capture_lost");
+                        if (IsLeaseCurrent(captured)) RequestClose("capture_lost");
                     }
                     break;
             }
@@ -791,7 +780,7 @@ namespace CF7Launcher.Guardian
         {
             if (disposing && !_disposed) {
                 _disposed = true;
-                _closeTimer.Dispose();
+                _pendingHostClose = null;
                 unchecked { _prepareVersion++; }
                 // Dispose 必须落在 UI 线程；跨线程且句柄已建时同步封送。
                 // 句柄未建说明从未 Prepare，无线程关联资源可清。
@@ -826,7 +815,6 @@ namespace CF7Launcher.Guardian
         }
         [DllImport("user32.dll")] private static extern IntPtr GetAncestor(IntPtr hwnd, uint flags);
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
-        [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int key);
         [DllImport("user32.dll")] private static extern bool ReleaseCapture();
         [DllImport("user32.dll")] private static extern IntPtr SendMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
     }

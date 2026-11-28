@@ -33,7 +33,7 @@ public sealed class WorldHudSurfaceRoutingTests
             {
                 using var source=new Form {ClientSize=new Size(1024,576)};_=source.Handle;
                 var flash=new Flash();var hud=new Hud();int physical=0;IntPtr capture=IntPtr.Zero;
-                using var surface=new WorldCompositionSurface(()=>source.Handle,()=>{},flash,physicalButtons:()=>physical,captureWindow:()=>capture);
+                using var surface=new WorldCompositionSurface(()=>source.Handle,flash,physicalButtons:()=>physical,captureWindow:()=>capture);
                 surface.ClientSize=new Size(320,180);surface.Show();surface.SetHudInput(hud);
                 Point ui=new(10,20),world=new(200,20);
                 physical=1;surface.IntakePointer(0x201,ui,0);

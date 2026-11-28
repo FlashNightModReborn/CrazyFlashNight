@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud.Dialogue;
+using CF7Launcher.Guardian.InputOwnership;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -94,17 +95,23 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void TextInputActivePassesEveryKeyThrough()
+        public void ExactTextLeasePassesEditorKeysThroughAndDialogueResumesOnRelease()
         {
             int advances = 0;
+            var authority = R1UiAdapterTests.StartGameAuthority();
+            var posted = new System.Collections.Generic.Queue<Action>();
             using (var hook = new KeyboardHook())
             {
                 hook.ReadAsyncKeyState = _ => 0;
                 hook.LiveForegroundProbeForTests = () => true;
-                hook.SetActivationProbe(() => true);
+                hook.BindPassiveInput(authority, () => true, postShortcut: posted.Enqueue);
                 hook.SetDialogueKeyProbe(vk => vk == 0x0D ? () => advances++ : null);
 
-                hook.SetTextInputActive(true);
+                const string endpoint = "dialogue.interject.field";
+                long instance = authority.NextInstanceGeneration(endpoint);
+                TextInputLease lease = Assert.IsType<TextInputLease>(authority.AcquireText(endpoint, instance,
+                    new TextFocusObservation(authority.CurrentSessionId, (IntPtr)1, (IntPtr)2, 1, true)));
+                R1UiAdapterTests.SettleGameCancel(authority);
                 // Enter 归输入框：不触发对话推进，也不被吞
                 Assert.False(Edge(hook, 0x0D, true));
                 Edge(hook, 0x0D, false);
@@ -115,10 +122,15 @@ namespace CF7Launcher.Tests.Guardian
                 Assert.False(Edge(hook, 0x1B, true));
                 Edge(hook, 0x1B, false);
 
-                hook.SetTextInputActive(false);
-                Assert.True(Edge(hook, 0x0D, true));                    // 恢复：对话键重新被钩子吃掉
-                Edge(hook, 0x0D, false);
-                Assert.True(SpinWait.SpinUntil(() => advances == 1, 2000));
+                Assert.Empty(posted);
+                var exit = authority.ReleaseText(lease, new TextExitObservation(
+                    authority.CurrentSessionId, 2, "dialogue_editor_closed", true));
+                Assert.Equal(TextExitStatus.Released, exit.Status);
+                Assert.True(authority.RequestGameKeyboard(exit));
+                Assert.True(Edge(hook, 0x0D, true));
+                Assert.True(Edge(hook, 0x0D, false));
+                Assert.Single(posted)();
+                Assert.Equal(1, advances);
             }
         }
 

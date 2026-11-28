@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using CF7Launcher.Guardian;
+using CF7Launcher.Guardian.InputOwnership;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -67,6 +68,18 @@ namespace CF7Launcher.Bus
         private CF7Launcher.Guardian.INotchSink _notchOverlay;
         private readonly HashSet<string> _stageTimerStatusIds =
             new HashSet<string>(StringComparer.Ordinal);
+        private SessionInputAuthority _inputAuthority;
+        internal void BindInputAuthority(SessionInputAuthority authority)
+        {
+            _inputAuthority=authority;
+            OnClientReadyForGeneration+=authority.Connect;
+            OnClientDisconnectedForGeneration+=authority.Disconnect;
+            authority.AttachWriter((generation,packet)=> {
+                bool written=TrySendIfGen(packet+"\0",generation);
+                if(!written)ForceCloseCurrentClientIfGen(generation);
+                return written;
+            });
+        }
         private Action<string> _uiDataHandler; // U 前缀：UI 数据透传
 
         // 每次新连接递增，用于 ReadLoop 检测自己是否已被替换。
@@ -311,6 +324,9 @@ namespace CF7Launcher.Bus
                     try { client.Close(); } catch { }
                     return;
                 }
+                // Bound the one non-preemptible write on the shared TCP stream.
+                // A stalled peer must eventually disconnect and renegotiate.
+                if(_inputAuthority!=null)client.SendTimeout=2000;
                 client.NoDelay = true; // 禁用 Nagle：frame 消息需要低延迟
                 LogManager.Log("[XmlSocket] Client connected (NoDelay=true)");
                 PerfTrace.Mark("socket.client_connected");
@@ -556,6 +572,11 @@ namespace CF7Launcher.Bus
             {
                 char prefix = message[0];
 
+                if (prefix == 'I' && _inputAuthority!=null) {
+                    if(!_inputAuthority.Receive(connectionGen,message))
+                        LogManager.Log("event=r1_input_rejected connection="+connectionGen);
+                    return;
+                }
                 if (prefix == 'F')
                 {
                     PerfTrace.Counter("socket.fastlane.F");

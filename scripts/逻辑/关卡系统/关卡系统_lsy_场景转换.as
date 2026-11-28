@@ -601,27 +601,25 @@ _root.场景转换函数.请求打开Web选关 = function(source){
 	return ok;
 }
 
+_root.场景转换函数.门方向按住 = function(actor:MovieClip, vk:Number):Boolean {
+	var input:Object = _root.GameInput;
+	if (input.passiveActive === true && (_root.暂停 || input.getActorPress(actor, vk) == 0)) return false;
+	switch (vk) {
+		case _root.上键: return Boolean(actor.上行);
+		case _root.下键: return Boolean(actor.下行);
+		case _root.左键: return Boolean(actor.左行);
+		case _root.右键: return Boolean(actor.右行);
+	}
+	return false;
+};
+
 _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 开门效果, 同时按键值){
 	var 游戏世界 = _root.gameworld;
 	if (!游戏世界.允许通行) return;
 	if (_root.场景转换函数.Web选关打开中) return;
 
 	var 控制对象 = 游戏世界[_root.控制目标];
-	var 对应方向 = false;
-	switch(同时按键值){
-		case _root.上键:
-			对应方向 = 控制对象.上行;
-			break;
-		case _root.下键:
-			对应方向 = 控制对象.下行;
-			break;
-		case _root.左键:
-			对应方向 = 控制对象.左行;
-			break;
-		case _root.右键:
-			对应方向 = 控制对象.右行;
-			break;
-	}
+	var 对应方向:Boolean = _root.场景转换函数.门方向按住(控制对象, 同时按键值);
 	
 	var currentFrame:Number = _root.帧计时器.当前帧数;
 	// _root.发布消息("场景转换函数.切换场景 " + (currentFrame - _root.场景转换函数.上次切换帧数) + " " + 对应方向 + " " + this.hitTest(控制对象.area) + " " + 控制对象.hp);
@@ -657,21 +655,7 @@ _root.场景转换函数.打开Web选关 = function(对应门名, 目标场景�
 	if (_root.场景转换函数.Web选关打开中) return;
 
 	var 控制对象 = 游戏世界[_root.控制目标];
-	var 对应方向 = false;
-	switch(同时按键值){
-		case _root.上键:
-			对应方向 = 控制对象.上行;
-			break;
-		case _root.下键:
-			对应方向 = 控制对象.下行;
-			break;
-		case _root.左键:
-			对应方向 = 控制对象.左行;
-			break;
-		case _root.右键:
-			对应方向 = 控制对象.右行;
-			break;
-	}
+	var 对应方向:Boolean = _root.场景转换函数.门方向按住(控制对象, 同时按键值);
 
 	var currentFrame:Number = _root.帧计时器.当前帧数;
 	if ((currentFrame - _root.场景转换函数.上次切换帧数 > 15) && 对应方向 && this.hitTest(控制对象.area) && 控制对象.hp > 0){

@@ -9,18 +9,7 @@ namespace CF7Launcher.Tests.Guardian
 {
     public class KeyboardHookStateTests
     {
-        [Fact]
-        public void IndependentGuardRequiresMatchingParentExecutableAndCoreModule()
-        {
-            string mvid = typeof(KeyboardHook).Assembly.ManifestModule.ModuleVersionId.ToString("D");
-            Assert.True(HotkeyGuard.IsMatchingParent("C:\\candidate\\Core.exe", "c:\\candidate\\core.exe", mvid));
-            Assert.False(HotkeyGuard.IsMatchingParent("C:\\old\\Core.exe", "C:\\candidate\\Core.exe", mvid));
-            Assert.False(HotkeyGuard.IsMatchingParent("C:\\candidate\\Core.exe", "C:\\candidate\\Core.exe", Guid.NewGuid().ToString("D")));
-            Assert.Equal(1, HotkeyGuard.Run(new string[0]));
-            Assert.Equal(1, HotkeyGuard.Run(new[] { "0", mvid, "unexpected" }));
-        }
-
-        private static bool Edge(KeyboardHook hook, uint vk, bool down)
+        internal static bool Edge(KeyboardHook hook, uint vk, bool down)
         {
             IntPtr data = Marshal.AllocHGlobal(24);
             try
@@ -40,7 +29,6 @@ namespace CF7Launcher.Tests.Guardian
             {
                 hook.ReadAsyncKeyState = vk => physical.Contains(vk) ? unchecked((short)0x8000) : (short)0;
                 hook.LiveForegroundProbeForTests = () => true;
-                hook.SetActivationProbe(() => true);
                 Edge(hook, 0xA2, true); physical.Add(0xA2);
                 Edge(hook, 0xA3, true); physical.Add(0xA3);
                 Edge(hook, 0xA2, false); physical.Remove(0xA2);

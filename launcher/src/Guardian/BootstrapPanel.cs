@@ -9,16 +9,27 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Fonts;
+using CF7Launcher.Guardian.InputOwnership;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
     public class BootstrapPanel : UserControl
     {
+        private const string BootstrapDocumentUrl = "https://bootstrap.local/bootstrap.html";
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetFocus();
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        private static extern bool IsChild(IntPtr parent, IntPtr child);
+
         private readonly string _webDir;
         private readonly bool _webView2DisableGpu;
         private readonly string _webView2AdditionalArgs;
@@ -27,6 +38,12 @@ namespace CF7Launcher.Guardian
         private bool _disposed;
         private bool _webViewRetired;
         private bool _initialNavigationCompleted;
+        private readonly string _inputInstanceId = "bootstrap." + Guid.NewGuid().ToString("N");
+        private ITextInputAuthority _textAuthority;
+        private WebTextFocusBinding _documentFields;
+        private Form _focusOwner;
+        private ulong _navigationId;
+        private bool _documentReady;
         private Func<IDisposable>
             _humanOnlySecurityScopeFactory;
 
@@ -67,6 +84,12 @@ namespace CF7Launcher.Guardian
 
             _webView = new WebView2 { DefaultBackgroundColor = this.BackColor };
             _webView.Dock = DockStyle.Fill;
+            _webView.GotFocus += OnWebFocusEntered;
+            _webView.Enter += OnWebFocusEntered;
+            _webView.LostFocus += OnWebFocusLeft;
+            _webView.Leave += OnWebFocusLeft;
+            _webView.HandleCreated += OnWebFocusEntered;
+            _webView.HandleDestroyed += (_, _) => RetireDocumentFields("bootstrap_web_handle_destroyed");
             this.Controls.Add(_webView);
 
             // 延迟到 Load 事件触发 WebView2 init：
@@ -74,6 +97,114 @@ namespace CF7Launcher.Guardian
             // 2) 此时 Application.Run 消息循环已启动（ForceExit 的 ExitThread 才真正生效）
             // 两者合起来保证 fail-closed 语义：init 失败 = 弹错框 + 进程终结，而不是弹错框 + 继续跑
             this.Load += OnPanelLoad;
+        }
+
+        internal void BindInputAuthority(ITextInputAuthority textAuthority, IUiPointerAuthority pointerAuthority)
+        {
+            if (_disposed || _webViewRetired || ReferenceEquals(_textAuthority, textAuthority)) return;
+            RetireDocumentFields("bootstrap_authority_changed");
+            _textAuthority = textAuthority;
+            SyncFocusOwner();
+            SyncDocumentFields();
+        }
+
+        private void SyncFocusOwner()
+        {
+            var owner = _textAuthority != null && IsHandleCreated && !_disposed && !_webViewRetired
+                ? FindForm() : null;
+            if (ReferenceEquals(_focusOwner, owner)) return;
+            if (_focusOwner != null)
+            {
+                _focusOwner.Activated -= OnWebFocusEntered;
+                _focusOwner.Deactivate -= OnWebFocusLeft;
+            }
+            _focusOwner = owner;
+            if (owner != null)
+            {
+                owner.Activated += OnWebFocusEntered;
+                owner.Deactivate += OnWebFocusLeft;
+            }
+        }
+
+        private IntPtr ObserveEditorWindow()
+        {
+            if (_focusOwner?.IsHandleCreated != true || GetForegroundWindow() != _focusOwner.Handle
+                || _webView?.IsHandleCreated != true || !_webView.Visible) return IntPtr.Zero;
+            IntPtr focus = GetFocus();
+            IntPtr browser = _webView.Handle;
+            return focus != IntPtr.Zero && (focus == browser || IsChild(browser, focus)) ? focus : IntPtr.Zero;
+        }
+
+        private void SyncDocumentFields()
+        {
+            if (_textAuthority == null || _documentFields != null || !_documentReady || !Visible
+                || !IsHandleCreated || _webView?.IsHandleCreated != true) return;
+            var core = TryGetCoreWebView2();
+            if (core?.Source != BootstrapDocumentUrl) return;
+            var fields = new WebTextFocusBinding(_textAuthority, _inputInstanceId, "bootstrap.frontdoor.");
+            _documentFields = fields;
+            _ = fields.InstallAsync(core, BootstrapDocumentUrl);
+        }
+
+        private void RetireDocumentFields(string reason)
+        {
+            var fields = _documentFields;
+            _documentFields = null;
+            fields?.CaptureExit(reason, requestGame: false)?.Invoke();
+        }
+
+        private void OnWebFocusEntered(object sender, EventArgs e) => SyncDocumentFields();
+
+        private void OnWebFocusLeft(object sender, EventArgs e)
+        {
+            var fields = _documentFields;
+            if (fields == null || !IsHandleCreated) return;
+            long turn = fields.FocusTurn;
+            var exit = fields.CaptureExit("bootstrap_focus_lost", requestGame: false, detach: false);
+            void ConfirmDeparture()
+            {
+                if (!ReferenceEquals(_documentFields, fields))
+                {
+                    exit?.Invoke();
+                    return;
+                }
+                if (fields.FocusTurn != turn || ObserveEditorWindow() != IntPtr.Zero) return;
+                _documentFields = null;
+                exit?.Invoke();
+            }
+            try { BeginInvoke((Action)ConfirmDeparture); }
+            catch (InvalidOperationException) { ConfirmDeparture(); }
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            var previous = _focusOwner;
+            SyncFocusOwner();
+            if (ReferenceEquals(previous, _focusOwner)) return;
+            RetireDocumentFields("bootstrap_owner_changed");
+            SyncDocumentFields();
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            if (!Visible) RetireDocumentFields("bootstrap_hidden");
+            base.OnVisibleChanged(e);
+            if (Visible) SyncDocumentFields();
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            SyncFocusOwner();
+            SyncDocumentFields();
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            RetireDocumentFields("bootstrap_handle_destroyed");
+            base.OnHandleDestroyed(e);
+            SyncFocusOwner();
         }
 
         private bool _initStarted;
@@ -86,6 +217,7 @@ namespace CF7Launcher.Guardian
 
         private async void InitWebView2Async()
         {
+            var web = _webView;
             string userDataDir = null;
             long initStart = Stopwatch.GetTimestamp();
             try
@@ -99,12 +231,14 @@ namespace CF7Launcher.Guardian
                 StartupDiagnostics.Mark("bootstrap.webview2.create_environment_start", "userDataDir=" + userDataDir);
                 CoreWebView2Environment env =
                     await FixedWebViewRuntime.CreateAsync(userDataDir, CreateWebView2EnvironmentOptions());
+                if (_disposed || !ReferenceEquals(_webView, web)) return;
                 PerfTrace.Duration("bootstrap.webview2.create_environment", envStart);
                 StartupDiagnostics.Mark("bootstrap.webview2.create_environment_ok");
 
                 long ensureStart = Stopwatch.GetTimestamp();
                 StartupDiagnostics.Mark("bootstrap.webview2.ensure_core_start");
-                await _webView.EnsureCoreWebView2Async(env);
+                await web.EnsureCoreWebView2Async(env);
+                if (_disposed || !ReferenceEquals(_webView, web)) return;
                 FixedWebViewRuntime.ValidateCore(_webView.CoreWebView2);
                 PerfTrace.Duration("bootstrap.webview2.ensure_core", ensureStart);
                 StartupDiagnostics.Mark("bootstrap.webview2.ensure_core_ok");
@@ -127,11 +261,12 @@ namespace CF7Launcher.Guardian
                 }
 
                 _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+                _webView.CoreWebView2.NavigationStarting += OnNavigationStarting;
                 _webView.CoreWebView2.NavigationCompleted += OnNavigationCompleted;
 
-                StartupDiagnostics.Mark("bootstrap.webview2.navigate_start", "https://bootstrap.local/bootstrap.html");
+                StartupDiagnostics.Mark("bootstrap.webview2.navigate_start", BootstrapDocumentUrl);
                 PerfTrace.Mark("bootstrap.webview2.navigate_start");
-                _webView.CoreWebView2.Navigate("https://bootstrap.local/bootstrap.html");
+                _webView.CoreWebView2.Navigate(BootstrapDocumentUrl);
 
                 LogManager.Log("[Bootstrap] WebView2 engine ready");
                 PerfTrace.Duration("bootstrap.webview2.init_total", initStart);
@@ -139,6 +274,7 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex)
             {
+                if (_disposed || !ReferenceEquals(_webView, web)) return;
                 // Fail-closed：日志落盘 + 自诊断弹窗 + 触发 BootstrapInitFailed
                 string logPath = LogManager.LogFilePath ?? "(未启用文件日志)";
                 string userData = userDataDir ?? "(未构造)";
@@ -252,8 +388,20 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        private void OnNavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            if (e.Cancel || !ReferenceEquals(sender, TryGetCoreWebView2())) return;
+            _navigationId = e.NavigationId;
+            _documentReady = false;
+            RetireDocumentFields("bootstrap_navigation");
+        }
+
         private void OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
+            var core = TryGetCoreWebView2();
+            if (core == null || !ReferenceEquals(sender, core) || e.NavigationId != _navigationId) return;
+            _documentReady = e.IsSuccess && core.Source == BootstrapDocumentUrl;
+            SyncDocumentFields();
             string detail = "success=" + e.IsSuccess + " status=" + e.WebErrorStatus;
             if (e.IsSuccess)
             {
@@ -300,9 +448,25 @@ namespace CF7Launcher.Guardian
 
         private void OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
+            if (_webViewRetired || !ReferenceEquals(sender, TryGetCoreWebView2())) return;
             string raw;
             try { raw = e.TryGetWebMessageAsString(); }
             catch { raw = e.WebMessageAsJson; }
+
+            if (raw.Contains(WebTextFocusBinding.MessageType, StringComparison.Ordinal))
+            {
+                JObject message = null;
+                try { message = JObject.Parse(raw); }
+                catch (Newtonsoft.Json.JsonException) { }
+                if (message?["type"]?.Type == JTokenType.String
+                    && (string)message["type"] == WebTextFocusBinding.MessageType)
+                {
+                    if (_documentReady && Visible && e.Source == BootstrapDocumentUrl && _documentFields is { } fields)
+                        fields.Observe(message, _focusOwner?.IsHandleCreated == true ? _focusOwner.Handle : IntPtr.Zero,
+                            ObserveEditorWindow(), requestGameOnBlur: false);
+                    return;
+                }
+            }
 
             LogManager.Log("[Bootstrap] JS→C#: " + raw);
 
@@ -374,6 +538,8 @@ namespace CF7Launcher.Guardian
             if (_webViewRetired)
                 return;
             _webViewRetired = true;
+            RetireDocumentFields("bootstrap_gameplay_reveal");
+            SyncFocusOwner();
             WebView2 retired = _webView;
             _webView = null;
             LogManager.Log("[Bootstrap] one-way WebView2 retirement start");
@@ -458,6 +624,8 @@ namespace CF7Launcher.Guardian
             _disposed = true;
             if (disposing)
             {
+                RetireDocumentFields("bootstrap_disposed");
+                SyncFocusOwner();
                 _humanOnlySecurityScopeFactory = null;
                 try { if (_webView != null) _webView.Dispose(); } catch { }
             }

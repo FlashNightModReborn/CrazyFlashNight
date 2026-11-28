@@ -10,7 +10,7 @@ namespace CF7Launcher.Guardian
         private HostCloseContext _executingClose;
         private HostCloseContext _admittingClose;
         private EndpointLease _activeEndpointLease;
-        private Func<bool> _additionalFocusGate=()=>true;
+        private Func<bool> _additionalFocusGate=()=>true, _focusLifetime=()=>true;
         internal string HostLifetime => _hostLifetime;
         internal HostCloseContext ExecutingClose => _executingClose;
         internal void WithHostCloseContext(HostCloseContext context, Action action)
@@ -19,8 +19,12 @@ namespace CF7Launcher.Guardian
 #if CF7_TEST_SEAMS
         internal Action ReleaseClosePauseForTests;
 #endif
-        internal void ConfigureCloseFocus(WindowManager manager,Func<bool> additionalGate=null)
-        { _closeFocusManager=manager; _additionalFocusGate=additionalGate ?? (()=>true); }
+        internal void ConfigureCloseFocus(WindowManager manager,Func<bool> additionalGate=null,Func<bool> lifetime=null)
+        {
+            _closeFocusManager=manager;
+            _additionalFocusGate=additionalGate ?? (()=>true);
+            _focusLifetime=lifetime ?? (()=>true);
+        }
         private HostCloseContext CaptureHostClose(string panel, string instance, NativeCloseCause cause=NativeCloseCause.HostOperation)
         {
             EndpointLease endpoint=_activeEndpointLease?.Panel==panel && _activeEndpointLease.Instance==instance ? _activeEndpointLease : null;
@@ -34,7 +38,6 @@ namespace CF7Launcher.Guardian
                 endpoint.Surface is CompositionHelpSurface surface ? surface.CaptureGameForeground() :
                 _web?.CaptureTrustedCloseForeground() ?? IntPtr.Zero);
             context.AdmissionStamp=Interlocked.Read(ref _inputAdmissionStamp);
-            context.FocusTarget=_closeFocusManager?.CaptureFlashFocusTarget();
             return context;
         }
         internal bool TryCloseHostContext(HostCloseContext context, bool dismissReturnStack,
@@ -42,7 +45,6 @@ namespace CF7Launcher.Guardian
         {
             if(!ExactCloseSource(context))return false;
             context.AdmissionStamp=Interlocked.Read(ref _inputAdmissionStamp);
-            context.FocusTarget=_closeFocusManager?.CaptureFlashFocusTarget();
             var command=new PanelCommand(PanelCommandKind.Close,context.Endpoint.Panel,null) {
                 IsExactClose=true, ReservedPanelInstanceId=context.Endpoint.Instance,
                 DismissReturnStackOnExactClose=dismissReturnStack, ExactCloseExecutionGate=gate,
@@ -58,26 +60,11 @@ namespace CF7Launcher.Guardian
                 try { LogManager.Log("[PanelClose] cleanup failed close="+context.CloseId+" stage="+stage+" type="+error.GetType().Name); } catch { }
             }
         }
-        private FocusPermit TryBeginCloseFocus(HostCloseContext context)
+        private void ReturnRootBeforeClose(HostCloseContext context)
         {
-            if(_closeFocusManager==null || !ClosingFocusEligible(context) || context.SourceForeground==IntPtr.Zero)return null;
-            var target=context.FocusTarget;
-            if(target==null)return null;
-            var permit=new FocusPermit(context,()=>ClosingFocusEligible(context) &&
-                (context.SourceRetired || context.SourceIdentity?.IsCurrent()==true),target);
-            if(permit.EnterLive()) permit.RootVerified=_closeFocusManager.HandoffFlashFocusOnce(
-                "panel_close:"+context.CloseId,context.SourceForeground,target,permit.Eligible,
-                ()=> { context.CleanupFailed=true; permit.Revoke(); });
-            return permit;
-        }
-        private void FinishCloseFocus(HostCloseContext context, FocusPermit permit)
-        {
-            try {
-                if(permit?.EnterTail()==true)_closeFocusManager.RestoreFlashInnerFocusOnce(
-                    "panel_close_tail:"+context.CloseId,permit.Target,permit.Eligible,
-                    ()=> { context.CleanupFailed=true; permit.Revoke(); });
-            } catch { permit?.Revoke(); }
-            finally { permit?.Complete(); FinishClosingExact(context); LastCloseOutcome=context; }
+            if (_closeFocusManager != null && ClosingFocusIdentity(context)
+                && context.SourceIdentity?.IsCurrent() == true)
+                _closeFocusManager.ActivateSessionRootBeforeHide(context.SourceForeground);
         }
         private bool DoCloseTransaction(HostCloseContext context)
         {
@@ -87,7 +74,6 @@ namespace CF7Launcher.Guardian
             bool settlement=_transitionSettlementSelected;
             var previous=_executingClose;
             _executingClose=context;
-            FocusPermit permit=null;
             bool tailQueued=false;
             IDisposable webScope=_web?.EnterManagedClose();
             try {
@@ -109,14 +95,19 @@ namespace CF7Launcher.Guardian
                         if(surface!=null)surface.TryPostExact(payload,context.Endpoint);
                         else if(_web.IsEndpointCurrent(context.Endpoint))context.Endpoint.Core.PostWebMessageAsJson(payload);
                     });
+                // A retiring editor releases its own lease before an exact return to
+                // the Guardian root. A retained settlement view also drops capture here.
+                if (_passiveInput != null && surface != null)
+                    RunCloseCleanup(context, "retire_input", surface.RetireEndpointInput);
                 // The root handoff occurs while the original source is still alive.
                 // No later cleanup callback is allowed another foreground attempt.
-                permit=TryBeginCloseFocus(context);
+                ReturnRootBeforeClose(context);
                 RunCloseCleanup(context,"retire",()=> {
                     if(settlement)RetireTransitionSettlement(deferSettlementView ? payload : null);
                     else if(surface!=null) {
                         if(!surface.RetireExact(context.Endpoint))throw new InvalidOperationException("Source retirement lost its lease");
-                        if(ReferenceEquals(SelectedOwnedCompositionSurface,surface))SetCompositionSurfaceSelected(null);
+                        if(ReferenceEquals(SelectedOwnedCompositionSurface,surface) && surface.IsRetiredEndpoint(context.Endpoint))
+                            SetCompositionSurfaceSelected(null);
                     } else if(_testPumpDispatcher==null) {
                         if(context.Plan==ClosePlanKind.CleanupOnly)_web.ForceIdleState(panel);
                         else _web.SuspendAfterPanel(panel);
@@ -152,22 +143,21 @@ namespace CF7Launcher.Guardian
                 context.SourceRetired=true;
                 context.Outcome=context.CleanupFailed ? "CleanupFailed" :
                     context.Authority==AuthorityCommitState.Unknown ? "AuthorityUnknown" : "Closed";
-                // Publication remains Closing until the final tail has consumed/revoked
-                // the permit. A queued open already makes GameOwnsInput false.
+                // Keep Closing published until the exact business close tail settles.
                 try { PublishPanelChanged(null,null); } catch { context.CleanupFailed=true; }
                 if(_web!=null) {
                     try { _web.PublishClosePanelState(); } catch { context.CleanupFailed=true; }
                 }
                 tailQueued=true;
                 PostPanelClosed(panel,instance,()=> {
-                    if(panel=="book-comic" && _sceneSettlement?.DeferIntroResumeTail(instance,()=>FinishCloseFocus(context,permit))==true)return;
-                    if(settlement && _sceneSettlement?.DeferSettlementResumeTail(()=>FinishCloseFocus(context,permit))==true) return;
-                    FinishCloseFocus(context,permit);
+                    if(panel=="book-comic" && _sceneSettlement?.DeferIntroResumeTail(instance,()=>FinishClosingExact(context))==true)return;
+                    if(settlement && _sceneSettlement?.DeferSettlementResumeTail(()=>FinishClosingExact(context))==true)return;
+                    FinishClosingExact(context);
                 },context);
                 return !context.CleanupFailed && context.Authority!=AuthorityCommitState.Unknown;
             } finally {
                 webScope?.Dispose();
-                if(!tailQueued)FinishCloseFocus(context,permit);
+                if(!tailQueued)FinishClosingExact(context);
                 _executingClose=previous;
                 if(surface!=null && !settlement && surface.IsRetiredEndpoint(context.Endpoint) && _ownerForm!=null)
                     try { _ownerForm.BeginInvoke((Action)(()=> {

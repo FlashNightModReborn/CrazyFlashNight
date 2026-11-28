@@ -3,6 +3,7 @@ import org.flashNight.gesh.object.*;
 import org.flashNight.aven.Coordinator.*;
 import org.flashNight.neur.Timer.*;
 import org.flashNight.neur.Event.Delegate;
+import org.flashNight.arki.render.FrameBroadcaster;
 
 /*
  * =============================================================================
@@ -137,6 +138,9 @@ class org.flashNight.arki.key.KeyManager {
      * frameCount: 帧计数器，每帧增加，用于时间计算（基于帧数）。
      */
     private static var frameCount:Number = 0;
+    private static var passiveSystemFrame:Number = -1;
+    private static var keySettingsRevision:Number = 0;
+    private static var keySettingsCount:Number = 0;
 
 
     //============================
@@ -346,8 +350,9 @@ class org.flashNight.arki.key.KeyManager {
             _root.createEmptyMovieClip("keyPollMC", _root.getNextHighestDepth());
         }
         _root.keyPollMC.onEnterFrame = function() {
+            if (_root.GameInput.passiveActive === true) return;
             KeyManager.frameCount++;
-            KeyManager.pollKeys();
+            KeyManager.pollKeys(null, null);
         };
 
         return keyMap;
@@ -366,7 +371,25 @@ class org.flashNight.arki.key.KeyManager {
      *   4. 针对组合键配置，通过检查所有组合键中各键是否同时按下，
      *      若满足则根据连续触发或一次性触发的逻辑发布组合键事件。
      */
-    private static function pollKeys():Void {
+
+    public static function tickPassiveInput(snapshot:Object, gateOpen:Boolean):Void {
+        if (snapshot.systemFrame === passiveSystemFrame) return;
+        passiveSystemFrame = snapshot.systemFrame;
+        ++frameCount;
+        _root.GameInput.recordPhase("keyManager", passiveSystemFrame);
+        if (gateOpen) pollKeys(snapshot.words, snapshot.edges);
+    }
+
+    public static function cancelPassiveInput():Void {
+        keyStates = {};
+        resetTransientFeatureState();
+    }
+
+    public static function getKeySettingsRevision():Number {
+        return keySettingsRevision;
+    }
+
+    private static function pollKeys(words:Array, edges:Array):Void {
         var nowFrame:Number = frameCount;
 
         // 若没有任何监听按键，则快速返回，避免无意义的循环
@@ -375,71 +398,37 @@ class org.flashNight.arki.key.KeyManager {
         }
 
         var eb:EventBus = eventBus;
+        var revision:Number = keySettingsRevision;
         var pressedThisFrame:Object = {}; // 用于记录本帧按下的键，便于组合键判断
+
+        // Passive mode applies real edges first, including presses and releases in one frame.
+        if (edges != null) {
+            for (var edgeIndex:Number = 0; edgeIndex < edges.length; ++edgeIndex) {
+                var edge:Object = edges[edgeIndex];
+                if (watchedKeys[edge.vk] === true && (keyStates[edge.vk] === true) != edge.down) {
+                    var input:Object = _root.GameInput;
+                    input.dispatchEdge = edge;
+                    publishTransition(edge.vk, edge.down, nowFrame, eb);
+                    input.dispatchEdge = null;
+                    if (keySettingsRevision !== revision) return;
+                }
+            }
+        }
 
         // --- 1) 遍历 watchedKeys 检测 KeyDown / KeyUp 变化 ---
         for (var keycodeStr:String in watchedKeys) {
             var keycode:Number = Number(keycodeStr);
             var wasDown:Boolean = (keyStates[keycode] == true);
-            var isDownNow:Boolean = Key.isDown(keycode)
-                || (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined
-                    && _root._agentHarnessBridge.isKeyDown(keycode) === true);
+            var isDownNow:Boolean = words != null
+                ? ((words[keycode >>> 5] >>> (keycode & 31)) & 1) !== 0
+                : (Key.isDown(keycode)
+                    || (_root._agentHarnessActive === true && _root._agentHarnessBridge != undefined
+                        && _root._agentHarnessBridge.isKeyDown(keycode) === true));
 
-            // 当按键状态发生变化时（按下或松开）
-            if (isDownNow != wasDown) {
-                keyStates[keycode] = isDownNow;
+            if (words == null && isDownNow != wasDown) publishTransition(keycode, isDownNow, nowFrame, eb);
 
-                // 一个物理键可承载多个逻辑键；逐路由发布，避免历史重复绑定互相覆盖。
-                var eNames:Array = watchedEventNames[keycode];
-                if (eNames) {
-                    for (var routeIndex:Number = 0; routeIndex < eNames.length; routeIndex++) {
-                        var route:Object = eNames[routeIndex];
-                        eb.publish(isDownNow ? route.down : route.up);
-                    }
-                }
-
-                var logicalNames:Array = watchedKeyNames[keycode];
-                if (logicalNames) {
-                    for (var logicalIndex:Number = 0; logicalIndex < logicalNames.length; logicalIndex++) {
-                        var logicalName:String = String(logicalNames[logicalIndex]);
-                        // 当按下时，初始化双击、长按、重复触发的计时状态
-                        if (isDownNow) {
-                            if (hasDoubleTap) {
-                                var dtCfg:Object = doubleTapConfigs[logicalName];
-                                if (dtCfg) {
-                                    if (dtCfg.lastTapFrame >= 0 &&
-                                        (nowFrame - dtCfg.lastTapFrame) <= dtCfg.interval) {
-                                        eb.publish(dtCfg.eventName);
-                                        dtCfg.lastTapFrame = -1;
-                                    } else {
-                                        dtCfg.lastTapFrame = nowFrame;
-                                    }
-                                }
-                            }
-                            if (hasLongPress) {
-                                var lpCfg:Object = longPressConfigs[logicalName];
-                                if (lpCfg) {
-                                    lpCfg.startFrame = nowFrame;
-                                    lpCfg.triggered = false;
-                                }
-                            }
-                            if (hasRepeat) {
-                                var rptCfg:Object = repeatConfigs[logicalName];
-                                if (rptCfg) rptCfg.lastTriggerFrame = nowFrame;
-                            }
-                        } else if (hasLongPress) {
-                            var lpCfg2:Object = longPressConfigs[logicalName];
-                            if (lpCfg2) {
-                                lpCfg2.startFrame = -1;
-                                lpCfg2.triggered = false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // 记录本帧仍处于按下状态的键，便于后续统一处理长按与重复触发
-            if (isDownNow) {
+            // 被动模式的 long/repeat 只能由已分发的真实 Down 武装。
+            if (isDownNow && (words == null || wasDown)) {
                 pressedThisFrame[keycode] = true;
             }
         }
@@ -461,6 +450,7 @@ class org.flashNight.arki.key.KeyManager {
                             elapsedFrames = nowFrame - lpObj.startFrame;
                             if (elapsedFrames >= lpObj.threshold) {
                                 eventBus.publish(lpObj.eventName);
+                                if (keySettingsRevision !== revision) return;
                                 lpObj.triggered = true;
                             }
                         }
@@ -470,8 +460,9 @@ class org.flashNight.arki.key.KeyManager {
                         var rptObj:Object = repeatConfigs[nameForCode];
                         if (rptObj) {
                             elapsedFrames = nowFrame - rptObj.lastTriggerFrame;
-                            if (elapsedFrames >= rptObj.interval) {
+                            if ((words == null || rptObj.lastTriggerFrame >= 0) && elapsedFrames >= rptObj.interval) {
                                 eventBus.publish(rptObj.eventName);
+                                if (keySettingsRevision !== revision) return;
                                 rptObj.lastTriggerFrame = nowFrame;
                             }
                         }
@@ -506,6 +497,62 @@ class org.flashNight.arki.key.KeyManager {
                     }
                 } else {
                     combo.active = false;
+                }
+                if (keySettingsRevision !== revision) return;
+            }
+        }
+    }
+
+    private static function publishTransition(keycode:Number, isDownNow:Boolean, nowFrame:Number, eb:EventBus):Void {
+        keyStates[keycode] = isDownNow;
+        var revision:Number = keySettingsRevision;
+
+        // 一个物理键可承载多个逻辑键；逐路由发布，避免历史重复绑定互相覆盖。
+        var eNames:Array = watchedEventNames[keycode];
+        if (eNames) {
+            for (var routeIndex:Number = 0; routeIndex < eNames.length; routeIndex++) {
+                var route:Object = eNames[routeIndex];
+                eb.publish(isDownNow ? route.down : route.up);
+                if (keySettingsRevision !== revision) return;
+            }
+        }
+
+        var logicalNames:Array = watchedKeyNames[keycode];
+        if (logicalNames) {
+            for (var logicalIndex:Number = 0; logicalIndex < logicalNames.length; logicalIndex++) {
+                var logicalName:String = String(logicalNames[logicalIndex]);
+                // 当按下时，初始化双击、长按、重复触发的计时状态
+                if (isDownNow) {
+                    if (hasDoubleTap) {
+                        var dtCfg:Object = doubleTapConfigs[logicalName];
+                        if (dtCfg) {
+                            if (dtCfg.lastTapFrame >= 0 &&
+                                (nowFrame - dtCfg.lastTapFrame) <= dtCfg.interval) {
+                                eb.publish(dtCfg.eventName);
+                                if (keySettingsRevision !== revision) return;
+                                dtCfg.lastTapFrame = -1;
+                            } else {
+                                dtCfg.lastTapFrame = nowFrame;
+                            }
+                        }
+                    }
+                    if (hasLongPress) {
+                        var lpCfg:Object = longPressConfigs[logicalName];
+                        if (lpCfg) {
+                            lpCfg.startFrame = nowFrame;
+                            lpCfg.triggered = false;
+                        }
+                    }
+                    if (hasRepeat) {
+                        var rptCfg:Object = repeatConfigs[logicalName];
+                        if (rptCfg) rptCfg.lastTriggerFrame = nowFrame;
+                    }
+                } else if (hasLongPress) {
+                    var lpCfg2:Object = longPressConfigs[logicalName];
+                    if (lpCfg2) {
+                        lpCfg2.startFrame = -1;
+                        lpCfg2.triggered = false;
+                    }
                 }
             }
         }
@@ -621,6 +668,28 @@ class org.flashNight.arki.key.KeyManager {
         }
         _root.键值设定 = keySettings;
 
+        var cell:Object = _root.GameInput;
+        var passive:Boolean = cell.passiveActive === true;
+        var bindingsChanged:Boolean = passive && keySettings.length != keySettingsCount;
+        if (passive && !bindingsChanged) {
+            for (var bindingIndex:Number = 0; bindingIndex < keySettings.length; ++bindingIndex) {
+                var binding:Array = keySettings[bindingIndex];
+                if (keySettingsCache[binding[1]] !== binding[2]) {
+                    bindingsChanged = true;
+                    break;
+                }
+            }
+        }
+        keySettingsCount = keySettings.length;
+
+        if (bindingsChanged) {
+            ++keySettingsRevision;
+            cell.reboundSystemFrame = cell.snapshot.systemFrame;
+            if (typeof cell.clearKeyPresses == "function") cell.clearKeyPresses();
+            // Invalidate old K and origins before exposing the new root bindings.
+            FrameBroadcaster.advanceVersionedConfig();
+        }
+
         // 更新或重置 keySettingsCache
         if (!KeyManager.keySettingsCache) {
             KeyManager.keySettingsCache = {};
@@ -647,7 +716,12 @@ class org.flashNight.arki.key.KeyManager {
         }
 
         // 订阅绑定属于逻辑键名；键码变化后重建物理投影，旧订阅立即跟随新键。
-        rebuildWatchedBindings();
+        if (!passive || bindingsChanged) rebuildWatchedBindings(!bindingsChanged);
+        if (bindingsChanged) {
+            var timer:Object = _root.帧计时器;
+            if (timer != null && typeof timer.onPassiveKeySettingsChanged == "function")
+                timer.onPassiveKeySettingsChanged();
+        }
     }
 
     /** 返回与输入完全解耦的三元组副本。 */
@@ -823,7 +897,9 @@ class org.flashNight.arki.key.KeyManager {
     }
 
     /** 从逻辑订阅集合重建当前物理键轮询表。 */
-    private static function rebuildWatchedBindings():Void {
+    private static function rebuildWatchedBindings(keepPassiveHolds:Boolean):Void {
+        var passive:Boolean = _root.GameInput.passiveActive === true;
+        var previousStates:Object = keyStates;
         watchedKeys = {};
         watchedKeyNames = {};
         watchedEventNames = {};
@@ -840,9 +916,12 @@ class org.flashNight.arki.key.KeyManager {
                 down:"KeyDown_" + keyName,
                 up:"KeyUp_" + keyName
             });
-            if (keyStates[code] == undefined) keyStates[code] = Key.isDown(code);
+            if (keyStates[code] == undefined) {
+                keyStates[code] = passive
+                    ? keepPassiveHolds && previousStates[code] === true : Key.isDown(code);
+            }
         }
-        resetTransientFeatureState();
+        if (!passive || !keepPassiveHolds) resetTransientFeatureState();
     }
 
     /** 只读诊断：用于冻结“既有逻辑订阅在改键后跟随新物理键”的契约。 */
@@ -876,6 +955,8 @@ class org.flashNight.arki.key.KeyManager {
         if (isNaN(code)) {
             return false;
         }
+        // Level queries share the committed snapshot even inside an edge callback.
+        if (_root.GameInput.passiveActive === true) return Key.isDown(code);
         return keyStates[code] === true;
     }
 
@@ -962,7 +1043,7 @@ class org.flashNight.arki.key.KeyManager {
         var code:Number = getKeySetting(keyName);
         if (!isNaN(code)) {
             watchedLogicalNames[keyName] = true;
-            rebuildWatchedBindings();
+            rebuildWatchedBindings(true);
         }
     }
 
@@ -1214,7 +1295,7 @@ class org.flashNight.arki.key.KeyManager {
             var code:Number = getKeySetting(name);
             if (!isNaN(code)) watchedLogicalNames[name] = true;
         }
-        rebuildWatchedBindings();
+        rebuildWatchedBindings(true);
     }
 
     //============================

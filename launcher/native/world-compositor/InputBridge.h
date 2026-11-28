@@ -5,7 +5,10 @@
 constexpr wchar_t InputProperty[]=L"CF7.WorldPointer.Map.v4";
 constexpr wchar_t InputMessage[]=L"CF7.WorldPointer.Packet.v4";
 constexpr uint32_t InputMagic=0xCF710001;
-constexpr uint32_t InputProtocolVersion=4;
+constexpr uint32_t InputProtocolVersion=5;
+constexpr uint32_t InputLegacy=0, InputPassiveDisabled=1;
+constexpr LONG InputProfileRejected=-7; // rejected before any window procedure or import was changed
+constexpr int InputBrokerProfileRejected=14;
 // v4 keeps the data envelope; epochs never wrap inside a session.
 // Data is consumed only by WH_GETMESSAGE on PM_REMOVE, then tombstoned to
 // WM_NULL before the MSG escapes to Translate/DispatchMessage. Direct sent
@@ -40,7 +43,7 @@ struct InputShared {
     volatile LONG duplicateDowns;    // 76  down for an already-held button (forwarded, counted)
     volatile LONG issuedEpoch;       // 80  host->bridge: newest epoch handed to the queue (low 24 bits),
                                      //     published before every packet post; read at the focus-loss boundary
-    uint32_t reserved;               // 84  tail padding: the struct stays 8-aligned for the uint64 fields
+    uint32_t passiveMode;            // 84  immutable at bind: 0 legacy, 1 disabled
     uint64_t session;                   // 88 immutable control identity
     volatile LONG closeTicket;          // 96 Host seals all producers before publishing stop
     volatile LONG returnedTicket;       // 100 broker: retire SendMessage has RETURNED
@@ -67,4 +70,5 @@ static_assert(offsetof(InputShared,minEpoch)==56, "Host shares the minEpoch offs
 static_assert(offsetof(InputShared,consumedSeq)==60, "Host shares the consumedSeq offset");
 static_assert(offsetof(InputShared,issuedEpoch)==80, "Host shares the issuedEpoch offset");
 
+static_assert(offsetof(InputShared,passiveMode)==84, "v5 profile offset");
 static_assert(offsetof(InputShared,session)==88 && offsetof(InputShared,paintRequestTicks)==128, "v4 offsets");

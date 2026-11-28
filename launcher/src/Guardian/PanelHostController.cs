@@ -1208,8 +1208,8 @@ namespace CF7Launcher.Guardian
                 }
                 if(cmd.IsExactClose && cmd.CloseContext==null)
                     cmd.CloseContext=_admittingClose ?? CaptureHostClose(cmd.Name,cmd.ReservedPanelInstanceId);
-                if(cmd.IsExactClose && !cmd.CloseContext.TryAdmit(System.Threading.Interlocked.Read(ref _inputAdmissionStamp),
-                    _closeFocusManager?.CaptureFlashFocusTarget()))return false;
+                if (cmd.IsExactClose && !cmd.CloseContext.TryAdmit(System.Threading.Interlocked.Read(ref _inputAdmissionStamp)))
+                    return false;
                 AdmitInputOwnerIntent(ref cmd);
                 _queue.Enqueue(cmd);
                 _openAdmissionEpoch++;
@@ -1788,7 +1788,6 @@ namespace CF7Launcher.Guardian
         {
             bool closed = false;
             HostCloseContext context=cmd.CloseContext ?? CaptureHostClose(cmd.Name,cmd.ReservedPanelInstanceId);
-            if(TryDeferCloseForInputRelease(cmd,context))return;
             try
             {
                 if(!context.TryExecuteOnce() || !ExactSourceAndAdmission(context))return;
@@ -3315,7 +3314,6 @@ namespace CF7Launcher.Guardian
         public void Dispose()
         {
             using var closeScope=_web?.EnterManagedClose();
-            DisposePhysicalCloseWaits();
             if (_disposed) return;
             _disposed = true;
             if (_sceneSettlement != null)

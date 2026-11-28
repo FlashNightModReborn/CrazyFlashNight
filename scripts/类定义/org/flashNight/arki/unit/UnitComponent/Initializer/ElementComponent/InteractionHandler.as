@@ -70,6 +70,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
         if (BoxInteractionArbiter.isBoxPreset(target.presetName)) {
             return BoxInteractionArbiter.register(target, _root.gameworld);
         }
+        if (_root.GameInput.passiveActive === true)
+            return BoxInteractionArbiter.registerElement(target, _root.gameworld);
         if (!target.dispatcher
                 || typeof target.dispatcher.subscribeGlobal != "function") return false;
 
@@ -277,7 +279,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.Intera
      * @param hero 英雄对象
      * @return Boolean 如果可以交互返回true
      */
-    public static function canInteract(target:MovieClip, hero:MovieClip):Boolean {
+    public static function canInteract(target:Object, hero:Object):Boolean {
         if (!target || !hero || !target.area || !hero.area) {
             return false;
         }
