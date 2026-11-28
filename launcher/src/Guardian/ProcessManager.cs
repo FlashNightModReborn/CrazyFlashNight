@@ -46,7 +46,9 @@ namespace CF7Launcher.Guardian
             _configureStart = configureStart;
         }
 
-        public bool Start()
+        public bool Start() => Start(showWithoutActivating: false);
+
+        internal bool Start(bool showWithoutActivating)
         {
             try
             {
@@ -59,16 +61,12 @@ namespace CF7Launcher.Guardian
                 string flashTemp = psi.Environment["TEMP"];
                 LogManager.Log("[FlashStorage] child TEMP/TMP=" + flashTemp + " environment="
                     + CF7Launcher.Config.FlashStorageEnvironment.Snapshot().ToString(Newtonsoft.Json.Formatting.None));
-                // 注意：不要在这里设 psi.WindowStyle = ProcessWindowStyle.Hidden.
-                // 实测当前 Flash SA 直接用 WS_VISIBLE 创窗，忽略 STARTF_USESHOWWINDOW，hint 零收益；
-                // 而 WindowManager.PollMainWindowHandle 走 .NET MainWindowHandle (= IsWindowVisible
-                // 启发式)，假设主窗口最终会 visible. 一旦未来某 Flash SA 变体尊重了这个 hint，
-                // 主窗口永远不 visible，ArmEarlyReparent 与 EmbedFlashWindow 双双 timeout，整条嵌入
-                // 链路静默失败. 不要为了一个零收益 hint 留这颗雷.
+                // Passive input still needs a visible projector for MainWindowHandle discovery.
+                // Prevent initial activation at process creation, before the early reparent poll.
 
                 lock (_lock)
                 {
-                    _flashProcess = OwnedChildProcessJob.Start(psi);
+                    _flashProcess = OwnedChildProcessJob.Start(psi, showWithoutActivating);
                     if (_flashProcess == null)
                         return false;
 
@@ -76,7 +74,8 @@ namespace CF7Launcher.Guardian
                     _flashProcess.Exited += OnProcessExited;
                 }
 
-                LogManager.Log("[Guardian] Flash Player started, PID=" + _flashProcess.Id);
+                LogManager.Log("[Guardian] Flash Player started, PID=" + _flashProcess.Id
+                    + " showWithoutActivating=" + showWithoutActivating);
                 return true;
             }
             catch (Exception ex)

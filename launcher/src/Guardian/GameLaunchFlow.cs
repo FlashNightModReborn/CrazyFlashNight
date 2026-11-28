@@ -2515,7 +2515,7 @@ namespace CF7Launcher.Guardian
             // 仅为本次 spawn 留住原本正在操作的启动器。用户切走时不申请前台。
             Action<IntPtr> returnBootstrapInput = _form?.CaptureBootstrapFocusReturn(_windowManager);
             bool ok;
-            try { ok = _processManager.Start(); }
+            try { ok = _processManager.Start(showWithoutActivating: _windowManager?.PassiveInput != null); }
             catch (Exception ex)
             {
                 LogManager.Log("[LaunchFlow] processManager.Start threw: " + ex.Message);
