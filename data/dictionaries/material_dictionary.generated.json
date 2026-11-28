@@ -1,16 +1,16 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 236,
+    "archiveOrderLast": 237,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 237,
-    "equipmentTuningDistinctCount": 115,
-    "machineDerivedEquipmentTuningCount": 109,
+    "entryCount": 238,
+    "equipmentTuningDistinctCount": 116,
+    "machineDerivedEquipmentTuningCount": 110,
     "path": "data/dictionaries/material_catalog.xml",
     "schemaVersion": 1,
     "typeCounts": {
-      "equipment_mod": 109,
+      "equipment_mod": 110,
       "food": 50,
       "general": 78
     }
@@ -49,7 +49,7 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "DC4E5B1230D563F33163FBB8CF2173DDF79217CA54BC5C0CCE0F6892B5DA33B3"
+      "sha256": "3C36F1B051E511CC509970E0BB167BB50E88FFDFC06E4A0CE27D3234EA71EFCF"
     },
     {
       "path": "data/items/list.xml",
@@ -65,11 +65,11 @@
     },
     {
       "path": "data/items/消耗品_药剂.xml",
-      "sha256": "3CE684D09F968D72EE071DBB2A80A38DE39313ED6CCD1330EE2DDC73413AC78E"
+      "sha256": "62D56A7DCD87919AF8DA7966012821A18F956EED42F0E6317A9B28096B461E83"
     },
     {
       "path": "data/items/消耗品_药剂_食品.xml",
-      "sha256": "B959CE92B8C84DD31920DA7FD287D49192205515666BA3B6A96C53253C28E7BC"
+      "sha256": "E1868D96367A40DD8A272B59B40EB2F30D708CA2C7084FE48AD6EAA1D3476545"
     },
     {
       "path": "data/items/消耗品_药剂_九龙.xml",
@@ -85,11 +85,11 @@
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
-      "sha256": "3D03609EAD088983C9FBEC37FDD59A9ED94E7BB0AFC5C105F25DF2ED95E6B5A0"
+      "sha256": "1215201313CADCBB9BED96103ACFF9DD7E84C6BFFDD334EC4F47AA87C75449CA"
     },
     {
       "path": "data/items/消耗品_手雷.xml",
-      "sha256": "192E8630D7673FC34F777BD9271828F08ABF46CF539CA3715F176D83631F2E0F"
+      "sha256": "0896E2BC6CBDD5E23140C1C912228F9D9D5D3D0651CB99A05E3D8B96B503777C"
     },
     {
       "path": "data/items/消耗品_礼包.xml",
@@ -325,7 +325,7 @@
     },
     {
       "path": "data/items/equipment_mods/中等材料_防具专用.xml",
-      "sha256": "5B694DA5C4D83E9D038EBE8CFFBD5E8D712323BCD933192DDD09B0F907C8D4A5"
+      "sha256": "9EB59B42159E9C19F45F401FF93E550A94D9899B21F204BB0BBA2ED4851B4A60"
     },
     {
       "path": "data/items/equipment_mods/中等材料_枪械专用.xml",
@@ -373,7 +373,7 @@
     },
     {
       "path": "data/items/equipment_mods/特殊材料_防具专用.xml",
-      "sha256": "6F1D4F4C9137D8B04315B7FDA3BFD390B724E84CABF0B0F587D12CC015599D4E"
+      "sha256": "E735DB1853EE02527BA6D093E9EFB906D84E0E2B7DEE9A1BDFA0C3F25B3C5DA1"
     },
     {
       "path": "data/items/equipment_mods/特殊材料_通用.xml",
@@ -414,5 +414,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "FA9FC125380FB44C24D601A7342D4A4A727EF9AE64717E358146E79DC87064BD"
+  "sourceDigest": "CFD958028202D21DAEE5522E9AAD2801C83DC5CB6959221015E066CA46B7EBE6"
 }

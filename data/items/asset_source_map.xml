@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 6003 unique assets -->
+  <!-- 6008 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -42,6 +42,7 @@
   <asset id="Codex光头保安素材" swf="flashswf/arts/new/Codex光头保安素材.swf" />
   <asset id="Codex大刀机器人素材" swf="flashswf/arts/new/Codex大刀机器人素材.swf" />
   <asset id="Codex大头机器人素材" swf="flashswf/arts/new/Codex大头机器人素材.swf" />
+  <asset id="Codex大机器人素材" swf="flashswf/arts/new/Codex大机器人素材.swf" />
   <asset id="Codex特种兵素材" swf="flashswf/arts/new/Codex特种兵素材.swf" />
   <asset id="Codex老头素材" swf="flashswf/arts/new/Codex老头素材.swf" />
   <asset id="Codex蛮蛮素材" swf="flashswf/arts/new/Codex蛮蛮素材.swf" />
@@ -1838,6 +1839,7 @@
   <asset id="图标-白色功夫高手裤子" swf="flashswf/arts/things.swf" symbolName="0.防具相关/功夫相关套装/图标-白色功夫高手裤子" />
   <asset id="图标-白色手套" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/图标-白色手套" />
   <asset id="图标-白色板鞋" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/图标-白色板鞋" />
+  <asset id="图标-白色涂料" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-白色涂料" />
   <asset id="图标-白色盗贼猪鼻式防毒面具" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/一部分服饰1/面具/图标/图标-白色盗贼猪鼻式防毒面具" />
   <asset id="图标-白色短袖校服" swf="flashswf/arts/things.swf" symbolName="0.防具相关/校服相关/图标-白色短袖校服" />
   <asset id="图标-白色袜子" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/一部分服饰/防具/灰色裙子/衣服/Symbol 919 副本" />
@@ -3588,8 +3590,12 @@
   <asset id="手枪搓招容器-前冲射击2" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-前冲射击2" />
   <asset id="手枪搓招容器-后射" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-后射" />
   <asset id="手枪搓招容器-后射2" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-后射2" />
+  <asset id="手枪搓招容器-后撩上射" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-后撩上射" />
+  <asset id="手枪搓招容器-后撩上射2" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-后撩上射2" />
   <asset id="手枪搓招容器-后跳射击" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-后跳射击" />
   <asset id="手枪搓招容器-后跳射击2" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-后跳射击2" />
+  <asset id="手枪搓招容器-换弹打击" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-换弹打击" />
+  <asset id="手枪搓招容器-换弹打击2" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-换弹打击2" />
   <asset id="手枪搓招容器-瞬踢追射" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-瞬踢追射" />
   <asset id="手枪搓招容器-瞬踢追射2" swf="flashswf/arts/things0.swf" symbolName="容器/手枪搓招容器/手枪搓招容器-瞬踢追射2" />
   <asset id="手雷-BBPLAYER炸弹" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/手雷-BBPLAYER炸弹" />
@@ -3893,7 +3899,6 @@
   <asset id="敌人-锡蒙利范围光环发生器" swf="flashswf/arts/new/魔神锡蒙利.swf" symbolName="锡蒙利范围光环发生器" />
   <asset id="敌人-锡蒙利骑士" swf="flashswf/arts/new/魔神锡蒙利.swf" symbolName="锡蒙利/敌人-锡蒙利骑士" />
   <asset id="敌人-锯片陷阱" swf="flashswf/arts/new/地图陷阱相关.swf" symbolName="1、旋转锯片/敌人-锯片陷阱" />
-  <asset id="敌人-闪2大机器人" swf="flashswf/arts/new/天网豪华单间.swf" />
   <asset id="敌人-闪6特工" swf="flashswf/arts/new/素材库-诺亚新敌人.swf" symbolName="闪6特工/Symbol 776" />
   <asset id="敌人-闪流步兵" swf="flashswf/arts/new/军阀新人物合集.swf" />
   <asset id="敌人-防护服士兵" swf="flashswf/arts/new/素材库-下水道怪物.swf" />
@@ -6076,7 +6081,7 @@
     <source swf="flashswf/arts/new/素材库-地图元件.swf" orphan="true" />
   </duplicate>
 
-  <!-- 121 CONFLICTS: same ID in multiple SWFs (live sources >= 2) -->
+  <!-- 122 CONFLICTS: same ID in multiple SWFs (live sources >= 2) -->
   <conflict id="公共素材位3">
     <source swf="flashswf/arts/new/公共素材位3.swf" />
     <source swf="flashswf/arts/公共素材位3.swf" />
@@ -6247,6 +6252,10 @@
   <conflict id="敌人-方舟妖姬">
     <source swf="flashswf/arts/new/方舟妖姬新.swf" />
     <source swf="flashswf/arts/new/蓝环章鱼烧.swf" symbolName="A.个人编辑单位/敌人-方舟妖姬" />
+  </conflict>
+  <conflict id="敌人-闪2大机器人">
+    <source swf="flashswf/arts/new/Codex大机器人素材.swf" symbolName="Codex/大机器人/敌人-闪2大机器人" />
+    <source swf="flashswf/arts/new/天网豪华单间.swf" />
   </conflict>
   <conflict id="枪-手枪-COLT PYTHON">
     <source swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/枪-手枪-COLT PYTHON" />

@@ -146,4 +146,19 @@
         <description>复合木质材料,增加生命、精力与防御,但降低热抗。</description>
         <tag>外覆加固</tag>
     </mod>
+
+    <mod>
+        <name>白色涂料</name>
+        <use>头部装备,上装装备,下装装备,手部装备,脚部装备</use>
+        <stats>
+            <merge>
+                <magicdefence>
+                    <基础>10</基础>
+                    <热>5</热>
+                </magicdefence>
+            </merge>
+        </stats>
+        <description>能量干扰涂层,提升装备的基础与热抗性。</description>
+        <tag>表面涂层</tag>
+    </mod>
 </root>

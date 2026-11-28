@@ -1190,4 +1190,17 @@
     <description>用于改装的低级材料。
     简介占位。</description>
   </item>
+  <!-- 白色涂料：大学门口武器订购系统 6,000 出售，中等防具插件定义见 data/items/equipment_mods/中等材料_防具专用.xml。 -->
+  <item>
+    <name>白色涂料</name>
+    <displayname>白色涂料</displayname>
+    <icon>白色涂料</icon>
+    <type>收集品</type>
+    <use>材料</use>
+    <price>6000</price>
+    <description>用于改装的中等材料。
+    高反射陶瓷微粒悬浮在聚合物基体中，固化后形成一层低吸收的干扰表层，把入射的能量散射到装备表面之外。
+    配方经过联合大学的防护实验室简化与改良，显著降低了量产成本，并保留了对能量与热能的良好抵抗效果。
+    据称原始配方的白色涂料可抵抗几乎全部类型的属性攻击，但成本过于高昂且制作难度高，几乎未在市面上流通。</description>
+  </item>
 </root>
