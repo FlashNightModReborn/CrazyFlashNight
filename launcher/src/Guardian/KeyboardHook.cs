@@ -3,11 +3,12 @@ using CF7Launcher.Guardian.InputOwnership;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CF7Launcher.Guardian
 {
     /// <summary>
-    /// 低级键盘钩子——运行在专用线程上，永不超时。
+    /// 低级键盘钩子运行在专用消息线程上。
     /// 拦截 Ctrl+W/R/P/O（Flash SA 原生快捷键）和 Ctrl+F/Q（Guardian 动作键）。
     /// 按会话的实时前台和当前文本租约决定是否派发快捷键。
     /// </summary>
@@ -16,14 +17,14 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
         [DllImport("user32.dll")]
         private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
         [DllImport("user32.dll")]
@@ -32,9 +33,12 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint pid);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+        private static extern bool PeekMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint removeMsg);
 
         [DllImport("user32.dll")]
         private static extern bool TranslateMessage(ref MSG lpMsg);
@@ -58,6 +62,7 @@ namespace CF7Launcher.Guardian
             public uint time;
             public int pt_x;
             public int pt_y;
+            public uint lPrivate;
         }
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
@@ -74,11 +79,17 @@ namespace CF7Launcher.Guardian
         private const uint VK_RCONTROL = 0xA3;
         private const uint VK_ESCAPE = 0x1B;
 
-        private IntPtr _hookId = IntPtr.Zero;
-        private LowLevelKeyboardProc _proc;
+        private IntPtr _hookId;
+        private readonly LowLevelKeyboardProc _proc;
+        private readonly Func<(IntPtr Handle, int Error)> _installNative;
+        private readonly Action<IntPtr> _releaseNative;
+        private readonly int _installTimeoutMs;
         private Thread _thread;
-        private uint _threadId;
+        private volatile uint _threadId;
         private volatile bool _running;
+        private int _disposed;
+        internal string InstallFailure { get; private set; }
+        internal bool IsInstalled => _running && Volatile.Read(ref _hookId) != IntPtr.Zero;
 
         // 仅拦截的键（Ctrl+ 组合）
         private readonly HashSet<uint> _blockedVks;
@@ -155,8 +166,15 @@ namespace CF7Launcher.Guardian
             }
         }
 
-        public KeyboardHook()
+        public KeyboardHook() : this(null, null, 2000)
         {
+        }
+
+        internal KeyboardHook(Func<(IntPtr Handle, int Error)> installNative, Action<IntPtr> releaseNative, int installTimeoutMs)
+        {
+            _installNative = installNative ?? InstallNativeHook;
+            _releaseNative = releaseNative ?? ReleaseNativeHook;
+            _installTimeoutMs = installTimeoutMs;
             _myPid = (uint)System.Diagnostics.Process.GetCurrentProcess().Id;
             _proc = HookCallback;
 
@@ -165,8 +183,8 @@ namespace CF7Launcher.Guardian
             _blockedVks.Add(0x52); // R
             _blockedVks.Add(0x50); // P
             _blockedVks.Add(0x4F); // O
-            _blockedVks.Add(0x46); // F — 原 RegisterHotKey，现迁入此处
-            _blockedVks.Add(0x51); // Q — 原 RegisterHotKey，现迁入此处
+            _blockedVks.Add(0x46); // F：前台全屏
+            _blockedVks.Add(0x51); // Q：前台紧急退出
             // 0x47 (G) 由 GuardianForm 按 config.devGpuProbeHotkey 动态启用，玩家版不注入
 
             _actionVks = new Dictionary<uint, Action>();
@@ -199,45 +217,92 @@ namespace CF7Launcher.Guardian
 
         public bool Install()
         {
-            _physicalKeysDown.Clear();
-            _dialogueConsumedKeys.Clear();
-            _shortcutConsumedKeys.Clear();
-            _leftCtrlHeld = _rightCtrlHeld = false;
+            if (_thread != null || Volatile.Read(ref _disposed) != 0)
+                return false;
             _running = true;
-            ManualResetEvent ready = new ManualResetEvent(false);
-
-            _thread = new Thread(delegate()
+            var ready = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+            _thread = new Thread(() => RunMessageLoop(ready)) { IsBackground = true, Name = "CF7 Keyboard Hook" };
+            try
             {
+                _thread.Start();
+                InstallFailure = ready.Task.Wait(_installTimeoutMs) ? ready.Task.Result : "install_timeout";
+                if (InstallFailure == null && Volatile.Read(ref _hookId) == IntPtr.Zero)
+                    InstallFailure = "hook_unavailable_after_install";
+            }
+            catch (Exception ex)
+            {
+                InstallFailure = "install_thread_failed=" + ex.GetType().Name;
+            }
+            if (InstallFailure != null) StopMessageLoop();
+            LogManager.Log("[KeyboardHook] Install " + (InstallFailure ?? "OK"));
+            return InstallFailure == null;
+        }
+
+        private (IntPtr Handle, int Error) InstallNativeHook()
+        {
+            IntPtr module = GetModuleHandle(null);
+            if (module == IntPtr.Zero) return (IntPtr.Zero, Marshal.GetLastWin32Error());
+            IntPtr hook = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, module, 0);
+            return (hook, hook == IntPtr.Zero ? Marshal.GetLastWin32Error() : 0);
+        }
+
+        private static void ReleaseNativeHook(IntPtr hook)
+        {
+            if (!UnhookWindowsHookEx(hook))
+                LogManager.Log("[KeyboardHook] Unhook failed: win32=" + Marshal.GetLastWin32Error());
+        }
+
+        private void RunMessageLoop(TaskCompletionSource<string> ready)
+        {
+            IntPtr ownedHook = IntPtr.Zero;
+            try
+            {
+                // Create the message queue before publishing the thread ID used for shutdown.
+                PeekMessage(out _, IntPtr.Zero, 0, 0, 0);
                 _threadId = GetCurrentThreadId();
-
-                using (var proc = System.Diagnostics.Process.GetCurrentProcess())
-                using (var mod = proc.MainModule)
+                if (!_running) return;
+                var (hook, error) = _installNative();
+                ownedHook = hook;
+                if (hook == IntPtr.Zero)
                 {
-                    IntPtr hMod = GetModuleHandle(mod.ModuleName);
-                    _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, hMod, 0);
-                }
-
-                ready.Set();
-
-                if (_hookId == IntPtr.Zero)
+                    ready.TrySetResult("native_install_failed win32=" + error);
                     return;
-
-                // 专用消息泵——此线程永远不会忙，钩子永远不会超时
-                MSG msg;
-                while (_running && GetMessage(out msg, IntPtr.Zero, 0, 0))
+                }
+                if (!_running) return;
+                Volatile.Write(ref _hookId, hook);
+                ready.TrySetResult(null);
+                while (_running)
                 {
+                    int status = GetMessage(out MSG msg, IntPtr.Zero, 0, 0);
+                    if (status <= 0)
+                    {
+                        if (status < 0) LogManager.Log("[KeyboardHook] Message pump failed: win32=" + Marshal.GetLastWin32Error());
+                        break;
+                    }
                     TranslateMessage(ref msg);
                     DispatchMessage(ref msg);
                 }
-            });
-            _thread.IsBackground = true;
-            _thread.Start();
+            }
+            catch (Exception ex)
+            {
+                if (!ready.TrySetResult("native_install_exception=" + ex.GetType().Name))
+                    LogManager.Log("[KeyboardHook] Message pump failed: " + ex.GetType().Name);
+            }
+            finally
+            {
+                _running = false;
+                Volatile.Write(ref _hookId, IntPtr.Zero);
+                _threadId = 0;
+                try { if (ownedHook != IntPtr.Zero) _releaseNative(ownedHook); }
+                finally { ready.TrySetResult("install_canceled"); }
+            }
+        }
 
-            ready.WaitOne(2000);
-            bool ok = _hookId != IntPtr.Zero;
-            Guardian.LogManager.Log("[KeyboardHook] Install " + (ok ? "OK" : "FAILED")
-                + " (dedicated thread, blocks: W/R/P/O/F/Q [+G if dev])");
-            return ok;
+        private void StopMessageLoop()
+        {
+            _running = false;
+            uint threadId = _threadId;
+            if (threadId != 0) PostThreadMessage(threadId, WM_QUIT, IntPtr.Zero, IntPtr.Zero);
         }
 
         /// <summary>
@@ -246,8 +311,8 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && ProcessKeyEdge(wParam.ToInt32(), lParam) != IntPtr.Zero) return new IntPtr(1);
-            return CallNextHookEx(_hookId, nCode, wParam, lParam);
+            if (IsInstalled && nCode >= 0 && ProcessKeyEdge(wParam.ToInt32(), lParam) != IntPtr.Zero) return new IntPtr(1);
+            return CallNextHookEx(Volatile.Read(ref _hookId), nCode, wParam, lParam);
         }
 
         internal IntPtr ProcessKeyEdge(int msg, IntPtr lParam)
@@ -425,21 +490,11 @@ namespace CF7Launcher.Guardian
 
         public void Dispose()
         {
-            _running = false;
-
-            if (_hookId != IntPtr.Zero)
-            {
-                UnhookWindowsHookEx(_hookId);
-                _hookId = IntPtr.Zero;
-            }
-
-            if (_threadId != 0)
-                PostThreadMessage(_threadId, WM_QUIT, IntPtr.Zero, IntPtr.Zero);
-
-            if (_thread != null && _thread.IsAlive)
+            if (Interlocked.Exchange(ref _disposed, 1) != 0) return;
+            StopMessageLoop();
+            if (_thread != null && _thread != Thread.CurrentThread && _thread.IsAlive)
                 _thread.Join(1000);
-
-            Guardian.LogManager.Log("[KeyboardHook] Disposed");
+            LogManager.Log("[KeyboardHook] Disposed");
         }
     }
 }

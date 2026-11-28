@@ -123,6 +123,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             {
                 // An unmigrated Native HUD/window can still own a real capture.
                 // Crossing the new bottom raster must not steal its button release.
+                ObserveUnroutedRelease(message, mouseData);
                 _hudPointer.Leave();LeaveFlashForHud();return false;
             }
             Point screen=new Point(x,y);
@@ -132,6 +133,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 GetWindowThreadProcessId(_getFlash(),out uint flashPid);
                 if (pid!=(uint)Environment.ProcessId && pid!=flashPid) { CancelPointer("foreground_lost"); return false; }
             } else if (!owned) {
+                ObserveUnroutedRelease(message, mouseData);
                 _hudPointer.Leave();
                 if (_inside) { _inside=false; Enqueue(new PointerPacket(0x2A3,Point.Empty,Point.Empty,0,0,_inputEpoch,0,_geometryVersion,NextSequence())); }
                 return false;
@@ -151,7 +153,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 int physical=_readPhysicalButtons();
                 if(IsUp(message))physical&=~bit;
                 if(IsDown(message))physical|=bit;
-                if(!_renewing && physical==0) { _awaitRelease=false;_physicalButtons=0;_hudPointer.ObserveReleased(0); }
+                ObserveWorldRelease(physical);
                 return message!=0x200;
             }
             if(_awaitFreshDown && !IsDown(message) && message!=0x200)return message!=0x200;
@@ -194,6 +196,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // update the physical pointer; the surface's ordinary WndProc does not
             // forward it. Button/wheel edges are exclusively delivered by this queue.
             return message!=0x200;
+        }
+        // An Up outside the world can retire the physical barrier without being relayed.
+        private void ObserveUnroutedRelease(int message, uint mouseData)
+        {
+            if (_awaitRelease && IsUp(message))
+                ObserveWorldRelease(_readPhysicalButtons() & ~ButtonBit(message, mouseData));
+        }
+
+        private void ObserveWorldRelease(int physicalButtons)
+        {
+            if (!_awaitRelease || _renewing || physicalButtons != 0) return;
+            _awaitRelease = false;
+            _physicalButtons = 0;
+            _hudPointer.ObserveReleased(0);
         }
         private void BeginRenewal()
         {

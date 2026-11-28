@@ -106,10 +106,12 @@ namespace CF7Launcher.Guardian
         private string _acceptedTitleAttemptId;
         private string _pendingSlot;
         private Process _currentFlashProcess;
+        private int _passiveLaunchConnection;
+        private CancellationTokenSource _passiveEmbeddingCancellation;
         private int _timerGen;
 
         // per-attempt ready 缓存（attemptId → arrived？）不变式 #8
-        private readonly Dictionary<string, bool> _cachedReady = new Dictionary<string, bool>();
+        private readonly Dictionary<string, int> _cachedReady = new Dictionary<string, int>();
 
         // Flash zombie 兜底 (socket 断开 10s 后进程仍存活 → ForceExit).
         // 三层防护 (Timer.Dispose 不保证已入队回调不执行, 必须在回调内自校验):
@@ -526,7 +528,7 @@ namespace CF7Launcher.Guardian
             // Phase D Step D4: bootstrap_handshake 改 RegisterAsync 以支持 prewarm 模式的 held callback.
             // Async handler: 锁内判 prewarm/legacy 分支 → 锁外 respond() 同步写 socket (respond 本身 gen-bound).
             _router.RegisterAsync("bootstrap_handshake", HandleBootstrapHandshakeAsync);
-            _router.RegisterSync("bootstrap_ready", HandleBootstrapReady);
+            _router.RegisterSyncForGeneration("bootstrap_ready", HandleBootstrapReady);
             // Phase 2b-ext: Flash 帧 81 "封面" 发来的 reveal 信号, 清 _revealWaitingFlash
             _router.RegisterSync("bootstrap_reveal_ready", HandleBootstrapRevealReady);
             _router.RegisterSync("character_create_response", HandleCharacterCreateResponse);
@@ -2532,7 +2534,9 @@ namespace CF7Launcher.Guardian
         /// <summary>HandleBootstrapHandshake 响应后调用（锁内）：触发异步 Embed。</summary>
         private void TransitionToEmbedding()
         {
-            CancelWaitTimerLocked();  // 清 handshake 超时; WindowManager.EmbedFlashWindow 自带 10s 内置超时
+            // Window discovery is bounded inside WindowManager. A live, disabled
+            // source can then wait for safe focus publication without a deadline.
+            CancelWaitTimerLocked();
             SetState(State.Embedding, "");
             Process flash = _currentFlashProcess;
             GuardianForm form = _form;
@@ -2545,10 +2549,26 @@ namespace CF7Launcher.Guardian
             }
             string attempt = _currentAttemptId;
             int connection = _socketServer.CurrentGeneration;
-            Action<bool> embedded = success => OnEmbedResult(flash, attempt, connection, success);
+            CancellationToken cancellation = default;
+            if (wm.PassiveInput != null)
+            {
+                if (!_socketServer.TryGetReadyGeneration(out connection))
+                {
+                    TransitionToError("embed_socket_disconnected");
+                    return;
+                }
+                _passiveLaunchConnection = connection;
+                _passiveEmbeddingCancellation = new CancellationTokenSource();
+                cancellation = _passiveEmbeddingCancellation.Token;
+            }
+            Action<WindowManager.EmbedResult> embedded = result =>
+            {
+                if (cancellation.CanBeCanceled) OnPassiveEmbedResult(flash, attempt, connection, cancellation, result);
+                else OnEmbedResult(flash, attempt, connection, result == WindowManager.EmbedResult.Prepared);
+            };
             ThreadPool.QueueUserWorkItem(delegate
             {
-                try { wm.EmbedFlashWindow(flash, form.FlashHostPanel, embedded); }
+                try { wm.EmbedFlashWindow(flash, form.FlashHostPanel, embedded, cancellation); }
                 catch (Exception ex)
                 {
                     LogManager.Log("[LaunchFlow] EmbedFlashWindow threw: " + ex.Message);
@@ -3341,29 +3361,33 @@ namespace CF7Launcher.Guardian
             return resp.ToString(Newtonsoft.Json.Formatting.None);
         }
 
-        private string HandleBootstrapReady(JObject msg)
+        private string HandleBootstrapReady(JObject msg, int generation)
         {
-            if(_settingsAdmission!=null && (!_settingsAdmission.Allowed || !_saveCtx.SettingsRecovery.MayWriteCached(_settingsAdmission.Context.Slot))) {
-                lock(_stateLock)TransitionToError("settings_recovery_required");
-                return null;
-            }
             lock (_stateLock)
             {
                 // Flash 消息结构: {task, payload:{attemptId,...}, callId}; 从 payload 读
                 JObject payload = msg.Value<JObject>("payload");
                 string attemptId = payload != null ? payload.Value<string>("attemptId") : null;
                 if (attemptId == null) attemptId = msg.Value<string>("attemptId");  // 兼容顶层
-                if (attemptId != _currentAttemptId)
+                if (string.IsNullOrEmpty(attemptId) || attemptId != _currentAttemptId || !IsAwaitingLaunchReady(_state))
                 {
                     LogManager.Log("[LaunchFlow] bootstrap_ready stale attemptId="
                         + (attemptId ?? "null") + " expected=" + _currentAttemptId);
+                    return null;
+                }
+                if (_passiveLaunchConnection != 0 && (generation != _passiveLaunchConnection
+                    || !_socketServer.TryGetReadyGeneration(out int current) || current != generation)) return null;
+                if (_settingsAdmission != null && (!_settingsAdmission.Allowed
+                    || !_saveCtx.SettingsRecovery.MayWriteCached(_settingsAdmission.Context.Slot)))
+                {
+                    TransitionToError("settings_recovery_required");
                     return null;
                 }
                 PerfTrace.Mark("launch.bootstrap_ready", "attemptId=" + attemptId);
                 if (_state != State.WaitingGameReady)
                 {
                     // 提前到达，按 attemptId 缓存（不变式 #8）
-                    _cachedReady[attemptId] = true;
+                    _cachedReady[attemptId] = generation;
                     return null;
                 }
                 TransitionToReady();
@@ -3375,43 +3399,84 @@ namespace CF7Launcher.Guardian
 
         private void OnEmbedResult(Process flash, string attempt, int connection, bool success)
         {
-            LogManager.Log("[LaunchFlow] OnEmbedResult=" + success);
-            PerfTrace.Mark("launch.embed_result", "success=" + success);
             lock (_stateLock)
             {
-                if (_state != State.Embedding || !ReferenceEquals(flash, _currentFlashProcess)
-                    || !string.Equals(attempt, _currentAttemptId, StringComparison.Ordinal)) return;
-                if (!success) { TransitionToError("embed_timeout"); return; }
-                if (_windowManager.PassiveInput != null
-                    && (connection != _socketServer.CurrentGeneration || !_socketServer.IsClientReady))
-                {
-                    TransitionToError("embed_socket_replaced");
-                    return;
-                }
-
-                // C2-β: 存档残留 fffd → 进 RepairPending 显式 gate.
-                //   即便 AS2 端 (旧 asLoader 不识别 saveDecision="repairable") 抢先发 bootstrap_ready,
-                //   HandleBootstrapReady 在 RepairPending 态下只缓存到 _cachedReady, 不 transition.
-                //   PushRepairResolved (用户决策完成) 才把 state 升到 WaitingGameReady → 检 cache 命中即 Ready.
-                if (_resolvedSave != null && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable)
-                {
-                    SetState(State.RepairPending, "");
-                    LogManager.Log("[LaunchFlow] repair pending: gate armed, awaiting user repair decision");
-                    return;
-                }
-
-                // embed 成功 → WaitingGameReady；若 bootstrap_ready 已提前缓存则立即进 Ready
-                SetState(State.WaitingGameReady, "");
-                bool cached;
-                if (_cachedReady.TryGetValue(_currentAttemptId, out cached) && cached)
-                {
-                    TransitionToReady();
-                }
-                else
-                {
-                    ArmWaitTimeoutLocked(WAIT_GAME_READY_MS, "game_ready_timeout");
-                }
+                if (!IsEmbeddingAttemptLocked(flash, attempt) || _passiveLaunchConnection != 0) return;
+                if (success) CompleteEmbedLocked();
+                else FailEmbedLocked("embed_timeout");
             }
+        }
+
+        private bool IsEmbeddingAttemptLocked(Process flash, string attempt) => _state == State.Embedding
+            && ReferenceEquals(flash, _currentFlashProcess) && string.Equals(attempt, _currentAttemptId, StringComparison.Ordinal);
+
+        private void OnPassiveEmbedResult(Process flash, string attempt, int connection, CancellationToken ticket,
+            WindowManager.EmbedResult result)
+        {
+            bool IsCurrentTicketLocked()
+            {
+                if (IsEmbeddingAttemptLocked(flash, attempt) && connection == _passiveLaunchConnection
+                    && !ticket.IsCancellationRequested && _passiveEmbeddingCancellation?.Token == ticket)
+                    return _form?.IsShutdownAdmissionClosed != true;
+                LogManager.Log($"[LaunchFlow] stale passive embed outcome={result} attempt={attempt} generation={connection}");
+                return false;
+            }
+
+            // A native failure already owns the terminal outcome of this ticket.
+            // Do not delay it behind an unrelated in-flight socket write.
+            if (result != WindowManager.EmbedResult.Prepared)
+            {
+                lock (_stateLock)
+                    if (IsCurrentTicketLocked())
+                        FailEmbedLocked(result == WindowManager.EmbedResult.Failed ? "embed_timeout" : "embed_window_retired");
+                return;
+            }
+
+            // The transport uses the same connection -> state order for EOF,
+            // replacement and every generation-stamped bootstrap message.
+            _socketServer.RunWithConnectionTransitionFence(() =>
+            {
+                lock (_stateLock)
+                {
+                    if (!IsCurrentTicketLocked()) return false;
+                    if (!_socketServer.TryGetReadyGeneration(out int readyGeneration) || readyGeneration != connection)
+                    {
+                        FailEmbedLocked("embed_socket_replaced");
+                        return false;
+                    }
+                    if (!_windowManager.TryAcceptPassiveBootstrap(ticket, CompleteEmbedLocked))
+                    {
+                        FailEmbedLocked("embed_publication_invalidated");
+                        return false;
+                    }
+                    return true;
+                }
+            });
+        }
+
+        private bool HasCachedReadyLocked() => _cachedReady.TryGetValue(_currentAttemptId, out int cachedGeneration)
+            && (_passiveLaunchConnection == 0 || cachedGeneration == _passiveLaunchConnection);
+
+        private void CompleteEmbedLocked()
+        {
+            LogManager.Log("[LaunchFlow] OnEmbedResult=True");
+            PerfTrace.Mark("launch.embed_result", "success=true");
+            if (_resolvedSave != null && _resolvedSave.Kind == CF7Launcher.Save.DecisionKind.Repairable)
+            {
+                SetState(State.RepairPending, "");
+                LogManager.Log("[LaunchFlow] repair pending: gate armed, awaiting user repair decision");
+                return;
+            }
+            SetState(State.WaitingGameReady, "");
+            if (HasCachedReadyLocked()) TransitionToReady();
+            else ArmWaitTimeoutLocked(WAIT_GAME_READY_MS, "game_ready_timeout");
+        }
+
+        private void FailEmbedLocked(string reason)
+        {
+            LogManager.Log("[LaunchFlow] OnEmbedResult=False reason=" + reason);
+            PerfTrace.Mark("launch.embed_result", "success=false reason=" + reason);
+            TransitionToError(reason);
         }
 
         /// <summary>
@@ -3435,6 +3500,8 @@ namespace CF7Launcher.Guardian
             // 期间已被 AS2 抢先发出 (旧 asLoader 不认 saveDecision="repairable") → cache 命中 → 立刻
             // TransitionToReady. 否则武装 WAIT_GAME_READY_MS 超时等 AS2 加载完成.
             bool transitionToReadyImmediately = false;
+            int connection;
+            string attempt;
             lock (_stateLock)
             {
                 bool legal = (_state == State.RepairPending)
@@ -3446,9 +3513,10 @@ namespace CF7Launcher.Guardian
                         + " saveKind=" + (_resolvedSave != null ? _resolvedSave.Kind.ToString() : "null"));
                     return false;
                 }
+                connection = _passiveLaunchConnection;
+                attempt = _currentAttemptId;
                 SetState(State.WaitingGameReady, "");
-                bool cached;
-                if (_cachedReady.TryGetValue(_currentAttemptId, out cached) && cached)
+                if (HasCachedReadyLocked())
                 {
                     transitionToReadyImmediately = true;
                 }
@@ -3457,13 +3525,29 @@ namespace CF7Launcher.Guardian
                     ArmWaitTimeoutLocked(WAIT_GAME_READY_MS, "game_ready_timeout_after_repair");
                 }
             }
-            if (_socketServer != null) _socketServer.PushToClient(taskJson);
-            if (transitionToReadyImmediately)
+            if (connection > 0 && !_socketServer.TrySendIfGen(taskJson + "\0", connection))
             {
                 lock (_stateLock)
+                    if (_state == State.WaitingGameReady && _currentAttemptId == attempt && _passiveLaunchConnection == connection)
+                        TransitionToError("embed_socket_disconnected");
+                return false;
+            }
+            if (connection == 0 && _socketServer != null) _socketServer.PushToClient(taskJson);
+            if (transitionToReadyImmediately)
+            {
+                bool CompleteCachedRepair()
                 {
-                    if (_state == State.WaitingGameReady) TransitionToReady();
+                    lock (_stateLock)
+                    {
+                        if (_state != State.WaitingGameReady || _currentAttemptId != attempt
+                            || _passiveLaunchConnection != connection || (connection > 0
+                            && (!_socketServer.TryGetReadyGeneration(out int current) || current != connection))) return false;
+                        TransitionToReady();
+                        return true;
+                    }
                 }
+                if (connection > 0) _socketServer.RunWithConnectionTransitionFence(CompleteCachedRepair);
+                else CompleteCachedRepair();
             }
             return true;
         }
@@ -3560,7 +3644,7 @@ namespace CF7Launcher.Guardian
             {
                 SocketDisconnectDisposition disposition = ClassifySocketDisconnect(
                     closedGeneration, currentGeneration, _state, _pendingSlot == null,
-                    _prewarmAborting);
+                    _prewarmAborting, _passiveLaunchConnection);
                 if (disposition == SocketDisconnectDisposition.Ignore)
                 {
                     if (closedGeneration > 0 && currentGeneration > closedGeneration)
@@ -3569,6 +3653,13 @@ namespace CF7Launcher.Guardian
                             + closedGeneration + " currentGen=" + currentGeneration
                             + " state=" + _state);
                     }
+                    return;
+                }
+
+                if (disposition == SocketDisconnectDisposition.FailPassiveEmbedding)
+                {
+                    TransitionToError(currentGeneration == closedGeneration
+                        ? "embed_socket_disconnected" : "embed_socket_replaced");
                     return;
                 }
 
@@ -3622,17 +3713,24 @@ namespace CF7Launcher.Guardian
             Ignore,
             RestartPrewarmHandshake,
             DegradePrewarm,
-            ArmReadyZombie
+            ArmReadyZombie,
+            FailPassiveEmbedding
         }
+
+        private static bool IsAwaitingLaunchReady(State state) =>
+            state is State.Embedding or State.WaitingGameReady or State.RepairPending;
 
         internal static SocketDisconnectDisposition ClassifySocketDisconnect(
             int closedGeneration, int currentGeneration, State state,
-            bool pendingSlotIsNull, bool prewarmAborting)
+            bool pendingSlotIsNull, bool prewarmAborting, int passiveEmbeddingConnection = 0)
         {
             if (closedGeneration <= 0 || currentGeneration < closedGeneration)
                 return SocketDisconnectDisposition.Ignore;
             if (prewarmAborting || state == State.Resetting || state == State.Idle)
                 return SocketDisconnectDisposition.Ignore;
+
+            if (IsAwaitingLaunchReady(state) && closedGeneration == passiveEmbeddingConnection)
+                return SocketDisconnectDisposition.FailPassiveEmbedding;
 
             // XmlSocket reserves the replacement generation before publishing the old
             // disconnect.  The callback is totally ordered before replacement ready.
@@ -3785,6 +3883,22 @@ namespace CF7Launcher.Guardian
         private void SetState(State next, string msg)
         {
             State prev = _state;
+            if (prev == State.Embedding && next != State.Embedding)
+            {
+                if (_passiveEmbeddingCancellation != null)
+                {
+                    CancellationToken ticket = _passiveEmbeddingCancellation.Token;
+                    _passiveEmbeddingCancellation.Cancel();
+                    _windowManager.CancelPassiveBootstrapPublication(ticket, "launch_" + next.ToString().ToLowerInvariant());
+                    _passiveEmbeddingCancellation.Dispose();
+                }
+                _passiveEmbeddingCancellation = null;
+            }
+            if (IsAwaitingLaunchReady(prev) && !IsAwaitingLaunchReady(next))
+            {
+                _passiveLaunchConnection = 0;
+                _cachedReady.Clear();
+            }
             _state = next;
             _timerGen++;
             LogManager.Log("[LaunchFlow] " + prev + " -> " + next

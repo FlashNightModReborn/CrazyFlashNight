@@ -13,10 +13,13 @@ namespace CF7Launcher.Guardian
 
         private void SetTrackedFlashWindow(IntPtr window)
         {
-            CancelPassiveBootstrapPublication();
-            if (_flashHwnd != window) _revealedPassiveSource = IntPtr.Zero;
-            _flashHwnd = window;
-            Interlocked.Increment(ref _embedEpoch);
+            lock (_embedClaimLock)
+            {
+                RetirePassiveBootstrapLocked(EmbedResult.Superseded, "source_tracking_changed");
+                Volatile.Write(ref _publishedPassiveBootstrap, null);
+                _flashHwnd = window;
+                Interlocked.Increment(ref _embedEpoch);
+            }
         }
 
         internal void ConfigureSessionRoot(Form root)
@@ -35,12 +38,17 @@ namespace CF7Launcher.Guardian
             _passiveRoot = root.Handle;
         }
 
-        private void SessionRootCreated(object sender, EventArgs args) => _passiveRoot = _sessionRoot.Handle;
+        private void SessionRootCreated(object sender, EventArgs args)
+        {
+            lock (_embedClaimLock) _passiveRoot = _sessionRoot.Handle;
+        }
 
         private void SessionRootDestroyed(object sender, EventArgs args)
         {
-            CancelPassiveBootstrapPublication();
-            _passiveRoot = IntPtr.Zero;
+            // WinForms can recreate this Form's HWND without replacing the
+            // session. Keep the pending attempt until the watchdog checks the
+            // current managed owner and the restored window relationship.
+            lock (_embedClaimLock) _passiveRoot = IntPtr.Zero;
             PassiveInput?.SetForeground(false);
             PassiveInput?.SetBusinessEligible(false, "guardian_handle_destroyed");
         }

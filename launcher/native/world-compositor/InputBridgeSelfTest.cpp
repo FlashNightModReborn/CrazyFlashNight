@@ -24,7 +24,7 @@ namespace InputBridgeSelfTest {
 namespace {
 InputShared* state=nullptr;
 int focusGains=0, mouseDeliveries=0, nativeLeaves=0, failures=0;
-POINT lastMouseMove{};
+POINT lastMouseMove{}, lastLeftUp{};
 HWND observedChild=nullptr, expectedFocus=nullptr;
 bool focusChangedDuringMouseDelivery=false;
 unsigned seen[WM_MOUSELAST-WM_MOUSEFIRST+1]{};
@@ -36,6 +36,7 @@ LRESULT CALLBACK TargetProc(HWND hwnd,UINT message,WPARAM wp,LPARAM lp) {
     if(hwnd==observedChild && message==WM_SETFOCUS)focusGains++;
     if(message==WM_MOUSELEAVE) nativeLeaves++;
     if(message==WM_MOUSEMOVE) lastMouseMove={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
+    if(message==WM_LBUTTONUP) lastLeftUp={static_cast<SHORT>(LOWORD(lp)),static_cast<SHORT>(HIWORD(lp))};
     if(message==WM_MOUSEMOVE || message==WM_LBUTTONDOWN || message==WM_LBUTTONUP
         || message==WM_RBUTTONDOWN || message==WM_RBUTTONUP
         || message==WM_MBUTTONDOWN || message==WM_MBUTTONUP
@@ -224,9 +225,19 @@ int wmain(int argc,wchar_t** argv) {
     Check(seen[WM_LBUTTONUP-WM_MOUSEFIRST]==ups && state->staleRejected==2 && !state->heldButtons &&
         GetFocus()==other,"cancelled_epoch_tail_up_cannot_complete_the_old_press");
     SendDown(packet,4,sequence++);
-    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,4),PacketL(10,10,sequence++));
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_MOUSEMOVE-WM_MOUSEFIRST,MK_LBUTTON,4),PacketL(18,20,sequence++));
+    LONG freshCompleted=state->completedSeq;
+    LONG rejected=state->staleRejected;
+    // Reorder the old queued Up after the fresh Down and Move. It must never
+    // reach the native original while the fresh primary button owns the drag.
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,3),PacketL(11,10,6));
+    Check(seen[WM_LBUTTONUP-WM_MOUSEFIRST]==ups && state->completedSeq==freshCompleted &&
+        state->heldButtons==MK_LBUTTON && state->staleRejected==rejected+1,
+        "old_up_after_fresh_down_and_move_never_reaches_original");
+    InputBridgeSelfTest::Drive(packet,PacketW(WM_LBUTTONUP-WM_MOUSEFIRST,0,4),PacketL(-16,-23,sequence++));
     Check(seen[WM_LBUTTONDOWN-WM_MOUSEFIRST]==downs+1 && seen[WM_LBUTTONUP-WM_MOUSEFIRST]==ups+1 &&
-        !state->heldButtons && GetFocus()==other,"first_fresh_left_click_after_cancel_delivered_once");
+        !state->heldButtons && lastLeftUp.x<0 && lastLeftUp.y<0 && GetFocus()==other,
+        "first_fresh_left_click_after_cancel_delivered_once");
     for(UINT down:{WM_RBUTTONDOWN,WM_MBUTTONDOWN,WM_XBUTTONDOWN}) {
         UINT mask=down==WM_RBUTTONDOWN ? MK_RBUTTON : down==WM_MBUTTONDOWN ? MK_MBUTTON : MK_XBUTTON1;
         WPARAM extra=down==WM_XBUTTONDOWN ? static_cast<WPARAM>(XBUTTON1)<<16 : 0;

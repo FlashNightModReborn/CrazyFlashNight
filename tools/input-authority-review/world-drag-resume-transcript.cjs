@@ -115,6 +115,10 @@ mouse.onMouseDown();
 paintedHit = true;
 mouse.onMouseDown();
 assert.equal(owner, undefined, 'Outside click retires its retry without taking the next click');
+begin();
+assert.equal(owner, panel, 'Normal Button Press can capture after a failed physical hit');
+end();
+assert.equal(owner, undefined, 'The authored release still ends the ordinary drag');
 
 arm(9, 106);
 fullScreen.当前UI._visible = true;
@@ -159,6 +163,10 @@ mouse.onMouseDown();
 input.gateOpen = true;
 mouse.onMouseDown();
 assert.equal(owner, undefined, 'A closed gate never leaves a queued click to replay');
+begin();
+assert.equal(owner, panel, 'Reopening the gate permits a fresh ordinary Button Press');
+end();
+assert.equal(owner, undefined, 'A normal release settles the fresh press once');
 
 arm(16, 113);
 context._inputWire = { connection: 2, worldPointerCancelTicket: 0 };

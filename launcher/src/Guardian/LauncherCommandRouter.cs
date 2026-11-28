@@ -3274,7 +3274,7 @@ namespace CF7Launcher.Guardian
 
         public void RequestOpenPanel(string panelName, string source, string pageId, string frameLabel, string returnFrameLabel,
             string returnToPanel, string returnToInitDataJson, string initDataExtrasJson,
-            string openRequestId)
+            string openRequestId, int modifierConnection = 0)
         {
             if (string.IsNullOrEmpty(panelName)) return;
             string safeSource = string.IsNullOrEmpty(source) ? "as2_request" : source;
@@ -3426,7 +3426,7 @@ namespace CF7Launcher.Guardian
             }
             if (string.Equals(panelName, "modifier", StringComparison.OrdinalIgnoreCase))
             {
-                OpenModifierPanel(safeSource, initDataExtrasJson);
+                OpenModifierPanel(safeSource, initDataExtrasJson, modifierConnection);
                 return;
             }
             if (string.Equals(panelName, "settings", StringComparison.OrdinalIgnoreCase))
@@ -4320,7 +4320,7 @@ namespace CF7Launcher.Guardian
             OpenPanel("hairdresser", initData.ToString(Formatting.None));
         }
 
-        private void OpenModifierPanel(string source, string initDataExtrasJson)
+        private void OpenModifierPanel(string source, string initDataExtrasJson, int expectedConnection)
         {
             JObject data = ModifierTask.BuildOpenData(source, initDataExtrasJson);
             if (data == null)
@@ -4329,25 +4329,28 @@ namespace CF7Launcher.Guardian
                 return;
             }
             string token = data.Value<string>("token");
+            int connection = expectedConnection;
+            if (_socketServer != null && (!_socketServer.TryGetReadyGeneration(out connection)
+                || (expectedConnection > 0 && expectedConnection != connection))) return;
             if (_panelHost != null && _panelHost.IsPanelOpen)
             {
                 LogManager.Log("[Router] modifier rejected while another panel is active");
-                SendModifierOpenRejected(token);
+                SendModifierOpenRejected(token, connection);
                 return;
             }
-            if (_modifierOverlay == null || !_modifierOverlay.Open(data))
+            if (_modifierOverlay == null || !_modifierOverlay.Open(data, connection))
             {
                 LogManager.Log("[Router] modifier surface unavailable or not ready");
-                SendModifierOpenRejected(token);
+                SendModifierOpenRejected(token, connection);
             }
         }
 
-        private void SendModifierOpenRejected(string token)
+        private void SendModifierOpenRejected(string token, int connection)
         {
             string frame = ModifierTask.BuildPanelClosedFrame(token);
             if (frame == null) return;
             if (_gameCommandSenderOverride != null) _gameCommandSenderOverride(frame);
-            else if (_socketServer?.IsClientReady == true) _socketServer.TrySend(frame);
+            else if (connection > 0) _socketServer?.TrySendIfGen(frame, connection);
         }
 
         private void OpenSettingsPanel(string source)

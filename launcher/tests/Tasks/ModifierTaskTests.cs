@@ -44,6 +44,64 @@ namespace Launcher.Tests.Tasks
             };
         }
 
+        [Fact]
+        public void CloseRetriesKeepTheSameIdentityWhileFailureAndLostReceiptStayRetained()
+        {
+            var scope = new ModifierCloseScope("modifier.old.1", "modifier.panel.1", 4, 8, Guid.NewGuid().ToString("N"));
+            var received = new List<ModifierCloseScope>();
+            using var maxAttempts = new ManualResetEventSlim();
+            using var tracker = new ModifierPanelCloseTracker(attempt =>
+            {
+                lock (received)
+                {
+                    received.Add(attempt);
+                    if (received.Count == 1) return false;
+                    if (received.Count == 2) throw new InvalidOperationException("transport test");
+                    if (received.Count == 3) maxAttempts.Set();
+                    return true;
+                }
+            });
+            Assert.True(tracker.Retain(scope));
+            Assert.False(tracker.Acknowledge(scope, "closed"));
+            Assert.Empty(received);
+            tracker.Submit(scope);
+            Assert.False(tracker.Acknowledge(scope with { Generation = 5 }, "closed"));
+            Assert.False(tracker.Acknowledge(scope with { Connection = 9 }, "closed"));
+            Assert.False(tracker.Acknowledge(scope with { Instance = "modifier.panel.2" }, "closed"));
+            Assert.False(tracker.Acknowledge(scope, "ignored"));
+            Assert.True(maxAttempts.Wait(2500));
+            Thread.Sleep(360);
+            lock (received) Assert.Equal(new[] { scope, scope, scope }, received);
+            Assert.Equal(1, tracker.RetainedCount);
+            Assert.True(tracker.Acknowledge(scope, "closed"));
+            Assert.False(tracker.Acknowledge(scope, "closed"));
+            Assert.Equal(0, tracker.RetainedCount);
+            JObject request = Read(ModifierTask.BuildPanelClosedFrame(scope.Token, null, scope));
+            Assert.Equal(scope.Token, request.Value<string>("token"));
+            Assert.Equal(scope.Connection, request.Value<int>("connection"));
+            Assert.Equal(scope.Generation, request.Value<int>("generation"));
+            Assert.Equal(scope.Instance, request.Value<string>("instance"));
+            Assert.Equal(scope.CloseId, request.Value<string>("closeId"));
+        }
+
+        [Fact]
+        public void RetiredTransportAndLateReceiptCannotConsumeTheReplacementClose()
+        {
+            var old = new ModifierCloseScope("modifier.old.1", "modifier.panel.1", 4, 8, Guid.NewGuid().ToString("N"));
+            var current = new ModifierCloseScope("modifier.new.2", "modifier.panel.2", 5, 9, Guid.NewGuid().ToString("N"));
+            using var tracker = new ModifierPanelCloseTracker(_ => false);
+            Assert.True(tracker.Retain(old));
+            Assert.True(tracker.Retain(current));
+            tracker.Submit(old);
+            tracker.Submit(current);
+            tracker.RetireConnection(old.Connection);
+            Assert.Equal(1, tracker.RetainedCount);
+            Assert.False(tracker.Retain(old));
+            Assert.False(tracker.Acknowledge(old, "closed"));
+            Assert.True(tracker.Acknowledge(current, "retired"));
+            Assert.Equal(0, tracker.RetainedCount);
+        }
+
         private static JObject Read(string text) => JObject.Parse(text.TrimEnd('\0'));
 
         private static string CmdForAction(string action)

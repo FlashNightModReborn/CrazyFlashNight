@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.InputOwnership;
@@ -90,16 +93,31 @@ public sealed class WindowManagerFocusRestoreTests
         using var otherRoot = new Form();
         using var task = new CF7Launcher.Tasks.ModifierTask(() => true, _ => true);
         using var modifier = new ModifierNativeSurface(root, "owned", "owned", task);
-        using var editor = new ModifierInputOverlay(modifier);
         using var unrelated = new Form { Owner=root };
         using var otherModifier = new ModifierNativeSurface(otherRoot, "owned", "owned", task);
         var manager = new WindowManager(new RootFocusApi(), IntPtr.Zero);
         manager.ConfigureSessionRoot(root);
+        Rectangle bounds = new(-32000, -32000, 1016, 550);
+        var authority = R1UiAdapterTests.StartGameAuthority();
+        modifier.BindInputAuthority(authority, authority);
+        Assert.True(modifier.ResumePanel(bounds));
+        Assert.False(manager.IsPassiveInputWindow(modifier.Handle));
+        Assert.True(modifier.TryPost("{\"type\":\"panel_cmd\",\"panel\":\"modifier\",\"cmd\":\"open\",\"initData\":{\"panelInstanceId\":\"current\",\"token\":\"current-token\"}}"));
+        Assert.True(otherModifier.ResumePanel(bounds));
+        Assert.True(otherModifier.TryPost("{\"type\":\"panel_cmd\",\"panel\":\"modifier\",\"cmd\":\"open\",\"initData\":{\"panelInstanceId\":\"other\",\"token\":\"other-token\"}}"));
+        typeof(ModifierNativeSurface).GetMethod("SetTab", BindingFlags.Instance | BindingFlags.NonPublic)
+            .Invoke(modifier, new object[] { "items" });
+        var editor = (ModifierInputOverlay)typeof(ModifierNativeSurface).GetField("_inputOverlay",
+            BindingFlags.Instance | BindingFlags.NonPublic).GetValue(modifier);
         Assert.True(manager.IsPassiveInputWindow(modifier.Handle));
         Assert.True(manager.IsPassiveInputWindow(editor.Handle));
         Assert.False(manager.IsPassiveInputWindow(unrelated.Handle));
         Assert.False(manager.IsPassiveInputWindow(otherModifier.Handle));
         Assert.False(manager.IsPassiveInputWindow(IntPtr.Zero));
+        IntPtr modifierHandle = modifier.Handle, editorHandle = editor.Handle;
+        modifier.SuspendPanel();
+        Assert.False(manager.IsPassiveInputWindow(modifierHandle));
+        Assert.False(manager.IsPassiveInputWindow(editorHandle));
     });
 
     [Fact]
@@ -200,14 +218,260 @@ public sealed class WindowManagerFocusRestoreTests
         fixture.Window.ResetEmbedState();
         fixture.FocusApi.Foreground = fixture.Guardian.Handle;
         Assert.False(fixture.Window.RecoverPassiveBootstrapForTests());
-        Assert.Empty(fixture.Results);
+        Assert.True(SpinWait.SpinUntil(() =>
+        {
+            Application.DoEvents();
+            return fixture.Results.Count > 0;
+        }, TimeSpan.FromSeconds(2)));
+        Assert.False(Assert.Single(fixture.Results));
         Assert.Empty(fixture.FocusApi.ForegroundWrites);
+    });
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void PendingEmbedCanUseTheRecreatedHostOrRootOfTheSameSession(bool recreateRoot) => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, true, false);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add);
+        IntPtr original = recreateRoot ? fixture.Guardian.Handle : fixture.Host.Handle;
+        IntPtr source = fixture.Source.Handle;
+        // Keep the exact source alive while Windows replaces the managed host/root HWND.
+        IntPtr oldHost = fixture.Host.Handle;
+        SetParent(source, IntPtr.Zero);
+        Assert.NotEqual(oldHost, GetParent(source));
+        Assert.True(IsWindow(source));
+        if (recreateRoot) fixture.Guardian.RecreateNativeHandle();
+        else fixture.Host.RecreateNativeHandle();
+        IntPtr recreated = recreateRoot ? fixture.Guardian.Handle : fixture.Host.Handle;
+        Assert.NotEqual(original, recreated);
+
+        fixture.FocusApi.Foreground = original;
+        fixture.Window.RunEmbedWatchdogForTests();
+        Assert.Equal(fixture.Host.Handle, GetParent(source));
+        Assert.Empty(fixture.Results);
+        Assert.False(fixture.Window.RecoverPassiveBootstrapForTests());
+        Assert.Empty(fixture.FocusApi.ForegroundWrites);
+
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, false, false);
+        Assert.True(fixture.Window.RecoverPassiveBootstrapForTests());
+        fixture.Window.RunEmbedWatchdogForTests();
+        Assert.True(Assert.Single(fixture.Results));
+        Assert.Equal(source, fixture.Window.FlashHwnd);
+        Assert.Empty(fixture.FocusApi.ForegroundWrites);
+    });
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void PendingEmbedWithLostSourceOrHostCompletesFailureOnceWhileExternal(bool destroySource) => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, true, false);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add);
+        for (int sample = 0; sample < 32; sample++) fixture.Window.RunEmbedWatchdogForTests();
+        Assert.Empty(fixture.Results);
+
+        if (destroySource) fixture.Source.Dispose();
+        else
+        {
+            // Isolate host loss from destruction of its old Win32 children.
+            SetParent(fixture.Source.Handle, IntPtr.Zero);
+            fixture.Host.Dispose();
+        }
+        fixture.Window.RunEmbedWatchdogForTests();
+        fixture.Window.RunEmbedWatchdogForTests();
+        Assert.False(Assert.Single(fixture.Results));
+        Assert.Equal(fixture.External, fixture.FocusApi.Foreground);
+        Assert.Empty(fixture.FocusApi.ForegroundWrites);
+    });
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void UnsafeOrUnknownFocusOnlyExpiresAfterContinuousExactGuardianForeground(bool rawFocus) => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (rawFocus, rawFocus, false);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add);
+        long grace = WindowManager.PassiveBootstrapForegroundGraceMs;
+        fixture.Window.RunEmbedWatchdogForTests(0);
+        fixture.Window.RunEmbedWatchdogForTests(grace * 20);
+        Assert.Empty(fixture.Results);
+
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+        long firstReturn = grace * 21;
+        fixture.Window.RunEmbedWatchdogForTests(firstReturn);
+        fixture.Window.RunEmbedWatchdogForTests(firstReturn + grace - 1);
+        Assert.Empty(fixture.Results);
+
+        // A short genuine WinEvent excursion between watchdog samples resets the period.
+        fixture.FocusApi.Foreground = fixture.External;
+        fixture.Window.ObserveBootstrapForegroundForTests(fixture.External);
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+        fixture.Window.ObserveBootstrapForegroundForTests(fixture.Guardian.Handle);
+        long secondReturn = firstReturn + grace;
+        fixture.Window.RunEmbedWatchdogForTests(secondReturn);
+        fixture.Window.RunEmbedWatchdogForTests(secondReturn + grace - 1);
+        Assert.Empty(fixture.Results);
+        fixture.Window.RunEmbedWatchdogForTests(secondReturn + grace);
+        fixture.Window.RunEmbedWatchdogForTests(secondReturn + grace * 2);
+        Assert.False(Assert.Single(fixture.Results));
+        Assert.Empty(fixture.FocusApi.ForegroundWrites);
+    });
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void RecreatingAnOwnedHandleDoesNotExtendTheExistingForegroundGrace(bool recreateRoot) => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (false, false, false);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add);
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+        const long firstReturn = 100;
+        fixture.Window.RunEmbedWatchdogForTests(firstReturn);
+        IntPtr oldHandle = recreateRoot ? fixture.Guardian.Handle : fixture.Host.Handle;
+        IntPtr source = fixture.Source.Handle;
+        SetParent(source, IntPtr.Zero);
+        if (recreateRoot) fixture.Guardian.RecreateNativeHandle();
+        else fixture.Host.RecreateNativeHandle();
+        Assert.NotEqual(oldHandle, recreateRoot ? fixture.Guardian.Handle : fixture.Host.Handle);
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+
+        long deadline = firstReturn + WindowManager.PassiveBootstrapForegroundGraceMs;
+        fixture.Window.RunEmbedWatchdogForTests(deadline - 1);
+        Assert.Equal(fixture.Host.Handle, GetParent(source));
+        Assert.Empty(fixture.Results);
+        fixture.Window.RunEmbedWatchdogForTests(deadline);
+        Assert.False(Assert.Single(fixture.Results));
+    });
+
+    [Theory]
+    [InlineData(true, true, false)]
+    [InlineData(true, false, true)]
+    [InlineData(false, false, false)]
+    public void PublicationRejectsAFreshUnsafeCommitSample(bool known, bool focused, bool enabled) => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, true, false);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add);
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+
+        int reads = 0;
+        fixture.Window.PassiveBootstrapFocusForTests = () => ++reads < 3
+            ? (true, false, false) : (known, focused, enabled);
+        Assert.False(fixture.Window.RecoverPassiveBootstrapForTests());
+        Assert.Equal(3, reads);
+        Assert.Empty(fixture.Results);
+
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, false, false);
+        Assert.True(fixture.Window.RecoverPassiveBootstrapForTests());
+        Assert.True(Assert.Single(fixture.Results));
+    });
+
+    [Fact]
+    public void CancellingTheLaunchCannotPublishLateFocusRecovery() => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        using var cancellation = new CancellationTokenSource();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, true, false);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add, cancellation.Token);
+
+        cancellation.Cancel();
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, false, false);
+        Assert.False(fixture.Window.RecoverPassiveBootstrapForTests());
+        fixture.Window.RunEmbedWatchdogForTests();
+        Assert.False(Assert.Single(fixture.Results));
+        Assert.Empty(fixture.FocusApi.ForegroundWrites);
+    });
+
+    [Theory]
+    [InlineData("raw")]
+    [InlineData("enabled")]
+    [InlineData("unknown")]
+    [InlineData("root")]
+    [InlineData("retrack")]
+    [InlineData("cancel")]
+    public void HostCommitRejectsAPreparedTicketAfterTheWindowBoundaryChanges(string change) => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        using var cancellation = new CancellationTokenSource();
+        var outcomes = new List<WindowManager.EmbedResult>();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, true, false);
+        fixture.Window.StageBootstrapOfferForTests(fixture.Host, cancellation.Token, outcomes.Add);
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, false, false);
+        Assert.True(fixture.Window.RecoverPassiveBootstrapForTests());
+        Assert.Equal(WindowManager.EmbedResult.Prepared, Assert.Single(outcomes));
+
+        if (change == "root")
+        {
+            IntPtr source = fixture.Source.Handle;
+            SetParent(source, IntPtr.Zero);
+            fixture.Guardian.RecreateNativeHandle();
+            SetParent(source, fixture.Host.Handle);
+            Assert.True(IsWindow(source));
+        }
+        else if (change == "retrack") fixture.Window.RetrackBootstrapSourceForTests();
+        else if (change == "cancel") cancellation.Cancel();
+        else fixture.Window.PassiveBootstrapFocusForTests = () => (change != "unknown", change == "raw", change == "enabled");
+
+        Assert.False(fixture.Window.TryAcceptPassiveBootstrap(cancellation.Token,
+            () => throw new InvalidOperationException("expired offer reached Host")));
+        Assert.Single(outcomes);
+    });
+
+    [Fact]
+    public void DuplicateStageKeepsThePendingTicketAndSameHwndRetrackRequiresFreshPublication() => R1UiAdapterTests.Sta(() =>
+    {
+        using var fixture = new PassiveBootstrapFixture();
+        using var first = new CancellationTokenSource();
+        using var duplicate = new CancellationTokenSource();
+        using var next = new CancellationTokenSource();
+        var outcomes = new List<WindowManager.EmbedResult>();
+        var discarded = new List<WindowManager.EmbedResult>();
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, true, false);
+        fixture.Window.StageBootstrapOfferForTests(fixture.Host, first.Token, outcomes.Add);
+        fixture.Window.StageBootstrapOfferForTests(fixture.Host, first.Token, discarded.Add);
+        fixture.Window.StageBootstrapOfferForTests(fixture.Host, duplicate.Token, discarded.Add);
+        Assert.Equal(WindowManager.EmbedResult.Superseded, Assert.Single(discarded));
+        Assert.Empty(outcomes);
+
+        fixture.FocusApi.Foreground = fixture.Guardian.Handle;
+        fixture.Window.PassiveBootstrapFocusForTests = () => (true, false, false);
+        Assert.True(fixture.Window.RecoverPassiveBootstrapForTests());
+        Assert.Equal(WindowManager.EmbedResult.Prepared, Assert.Single(outcomes));
+        Assert.True(fixture.Window.TryAcceptPassiveBootstrap(first.Token, static () => { }));
+        IntPtr source = fixture.Source.Handle;
+        long firstEpoch = fixture.Window.EmbedEpoch;
+        fixture.Window.RetrackBootstrapSourceForTests();
+        Assert.Equal(source, fixture.Window.FlashHwnd);
+        Assert.True(fixture.Window.EmbedEpoch > firstEpoch);
+        fixture.Window.StagePassiveBootstrapForTests(fixture.Host, fixture.Results.Add, next.Token);
+        Assert.True(Assert.Single(fixture.Results));
+    });
+
+    [Fact]
+    public void WatchdogDropsTrackingWhenTheWindowStillExistsButTheProcessIsNotBound() => R1UiAdapterTests.Sta(() =>
+    {
+        using var source = new Panel();
+        IntPtr handle = source.Handle;
+        var manager = new WindowManager(new RootFocusApi(), handle);
+        Assert.True(IsWindow(handle));
+        manager.RunEmbedWatchdogForTests();
+        Assert.Equal(IntPtr.Zero, manager.FlashHwnd);
+        Assert.True(IsWindow(handle));
     });
 
     private sealed class PassiveBootstrapFixture : IDisposable
     {
-        public Form Guardian { get; } = new();
-        public Panel Host { get; } = new();
+        public RecreatingForm Guardian { get; } = new();
+        public RecreatingPanel Host { get; } = new();
+        public Panel Source { get; } = new();
         public IntPtr External { get; } = new(0x9ab);
         public RootFocusApi FocusApi { get; } = new();
         public SessionInputAuthority Authority { get; } = R1UiAdapterTests.StartGameAuthority();
@@ -216,14 +480,12 @@ public sealed class WindowManagerFocusRestoreTests
 
         public PassiveBootstrapFixture()
         {
-            var source = new Panel();
             Guardian.Controls.Add(Host);
-            Host.Controls.Add(source);
             FocusApi.Foreground = External;
             // WinForms can create a hidden control under a parking HWND. Model
             // the production SetParent boundary before staging the passive audit.
             IntPtr host = Host.Handle;
-            IntPtr flash = source.Handle;
+            IntPtr flash = Source.Handle;
             if (GetParent(flash) != host) SetParent(flash, host);
             Assert.Equal(host, GetParent(flash));
             Window = new WindowManager(FocusApi, flash);
@@ -234,9 +496,21 @@ public sealed class WindowManagerFocusRestoreTests
 
         public void Dispose()
         {
+            Window.StopWatchdog();
             Window.StopPassiveFocusAudit();
+            Source.Dispose();
             Guardian.Dispose();
         }
+    }
+
+    private sealed class RecreatingForm : Form
+    {
+        public void RecreateNativeHandle() => RecreateHandle();
+    }
+
+    private sealed class RecreatingPanel : Panel
+    {
+        public void RecreateNativeHandle() => RecreateHandle();
     }
 
     [DllImport("user32.dll", EntryPoint = "GetWindowLongW")]
@@ -250,6 +524,9 @@ public sealed class WindowManagerFocusRestoreTests
 
     [DllImport("user32.dll")]
     private static extern IntPtr SetParent(IntPtr window, IntPtr parent);
+
+    [DllImport("user32.dll")]
+    private static extern bool IsWindow(IntPtr window);
 }
 
 internal sealed class RootFocusApi : IFlashFocusWindowApi

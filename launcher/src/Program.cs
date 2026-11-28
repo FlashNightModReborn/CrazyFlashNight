@@ -976,6 +976,9 @@ class Program
                 "--legacy-http-automation") >= 0;
     }
 
+    internal static bool IsKeyboardlessPassiveProbe(bool isolatedRuntimeCandidate, bool legacyHttpAutomation, string noWgc)
+        => isolatedRuntimeCandidate && legacyHttpAutomation && string.Equals(noWgc, "1", StringComparison.Ordinal);
+
     internal static bool IsXmlSocketFlashLifecycleAuthorized(
         CF7Launcher.Guardian.GameLaunchFlow.State state)
     {
@@ -1177,6 +1180,29 @@ class Program
             arenaWorkerMode: workerPolicy != null || harnessPolicy != null,
             arenaWorkerMinimalRendering: workerPolicy?.Performance.MaxRenderHeight == 180,
             passiveInput: r1);
+        bool keyboardlessProbe = IsKeyboardlessPassiveProbe(isolatedRuntimeCandidate, legacyHttpAutomation,
+            Environment.GetEnvironmentVariable("CF7_R1_PASSIVE_PROBE_NO_WGC"));
+        if (form.KeyboardStartupFailure is string keyboardFailure && !keyboardlessProbe)
+        {
+            form.Dispose();
+            LogManager.Log("[Guardian] FATAL: session_keyboard_unavailable — " + keyboardFailure);
+            StartupFailureReporter.ReportTerminalFailure(
+                null,
+                projectRoot,
+                "session_keyboard_unavailable",
+                "CF7-LAUNCH-KEYBOARD-UNAVAILABLE",
+                "游戏键盘输入未能初始化",
+                keyboardFailure,
+                "请关闭此提示后，从原启动入口重新启动游戏。若多次出现，请保留诊断包并反馈。",
+                null,
+                config.SwfPath,
+                null);
+            PerfTrace.Mark("guardian.exit", "session_keyboard_unavailable");
+            PerfTrace.Shutdown();
+            return 1;
+        }
+        if (keyboardlessProbe && form.KeyboardStartupFailure is string probeKeyboardFailure)
+            LogManager.Log("[Guardian] Isolated passive probe has no physical keyboard source: " + probeKeyboardFailure);
         _guardianForm = form;
         if (r1 != null) form.BootstrapPanel?.BindInputAuthority(r1, r1);
         var tooltipCatalog = new TooltipCatalogSource(projectRoot, LogManager.Log);

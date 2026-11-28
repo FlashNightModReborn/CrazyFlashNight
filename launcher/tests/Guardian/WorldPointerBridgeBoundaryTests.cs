@@ -184,6 +184,62 @@ namespace CF7Launcher.Tests.Guardian
             surface.IntakePointer(Down,point,0);surface.IntakePointer(Up,point,0);surface.Drain();
             Assert.Equal(new[]{CancelMode,Down,Up},sink.Sent.ConvertAll(p=>p.Message));
         }
+        [Theory]
+        [InlineData(0, false)]
+        [InlineData(0, true)]
+        [InlineData(2, false)]
+        public void WorldOnlyCancelObservesTheExternalReleaseBeforeTheNextRenderTick(int otherHeldButton, bool foreignCapture)
+        {
+            var sink = new FakeSink();
+            int held = 1 | otherHeldButton;
+            using var flash = FakeSource();
+            using var surface = new WorldCompositionSurface(() => flash.Handle, sink,
+                physicalButtons: () => held, captureWindow: () => foreignCapture ? flash.Handle : IntPtr.Zero);
+            var authority = R1UiAdapterTests.StartGameAuthority();
+            surface.BindPassiveInput(authority, () => true);
+            surface.Show();
+            var inside = surface.PointToScreen(new Point(50, 50));
+            surface.IntakePointer(Down, inside, 0);
+            surface.Drain();
+            Assert.Single(sink.Sent);
+            Assert.Equal(Down, sink.Sent[0].Message);
+
+            surface.CancelWorldPointer("geometry_changed");
+            Assert.True(authority.TryTakeOutput(out var control, controlOnly: true));
+            surface.CancelWorldPointer("geometry_changed");
+            Assert.False(authority.TryTakeOutput(out _, controlOnly: true));
+            Assert.True(authority.Receive(control.Connection,
+                control.Payload.Replace("|WorldPointerCancel|", "|WorldPointerCancelled|") + "|1"));
+            surface.CancelWorldPointer("geometry_changed");
+            Assert.False(authority.TryTakeOutput(out _, controlOnly: true));
+            Assert.Equal(new[] { Down, CancelMode }, sink.Sent.Select(packet => packet.Message));
+
+            // The low-level hook still sees the button held until this callback returns.
+            // This real Up belongs outside P, so it is never forwarded to Flash.
+            Assert.False(surface.RouteCapturedPointer(-32000, -32000, Up, 0));
+            held = otherHeldButton;
+            surface.IntakePointer(Down, inside, 0);
+            held |= 1;
+            surface.Drain();
+            if (otherHeldButton != 0)
+            {
+                Assert.Equal(new[] { Down, CancelMode }, sink.Sent.Select(packet => packet.Message));
+                return;
+            }
+            Assert.Equal(new[] { Down, CancelMode, Down }, sink.Sent.Select(packet => packet.Message));
+            Assert.True(sink.Sent[^1].Epoch > sink.Sent[1].Epoch);
+
+            // A later release outside the mapped client belongs to the new
+            // admitted gesture, and must carry its own epoch and outside point.
+            surface.IntakePointer(Up, surface.PointToScreen(new Point(-15, -20)), 0);
+            held = 0;
+            surface.Drain();
+            Assert.Equal(new[] { Down, CancelMode, Down, Up }, sink.Sent.Select(packet => packet.Message));
+            Assert.Equal(sink.Sent[^2].Epoch, sink.Sent[^1].Epoch);
+            Assert.True(sink.Points[^1].X < 0);
+            Assert.True(sink.Points[^1].Y < 0);
+        }
+
         [Fact] public void OwnerDeactivateCancelsPointerAndUnsubscribesOnDispose()
         {
             var sink=new FakeSink();

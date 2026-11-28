@@ -4943,11 +4943,11 @@ namespace CF7Launcher.Guardian
             _modifierOverlay = overlay;
         }
 
-        internal bool SendModifierPanelClosed(string token)
+        internal bool SendModifierPanelClosed(string token, int connection)
         {
             string frame = ModifierTask.BuildPanelClosedFrame(token,
                 FocusTrace.Enabled && FocusTrace.IsRolling ? FocusTrace.Session : null);
-            return frame != null && _socketServer?.IsClientReady == true && _socketServer.TrySend(frame);
+            return connection > 0 && frame != null && _socketServer?.TrySendIfGen(frame, connection) == true;
         }
 
         public void SetGymTrainingTask(GymTrainingTask task)
@@ -9114,7 +9114,7 @@ namespace CF7Launcher.Guardian
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
             if (_garagePurchaseTask != null) _garagePurchaseTask.ClearPending();
             if (_sleepTask != null) _sleepTask.ClearPending();
-            if (_modifierOverlay != null) _modifierOverlay.OnSocketDisconnected();
+            _modifierOverlay?.OnSocketDisconnected(closedGeneration);
             if (_subwaySelectTask != null) _subwaySelectTask.ClearPending();
             if (_eggStageSelectTask != null) _eggStageSelectTask.ClearPending();
             _bookComicTask?.OnDisconnected();
@@ -9261,15 +9261,26 @@ namespace CF7Launcher.Guardian
             string openRequestId)
         {
             if (_disposed) return;
+            int modifierConnection = 0;
+            if (string.Equals(panelName, "modifier", StringComparison.OrdinalIgnoreCase)
+                && (_socketServer == null || !_socketServer.TryGetReadyGeneration(out modifierConnection))) return;
+            RequestOpenPanelForConnection(panelName, source, pageId, frameLabel, returnFrameLabel,
+                returnToPanel, returnToInitDataJson, initDataExtrasJson, openRequestId, modifierConnection);
+        }
+
+        private void RequestOpenPanelForConnection(string panelName, string source, string pageId, string frameLabel,
+            string returnFrameLabel, string returnToPanel, string returnToInitDataJson, string initDataExtrasJson,
+            string openRequestId, int modifierConnection)
+        {
+            if (_disposed) return;
             if (this.IsHandleCreated && this.InvokeRequired)
             {
                 try
                 {
                     this.BeginInvoke(new Action(delegate()
                     {
-                        RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
-                            returnToPanel, returnToInitDataJson, initDataExtrasJson,
-                            openRequestId);
+                        RequestOpenPanelForConnection(panelName, source, pageId, frameLabel, returnFrameLabel,
+                            returnToPanel, returnToInitDataJson, initDataExtrasJson, openRequestId, modifierConnection);
                     }));
                 }
                 catch { }
@@ -9279,8 +9290,7 @@ namespace CF7Launcher.Guardian
             if (_commandRouter != null)
             {
                 _commandRouter.RequestOpenPanel(panelName, source, pageId, frameLabel, returnFrameLabel,
-                    returnToPanel, returnToInitDataJson, initDataExtrasJson,
-                    openRequestId);
+                    returnToPanel, returnToInitDataJson, initDataExtrasJson, openRequestId, modifierConnection);
                 return;
             }
             LogManager.Log("[Panel] RequestOpenPanel before router wired, panel=" + (panelName ?? "<null>"));

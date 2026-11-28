@@ -322,12 +322,21 @@ namespace CF7Launcher.Guardian
 
         internal bool OwnsCurrentPanelForeground(IntPtr foreground)
         {
-            if (!Active || !Visible || !IsHandleCreated || foreground == IntPtr.Zero) return false;
-            return foreground == Handle || (_inputOverlay.Visible && _inputOverlay.IsHandleCreated
-                && foreground == _inputOverlay.Handle);
+            if (!Active || !Visible || !IsHandleCreated || foreground == IntPtr.Zero
+                || _token.Length == 0 || _instance.Length == 0) return false;
+            if (foreground == Handle) return true;
+            if (!_inputOverlay.Visible || !_inputOverlay.IsHandleCreated || foreground != _inputOverlay.Handle) return false;
+            return Array.Exists(_editors, editor => editor.Visible && editor.IsHandleCreated && !editor.RecreatingHandle
+                && (_textAuthority == null || editor.InputInstanceGeneration > 0));
         }
 
         internal bool IsUserCloseRequested(int generation) => _userCloseGeneration == generation;
+
+        internal void ReportCloseFocusFailure()
+            => SetStatus("暂时无法把前台交回游戏。请再次点击关闭。", "error");
+
+        internal void ReportCloseReceiptUnavailable()
+            => SetStatus("已有关闭请求待游戏确认。请稍后再试。", "error");
 
         protected override bool IsClickThrough { get { return false; } }
         protected override bool ShowWithoutActivation { get { return true; } }
@@ -378,6 +387,8 @@ namespace CF7Launcher.Guardian
             CancelManagedPointer("modifier_panel_resumed");
             _editorExitReceipt = null;
             _sessionGeneration++;
+            _token = "";
+            _instance = "";
             Owner = _owner;
             Bounds = rect;
             _active = true;
@@ -1147,6 +1158,7 @@ namespace CF7Launcher.Guardian
             finally
             {
                 if (_userCloseGeneration == generation) _userCloseGeneration = null;
+                if (Active && generation == _sessionGeneration) _closeRaised = false;
             }
         }
 

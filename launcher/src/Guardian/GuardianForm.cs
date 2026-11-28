@@ -30,20 +30,9 @@ namespace CF7Launcher.Guardian
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
             int X, int Y, int cx, int cy, uint uFlags);
 
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-        private const int WM_HOTKEY = 0x0312;
         private const int WM_DPICHANGED = 0x02E0;
         private const int WM_SIZE = 0x0005;
         private const int WM_ACTIVATEAPP = 0x001C;
-        private const uint MOD_CONTROL = 0x0002;
-        private const int HK_CTRL_F = 0xCF01;
-        private const int HK_CTRL_Q = 0xCF02;
-        private const int HK_ESC = 0xCF10;
         private const int SIZE_RESTORED = 0;
         private const int SIZE_MINIMIZED = 1;
         private const int SIZE_MAXIMIZED = 2;
@@ -58,9 +47,6 @@ namespace CF7Launcher.Guardian
         private const int DesiredBootstrapClientHeight = 900;
         private const int MinimumBootstrapClientWidth = 1120;
         private const int MinimumBootstrapClientHeight = 640;
-
-        // 工具栏按钮键
-        private static readonly Keys[] AllHotkeyKeys = { Keys.Q, Keys.W, Keys.R, Keys.F, Keys.P, Keys.O };
 
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
@@ -91,8 +77,11 @@ namespace CF7Launcher.Guardian
         private bool _runtimeViewportWasMaximized;
         private int _runtimeViewportLastSizeCode = -1;
 
-        private KeyboardHook _kbHook; // 前台感知低级钩子，替代 RegisterHotKey
+        private KeyboardHook _kbHook;
+        private string _keyboardStartupFailure;
         private readonly SessionInputAuthority _passiveInput;
+        internal string KeyboardStartupFailure => _passiveInput != null && !ArenaWorkerMode && _kbHook?.IsInstalled != true
+            ? _keyboardStartupFailure ?? "hook_unavailable_after_install" : null;
         private WebOverlayForm _webOverlay; // 面板系统：ESC→PostToWeb
 
         // 进程激活去抖用于呈现和性能决策。
@@ -163,7 +152,8 @@ namespace CF7Launcher.Guardian
 
         internal GuardianForm(string bootstrapWebDir, bool bootstrapWebView2DisableGpu, string bootstrapWebView2AdditionalArgs,
             bool bootstrapWebView2DeveloperMode, bool isolatedRuntimeCandidate, bool arenaWorkerMode,
-            bool arenaWorkerMinimalRendering, SessionInputAuthority passiveInput)
+            bool arenaWorkerMinimalRendering, SessionInputAuthority passiveInput,
+            Func<KeyboardHook> createKeyboardHook = null)
         {
             if (arenaWorkerMinimalRendering && !arenaWorkerMode)
                 throw new ArgumentException("Minimal Worker rendering requires Arena Worker mode.");
@@ -190,8 +180,8 @@ namespace CF7Launcher.Guardian
             }
             if (!ArenaWorkerMode)
             {
-                SetupTrayIcon();
-                if (_passiveInput != null) SetupHotkeys();
+                if (_passiveInput != null) SetupHotkeys(createKeyboardHook?.Invoke() ?? new KeyboardHook());
+                if (KeyboardStartupFailure == null) SetupTrayIcon();
                 SetupForegroundWatchdog();
             }
             else
@@ -488,11 +478,9 @@ namespace CF7Launcher.Guardian
         //  Flash SA 的原生快捷键由 WindowManager.SetMenu(null) 从源头禁用
         // ============================================================
 
-        private void SetupHotkeys()
+        private void SetupHotkeys(KeyboardHook keyboard)
         {
-            // 用前台感知的低级钩子替代 RegisterHotKey（后者是系统全局的，
-            // 会吞掉其他应用的 Ctrl+F 等快捷键，影响开发效率）
-            _kbHook = new KeyboardHook();
+            _kbHook = keyboard;
 
             _kbHook.BindPassiveInput(_passiveInput,
                     () => !IsShutdownAdmissionClosed && !_sessionLocked && !_trayMenuOpen && _windowManager?.PassiveSessionForeground() == true,
@@ -536,28 +524,10 @@ namespace CF7Launcher.Guardian
                 }
             });
 
-            if (!_kbHook.Install())
-            {
-                _kbHook.Dispose();
-                _kbHook = null;
-                LogManager.Log("[Hotkey] Session keyboard source unavailable; registering emergency fallback hotkeys");
-                FallbackRegisterHotkeys();
-            }
-        }
-
-        private void FallbackRegisterHotkeys()
-        {
-            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer { Interval = 200 };
-            t.Tick += delegate
-            {
-                if (!this.IsHandleCreated) return;
-                t.Stop();
-                t.Dispose();
-                bool f = RegisterHotKey(this.Handle, HK_CTRL_F, MOD_CONTROL, (uint)Keys.F);
-                bool q = RegisterHotKey(this.Handle, HK_CTRL_Q, MOD_CONTROL, (uint)Keys.Q);
-                LogManager.Log("[Hotkey] Fallback RegisterHotKey Ctrl+F=" + f + " Ctrl+Q=" + q);
-            };
-            t.Start();
+            if (_kbHook.Install()) return;
+            _keyboardStartupFailure = _kbHook.InstallFailure ?? "hook_install_failed";
+            _kbHook.Dispose();
+            _kbHook = null;
         }
 
         private void DispatchShortcutToUi(Action action)
@@ -600,7 +570,7 @@ namespace CF7Launcher.Guardian
             LogManager.Log("[GpuProbe] Ctrl+G enabled (dev-only)");
         }
 
-        private void DoUnregisterHotkeys()
+        private void StopInputObservation()
         {
             StopUiFreezeProbe();
             if (_foregroundWatchdog != null)
@@ -617,12 +587,6 @@ namespace CF7Launcher.Guardian
             }
             _kbHook?.Dispose();
             _kbHook = null;
-            if (this.IsHandleCreated)
-            {
-                UnregisterHotKey(this.Handle, HK_CTRL_F);
-                UnregisterHotKey(this.Handle, HK_CTRL_Q);
-                UnregisterHotKey(this.Handle, HK_ESC);
-            }
         }
 
         protected override void WndProc(ref Message m)
@@ -642,22 +606,6 @@ namespace CF7Launcher.Guardian
                 ScheduleViewportRefresh("guardian_dpi_changed");
                 base.WndProc(ref m);
                 return;
-            }
-
-            if (m.Msg == WM_HOTKEY && _kbHook == null)
-            {
-                int id = m.WParam.ToInt32();
-                if (id == HK_ESC || id == HK_CTRL_F)
-                {
-                    if (!IsReadyForHotkey()) return;
-                    ToggleFullscreen();
-                    return;
-                }
-                if (id == HK_CTRL_Q)
-                {
-                    EmergencyExit(EmergencyExitReason.CtrlQ);
-                    return;
-                }
             }
 
             // 应用激活状态：WM_ACTIVATEAPP 是进程级信号（同进程窗口间切换不触发），
@@ -861,7 +809,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public IPanelEscapeSource GetPanelEscapeSource()
         {
-            return _kbHook;
+            return _kbHook is { IsInstalled: true } hook ? hook : null;
         }
 
         // native_interaction ESC 处理器（NPC 菜单 / pinned tooltip 关闭）——
@@ -1840,7 +1788,7 @@ namespace CF7Launcher.Guardian
                 OnShutdownEarly = null;
             }
             this.FormClosing -= OnFormClosing;
-            DoUnregisterHotkeys();
+            StopInputObservation();
             CleanupTrayIcon();
             // 在退出消息循环前终结 Flash + 停音频，不依赖 post-Run 清理
             if (OnKillFlash != null)
@@ -1898,7 +1846,7 @@ namespace CF7Launcher.Guardian
                     _viewportLongSettleTimer.Dispose();
                     _viewportLongSettleTimer = null;
                 }
-                StopUiFreezeProbe();
+                StopInputObservation();
                 CleanupTrayIcon();
             }
             base.Dispose(disposing);

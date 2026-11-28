@@ -496,7 +496,7 @@ public sealed class R1UiAdapterTests
         using var task = new ModifierTask(() => true, _ => true);
         var closed = new List<string>();
         using var overlay = new ModifierOverlay(owner, "owned", "owned", task,
-            token => { closed.Add(token); return true; }, null);
+            (token, _) => { closed.Add(token); return true; }, null);
         var surface = (ModifierNativeSurface)Field(overlay, "_surface").GetValue(overlay);
         SetField(surface, "_disposed", true);
         const string token = "modifier.test.pending";
@@ -511,6 +511,7 @@ public sealed class R1UiAdapterTests
     [InlineData("surface", "user", true, true)]
     [InlineData("editor", "user", true, true)]
     [InlineData("surface", "user", true, false)]
+    [InlineData("editor", "user", true, false)]
     [InlineData("external", "user", false, true)]
     [InlineData("other_owned", "user", false, true)]
     [InlineData("guardian", "user", false, true)]
@@ -529,7 +530,7 @@ public sealed class R1UiAdapterTests
         manager.ConfigureSessionRoot(owner);
         var notices = new List<string>();
         using var overlay = new ModifierOverlay(owner, "owned", "owned", task,
-            token => { notices.Add(token); return true; }, null, manager);
+            (token, _) => { notices.Add(token); return true; }, null, manager);
         var authority = StartGameAuthority();
         overlay.BindInputAuthority(authority, authority);
         const string token = "modifier.foreground.fixture";
@@ -551,13 +552,7 @@ public sealed class R1UiAdapterTests
         bool? bothVisibleAtHandoff = null;
         api.BeforeForegroundWrite = () => bothVisibleAtHandoff = surface.Active && surface.Visible && editor.Visible;
 
-        if (closeSource == "host") overlay.CloseFromHost();
-        else if (closeSource == "command")
-            Assert.True(surface.TryPost(new JObject
-            {
-                ["type"] = "panel_cmd", ["panel"] = "modifier", ["cmd"] = "force_close"
-            }.ToString()));
-        else
+        void ClickClose()
         {
             Point point = Center(ModifierNativeLayout.ToClient(ModifierNativeLayout.Close, surface.ClientSize));
             var click = new MouseEventArgs(MouseButtons.Left, 1, point.X, point.Y, 0);
@@ -565,9 +560,19 @@ public sealed class R1UiAdapterTests
             Invoke(surface, "OnMouseUp", click);
         }
 
-        Assert.False(overlay.IsOpen);
-        Assert.False(editor.Visible);
-        Assert.Equal(token, Assert.Single(notices));
+        if (closeSource == "host") overlay.CloseFromHost();
+        else if (closeSource == "command")
+            Assert.True(surface.TryPost(new JObject
+            {
+                ["type"] = "panel_cmd", ["panel"] = "modifier", ["cmd"] = "force_close"
+            }.ToString()));
+        else ClickClose();
+
+        bool retainedOnFailedHandoff = acceptedScope && !applyForeground;
+        Assert.Equal(retainedOnFailedHandoff, overlay.IsOpen);
+        Assert.Equal(retainedOnFailedHandoff, editor.Visible);
+        if (retainedOnFailedHandoff) Assert.Empty(notices);
+        else Assert.Equal(token, Assert.Single(notices));
         if (acceptedScope)
         {
             Assert.Equal(owner.Handle, Assert.Single(api.ForegroundWrites));
@@ -579,6 +584,15 @@ public sealed class R1UiAdapterTests
             Assert.Empty(api.ForegroundWrites);
             Assert.Null(bothVisibleAtHandoff);
             Assert.Equal(foregroundBefore, api.Foreground);
+        }
+        if (retainedOnFailedHandoff)
+        {
+            api.ApplyForegroundWrite = true;
+            ClickClose();
+            Assert.False(overlay.IsOpen);
+            Assert.False(editor.Visible);
+            Assert.Equal(token, Assert.Single(notices));
+            Assert.Equal(new[] { owner.Handle, owner.Handle }, api.ForegroundWrites);
         }
     });
 
@@ -593,7 +607,7 @@ public sealed class R1UiAdapterTests
         var manager = new WindowManager(api, IntPtr.Zero);
         manager.ConfigureSessionRoot(owner);
         using var overlay = new ModifierOverlay(owner, "owned", "owned", task,
-            token => { closed.Add(token); return true; }, null, manager);
+            (token, _) => { closed.Add(token); return true; }, null, manager);
         overlay.Prewarm();
         JObject Data(string token) => ModifierTask.BuildOpenData("nativehud_modifier",
             new JObject { ["token"] = token }.ToString());
@@ -613,6 +627,35 @@ public sealed class R1UiAdapterTests
         Assert.Equal(oldToken, Assert.Single(closed));
         overlay.CloseFromHost();
         Assert.Equal(new[] { oldToken, newToken }, closed);
+    });
+
+    [Fact]
+    public void ModifierDisconnectCannotReopenThroughItsRealVisibilityCallback() => Sta(() =>
+    {
+        using var owner = CreateOwner();
+        owner.Show();
+        using var task = new ModifierTask(() => true, _ => true);
+        using var overlay = new ModifierOverlay(owner, "owned", "owned", task, (_, _) => true, null);
+        JObject first = new() { ["token"] = "modifier.test.old" };
+        JObject replacement = new() { ["token"] = "modifier.test.new" };
+        Assert.True(overlay.Open(first));
+        var surface = (ModifierNativeSurface)Field(overlay, "_surface").GetValue(overlay);
+        var editor = (ModifierInputOverlay)Field(surface, "_inputOverlay").GetValue(surface);
+        Invoke(surface, "SetTab", "items");
+        Assert.True(editor.Visible);
+        bool? openedInHide = null;
+        EventHandler onHidden = (_, _) =>
+        {
+            if (!editor.Visible) openedInHide = overlay.Open(replacement);
+        };
+        editor.VisibleChanged += onHidden;
+        overlay.OnSocketDisconnected(0);
+        editor.VisibleChanged -= onHidden;
+        Assert.False(openedInHide);
+        Assert.False(overlay.IsOpen);
+        Assert.True(overlay.Open(replacement));
+        Assert.True(overlay.IsOpen);
+        Assert.Equal("modifier.test.new", Field(overlay, "_token").GetValue(overlay));
     });
 
     [Fact]

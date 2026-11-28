@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CF7Launcher.Bus;
+using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -42,6 +43,8 @@ namespace CF7Launcher.Tasks
         private readonly object _gate = new object();
         private readonly object _webGate = new object();
         private readonly PanelPendingCallTracker<PendingRequest> _pending;
+        private readonly XmlSocketServer _socket;
+        private readonly ModifierPanelCloseTracker _closeTracker;
         private Action<string> _post;
         private Action<Action> _invoke;
         private string _unresolvedToken;
@@ -50,7 +53,14 @@ namespace CF7Launcher.Tasks
 
         public ModifierTask(XmlSocketServer socket) : this(
             () => socket != null && socket.IsClientReady,
-            text => socket != null && socket.TrySend(text)) { }
+            text => socket != null && socket.TrySend(text))
+        {
+            if (socket == null) return;
+            _socket = socket;
+            _closeTracker = new ModifierPanelCloseTracker(scope =>
+                socket.TrySendIfGen(BuildPanelClosedFrame(scope.Token, CloseTraceSession(), scope), scope.Connection));
+            socket.OnClientDisconnectedForGeneration += _closeTracker.RetireConnection;
+        }
 
         public ModifierTask(Func<bool> ready, Func<string, bool> send, int timeoutMs = 12000)
         {
@@ -95,6 +105,8 @@ namespace CF7Launcher.Tasks
         public void Dispose()
         {
             lock (_gate) { _disposed = true; }
+            if (_socket != null) _socket.OnClientDisconnectedForGeneration -= _closeTracker.RetireConnection;
+            _closeTracker?.Dispose();
             _pending.Dispose();
         }
 
@@ -115,7 +127,41 @@ namespace CF7Launcher.Tasks
             };
         }
 
-        internal static string BuildPanelClosedFrame(string token, string focusTraceSession = null)
+        internal bool UsesCloseReceipts => _closeTracker != null;
+        internal bool CanRetainPanelClose => _closeTracker?.HasCapacity ?? true;
+
+        internal bool TryBindPanelConnection(int expected, out int connection)
+        {
+            connection = 0;
+            return _socket == null || (_socket.TryGetReadyGeneration(out connection) && (expected == 0 || expected == connection));
+        }
+
+        internal ModifierCloseScope? RetainPanelClose(string token, string instance, int generation, int connection)
+        {
+            if (_closeTracker == null || !TryBindPanelConnection(connection, out int current) || current != connection) return null;
+            var scope = new ModifierCloseScope(token, instance, generation, connection, Guid.NewGuid().ToString("N"));
+            return _closeTracker.Retain(scope) ? scope : null;
+        }
+
+        internal void SubmitRetainedPanelClose(ModifierCloseScope scope) => _closeTracker?.Submit(scope);
+
+        internal string HandlePanelCloseReceipt(JObject message, int connection)
+        {
+            if (!Exact(message, "task", "v", "token", "instance", "generation", "connection", "closeId", "disposition")
+                || Text(message["task"]) != "modifier_close_receipt" || !Integer(message["v"], 1, 1)
+                || !Integer(message["connection"], 1, int.MaxValue) || message.Value<int>("connection") != connection
+                || !Integer(message["generation"], 1, int.MaxValue) || !TryBindPanelConnection(connection, out int current)
+                || connection != current) return null;
+            string token = Text(message["token"]), instance = Text(message["instance"]), closeId = Text(message["closeId"]);
+            if (!SafeToken.IsMatch(token ?? "") || !SafeId.IsMatch(instance ?? "") || !Guid.TryParseExact(closeId, "N", out _)) return null;
+            var receipt = new ModifierCloseScope(token, instance, message.Value<int>("generation"), connection, closeId);
+            _closeTracker?.Acknowledge(receipt, Text(message["disposition"]));
+            return null;
+        }
+
+        private static string CloseTraceSession() => FocusTrace.Enabled && FocusTrace.IsRolling ? FocusTrace.Session : null;
+
+        internal static string BuildPanelClosedFrame(string token, string focusTraceSession = null, ModifierCloseScope? identity = null)
         {
             if (!SafeToken.IsMatch(token ?? "")) return null;
             var command = new JObject
@@ -124,6 +170,14 @@ namespace CF7Launcher.Tasks
                 ["action"] = "modifierPanelClosed",
                 ["token"] = token
             };
+            if (identity is { } close)
+            {
+                command["v"] = 1;
+                command["instance"] = close.Instance;
+                command["generation"] = close.Generation;
+                command["connection"] = close.Connection;
+                command["closeId"] = close.CloseId;
+            }
             if (!string.IsNullOrEmpty(focusTraceSession)) command["focusTraceSession"] = focusTraceSession;
             return command.ToString(Formatting.None) + "\0";
         }

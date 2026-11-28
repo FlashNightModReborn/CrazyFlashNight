@@ -291,6 +291,10 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal bool OwnsCurrentPanelForeground(IntPtr window)
+            => window != IntPtr.Zero && !IsDisposed && Visible && IsHandleCreated && window == Handle
+                && Owner is ModifierNativeSurface panel && panel.OwnsCurrentPanelForeground(window);
+
         internal void Sync(bool visible, Rectangle bounds)
         {
             Bounds = bounds;

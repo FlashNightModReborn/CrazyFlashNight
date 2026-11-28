@@ -182,7 +182,6 @@ namespace CF7Launcher.Guardian
         internal SessionInputAuthority PassiveInput {get; private set;}
         private volatile IntPtr _passiveRoot;
         private (bool Known,bool Focused,bool Enabled,IntPtr Focus,IntPtr Source)? _lastAudit;
-        private IntPtr _revealedPassiveSource;
         private long _focusSampleCount, _failedFocusQueries, _startupRawFocus, _runtimeRawFocus;
         private long _startupCorrections, _runtimeStyleViolations, _runtimeFocusNotifications;
         private long _lastAuditLog;
@@ -214,9 +213,10 @@ namespace CF7Launcher.Guardian
             var surface = Control.FromHandle(window);
             if (surface is Hud.Dialogue.DialogueInterjectConfigWindow config)
                 return includeConfig && config.IsRevealed;
+            if (surface is ModifierNativeSurface modifier) return modifier.OwnsCurrentPanelForeground(window);
+            if (surface is ModifierInputOverlay editor) return editor.OwnsCurrentPanelForeground(window);
             return surface is WorldCompositor.WorldCompositionSurface or WebOverlayForm or CompositionHelpSurface
-                or SceneTransitionBackingForm or ModifierNativeSurface or ModifierInputOverlay
-                or NativeHudOverlay or Hud.Dialogue.DialogueInterjectInputOverlay;
+                or SceneTransitionBackingForm or NativeHudOverlay or Hud.Dialogue.DialogueInterjectInputOverlay;
         }
         internal void ConfigurePassiveInput(SessionInputAuthority input, Form root)
         {
@@ -231,12 +231,15 @@ namespace CF7Launcher.Guardian
             }
             ConfigureSessionRoot(root);
             PassiveInput = input;
+            // The UI message pump outlives a native Guardian or FlashHostPanel
+            // handle recreation. Dispatch the one embed completion on that pump.
+            _passiveBootstrapUi ??= new WindowsFormsSynchronizationContext();
             ApplyPassiveStyle(_flashHwnd);
             const uint foregroundEvent = 0x0003; // EVENT_SYSTEM_FOREGROUND
             _focusEvent=(_,evt,window,_,_,_,eventTime)=> {
                 if (evt != foregroundEvent) {
                     IntPtr flash = _flashHwnd;
-                    if (flash != IntPtr.Zero && flash == _revealedPassiveSource && InsideFlash(flash, window)) {
+                    if (WasPassiveBootstrapPublished(flash) && InsideFlash(flash, window)) {
                         Interlocked.Increment(ref _runtimeFocusNotifications);
                         PassiveInput.SetForeground(false);
                         LogManager.Log($"event=passive_focus_notification stage=runtime hwnd=0x{window:X} flash=0x{flash:X} eventTime={eventTime}");
@@ -246,6 +249,7 @@ namespace CF7Launcher.Guardian
                 }
                 // Even a short excursion between two UI ticks invalidates the old
                 // observation generation. Only a fresh sample may requalify input.
+                ObserveBootstrapForeground(window);
                 if (!IsPassiveInputWindow(window)) PassiveInput.SetForeground(false);
                 if (!IsPassiveInputWindow(window, includeConfig: false))
                     PassiveInput.SetBusinessEligible(false, "foreground_lost");
@@ -257,7 +261,7 @@ namespace CF7Launcher.Guardian
         }
         internal void StopPassiveFocusAudit()
         {
-            CancelPassiveBootstrapPublication();
+            lock (_embedClaimLock) RetirePassiveBootstrapLocked(EmbedResult.Cancelled, "passive_audit_stopped");
             if(_hostFocusHook!=IntPtr.Zero)UnhookWinEvent(_hostFocusHook);
             if(_flashFocusHook!=IntPtr.Zero)UnhookWinEvent(_flashFocusHook);
             if(_foregroundHook!=IntPtr.Zero)UnhookWinEvent(_foregroundHook);
@@ -275,7 +279,7 @@ namespace CF7Launcher.Guardian
 
         private bool SettleBootstrapFocus(IntPtr flash, string stage)
         {
-            if (PassiveInput == null || flash == IntPtr.Zero || flash != _flashHwnd || flash == _revealedPassiveSource)
+            if (PassiveInput == null || flash == IntPtr.Zero || flash != _flashHwnd || WasPassiveBootstrapPublished(flash))
                 return false;
             AuditPassiveFocus(out bool before, stage + "_before");
             bool attempted = false;
@@ -312,10 +316,13 @@ namespace CF7Launcher.Guardian
             if (AuditPassiveFocus(out _))
             {
                 PassiveBootstrapPublication pending = Volatile.Read(ref _pendingPassiveBootstrap);
-                return pending == null || TryPublishPassiveBootstrap(pending, "passive_focus_available");
+                if (pending == null) return true;
+                TryPreparePassiveBootstrap(pending, "passive_focus_available");
+                return WasPassiveBootstrapPublished(pending.Source);
             }
             IntPtr flash = _flashHwnd;
-            if (flash != IntPtr.Zero && IsWindowEnabled(flash))
+            if (flash != IntPtr.Zero && GetWindowThreadProcessId(flash, out uint pid) != 0
+                && pid == _flashProcessId && IsWindowEnabled(flash))
             {
                 // A foreign re-enable closes admission on this sample. Enforce the disabled
                 // style, then require a later observation before any new grant.
@@ -375,7 +382,7 @@ namespace CF7Launcher.Guardian
             }
             var sample = ReadPassiveFocusSample(flash, root, tid, pid == _flashProcessId);
             bool known = sample.Known;
-            bool runtime = flash != IntPtr.Zero && flash == _revealedPassiveSource;
+            bool runtime = WasPassiveBootstrapPublished(flash);
             flashFocused = sample.Focused;
             Interlocked.Increment(ref _focusSampleCount);
             if(!known)Interlocked.Increment(ref _failedFocusQueries);
@@ -417,22 +424,22 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// Phase 1c：嵌入结果事件。true = 成功嵌入；false = 10s 内未找到 Flash 窗口或外部主动通知失败。
-        /// 触发封送到 _hostPanel 所在的 UI 线程（不变式 #5）。
+        /// Delivers the one embed result to the host UI thread. Prepared permits the
+        /// passive Host to attempt publication using the same ticket and fresh focus.
         /// </summary>
-        private void FireEmbedResult(Action<bool> handler, bool success)
+        private void FireEmbedResult(Action<EmbedResult> handler, EmbedResult result)
         {
             if (handler == null) return;
 
             Control target = _hostPanel;
             if (target != null && target.IsHandleCreated && target.InvokeRequired)
             {
-                try { target.BeginInvoke(new Action(delegate { handler(success); })); }
-                catch { handler(success); }
+                try { target.BeginInvoke(new Action(delegate { handler(result); })); }
+                catch (InvalidOperationException) { handler(result); }
             }
             else
             {
-                handler(success);
+                handler(result);
             }
         }
 
@@ -499,15 +506,15 @@ namespace CF7Launcher.Guardian
         /// <summary>
         /// Phase 1c：外部（如 GameLaunchFlow 检测异常）主动通知嵌入失败。
         /// </summary>
-        internal void NotifyEmbedFailure(Action<bool> completed)
+        internal void NotifyEmbedFailure(Action<EmbedResult> completed)
         {
-            FireEmbedResult(completed, false);
+            FireEmbedResult(completed, EmbedResult.Failed);
         }
 
         public void TrackProcess(Process flashProcess)
         {
-            if (flashProcess != null)
-                _flashProcessId = (uint)flashProcess.Id;
+            lock (_embedClaimLock)
+                if (flashProcess != null) _flashProcessId = (uint)flashProcess.Id;
             _guardianProcessId = (uint)Process.GetCurrentProcess().Id;
         }
 
@@ -617,9 +624,9 @@ namespace CF7Launcher.Guardian
             lock (_embedClaimLock)
             {
                 _currentFlashPid = pid;
+                _hostPanel = hiddenHost;
                 // _embedPhase 已由 ResetEmbedState() 归零为 None
             }
-            _hostPanel = hiddenHost;  // 早期绑定，供后续 reveal 读 Width/Height
 
             System.Threading.ThreadPool.QueueUserWorkItem(delegate
             {
@@ -648,15 +655,27 @@ namespace CF7Launcher.Guardian
                     {
                         bool flashTookForeground = afterFlashHides != null && HoldsForeground(hwnd);
                         ReparentToHidden(hwnd, hiddenHost);
+                        long earlyEpoch;
+                        SessionInputAuthority earlyAuthority;
                         lock (_embedClaimLock)
                         {
                             if (_currentFlashPid == pid && _flashHwnd == IntPtr.Zero)
                                 SetTrackedFlashWindow(hwnd);
+                            earlyEpoch = EmbedEpoch;
+                            earlyAuthority = PassiveInput;
                         }
-                        if (flashTookForeground && hiddenHost.IsHandleCreated)
-                            hiddenHost.BeginInvoke(afterFlashHides, hwnd);
-                        if (PassiveInput != null && hiddenHost.IsHandleCreated)
-                            hiddenHost.BeginInvoke(new Action(() => SettleBootstrapFocus(hwnd, "early_reparent")));
+                        void CompleteEarlyOnUi()
+                        {
+                            if (EmbedEpoch != earlyEpoch || _flashHwnd != hwnd || _currentFlashPid != pid
+                                || !ReferenceEquals(_hostPanel, hiddenHost) || !ReferenceEquals(PassiveInput, earlyAuthority))
+                                return;
+                            if (flashTookForeground) afterFlashHides(hwnd);
+                            if (earlyAuthority != null) SettleBootstrapFocus(hwnd, "early_reparent");
+                        }
+                        if (earlyAuthority != null && _passiveBootstrapUi != null)
+                            _passiveBootstrapUi.Post(_ => CompleteEarlyOnUi(), null);
+                        else if (flashTookForeground && hiddenHost.IsHandleCreated)
+                            hiddenHost.BeginInvoke(new Action(CompleteEarlyOnUi));
                     }
                     finally
                     {
@@ -686,17 +705,22 @@ namespace CF7Launcher.Guardian
         ///   - None → 全量路径（自己 poll hwnd + style + SetParent + MoveWindow + Show + resize + watchdog）
         /// The matching attempt advances from Embedding only after this source is safe to publish.
         /// </summary>
-        internal void EmbedFlashWindow(Process flashProcess, Panel hostPanel, Action<bool> completed)
+        internal void EmbedFlashWindow(Process flashProcess, Panel hostPanel, Action<EmbedResult> completed,
+            CancellationToken cancellation)
         {
             int pid = (flashProcess != null) ? flashProcess.Id : 0;
+            SessionInputAuthority passive = PassiveInput;
+            Form root = _sessionRoot;
 
             IntPtr hwnd = IntPtr.Zero;
             bool needFullEmbed = false;
             bool mustWaitForEarlyDone = false;
+            long queuedEpoch;
+            IntPtr trackedSource;
 
             lock (_embedClaimLock)
             {
-                if (pid == 0 || _flashProcessId != (uint)pid) return;
+                if (cancellation.IsCancellationRequested || pid == 0 || _flashProcessId != (uint)pid) return;
                 _hostPanel = hostPanel;
                 if (_currentFlashPid != pid)
                 {
@@ -722,6 +746,20 @@ namespace CF7Launcher.Guardian
                     _embedPhase = EmbedPhase.RevealedOrFullEmbedded;  // 占位阻止 ArmEarlyReparent 晚到覆盖
                     needFullEmbed = true;
                 }
+                queuedEpoch = EmbedEpoch;
+                trackedSource = _flashHwnd;
+            }
+
+            // The only valid promotion of the original source observation is the
+            // early embed that this worker was already waiting to finish.
+            bool ReadEarlyBindingLocked()
+            {
+                if (cancellation.IsCancellationRequested || _currentFlashPid != pid) return false;
+                if (EmbedEpoch == queuedEpoch && _flashHwnd == trackedSource) return true;
+                if (trackedSource != IntPtr.Zero || _flashHwnd == IntPtr.Zero || EmbedEpoch != queuedEpoch + 1) return false;
+                queuedEpoch = EmbedEpoch;
+                trackedSource = _flashHwnd;
+                return true;
             }
 
             if (needFullEmbed)
@@ -730,7 +768,7 @@ namespace CF7Launcher.Guardian
                 if (hwnd == IntPtr.Zero)
                 {
                     LogManager.Log("[WindowManager] Flash window not found (full-embed path), embedding skipped");
-                    FireEmbedResult(completed, false);
+                    FireEmbedResult(completed, EmbedResult.Failed);
                     return;
                 }
                 ApplyPassiveStyle(hwnd);
@@ -743,6 +781,7 @@ namespace CF7Launcher.Guardian
                 {
                     lock (_embedClaimLock)
                     {
+                        if (!ReadEarlyBindingLocked()) break;
                         if (_embedPhase == EmbedPhase.EarlyHiddenDone)
                         {
                             hwnd = _flashHwnd;
@@ -755,10 +794,11 @@ namespace CF7Launcher.Guardian
 
                 if (hwnd == IntPtr.Zero)
                 {
+                    if (cancellation.IsCancellationRequested) return;
                     // 异常降级：ArmEarlyReparent 卡死/异常；兜底自己重做完整 reparent（幂等）
                     lock (_embedClaimLock)
                     {
-                        IntPtr late = _flashHwnd;
+                        IntPtr late = ReadEarlyBindingLocked() ? _flashHwnd : IntPtr.Zero;
                         if (late != IntPtr.Zero)
                         {
                             hwnd = late;
@@ -773,16 +813,19 @@ namespace CF7Launcher.Guardian
                         {
                             lock (_embedClaimLock)
                             {
-                                hwnd = polled;
-                                needFullEmbed = true;
-                                _embedPhase = EmbedPhase.RevealedOrFullEmbedded;
+                                if (ReadEarlyBindingLocked() && (_flashHwnd == IntPtr.Zero || _flashHwnd == polled))
+                                {
+                                    hwnd = polled;
+                                    needFullEmbed = true;
+                                    _embedPhase = EmbedPhase.RevealedOrFullEmbedded;
+                                }
                             }
                         }
                     }
                     if (hwnd == IntPtr.Zero)
                     {
                         LogManager.Log("[WindowManager] EmbedFlashWindow: early-reparent spin timeout, no hwnd, fail");
-                        FireEmbedResult(completed, false);
+                        FireEmbedResult(completed, EmbedResult.Failed);
                         return;
                     }
                     LogManager.Log("[WindowManager] EmbedFlashWindow: spin timeout, degrading to full-embed");
@@ -804,19 +847,35 @@ namespace CF7Launcher.Guardian
             bool fullSnap = needFullEmbed;
             void CompleteOnUi()
             {
-                if (_currentFlashPid != pid || _flashProcessId != (uint)pid || !ReferenceEquals(_hostPanel, hostPanel))
-                    return;
-                if (hostPanel.IsDisposed || hostPanel.Disposing || !hostPanel.IsHandleCreated
-                    || GetWindowThreadProcessId(hwndSnap, out uint sourcePid) == 0 || sourcePid != (uint)pid)
+                if (cancellation.IsCancellationRequested) return;
+                if (_currentFlashPid != pid || _flashProcessId != (uint)pid || EmbedEpoch != queuedEpoch
+                    || (trackedSource != IntPtr.Zero && trackedSource != hwndSnap)
+                    || !ReferenceEquals(_hostPanel, hostPanel) || !ReferenceEquals(_sessionRoot, root)
+                    || !ReferenceEquals(PassiveInput, passive))
                 {
-                    FireEmbedResult(completed, false);
+                    FireEmbedResult(completed, EmbedResult.Superseded);
                     return;
                 }
-                DoEmbedOrReveal(hwndSnap, fullSnap);
-                if (PassiveInput == null) FireEmbedResult(completed, true);
-                else StagePassiveBootstrapPublication(hwndSnap, sourcePid, hostPanel, completed);
+                if (!HasLiveHandle(hostPanel)
+                    || GetWindowThreadProcessId(hwndSnap, out uint sourcePid) == 0 || sourcePid != (uint)pid)
+                {
+                    FireEmbedResult(completed, EmbedResult.Failed);
+                    return;
+                }
+                try { DoEmbedOrReveal(hwndSnap, fullSnap || GetParent(hwndSnap) != hostPanel.Handle); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[WindowManager] Embed preparation failed: " + ex.Message);
+                    FireEmbedResult(completed, EmbedResult.Failed);
+                    return;
+                }
+                if (passive == null) FireEmbedResult(completed, EmbedResult.Prepared);
+                else StagePassiveBootstrapPublication(hwndSnap, sourcePid,
+                    queuedEpoch + (trackedSource == IntPtr.Zero ? 1 : 0), hostPanel, cancellation, completed);
             }
-            if (hostPanel.InvokeRequired)
+            if (passive != null && _passiveBootstrapUi != null)
+                _passiveBootstrapUi.Post(_ => CompleteOnUi(), null);
+            else if (hostPanel.InvokeRequired)
             {
                 hostPanel.BeginInvoke(new Action(CompleteOnUi));
             }
@@ -888,37 +947,45 @@ namespace CF7Launcher.Guardian
         {
             if (_watchdog != null) return;
 
-            _watchdog = new System.Windows.Forms.Timer();
-            _watchdog.Interval = 500;
-            _watchdog.Tick += delegate
+            var watchdog = new System.Windows.Forms.Timer { Interval = 500 };
+            watchdog.Tick += (_, _) =>
             {
-                if (_flashHwnd == IntPtr.Zero || _hostPanel == null)
-                    return;
-
-                // Flash 窗口已销毁（进程退出），停止监控.
-                // 必须 Dispose + null，否则下一 attempt 的 StartEmbedWatchdog 会因 _watchdog != null
-                // 直接 return（见该方法的早退守卫），导致第二次及之后的嵌入失去脱嵌恢复保护.
-                if (!IsWindow(_flashHwnd))
-                {
-                    PassiveBootstrapPublication pending = Volatile.Read(ref _pendingPassiveBootstrap);
-                    SetTrackedFlashWindow(IntPtr.Zero);
-                    System.Windows.Forms.Timer dying = _watchdog;
-                    _watchdog = null;
-                    try { dying.Stop(); dying.Dispose(); } catch { }
-                    LogManager.Log("[WindowManager] Flash window destroyed, watchdog stopped+disposed");
-                    if (pending != null) FireEmbedResult(pending.Completed, false);
-                    return;
-                }
-
-                IntPtr currentParent = GetParent(_flashHwnd);
-                if (currentParent != _hostPanel.Handle)
-                {
-                    // Flash 窗口脱离了嵌入（全屏切换等），重新嵌入（走完整路径重建 WS_CHILD + SetParent）
-                    LogManager.Log("[WindowManager] Flash window detached, re-embedding...");
-                    DoEmbedOrReveal(_flashHwnd, /*needFullEmbed*/ true);
-                }
+                if (ReferenceEquals(_watchdog, watchdog)) CheckEmbedWatchdog(Environment.TickCount64);
             };
-            _watchdog.Start();
+            _watchdog = watchdog;
+            watchdog.Start();
+        }
+
+        private void CheckEmbedWatchdog(long now)
+        {
+            PassiveBootstrapPublication pending = Volatile.Read(ref _pendingPassiveBootstrap);
+            if (pending != null)
+            {
+                CheckPendingPassiveBootstrap(pending, now);
+                return;
+            }
+
+            IntPtr flash = _flashHwnd;
+            long epoch = EmbedEpoch;
+            if (flash == IntPtr.Zero) return;
+            if (GetWindowThreadProcessId(flash, out uint pid) == 0 || pid != _flashProcessId)
+            {
+                lock (_embedClaimLock)
+                {
+                    if (_flashHwnd != flash || EmbedEpoch != epoch) return;
+                    SetTrackedFlashWindow(IntPtr.Zero);
+                    StopWatchdog();
+                }
+                LogManager.Log("[WindowManager] Flash source lost or changed owner, watchdog stopped+disposed");
+                return;
+            }
+            if (PassiveInput != null && !WasPassiveBootstrapPublished(flash)) return;
+
+            if (HasLiveHandle(_hostPanel) && GetParent(flash) != _hostPanel.Handle)
+            {
+                LogManager.Log("[WindowManager] Flash window detached, re-embedding...");
+                DoEmbedOrReveal(flash, needFullEmbed: true);
+            }
         }
 
         public void ResizeFlashToPanel()

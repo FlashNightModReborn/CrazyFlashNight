@@ -83,6 +83,9 @@ class org.flashNight.arki.ui.ModifierPanelService {
             _root.最上层发布文字提示("挑战模式中修改器不可用。");
             return false;
         }
+        var input:Object = _root.GameInput;
+        var passive:Boolean = input != undefined && input.passiveActive === true;
+        if (passive && input.bound !== true) return false;
         if (_root.修改工具界面 != undefined) _root.修改工具界面._visible = false;
         retireActive();
         var token:String = "modifier." + getTimer() + "." + (++_sequence);
@@ -93,6 +96,8 @@ class org.flashNight.arki.ui.ModifierPanelService {
             saveOwner: _root.存档系统,
             slot: String(_root.savePath),
             scene: String(_root.关卡标志),
+            inputSession: passive ? input.sessionId : null,
+            inputConnection: passive ? input.connectionIncarnation : null,
             lastOperation: null,
             pendingAction: null
         };
@@ -675,16 +680,35 @@ class org.flashNight.arki.ui.ModifierPanelService {
 
     private static function onPanelClosed(params:Object):Void {
         var token:String = tokenOf(params);
+        if (!validToken(token)) return;
+        var tracked:Boolean = params.v !== undefined || params.closeId !== undefined
+            || params.instance !== undefined || params.generation !== undefined || params.connection !== undefined;
+        if (tracked && !validCloseRequest(params)) return;
         var session:Object = _active;
         if (session == undefined || token !== session.token) {
-            observePanelClose(params, token, false);
+            var prior:Object = _sessions[token];
+            var duplicate:Boolean = tracked && prior != undefined && prior.closeId === params.closeId
+                && prior.closeInstance === params.instance && prior.closeGeneration === params.generation
+                && prior.closeConnection === params.connection && prior.closeDisposition == "closed";
+            if (tracked) sendPanelCloseReceipt(params, token, duplicate ? "closed" : "retired");
+            observePanelClose(params, token, duplicate);
             return;
         }
-        var action:Object = session.pendingAction;
+        if (tracked && session.inputConnection != null && params.connection !== session.inputConnection) return;
+        var current:Boolean = sameContext(session);
+        var action:Object = current ? session.pendingAction : null;
         session.pendingAction = null;
-        session.phase = "closed";
+        session.phase = current ? "closed" : "expired";
         _active = undefined;
-        observePanelClose(params, token, true);
+        if (tracked) {
+            session.closeId = params.closeId;
+            session.closeInstance = params.instance;
+            session.closeGeneration = params.generation;
+            session.closeConnection = params.connection;
+            session.closeDisposition = current ? "closed" : "retired";
+            sendPanelCloseReceipt(params, token, session.closeDisposition);
+        }
+        observePanelClose(params, token, current);
         if (action == null) return;
         try {
             if (action.type == "finish_stage" && typeof _root.关卡结束 == "function") {
@@ -699,6 +723,30 @@ class org.flashNight.arki.ui.ModifierPanelService {
         } catch (closeActionError) {
             trace("[Modifier] pending close action failed: " + closeActionError);
         }
+    }
+
+    private static function validCloseRequest(params:Object):Boolean {
+        if (params.v !== 1 || typeof params.instance != "string" || !safeId(params.instance)
+                || params.instance.substring(0, 15) != "modifier.panel."
+                || typeof params.generation != "number" || integerParam(params.generation, 1, 2147483647) < 0
+                || typeof params.connection != "number" || integerParam(params.connection, 1, 2147483647) < 0
+                || typeof params.closeId != "string" || params.closeId.length != 32
+                || !hasOnly(params, ["task", "action", "v", "token", "instance", "generation", "connection", "closeId", "focusTraceSession"])) return false;
+        var hex:String = "0123456789abcdef";
+        for (var i:Number = 0; i < params.closeId.length; i++)
+            if (hex.indexOf(params.closeId.charAt(i)) == -1) return false;
+        var input:Object = _root.GameInput;
+        return input == undefined || input.passiveActive !== true
+            || (input.bound === true && params.connection === input.connectionIncarnation);
+    }
+
+    private static function sendPanelCloseReceipt(params:Object, token:String, disposition:String):Void {
+        try {
+            if (_json == undefined) _json = new LiteJSON();
+            _root.server.sendSocketMessage(_json.stringifySafe({task:"modifier_close_receipt", v:1, token:token,
+                instance:params.instance, generation:params.generation, connection:params.connection,
+                closeId:params.closeId, disposition:disposition}));
+        } catch (ignoreCloseReceiptTransportError) {}
     }
 
     private static function observePanelClose(params:Object, token:String, accepted:Boolean):Void {
@@ -718,14 +766,18 @@ class org.flashNight.arki.ui.ModifierPanelService {
     private static function retireActive():Void {
         if (_active != undefined) {
             if (_active.phase == "editing") _active.phase = "expired";
+            _active.pendingAction = null;
             _active = undefined;
         }
     }
 
     private static function sameContext(session:Object):Boolean {
-        return session != undefined && session.saveOwner === _root.存档系统
-            && session.slot === String(_root.savePath)
-            && session.scene === String(_root.关卡标志);
+        if (session == undefined || session.saveOwner !== _root.存档系统
+                || session.slot !== String(_root.savePath) || session.scene !== String(_root.关卡标志)) return false;
+        if (session.inputConnection == null) return true;
+        var input:Object = _root.GameInput;
+        return input != undefined && input.bound === true && input.sessionId === session.inputSession
+            && input.connectionIncarnation === session.inputConnection;
     }
 
     private static function currentHero():Object {

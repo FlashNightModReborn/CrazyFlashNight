@@ -66,6 +66,151 @@ namespace CF7Launcher.Tests.Guardian
                     prewarmAborting: false));
         }
 
+        [Theory]
+        [InlineData(GameLaunchFlow.State.Embedding, false)]
+        [InlineData(GameLaunchFlow.State.Embedding, true)]
+        [InlineData(GameLaunchFlow.State.WaitingGameReady, false)]
+        [InlineData(GameLaunchFlow.State.WaitingGameReady, true)]
+        [InlineData(GameLaunchFlow.State.RepairPending, false)]
+        [InlineData(GameLaunchFlow.State.RepairPending, true)]
+        public void ExactSocketEofOrReplacementTerminatesPendingPassiveLaunch(GameLaunchFlow.State state, bool replace)
+        {
+            int port = GetFreePort();
+            var router = new MessageRouter();
+            using var server = new XmlSocketServer(router, AllowLoopbackXmlSocketPeerAuthority.Instance);
+            using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
+            var flow = new GameLaunchFlow(server, router, processManager, new WindowManager(),
+                null, null, null, null, null);
+            Assert.True(server.Start(port));
+            using var first = new TcpClient(AddressFamily.InterNetwork);
+            first.Connect(IPAddress.Loopback, port);
+            Send(first, "{\"task\":\"unknown_first\"}");
+            Assert.True(SpinWait.SpinUntil(() => server.IsClientReady, TimeSpan.FromSeconds(2)));
+            int currentGeneration = server.CurrentGeneration;
+            using var cancellation = new CancellationTokenSource();
+            CancellationToken token = cancellation.Token;
+            SetPrivateField(flow, "_currentAttemptId", "attempt-pending-passive-embed");
+            SetPrivateField(flow, "_pendingSlot", "slot-test");
+            SetPrivateField(flow, "_passiveLaunchConnection", currentGeneration);
+            if (state == GameLaunchFlow.State.Embedding) SetPrivateField(flow, "_passiveEmbeddingCancellation", cancellation);
+            var ready = GetPrivateField<System.Collections.Generic.Dictionary<string, int>>(flow, "_cachedReady");
+            ready["attempt-pending-passive-embed"] = currentGeneration;
+            SetPrivateField(flow, "_state", state);
+
+            using var replacement = new TcpClient(AddressFamily.InterNetwork);
+            if (replace) replacement.Connect(IPAddress.Loopback, port);
+            else first.Dispose();
+
+            Assert.True(SpinWait.SpinUntil(() => flow.CurrentState == GameLaunchFlow.State.Error.ToString(),
+                TimeSpan.FromSeconds(2)));
+            if (state == GameLaunchFlow.State.Embedding) Assert.True(token.IsCancellationRequested);
+            Assert.Empty(ready);
+            Assert.Equal(0, GetPrivateField<int>(flow, "_passiveLaunchConnection"));
+            Assert.Equal("attempt-pending-passive-embed", GetPrivateField<string>(flow, "_currentAttemptId"));
+            Assert.False(flow.RevealPerformed);
+        }
+
+        [Fact]
+        public void SameAttemptReadyFromAnOldConnectionCannotSatisfyTheCurrentPassiveLaunch()
+        {
+            int port = GetFreePort();
+            var router = new MessageRouter();
+            using var server = new XmlSocketServer(router, AllowLoopbackXmlSocketPeerAuthority.Instance);
+            using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
+            var flow = new GameLaunchFlow(server, router, processManager, new WindowManager(), null, null, null, null, null);
+            Assert.True(server.Start(port));
+            using var first = new TcpClient(AddressFamily.InterNetwork);
+            first.Connect(IPAddress.Loopback, port);
+            Send(first, "{\"task\":\"unknown_first\"}");
+            Assert.True(SpinWait.SpinUntil(() => server.IsClientReady, TimeSpan.FromSeconds(2)));
+            int prior = server.CurrentGeneration;
+            using var second = new TcpClient(AddressFamily.InterNetwork);
+            second.Connect(IPAddress.Loopback, port);
+            Send(second, "{\"task\":\"unknown_second\"}");
+            Assert.True(SpinWait.SpinUntil(() => server.IsClientReady && server.CurrentGeneration > prior, TimeSpan.FromSeconds(2)));
+            SetPrivateField(flow, "_currentAttemptId", "attempt-current-generation");
+            SetPrivateField(flow, "_passiveLaunchConnection", server.CurrentGeneration);
+            SetPrivateField(flow, "_state", GameLaunchFlow.State.WaitingGameReady);
+            const string ready = "{\"task\":\"bootstrap_ready\",\"payload\":{\"attemptId\":\"attempt-current-generation\"}}";
+
+            Assert.Null(router.ProcessMessage(ready, prior, null));
+            Assert.Equal(GameLaunchFlow.State.WaitingGameReady.ToString(), flow.CurrentState);
+            Send(second, ready);
+            Assert.True(SpinWait.SpinUntil(() => flow.CurrentState == GameLaunchFlow.State.Ready.ToString(), TimeSpan.FromSeconds(2)));
+            SetPrivateField(flow, "_state", GameLaunchFlow.State.Idle);
+        }
+
+        [Fact]
+        public void LatePreparedAndFailedResultsCannotChangeAnotherTicketOnTheSameConnection()
+        {
+            var router = new MessageRouter();
+            using var server = new XmlSocketServer(router, AllowLoopbackXmlSocketPeerAuthority.Instance);
+            using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
+            var flow = new GameLaunchFlow(server, router, processManager, new WindowManager(), null, null, null, null, null);
+            using var expired = new CancellationTokenSource();
+            using var current = new CancellationTokenSource();
+            SetPrivateField(flow, "_currentAttemptId", "attempt-same-connection");
+            SetPrivateField(flow, "_passiveLaunchConnection", 5);
+            SetPrivateField(flow, "_passiveEmbeddingCancellation", current);
+            SetPrivateField(flow, "_state", GameLaunchFlow.State.Embedding);
+            MethodInfo callback = typeof(GameLaunchFlow).GetMethod("OnPassiveEmbedResult", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(callback);
+
+            foreach (WindowManager.EmbedResult outcome in new[] { WindowManager.EmbedResult.Prepared, WindowManager.EmbedResult.Failed })
+            {
+                callback.Invoke(flow, new object[] { null, "attempt-same-connection", 5, expired.Token, outcome });
+                Assert.Equal(GameLaunchFlow.State.Embedding.ToString(), flow.CurrentState);
+                Assert.False(current.IsCancellationRequested);
+            }
+        }
+
+        [Fact]
+        public async Task CurrentWindowFailureDoesNotWaitForTheSocketTransitionFence()
+        {
+            var router = new MessageRouter();
+            using var server = new XmlSocketServer(router, AllowLoopbackXmlSocketPeerAuthority.Instance);
+            using var processManager = new ProcessManager("unused-flash.exe", "unused.swf");
+            var flow = new GameLaunchFlow(server, router, processManager, new WindowManager(), null, null, null, null, null);
+            using var current = new CancellationTokenSource();
+            CancellationToken ticket = current.Token;
+            SetPrivateField(flow, "_currentAttemptId", "attempt-window-failure");
+            SetPrivateField(flow, "_passiveLaunchConnection", 5);
+            SetPrivateField(flow, "_passiveEmbeddingCancellation", current);
+            SetPrivateField(flow, "_state", GameLaunchFlow.State.Embedding);
+            MethodInfo callback = typeof(GameLaunchFlow).GetMethod("OnPassiveEmbedResult", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(callback);
+
+            using var entered = new ManualResetEventSlim();
+            using var release = new ManualResetEventSlim();
+            Task fence = Task.Run(() => server.RunWithConnectionTransitionFence(() =>
+            {
+                entered.Set();
+                return release.Wait(TimeSpan.FromSeconds(5));
+            }));
+            try
+            {
+                Assert.True(entered.Wait(TimeSpan.FromSeconds(2)));
+                await Task.Run(() => callback.Invoke(flow, new object[]
+                    { null, "attempt-window-failure", 5, ticket, WindowManager.EmbedResult.Failed }))
+                    .WaitAsync(TimeSpan.FromSeconds(2));
+                Assert.Equal(GameLaunchFlow.State.Error.ToString(), flow.CurrentState);
+                Assert.True(ticket.IsCancellationRequested);
+                Assert.False(fence.IsCompleted);
+            }
+            finally
+            {
+                release.Set();
+                await fence;
+            }
+        }
+
+        [Fact]
+        public void EarlierSocketDisconnectDoesNotTerminateCurrentPassiveEmbed()
+        {
+            Assert.Equal(GameLaunchFlow.SocketDisconnectDisposition.Ignore,
+                GameLaunchFlow.ClassifySocketDisconnect(4, 5, GameLaunchFlow.State.Embedding,
+                    pendingSlotIsNull: false, prewarmAborting: false, passiveEmbeddingConnection: 5));
+        }
 
         [Fact]
         public void HeldGenerationReplacement_NewReadyAndHandshakeCanComplete()
