@@ -121,12 +121,8 @@ export const MONSTER_COEFFICIENT_RANGES: Record<MonsterCoefficientName, [number,
   highDefFactor: [0.1, 10],
 };
 
-/** HP 公式里的两段霸体乘子，与 Excel P/Q 列的 IF(AND(...)) 一致。 */
-export function superArmorHpFactor(tierFactor: number, superArmorFactor: number): number {
-  const longKnockback = tierFactor < 9 && superArmorFactor > 3 ? 1 - superArmorFactor / 50 : 1;
-  const shortKnockback = tierFactor > 12 && superArmorFactor < 5 ? 1 + 1 / superArmorFactor : 1;
-  return longKnockback * shortKnockback;
-}
+// 霸体乘子随面板公式一起住在 monsters.ts；这里转出，保持反推侧原有的导入路径可用。
+export { superArmorHpFactor } from "./monsters.js";
 
 /**
  * Excel D15：移动速度 10-40 慢、40-60 中、60-90 快，对应速度系数 1/2/3。
@@ -315,7 +311,8 @@ export function fitMonsterCoefficients(request: MonsterFitRequest): MonsterFitRe
     });
   }
 
-  const output = computeMonsterRow(solved);
+  // 反推面向的是盘上按 v1 算出来的旧面板，这里锁 v1，避免口径切换后把面板误判成系数错。
+  const output = computeMonsterRow(solved, "v1");
   const residuals = panelResiduals(targets, output);
   const expTargets: MonsterPanel = {};
   for (const field of MONSTER_EXP_PANEL_FIELDS) {
@@ -435,7 +432,7 @@ function tierSaturatesAtGridTop(tierFactor: number): boolean {
 /** 误差函数：只算被钉住的观测系数，四个自由量每次重建一份正算输入。 */
 function scoreFor(base: MonsterInput, targets: MonsterPanel, fields: MonsterPanelField[]): Score {
   return (point) => {
-    const out = computeMonsterRow({ ...base, ...point });
+    const out = computeMonsterRow({ ...base, ...point }, "v1");
     let sum = 0;
     for (const field of fields) {
       const observed = targets[field] as number;

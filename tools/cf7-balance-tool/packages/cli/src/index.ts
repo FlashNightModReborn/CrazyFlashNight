@@ -803,7 +803,7 @@ function runCalibrate(args: string[]): void {
       segmentFactor: inp["段数系数"], speedFactor: inp["速度系数"],
       highAtkFactor: inp["高攻低血防系数"], superArmorFactor: inp["霸体系数"],
       highDefFactor: inp["高防低血系数"],
-    });
+    }, "v1");  // 校准对照的是旧工作簿缓存值，锁 v1
   }, MONSTERS_MAP);
 
   const passed = results.filter(r => r.pass).length;
@@ -1403,7 +1403,7 @@ const BASELINE_CATEGORIES: Record<BaselineCategory, {
         segmentFactor: inp["段数系数"], speedFactor: inp["速度系数"],
         highAtkFactor: inp["高攻低血防系数"], superArmorFactor: inp["霸体系数"],
         highDefFactor: inp["高防低血系数"],
-      });
+      }, "v1");
     },
     nameField: "C",
     columnMap: [
