@@ -685,6 +685,33 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         }
     }
 
+    // Issue #367：纵向联弹按霰弹值扣淬毒须保底 10，11~14 层不得被扣穿纳米毒性门槛。
+    private static function verticalChainPoisonFloor():Void {
+        var initApi:Object = org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer;
+        var actor:Object = {_name:"verticalActor", 是否为敌人:false, hasDressup:false,
+            被动技能:{}, 命中率:100, 伤害加成:0, 伤害类型:"物理", 基础毒:0, 毒:0, 淬毒:14};
+
+        var shot1:Object = {子弹种类:"纵向联弹-普通子弹", flags:128, 霰弹值:5, 最小霰弹值:1,
+            毒:0, 子弹威力:100, stateFlags:0};
+        initApi.initializeNanoToxicfunction(shot1, shot1, actor);
+        check(actor.淬毒 == 10 && shot1.nanoToxic == 14,
+            "vertical chain clamps coating poison at 10 and keeps pre-shot nano snapshot");
+
+        actor.淬毒 = 11;
+        var shot2:Object = {子弹种类:"纵向联弹-普通子弹", flags:128, 霰弹值:6, 最小霰弹值:1,
+            毒:0, 子弹威力:100, stateFlags:0};
+        initApi.initializeNanoToxicfunction(shot2, shot2, actor);
+        check(actor.淬毒 == 10 && shot2.nanoToxic == 11,
+            "vertical chain clamps 11 with six pellets instead of dropping below 10");
+
+        actor.淬毒 = 25;
+        var shot3:Object = {子弹种类:"纵向联弹-普通子弹", flags:128, 霰弹值:5, 最小霰弹值:1,
+            毒:0, 子弹威力:100, stateFlags:0};
+        initApi.initializeNanoToxicfunction(shot3, shot3, actor);
+        check(actor.淬毒 == 20 && shot3.nanoToxic == 25,
+            "vertical chain keeps proportional consumption above the floor");
+    }
+
     public static function runAllTests():Void {
         passed=0; failed=0; clipId=0; createdClips=0;
         var oldWorld:MovieClip=_root.gameworld; var oldTimer:Object=_root.帧计时器; var oldRandom:Function=_root.随机偏移;
@@ -693,7 +720,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPatternTest {
         world.createEmptyMovieClip("子弹区域",1); _root.gameworld=world; _root.帧计时器={当前帧数:1};
         _root.随机偏移=randomOffset; manager.acquireUnit=acquireClip; manager.releaseUnit=releaseClip;
         DamageManagerFactory.init();
-        geometryAndScope(); budgetAndContacts(false); budgetAndContacts(true); missAndLastPellet(); pierceClipBindings(); queueIntegration(); lifecycleAndCost(); pierceGroundRetirement(); dualGunAttributeIsolation();
+        geometryAndScope(); budgetAndContacts(false); budgetAndContacts(true); missAndLastPellet(); pierceClipBindings(); queueIntegration(); lifecycleAndCost(); pierceGroundRetirement(); dualGunAttributeIsolation(); verticalChainPoisonFloor();
         ChainVisualBridge.disconnect(); manager.acquireUnit=oldAcquire; manager.releaseUnit=oldRelease;
         _root.随机偏移=oldRandom; _root.帧计时器=oldTimer; _root.gameworld=oldWorld; world.removeMovieClip();
         trace("ShotgunPatternTest Tests Passed: " + passed);

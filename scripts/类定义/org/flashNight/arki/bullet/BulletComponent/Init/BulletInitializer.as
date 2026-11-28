@@ -404,7 +404,8 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
                     // 替代前：bullet.子弹种类.indexOf("纵向") != -1 (需要逐字符遍历)
                     // 替代后：(bullet.flags & FLAG_VERTICAL) != 0 (单次位运算)
                     if((bullet.flags & FLAG_VERTICAL) != 0 && bullet.霰弹值 > 1){
-                        shooter.淬毒 -= bullet.霰弹值;  // 纵向多发子弹：按霰弹数消耗
+                        // 纵向多发：按霰弹数消耗，但保底10层，避免11~14层时被扣穿纳米毒性门槛
+                        shooter.淬毒 = Math.max(10, shooter.淬毒 - bullet.霰弹值);
                     }else{
                         shooter.淬毒 -= 1;              // 标准消耗：1点淬毒值
                     }
