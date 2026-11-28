@@ -1207,6 +1207,106 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal(new string[] { slot }, harness.LastPlayed);
         }
 
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void NormalBootstrapLoad_WaitsForAcceptedEmbedAndTechnicalReady(bool titleFirst)
+        {
+            using var harness = new Harness();
+            const string attempt = "attempt-pending-load";
+            const string slot = "slot_pending_load";
+            harness.SeedShadow(slot, "待入场角色", 12);
+            harness.PreparePrewarmAttempt(attempt);
+            harness.Flow.StartGameFromBootstrap(slot, false, true);
+            harness.SetState(GameLaunchFlow.State.Embedding);
+
+            if (!titleFirst)
+                harness.SendBootstrap("bootstrap_ready", attempt);
+            harness.SendBootstrap("bootstrap_reveal_ready", attempt);
+            if (titleFirst)
+                harness.SendBootstrap("bootstrap_ready", attempt);
+            Assert.True(harness.Flow.HasAcceptedTitleReceipt(attempt));
+            Assert.Equal(nameof(GameLaunchFlow.State.Embedding), harness.Flow.CurrentState);
+            Assert.Empty(harness.As2);
+            Assert.Null(GetPrivateField<Timer>(harness.Flow, "_frontdoorSceneWatchdog"));
+
+            // Exercise the real completion path as called after the window commit.
+            InvokePrivate(harness.Flow, "CompleteEmbedLocked");
+            Assert.Equal(nameof(GameLaunchFlow.State.Ready), harness.Flow.CurrentState);
+            JObject entry = Assert.Single(harness.As2);
+            Assert.Equal("frontdoorEnterResolvedSave", entry.Value<string>("action"));
+            Assert.Equal(attempt, entry.Value<string>("attemptId"));
+            Assert.Equal(slot, entry.Value<string>("slotKey"));
+            Assert.False(harness.Flow.RevealPerformed);
+            Assert.NotNull(GetPrivateField<Timer>(harness.Flow, "_frontdoorSceneWatchdog"));
+            harness.SendBootstrap("bootstrap_reveal_ready", attempt);
+            harness.SendBootstrap("bootstrap_ready", attempt);
+            Assert.Same(entry, Assert.Single(harness.As2));
+            harness.Flow.ObserveUiData(new UiDataPacket("s:1|ga:" + attempt));
+            Assert.True(harness.Flow.RevealPerformed);
+            Assert.Equal(slot, Assert.Single(harness.LastPlayed));
+        }
+
+        [Fact]
+        public void NormalBootstrapLoad_IgnoresEarlySceneUntilItsExactEntryWasSent()
+        {
+            using var harness = new Harness();
+            const string attempt = "attempt-early-scene";
+            const string slot = "slot_early_scene";
+            harness.SeedShadow(slot, "待加载角色", 12);
+            harness.PreparePrewarmAttempt(attempt);
+            harness.Flow.StartGameFromBootstrap(slot, false, true);
+            harness.SetState(GameLaunchFlow.State.Embedding);
+            var scene = new UiDataPacket("s:1|ga:" + attempt);
+
+            harness.Flow.ObserveUiData(scene);
+            Assert.Empty(harness.LastPlayed);
+            Assert.True(GetPrivateField<bool>(harness.Flow, "_revealWaitingScene"));
+            InvokePrivate(harness.Flow, "CompleteEmbedLocked");
+            Assert.Equal(nameof(GameLaunchFlow.State.WaitingGameReady), harness.Flow.CurrentState);
+            harness.SendBootstrap("bootstrap_reveal_ready", attempt);
+            Assert.Empty(harness.As2);
+            harness.Flow.ObserveUiData(scene);
+            Assert.Empty(harness.LastPlayed);
+            harness.SendBootstrap("bootstrap_ready", attempt);
+            Assert.Single(harness.As2);
+            Assert.False(harness.Flow.RevealPerformed);
+            harness.Flow.ObserveUiData(scene);
+            harness.Flow.ObserveUiData(scene);
+            Assert.True(harness.Flow.RevealPerformed);
+            Assert.Equal(slot, Assert.Single(harness.LastPlayed));
+        }
+
+        [Fact]
+        public void NormalBootstrapLoad_RetiredTitleAndSceneCannotApplyToReplacementAttempt()
+        {
+            using var harness = new Harness();
+            const string prior = "attempt-old-load";
+            const string current = "attempt-next-load";
+            const string slot = "slot_retired_load";
+            harness.SeedShadow(slot, "隔离角色", 12);
+            harness.PreparePrewarmAttempt(prior);
+            harness.Flow.StartGameFromBootstrap(slot, false, true);
+            harness.SetState(GameLaunchFlow.State.Embedding);
+            harness.SendBootstrap("bootstrap_reveal_ready", prior);
+            Assert.Empty(harness.As2);
+            Assert.True(harness.Flow.HasAcceptedTitleReceipt(prior));
+            InvokePrivate(harness.Flow, "TransitionToError", "retire_fixture_attempt");
+
+            harness.PreparePrewarmAttempt(current);
+            harness.Flow.StartGameFromBootstrap(slot, false, true);
+            harness.SetState(GameLaunchFlow.State.Embedding);
+            harness.SendBootstrap("bootstrap_ready", current);
+            harness.SendBootstrap("bootstrap_reveal_ready", prior);
+            InvokePrivate(harness.Flow, "CompleteEmbedLocked");
+            harness.Flow.ObserveUiData(new UiDataPacket("s:1|ga:" + prior));
+            Assert.False(harness.Flow.HasAcceptedTitleReceipt(prior));
+            Assert.Empty(harness.As2);
+            Assert.Empty(harness.LastPlayed);
+            harness.SendBootstrap("bootstrap_reveal_ready", current);
+            Assert.Equal(current, Assert.Single(harness.As2).Value<string>("attemptId"));
+        }
+
         [Fact]
         public void NormalBootstrapSceneWatchdog_TimesOutFailClosed()
         {
