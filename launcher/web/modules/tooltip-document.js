@@ -793,7 +793,7 @@
         return inner;
     }
 
-    var factionNamePattern = /(A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b)|(军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b)|(诺亚|Noah)/gi;
+    var factionNamePattern = /(A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b)|(军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b)|(兽王套装|兽王|诺亚|Noah)/gi;
 
     function aLegionMarkHtml() {
         return '<span class="ntt-a-legion-mark" aria-hidden="true">'
@@ -844,6 +844,18 @@
     function isZombieRun(run) {
         return run && run.text && run.text.indexOf('丧尸') >= 0
             && typeof run.color === 'string' && run.color.toUpperCase() === '#B22222';
+    }
+
+    var explicitTitleFactions = { 'Andy套装碎片': 'aLegion', '兽王碎片': 'noah' };
+
+    function titleRunsHtml(doc) {
+        var faction = explicitTitleFactions[doc.title];
+        if (!faction) return doc.titleRuns.map(runHtml).join('');
+        var out = faction === 'aLegion' ? aLegionMarkHtml()
+            : faction === 'warlord' ? warlordMarkHtml() : noahMarkHtml();
+        for (var i = 0; i < doc.titleRuns.length; i++)
+            out += factionRunHtml(doc.titleRuns[i], doc.titleRuns[i].text, faction);
+        return out;
     }
 
     function runsHtml(runs) {
@@ -1079,7 +1091,7 @@
         if (opts.iconFootHTML) iconBlock += '<div class="flash-tt-icon-foot">' + opts.iconFootHTML + '</div>';
 
         var titleHtml = doc.titleRuns.length
-            ? '<div class="ntt-title">' + doc.titleRuns.map(runHtml).join('') + '</div>' : '';
+            ? '<div class="ntt-title">' + titleRunsHtml(doc) + '</div>' : '';
         var introText = columnHtml(doc, { intro: true });
         var introColumn = titleHtml + introText;
         var descColumn = columnHtml(doc, { description: true, body: true });

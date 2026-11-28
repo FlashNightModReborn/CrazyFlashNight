@@ -1521,10 +1521,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (doc.TitleRuns.Count > 0)
                 {
                     List<NativeTooltipRun> titleRuns = new List<NativeTooltipRun>();
+                    NativeTooltipFaction titleFaction = ExplicitTitleFaction(doc.Title);
                     foreach (NativeTooltipRun run in doc.TitleRuns)
                     {
-                        titleRuns.Add(new NativeTooltipRun(run.Text, run.Color, true,
-                            run.Italic, run.Underline, FloatingTitleFontBase, run.FontFace));
+                        var titleRun = new NativeTooltipRun(run.Text, run.Color, true,
+                            run.Italic, run.Underline, FloatingTitleFontBase, run.FontFace);
+                        ApplyFactionStyle(titleRun, titleFaction);
+                        titleRuns.Add(titleRun);
                     }
                     plan.IntroTitleTopPx = introTextY;
                     plan.IntroTitleLines = WrapRuns(titleRuns, introTextW, measure, lh);
@@ -1737,9 +1740,18 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
         private static readonly System.Text.RegularExpressions.Regex FactionNamePattern =
             new System.Text.RegularExpressions.Regex(
-                @"(A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b)|(军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b)|(诺亚|Noah)",
+                @"(A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b)|(军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b)|(兽王套装|兽王|诺亚|Noah)",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase
                 | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+        private static NativeTooltipFaction ExplicitTitleFaction(string title)
+        {
+            if (string.Equals(title, "Andy套装碎片", StringComparison.Ordinal))
+                return NativeTooltipFaction.ALegion;
+            if (string.Equals(title, "兽王碎片", StringComparison.Ordinal))
+                return NativeTooltipFaction.Noah;
+            return NativeTooltipFaction.None;
+        }
 
         private static List<NativeTooltipRun> ExpandFactionRuns(IList<NativeTooltipRun> source)
         {
@@ -1781,13 +1793,18 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             var run = new NativeTooltipRun(text, source.Color, source.Bold,
                 source.Italic, source.Underline, source.FontSize, source.FontFace);
+            ApplyFactionStyle(run, faction);
+            return run;
+        }
+
+        private static void ApplyFactionStyle(NativeTooltipRun run, NativeTooltipFaction faction)
+        {
             run.Faction = faction;
-            if (faction == NativeTooltipFaction.None) return run;
+            if (faction == NativeTooltipFaction.None) return;
             run.Color = faction == NativeTooltipFaction.ALegion ? Color.FromArgb(255, 0, 0)
                 : faction == NativeTooltipFaction.Warlord ? Color.FromArgb(255, 255, 224)
                 : Color.FromArgb(126, 182, 255);
             run.Underline = true;
-            return run;
         }
 
         internal static bool IsALegionSlice(VisualLine.Slice slice)

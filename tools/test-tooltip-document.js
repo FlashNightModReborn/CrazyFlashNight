@@ -971,7 +971,7 @@ test('buildHtml：长简介只标记关键词，不扩散到整段', () => {
         '整段不得包进红色下划线');
 });
 
-test('buildHtml：物品标题始终普通，简介与商店仅按阵营白名单着色', () => {
+test('buildHtml：物品标题默认普通，简介与商店仅按阵营白名单着色', () => {
     const names = [
         'A兵团', 'Andy Law', 'Boy', 'kInG', 'pIg', 'bLuE', 'The Girl',
         'ShopGirl', 'Shop Girl', '格格巫', '丽丽丝', '小F'
@@ -994,6 +994,33 @@ test('buildHtml：物品标题始终普通，简介与商店仅按阵营白名�
     }
     assert(html.indexOf('<span style="color:#FF0000"><u>普通文本</u></span>') < 0, '普通文本不添加格式');
     assert(html.indexOf('<span style="color:#FF0000"><b><u>普通商店</u></b></span>') < 0, '普通商店不添加格式');
+});
+
+test('buildHtml：显式例外标题整体着色，兽王关键词按最长名称拆分', () => {
+    const andy = Doc.buildHtml(Doc.normalize({ version: 1, title: 'Andy套装碎片', sections: [
+        { role: 'intro', runs: [{ text: '普通简介' }] }
+    ] }));
+    const andyTitle = andy.match(/<div class="ntt-title">[\s\S]*?<\/div>/)[0];
+    assert.strictEqual((andyTitle.match(/ntt-a-legion-mark/g) || []).length, 1,
+        'Andy套装碎片标题有一个 A兵团徽标');
+    assert(andyTitle.indexOf('<span style="color:#FF0000"><b><u>Andy套装碎片</u></b></span>') >= 0,
+        'Andy套装碎片标题整体红色下划线');
+
+    const beast = Doc.buildHtml(Doc.normalize({ version: 1, title: '兽王碎片', sections: [
+        { role: 'intro', runs: [{ text: '合成兽王套装必备材料，来自兽王。' }] }
+    ] }));
+    const beastTitle = beast.match(/<div class="ntt-title">[\s\S]*?<\/div>/)[0];
+    assert.strictEqual((beastTitle.match(/ntt-noah-mark/g) || []).length, 1,
+        '兽王碎片标题有一个诺亚徽标');
+    assert(beastTitle.indexOf('<span style="color:#7EB6FF"><b><u>兽王碎片</u></b></span>') >= 0,
+        '兽王碎片标题整体浅蓝下划线');
+    assert.strictEqual((beast.match(/ntt-noah-mark/g) || []).length, 3,
+        '标题、兽王套装与兽王各有一个诺亚徽标');
+    assert(beast.indexOf('合成<span class="ntt-noah-mark"') >= 0, '兽王套装前普通文本不着色');
+    assert(beast.indexOf('<span style="color:#7EB6FF"><u>兽王套装</u></span>必备材料，来自') >= 0,
+        '兽王套装整体着色，后续普通文本不着色');
+    assert(beast.indexOf('<span style="color:#7EB6FF"><u>兽王</u></span>。') >= 0,
+        '句尾兽王独立着色');
 });
 
 test('buildHtml：物品名使用独立居中大字号标题块', () => {

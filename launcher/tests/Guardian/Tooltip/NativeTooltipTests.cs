@@ -1523,6 +1523,62 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void ExplicitFactionTitles_UseWholeStyle_AndBeastKeywordsStayBounded()
+        {
+            JObject andyPayload = GunPayload("tt-title-explicit-a-legion");
+            andyPayload["document"]["title"] = "Andy套装碎片";
+            andyPayload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray { new JObject { ["text"] = "普通简介" } }
+                }
+            };
+            var andyPlan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(andyPayload), FixedMeasure, 15, 1f, 1024, 576);
+            var andyTitle = andyPlan.IntroTitleLines[0].Slices.Single();
+            Assert.Equal("Andy套装碎片", andyTitle.Text);
+            Assert.True(NativeTooltipLayout.IsALegionSlice(andyTitle));
+            Assert.True(andyTitle.Underline);
+            Assert.Equal(Color.FromArgb(255, 0, 0), andyTitle.Color.Value);
+            Assert.DoesNotContain(andyPlan.IntroBodyLines.SelectMany(line => line.Slices),
+                slice => NativeTooltipLayout.IsALegionSlice(slice));
+
+            JObject beastPayload = GunPayload("tt-title-explicit-noah");
+            beastPayload["document"]["title"] = "兽王碎片";
+            beastPayload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = "合成兽王套装必备材料，来自兽王。" }
+                    }
+                }
+            };
+            var beastPlan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(beastPayload), FixedMeasure, 15, 1f, 1024, 576);
+            var beastTitle = beastPlan.IntroTitleLines[0].Slices.Single();
+            Assert.Equal("兽王碎片", beastTitle.Text);
+            Assert.True(NativeTooltipLayout.IsNoahSlice(beastTitle));
+            Assert.True(beastTitle.Underline);
+            Assert.Equal(Color.FromArgb(126, 182, 255), beastTitle.Color.Value);
+            var beastSlices = beastPlan.IntroBodyLines.SelectMany(line => line.Slices).ToArray();
+            Assert.Equal(2, beastSlices.Count(slice => NativeTooltipLayout.IsNoahSlice(slice)));
+            Assert.Contains(beastSlices, slice => slice.Text == "兽王套装"
+                && NativeTooltipLayout.IsNoahSlice(slice));
+            Assert.Contains(beastSlices, slice => slice.Text == "兽王"
+                && NativeTooltipLayout.IsNoahSlice(slice));
+            foreach (var plain in beastSlices.Where(slice => !NativeTooltipLayout.IsNoahSlice(slice)))
+            {
+                Assert.False(plain.Underline);
+                Assert.Null(plain.Color);
+            }
+        }
+
+        [Fact]
         public void FactionKeywords_SplitMixedRuns_WithoutRedColorHeuristic()
         {
             JObject payload = GunPayload("tt-faction-keyword-boundaries");
