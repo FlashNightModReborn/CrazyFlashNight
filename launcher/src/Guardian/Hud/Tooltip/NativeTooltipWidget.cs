@@ -952,19 +952,19 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 bool warlord = NativeTooltipLayout.IsWarlordSlice(slice);
                 bool noah = NativeTooltipLayout.IsNoahSlice(slice);
                 int markSize = Math.Max(1, (int)Math.Round(lh));
-                if (aLegion)
+                if (aLegion && slice.ShowFactionMark)
                 {
                     DrawIcon(g, new Rectangle((int)cx, (int)cy,
                         markSize, markSize), null, false, true);
                     cx += markSize + 2;
                 }
-                if (warlord)
+                if (warlord && slice.ShowFactionMark)
                 {
                     DrawIcon(g, new Rectangle((int)cx, (int)cy,
                         markSize, markSize), null, false, false, true);
                     cx += markSize + 2;
                 }
-                if (noah)
+                if (noah && slice.ShowFactionMark)
                 {
                     DrawIcon(g, new Rectangle((int)cx, (int)cy,
                         markSize, markSize), null, false, false, false, true);
@@ -973,7 +973,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 Color color = noah ? Color.FromArgb(126, 182, 255)
                     : warlord ? Color.FromArgb(255, 255, 224)
                     : aLegion ? Color.FromArgb(255, 0, 0)
-                    : IsZombieSlice(slice) ? TextDefault
+                    : IsLegacyDarkRedSlice(slice) ? TextDefault
                     : slice.Color.HasValue ? slice.Color.Value : TextDefault;
                 if (!aLegion && !warlord && slice.Color.HasValue
                     && slice.Color.Value.R == 0 && slice.Color.Value.G == 0 && slice.Color.Value.B == 0)
@@ -994,11 +994,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             }
         }
 
-        private static bool IsZombieSlice(NativeTooltipLayout.VisualLine.Slice slice)
+        private static bool IsLegacyDarkRedSlice(NativeTooltipLayout.VisualLine.Slice slice)
         {
             return slice.Color.HasValue && slice.Color.Value.R == 178
-                && slice.Color.Value.G == 34 && slice.Color.Value.B == 34
-                && (slice.Text ?? "").IndexOf("丧尸", StringComparison.Ordinal) >= 0;
+                && slice.Color.Value.G == 34 && slice.Color.Value.B == 34;
         }
 
         /// <summary>

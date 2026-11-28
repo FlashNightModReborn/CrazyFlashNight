@@ -8,7 +8,9 @@
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="78" name="穿屏炮击" labelType="name" keyMode="9728">
-              <Actionscript><script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:2, lastFrame:80};]]></script></Actionscript>
+              <Actionscript>
+                <script><![CDATA[this.__projectileLightCast = {timeline:this, firstFrame:2, lastFrame:80};]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="79" keyMode="9728">

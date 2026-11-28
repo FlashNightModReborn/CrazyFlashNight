@@ -907,13 +907,13 @@ test('buildHtml：军阀文案使用黑黄徽标与淡金色下划线', () => {
         '仅军阀关键词使用 #FFFFE0 下划线，士兵保留原格式');
 });
 
-test('阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰，丧尸取消特殊色', () => {
+test('阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰，旧暗红色统一取消', () => {
     const aliases = ['Andy Law', 'Boy', 'kInG', 'pIg', 'bLuE', 'The Girl',
         'ShopGirl', 'Shop Girl', '格格巫', '丽丽丝', '小F'];
     const warlords = ['军队', '将军', 'General', 'Gazer'];
     const doc = Doc.normalize({ version: 1, sections: [
         { role: 'intro', runs: warlords.map(text => ({ text }))
-            .concat([{ text: '丧尸', color: '#B22222' }]) },
+            .concat(['丧尸', '僵尸', '驯化', '降兵'].map(text => ({ text, color: '#B22222' }))) },
         { role: 'sub', kind: 'acquisition', title: '获取方式', rows: aliases.map(name => ({
             name, depth: 1
         })) }
@@ -932,7 +932,9 @@ test('阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰
         assert(html.indexOf('<span style="color:#FFFFE0"><u>' + name + '</u></span>') >= 0,
             name + ' 使用淡金色下划线');
     }
-    assert(html.indexOf('color:#B22222') < 0, '丧尸不再使用 #B22222 特殊色');
+    assert(html.indexOf('color:#B22222') < 0, '所有词语均不再使用 #B22222 特殊色');
+    for (const text of ['丧尸', '僵尸', '驯化', '降兵'])
+        assert(html.indexOf('<span style="color:#B22222">' + text) < 0, text + ' 恢复普通格式');
     assert(html.indexOf('<circle cx="32" cy="32" r="30" fill="currentColor"/>') >= 0,
         '外圈跟随军阀文字颜色');
     assert(html.indexOf('<circle cx="32" cy="32" r="28" fill="#000"/>') >= 0,

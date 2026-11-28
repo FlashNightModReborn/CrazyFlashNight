@@ -27,9 +27,10 @@
                   <edges>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!391 110S5|501 110!501 110|501 0!501 0|0 0!0 0|0 110!0 110|101 110"/>
                     <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!101 110S7|391 110"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!101 110S5[171 255 101 399"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!101 399S7|391 399"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!391 399S5[441 255 391 110"/>
                     <Edge fillStyle0="1" strokeStyle="1" edges="!101 399S5|0 399!0 399|0 509!0 509|501 509!501 509|501 399!501 399|391 399"/>
-                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!391 399S7|101 399"/>
-                    <Edge fillStyle0="2" strokeStyle="1" edges="!101 110S5[171 255 101 399!391 399[441 255 391 110"/>
                     <Edge cubics="!501 110(;501,110 501,0 501,0q501 110 501 0);"/>
                     <Edge cubics="!501 0(;501,0 0,0 0,0q501 0 0 0);"/>
                     <Edge cubics="!0 0(;0,0 0,110 0,110q0 0 0 110);"/>

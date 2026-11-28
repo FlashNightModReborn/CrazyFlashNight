@@ -1523,6 +1523,45 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void WrappedFactionKeyword_KeepsStyleButShowsMarkOnlyAtStart()
+        {
+            JObject payload = GunPayload("tt-wrapped-faction-keyword");
+            payload["document"]["title"] = "普通物品";
+            payload["document"]["rail"] = JValue.CreateNull();
+            payload["document"]["magazine"] = JValue.CreateNull();
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = new string('字', 15) + "军阀" }
+                    }
+                }
+            };
+            var plan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(payload), FixedMeasure, 15, 1f, 1024, 576);
+            var lines = plan.IntroBodyLines.Where(line => line.Slices.Any(slice =>
+                NativeTooltipLayout.IsWarlordSlice(slice))).ToArray();
+            Assert.Equal(2, lines.Length);
+            Assert.Equal("军", string.Concat(lines[0].Slices
+                .Where(slice => NativeTooltipLayout.IsWarlordSlice(slice)).Select(slice => slice.Text)));
+            Assert.Equal("阀", string.Concat(lines[1].Slices
+                .Where(slice => NativeTooltipLayout.IsWarlordSlice(slice)).Select(slice => slice.Text)));
+            var fragments = lines.SelectMany(line => line.Slices)
+                .Where(slice => NativeTooltipLayout.IsWarlordSlice(slice)).ToArray();
+            Assert.Single(fragments, slice => slice.ShowFactionMark);
+            Assert.True(fragments[0].ShowFactionMark);
+            Assert.False(fragments[1].ShowFactionMark);
+            Assert.All(fragments, slice =>
+            {
+                Assert.True(slice.Underline);
+                Assert.Equal(Color.FromArgb(255, 255, 224), slice.Color.Value);
+            });
+        }
+
+        [Fact]
         public void ExplicitFactionTitles_UseWholeStyle_AndBeastKeywordsStayBounded()
         {
             JObject andyPayload = GunPayload("tt-title-explicit-a-legion");
@@ -1797,7 +1836,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
-        public void Paint_FactionAliases_InAcquisitionAndIntro_UseFactionColorsAndClearZombie()
+        public void Paint_FactionAliases_InAcquisitionAndIntro_UseFactionColorsAndClearLegacyDarkRed()
         {
             string[] aNames = { "Andy Law", "Boy", "kInG", "pIg", "bLuE", "The Girl",
                 "ShopGirl", "Shop Girl", "格格巫", "丽丽丝", "小F" };
@@ -1819,7 +1858,10 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                         new JObject { ["text"] = "将军\n" },
                         new JObject { ["text"] = "General\n" },
                         new JObject { ["text"] = "Gazer\n" },
-                        new JObject { ["text"] = "丧尸", ["color"] = "#B22222" }
+                        new JObject { ["text"] = "丧尸\n", ["color"] = "#B22222" },
+                        new JObject { ["text"] = "僵尸\n", ["color"] = "#B22222" },
+                        new JObject { ["text"] = "驯化\n", ["color"] = "#B22222" },
+                        new JObject { ["text"] = "降兵", ["color"] = "#B22222" }
                     }
                 },
                 new JObject
@@ -1879,16 +1921,17 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                             warlordNames[i] + " 应有淡金色文字和下划线");
                         militaryY += lineHeight;
                     }
-                    var zombie = new Rectangle(placed.X + plan.IntroContentLeftPx,
-                        militaryY, 240, plan.IntroBodyLines[warlordNames.Length].LineHeightPx);
-                    int zombieRed = 0;
-                    for (int y = zombie.Top; y < zombie.Bottom; y++)
-                        for (int x = zombie.Left; x < zombie.Right; x++)
+                    var legacyDarkRed = new Rectangle(placed.X + plan.IntroContentLeftPx,
+                        militaryY, 240, plan.IntroBodyLines.Skip(warlordNames.Length)
+                            .Sum(line => line.LineHeightPx));
+                    int legacyDarkRedPixels = 0;
+                    for (int y = legacyDarkRed.Top; y < legacyDarkRed.Bottom; y++)
+                        for (int x = legacyDarkRed.Left; x < legacyDarkRed.Right; x++)
                         {
                             Color pixel = bmp.GetPixel(x, y);
-                            if (pixel.R == 178 && pixel.G == 34 && pixel.B == 34) zombieRed++;
+                            if (pixel.R == 178 && pixel.G == 34 && pixel.B == 34) legacyDarkRedPixels++;
                         }
-                    Assert.Equal(0, zombieRed);
+                    Assert.Equal(0, legacyDarkRedPixels);
                 }
             }
         }

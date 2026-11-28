@@ -803,7 +803,7 @@
     }
 
     function slicedRunHtml(run, text) {
-        return runHtml({ text: text, color: isZombieRun(run) ? null : run.color,
+        return runHtml({ text: text, color: isLegacyDarkRedRun(run) ? null : run.color,
             bold: run.bold, italic: run.italic, underline: run.underline,
             fontSize: run.fontSize, fontFace: run.fontFace });
     }
@@ -841,9 +841,8 @@
             + '</g></svg></span>';
     }
 
-    function isZombieRun(run) {
-        return run && run.text && run.text.indexOf('丧尸') >= 0
-            && typeof run.color === 'string' && run.color.toUpperCase() === '#B22222';
+    function isLegacyDarkRedRun(run) {
+        return run && typeof run.color === 'string' && run.color.toUpperCase() === '#B22222';
     }
 
     var explicitTitleFactions = { 'Andy套装碎片': 'aLegion', '兽王碎片': 'noah' };

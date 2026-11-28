@@ -346,6 +346,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 internal int? FontSize;
                 internal string FontFace;
                 internal NativeTooltipFaction Faction;
+                internal int FactionOccurrence;
+                internal bool ShowFactionMark;
                 internal int WidthPx;
                 /// <summary>含 letter-spacing 的精确宽（物理 px 浮点），绘制推进用。</summary>
                 internal float WidthF;
@@ -449,6 +451,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 int end = i + 1 < starts.Length ? starts[i + 1] : text.Length;
                 while (start >= runEnd) runEnd += runs[++runIndex]?.Text?.Length ?? 0;
                 NativeTooltipRun run = runs[runIndex];
+                NativeTooltipRun appendRun = run;
                 int scalar = char.ConvertToUtf32(text, start);
                 if (scalar == '\r' || scalar == '\n')
                 {
@@ -475,7 +478,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     float delta;
                     try
                     {
-                        delta = paintOverride != null ? 0f : cur.TrialDelta(element, run, font, measureF);
+                        delta = paintOverride != null ? 0f : cur.TrialDelta(element, appendRun, font, measureF);
                     }
                     catch (ExternalException)
                     {
@@ -483,8 +486,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         {
                             // Retry the complete element on a fresh line before
                             // attributing a GDI+ run limit to that element.
+                            bool continuationOnError = cur.HasFactionMarkFor(run);
                             if (cur.BrkSlice >= 0) BreakAt(cur, outLines, measureF);
                             else outLines.Add(cur.FlushLine(endsLogicalLine: false));
+                            if (continuationOnError) appendRun = ContinueFactionRun(run);
                             continue;
                         }
                         paintOverride = "□";
@@ -493,13 +498,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     }
                     if (!cur.HasContent || cur.WidthF + delta <= maxWidthPx)
                     {
-                        cur.Append(element, run, font, delta, paintOverride);
+                        cur.Append(element, appendRun, font, delta, paintOverride);
                         int next = end < text.Length ? char.ConvertToUtf32(text, end) : -1;
                         if (scalar == 0x200B || CanBreakAfter(scalar, next)) MarkBreak(cur);
                         break;
                     }
+                    bool continuation = cur.HasFactionMarkFor(run);
                     if (cur.BrkSlice >= 0) BreakAt(cur, outLines, measureF);
                     else outLines.Add(cur.FlushLine(endsLogicalLine: false));
+                    if (continuation) appendRun = ContinueFactionRun(run);
                 }
             }
             if (cur.HasContent) outLines.Add(cur.FlushLine());
@@ -518,6 +525,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             internal char LastChar;
             internal int MaxFontCss = FontPxBase;
             internal bool HasContent { get { return Slices.Count > 0; } }
+
+            internal bool HasFactionMarkFor(NativeTooltipRun run)
+            {
+                if (run == null || run.Faction == NativeTooltipFaction.None) return false;
+                foreach (var slice in Slices)
+                    if (slice.ShowFactionMark && slice.Faction == run.Faction
+                        && slice.FactionOccurrence == run.FactionOccurrence) return true;
+                return false;
+            }
 
             /// <summary>行高 = max(基准行高, 行内最大字号×1.25)——CSS line box
             /// 取行内最大 inline box 高；BaseLh=12×em 已含 scale，比例换算免传 scale。
@@ -539,7 +555,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     && s.Bold == font.Bold && s.Italic == font.Italic
                     && s.Underline == font.Underline
                     && s.FontSize == font.FontSize && s.FontFace == font.FontFace
-                    && s.Faction == (run != null ? run.Faction : NativeTooltipFaction.None);
+                    && s.Faction == (run != null ? run.Faction : NativeTooltipFaction.None)
+                    && s.FactionOccurrence == (run != null ? run.FactionOccurrence : 0)
+                    && s.ShowFactionMark == (run != null && run.ShowFactionMark);
             }
 
             /// <summary>追加字符的行宽增量（浮点，含 letter-spacing）：
@@ -578,6 +596,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         FontSize = font.FontSize,
                         FontFace = font.FontFace,
                         Faction = run != null ? run.Faction : NativeTooltipFaction.None,
+                        FactionOccurrence = run != null ? run.FactionOccurrence : 0,
+                        ShowFactionMark = run != null && run.ShowFactionMark,
                         WidthF = cw,
                         WidthPx = (int)Math.Round(cw)
                     });
@@ -641,6 +661,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 VisualLine.Slice ts = CloneSlice(mid);
                 ts.Text = tailText;
+                ts.ShowFactionMark = false;
                 ts.WidthF = measure(tailText, ts.FontOf());
                 ts.WidthPx = (int)Math.Round(ts.WidthF);
                 cur.Slices.Insert(0, ts);
@@ -680,7 +701,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         && last.Bold == s.Bold && last.Italic == s.Italic
                         && last.Underline == s.Underline
                         && last.FontSize == s.FontSize && last.FontFace == s.FontFace
-                        && last.Faction == s.Faction)
+                        && last.Faction == s.Faction
+                        && last.FactionOccurrence == s.FactionOccurrence
+                        && last.ShowFactionMark == s.ShowFactionMark)
                     {
                         last.Text += s.Text;
                         last.WidthF += s.WidthF;
@@ -781,7 +804,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 Text = s.Text, PaintOverride = s.PaintOverride, Color = s.Color, Bold = s.Bold, Italic = s.Italic,
                 Underline = s.Underline, FontSize = s.FontSize, FontFace = s.FontFace,
-                Faction = s.Faction, WidthPx = s.WidthPx, WidthF = s.WidthF
+                Faction = s.Faction, FactionOccurrence = s.FactionOccurrence,
+                ShowFactionMark = s.ShowFactionMark, WidthPx = s.WidthPx, WidthF = s.WidthF
             };
         }
 
@@ -1731,9 +1755,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             int markWidth = Math.Max(1, (int)Math.Round(line.Height(1))) + 2;
             foreach (var slice in line.Slices)
             {
-                if (IsALegionSlice(slice)) width += markWidth;
-                if (IsWarlordSlice(slice)) width += markWidth;
-                if (IsNoahSlice(slice)) width += markWidth;
+                if (slice.ShowFactionMark && IsALegionSlice(slice)) width += markWidth;
+                if (slice.ShowFactionMark && IsWarlordSlice(slice)) width += markWidth;
+                if (slice.ShowFactionMark && IsNoahSlice(slice)) width += markWidth;
             }
             return Math.Max(line.IconRect.Right, width);
         }
@@ -1757,6 +1781,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             var output = new List<NativeTooltipRun>();
             if (source == null) return output;
+            int occurrence = 0;
             foreach (NativeTooltipRun run in source)
             {
                 if (run == null || string.IsNullOrEmpty(run.Text))
@@ -1779,7 +1804,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     NativeTooltipFaction faction = match.Groups[1].Success
                         ? NativeTooltipFaction.ALegion
                         : match.Groups[2].Success ? NativeTooltipFaction.Warlord : NativeTooltipFaction.Noah;
-                    output.Add(CopyRun(run, match.Value, faction));
+                    output.Add(CopyRun(run, match.Value, faction, ++occurrence));
                     from = match.Index + match.Length;
                 }
                 if (from < run.Text.Length)
@@ -1789,17 +1814,26 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         private static NativeTooltipRun CopyRun(NativeTooltipRun source, string text,
-            NativeTooltipFaction faction)
+            NativeTooltipFaction faction, int occurrence = 0)
         {
             var run = new NativeTooltipRun(text, source.Color, source.Bold,
                 source.Italic, source.Underline, source.FontSize, source.FontFace);
+            run.FactionOccurrence = occurrence;
             ApplyFactionStyle(run, faction);
+            return run;
+        }
+
+        private static NativeTooltipRun ContinueFactionRun(NativeTooltipRun source)
+        {
+            var run = CopyRun(source, source.Text, source.Faction, source.FactionOccurrence);
+            run.ShowFactionMark = false;
             return run;
         }
 
         private static void ApplyFactionStyle(NativeTooltipRun run, NativeTooltipFaction faction)
         {
             run.Faction = faction;
+            run.ShowFactionMark = faction != NativeTooltipFaction.None;
             if (faction == NativeTooltipFaction.None) return;
             run.Color = faction == NativeTooltipFaction.ALegion ? Color.FromArgb(255, 0, 0)
                 : faction == NativeTooltipFaction.Warlord ? Color.FromArgb(255, 255, 224)

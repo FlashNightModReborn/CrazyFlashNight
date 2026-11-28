@@ -59,6 +59,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         public int? FontSize;
         public string FontFace;
         internal NativeTooltipFaction Faction;
+        internal int FactionOccurrence;
+        internal bool ShowFactionMark;
 
         public NativeTooltipRun() { }
         public NativeTooltipRun(string text, Color? color, bool bold)
